@@ -79,13 +79,14 @@
     }, 3000);
 
     // First click switches permanently to manual mode
-    document.body.addEventListener('click', () => {
-        if (!manualMode) {
-            manualMode = true;
-        }
+document.body.addEventListener('click', () => {
+    if (!manualMode) {
+        manualMode = true;
+        return;
+    }
 
-        nextSlide();
-    });
+    nextSlide();
+});
 </script>
 
 </body>
