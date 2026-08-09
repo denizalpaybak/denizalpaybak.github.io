@@ -38,7 +38,6 @@
         height: 100%;
         object-fit: contain;
         opacity: 0;
-        transition: opacity 0.15s ease;
         pointer-events: none;
     }
 
@@ -62,13 +61,30 @@
 <script>
     const slides = document.querySelectorAll('.slide');
     let current = 0;
+    let manualMode = false;
 
-    document.body.addEventListener('click', () => {
+    function nextSlide() {
         slides[current].classList.remove('active');
 
         current = (current + 1) % slides.length;
 
         slides[current].classList.add('active');
+    }
+
+    // Automatic slideshow: every 3 seconds
+    const autoplay = setInterval(() => {
+        if (!manualMode) {
+            nextSlide();
+        }
+    }, 3000);
+
+    // First click switches permanently to manual mode
+    document.body.addEventListener('click', () => {
+        if (!manualMode) {
+            manualMode = true;
+        }
+
+        nextSlide();
     });
 </script>
 
