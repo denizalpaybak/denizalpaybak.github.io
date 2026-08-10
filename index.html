@@ -58,7 +58,7 @@
     }
 
 
-    /* NAME TEXT */
+    /* NORMAL LOGO */
 
     .logo-text {
         position: absolute;
@@ -73,13 +73,33 @@
         letter-spacing: 0;
 
         white-space: nowrap;
-
-        transform-origin: left center;
-        transform: scale(1);
     }
 
 
-    /* DESKTOP HOVER BORDER */
+    /* HOVER LOGO */
+
+    .logo::before {
+        content: "AYBAK";
+
+        position: absolute;
+
+        top: 19px;
+        left: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+
+        letter-spacing: 0.08em;
+
+        white-space: nowrap;
+
+        display: none;
+    }
+
+
+    /* HOVER BORDER */
 
     .logo:hover::after {
         content: "";
@@ -98,11 +118,14 @@
     }
 
 
-    /* DESKTOP HOVER TEXT */
+    /* SHOW AYBAK ON HOVER */
+
+    .logo:hover::before {
+        display: block;
+    }
 
     .logo:hover .logo-text {
-        transform: scale(1.4);
-        font-weight: 500;
+        display: none;
     }
 
 
@@ -189,15 +212,31 @@
             font-size: 13px;
         }
 
-        /*
-            Mobile intro is instantaneous.
-            No transition / no animation.
-        */
 
-        .logo.intro .logo-text {
-            transform: scale(1.4);
+        /* MOBILE HOVER/INTRO AYBAK */
+
+        .logo.intro::before {
+            content: "AYBAK";
+
+            display: block;
+
+            position: absolute;
+
+            top: 17px;
+            left: 0;
+
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
             font-weight: 500;
+            line-height: 1;
+
+            letter-spacing: 0.08em;
+
+            white-space: nowrap;
         }
+
+
+        /* MOBILE INTRO BORDER */
 
         .logo.intro::after {
             content: "";
@@ -214,6 +253,14 @@
 
             pointer-events: none;
         }
+
+
+        /* Hide normal logo during mobile intro */
+
+        .logo.intro .logo-text {
+            display: none;
+        }
+
 
         .slide {
             max-width: 84vw;
@@ -339,12 +386,12 @@
     /*
         MOBILE INTRO
 
-        The logo starts large with its border.
-        After 3 seconds it instantly returns
-        to its normal state.
+        Mobile has no hover.
+        It starts directly with the AYBAK
+        wordmark + border.
 
-        No animation.
-        No transition.
+        After 3 seconds it instantly returns
+        to the normal Denizalp / aybak state.
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
@@ -354,7 +401,9 @@
         logo.classList.add('intro');
 
         setTimeout(() => {
+
             logo.classList.remove('intro');
+
         }, 3000);
 
     }
