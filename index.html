@@ -58,7 +58,7 @@
     }
 
 
-    /* NORMAL LOGO */
+    /* NORMAL NAME */
 
     .logo-text {
         position: absolute;
@@ -76,21 +76,18 @@
     }
 
 
-    /* HOVER LOGO */
+    /* HOVER / AYBAK */
 
-    .logo::before {
-        content: "AYBAK";
-
+    .logo-wordmark {
         position: absolute;
 
-        top: 19px;
+        top: 18px;
         left: 0;
 
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 24px;
+        font-size: 15px;
         font-weight: 500;
-        line-height: 1;
-
+        line-height: 1.15;
         letter-spacing: 0.08em;
 
         white-space: nowrap;
@@ -99,33 +96,67 @@
     }
 
 
-    /* HOVER BORDER */
-
-    .logo:hover::after {
-        content: "";
-
-        position: absolute;
-
-        top: 0;
-        left: -12px;
-
-        width: 190px;
-        height: 70px;
-
-        border: 6px solid #000;
-
-        pointer-events: none;
-    }
-
-
     /* SHOW AYBAK ON HOVER */
 
-    .logo:hover::before {
+    .logo:hover .logo-wordmark {
         display: block;
     }
 
     .logo:hover .logo-text {
         display: none;
+    }
+
+
+    /*
+        LETTER-BY-LETTER TRANSITION
+
+        AYBAK -> aybak
+    */
+
+    .logo-transition {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 190px;
+        height: 70px;
+
+        display: none;
+
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .logo-transition .denizalp {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+
+        opacity: 0;
+    }
+
+    .logo-transition .aybak {
+        position: absolute;
+
+        top: 18px;
+        left: 0;
+
+        display: flex;
+
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.15;
+
+        letter-spacing: 0.08em;
+    }
+
+    .logo-transition .letter {
+        display: inline-block;
     }
 
 
@@ -212,55 +243,24 @@
             font-size: 13px;
         }
 
-
-        /* MOBILE HOVER/INTRO AYBAK */
-
-        .logo.intro::before {
-            content: "AYBAK";
-
-            display: block;
-
-            position: absolute;
-
-            top: 17px;
-            left: 0;
-
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 20px;
-            font-weight: 500;
-            line-height: 1;
-
-            letter-spacing: 0.08em;
-
-            white-space: nowrap;
+        .logo-wordmark {
+            top: 15px;
+            font-size: 13px;
         }
 
-
-        /* MOBILE INTRO BORDER */
-
-        .logo.intro::after {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: -10px;
-
+        .logo-transition {
             width: 160px;
             height: 58px;
-
-            border: 5px solid #000;
-
-            pointer-events: none;
         }
 
-
-        /* Hide normal logo during mobile intro */
-
-        .logo.intro .logo-text {
-            display: none;
+        .logo-transition .denizalp {
+            font-size: 13px;
         }
 
+        .logo-transition .aybak {
+            top: 15px;
+            font-size: 13px;
+        }
 
         .slide {
             max-width: 84vw;
@@ -280,13 +280,47 @@
         href="https://denizalpaybak.com/"
         target="_self"
     >
+
+        <!-- NORMAL -->
+
         <span class="logo-text">
             Denizalp<br>
             aybak
         </span>
+
+
+        <!-- HOVER -->
+
+        <span class="logo-wordmark">
+            AYBAK
+        </span>
+
+
+        <!-- TRANSITION -->
+
+        <span class="logo-transition">
+
+            <span class="denizalp">
+                Denizalp
+            </span>
+
+            <span class="aybak">
+
+                <span class="letter">A</span>
+                <span class="letter">Y</span>
+                <span class="letter">B</span>
+                <span class="letter">A</span>
+                <span class="letter">K</span>
+
+            </span>
+
+        </span>
+
     </a>
 
+
     <div class="contact">
+
         <a
             href="mailto:d@denizalpaybak.com"
             target="_blank"
@@ -294,7 +328,9 @@
         >
             d@denizalpaybak.com
         </a>
+
     </div>
+
 
     <div class="social">
 
@@ -384,25 +420,148 @@
 
 
     /*
-        MOBILE INTRO
 
-        Mobile has no hover.
-        It starts directly with the AYBAK
-        wordmark + border.
+        LOGO TRANSITION
 
-        After 3 seconds it instantly returns
-        to the normal Denizalp / aybak state.
+        AYBAK
+        aYBAK
+        ayBAK
+        aybAK
+        aybaK
+        aybak
+
+        Then Denizalp appears above it.
+
+    */
+
+    const logo = document.querySelector('.logo');
+    const wordmark = document.querySelector('.logo-wordmark');
+    const normalLogo = document.querySelector('.logo-text');
+    const transition = document.querySelector('.logo-transition');
+    const denizalp = document.querySelector('.denizalp');
+    const letters = document.querySelectorAll('.logo-transition .letter');
+
+    let transitionRunning = false;
+
+
+    function runLogoTransition() {
+
+        if (transitionRunning) {
+            return;
+        }
+
+        transitionRunning = true;
+
+        wordmark.style.display = 'none';
+        normalLogo.style.display = 'none';
+
+        transition.style.display = 'block';
+
+        denizalp.style.opacity = '0';
+
+        letters.forEach((letter) => {
+            letter.style.transform = 'scale(1)';
+        });
+
+
+        /*
+            Each letter becomes lowercase one after another.
+        */
+
+        letters[0].textContent = 'a';
+
+        setTimeout(() => {
+            letters[1].textContent = 'y';
+        }, 180);
+
+        setTimeout(() => {
+            letters[2].textContent = 'b';
+        }, 360);
+
+        setTimeout(() => {
+            letters[3].textContent = 'a';
+        }, 540);
+
+        setTimeout(() => {
+            letters[4].textContent = 'k';
+        }, 720);
+
+
+        /*
+            Denizalp appears after the lowercase
+            transformation has finished.
+        */
+
+        setTimeout(() => {
+            denizalp.style.opacity = '1';
+        }, 900);
+
+
+        /*
+            Return to the normal logo.
+        */
+
+        setTimeout(() => {
+
+            transition.style.display = 'none';
+
+            normalLogo.style.display = 'block';
+
+            denizalp.style.opacity = '0';
+
+            letters[0].textContent = 'A';
+            letters[1].textContent = 'Y';
+            letters[2].textContent = 'B';
+            letters[3].textContent = 'A';
+            letters[4].textContent = 'K';
+
+            transitionRunning = false;
+
+        }, 1500);
+
+    }
+
+
+    /*
+        DESKTOP
+
+        When leaving the AYBAK hover state,
+        play the transformation.
+    */
+
+    logo.addEventListener('mouseleave', () => {
+
+        if (window.matchMedia('(min-width: 601px)').matches) {
+            runLogoTransition();
+        }
+
+    });
+
+
+    /*
+        MOBILE
+
+        Mobile starts in the AYBAK state.
+        After the first 3 seconds, the same
+        transition runs automatically.
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
 
-        const logo = document.querySelector('.logo');
+        normalLogo.style.display = 'none';
+        transition.style.display = 'block';
 
-        logo.classList.add('intro');
+        letters[0].textContent = 'A';
+        letters[1].textContent = 'Y';
+        letters[2].textContent = 'B';
+        letters[3].textContent = 'A';
+        letters[4].textContent = 'K';
+
+        denizalp.style.opacity = '0';
 
         setTimeout(() => {
 
-            logo.classList.remove('intro');
+            runLogoTransition();
 
         }, 3000);
 
