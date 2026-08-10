@@ -155,6 +155,8 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
+
+        cursor: pointer;
     }
 
 
@@ -237,6 +239,58 @@
 
 
     /* =========================
+       HOVER PREVIEW
+       ========================= */
+
+    .preview {
+        position: fixed;
+
+        top: 50%;
+        right: 48px;
+
+        width: min(40vw, 560px);
+
+        transform: translateY(-50%);
+
+        display: none;
+
+        z-index: 10;
+
+        pointer-events: none;
+    }
+
+
+    .preview img,
+    .preview video {
+        display: block;
+
+        width: 100%;
+        height: auto;
+
+        max-height: 75vh;
+
+        object-fit: contain;
+
+        pointer-events: none;
+    }
+
+
+    /*
+       Desktop only:
+       preview becomes visible when
+       Photography / Film is hovered.
+    */
+
+    @media (min-width: 701px) {
+
+        .preview.active {
+            display: block;
+        }
+
+    }
+
+
+    /* =========================
        MOBILE
        ========================= */
 
@@ -284,6 +338,15 @@
 
         .biography p {
             margin-bottom: 17px;
+        }
+
+
+        /*
+           No hover preview on mobile.
+        */
+
+        .preview {
+            display: none !important;
         }
 
     }
@@ -349,6 +412,7 @@
                 href="https://photography.denizalpaybak.com/"
                 class="animated-link"
                 data-word="photography"
+                data-preview="photography"
             >
                 <span class="nav-text">photography</span>
             </a>
@@ -358,6 +422,7 @@
                 href="https://film.denizalpaybak.com/"
                 class="animated-link"
                 data-word="film"
+                data-preview="film"
             >
                 <span class="nav-text">film</span>
             </a>
@@ -371,12 +436,12 @@
 
         <div class="contact">
 
-<a
-    href="mailto:d@denizalpaybak.com"
-    target="_blank"
->
-    d@denizalpaybak.com
-</a>
+            <a
+                href="mailto:d@denizalpaybak.com"
+                target="_blank"
+            >
+                d@denizalpaybak.com
+            </a>
 
 
             <a
@@ -440,6 +505,35 @@
 
 
     </main>
+
+</div>
+
+
+<!-- =========================
+     HOVER PREVIEW
+     ========================= -->
+
+<div
+    class="preview"
+    id="preview"
+    aria-hidden="true"
+>
+
+    <img
+        id="preview-image"
+        src=""
+        alt=""
+    >
+
+
+    <video
+        id="preview-video"
+        muted
+        autoplay
+        loop
+        playsinline
+        preload="auto"
+    ></video>
 
 </div>
 
@@ -688,6 +782,108 @@
 
 
     /* =====================================================
+       HOVER PREVIEW
+       ===================================================== */
+
+    const preview =
+        document.getElementById("preview");
+
+    const previewImage =
+        document.getElementById("preview-image");
+
+    const previewVideo =
+        document.getElementById("preview-video");
+
+
+    function showPreview(type) {
+
+        /*
+           Safety:
+           preview is only activated
+           on desktop.
+        */
+
+        if (
+            window.matchMedia(
+                "(max-width: 700px)"
+            ).matches
+        ) {
+
+            return;
+
+        }
+
+
+        if (type === "photography") {
+
+            previewVideo.pause();
+
+            previewVideo.removeAttribute(
+                "src"
+            );
+
+            previewVideo.load();
+
+
+            previewImage.src =
+                "./photography.jpg";
+
+            previewImage.style.display =
+                "block";
+
+
+            previewVideo.style.display =
+                "none";
+
+        }
+
+
+        if (type === "film") {
+
+            previewImage.removeAttribute(
+                "src"
+            );
+
+            previewImage.style.display =
+                "none";
+
+
+            previewVideo.src =
+                "./film.mp4";
+
+            previewVideo.style.display =
+                "block";
+
+
+            previewVideo.currentTime = 0;
+
+            previewVideo.play().catch(
+                () => {}
+            );
+
+        }
+
+
+        preview.classList.add(
+            "active"
+        );
+
+    }
+
+
+    function hidePreview() {
+
+        preview.classList.remove(
+            "active"
+        );
+
+
+        previewVideo.pause();
+
+    }
+
+
+    /* =====================================================
        PHOTOGRAPHY / FILM ANIMATION
        ===================================================== */
 
@@ -868,10 +1064,9 @@
             }
 
 
-            /*
-                Hover accelerates the animation.
-                It never pauses.
-            */
+            /* =========================
+               MOUSE ENTER
+               ========================= */
 
             link.addEventListener(
                 "mouseenter",
@@ -881,20 +1076,34 @@
 
                     clearTimers();
 
+
+                    /*
+                       Start accelerated animation
+                       from the current letter state.
+                    */
+
                     timer =
                         setTimeout(
                             run,
                             HOVER_SPEED
                         );
 
+
+                    /*
+                       Show corresponding preview.
+                    */
+
+                    showPreview(
+                        link.dataset.preview
+                    );
+
                 }
             );
 
 
-            /*
-                Return to normal speed
-                when mouse leaves.
-            */
+            /* =========================
+               MOUSE LEAVE
+               ========================= */
 
             link.addEventListener(
                 "mouseleave",
@@ -904,17 +1113,51 @@
 
                     clearTimers();
 
+
+                    /*
+                       Return to normal animation speed.
+                    */
+
                     timer =
                         setTimeout(
                             run,
                             NORMAL_SPEED
                         );
 
+
+                    /*
+                       Remove preview immediately.
+                    */
+
+                    hidePreview();
+
                 }
             );
 
 
             start();
+
+        }
+    );
+
+
+    /* =====================================================
+       CLEAN UP PREVIEW WHEN RESIZING TO MOBILE
+       ===================================================== */
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            if (
+                window.matchMedia(
+                    "(max-width: 700px)"
+                ).matches
+            ) {
+
+                hidePreview();
+
+            }
 
         }
     );
