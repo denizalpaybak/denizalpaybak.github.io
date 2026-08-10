@@ -43,8 +43,11 @@
 
     .info {
         position: fixed;
+
         top: 32px;
         left: 48px;
+
+        z-index: 10;
 
         font-family: Arial, Helvetica, sans-serif;
         font-size: 15px;
@@ -53,58 +56,62 @@
     }
 
 
-    .logo {
-        display: block;
-
-        margin: 0 0 16px 0;
-        padding: 0;
-
-        color: inherit;
-        text-decoration: none;
-    }
-
-
-    .logo span {
-        display: block;
-    }
-
-
-    .links {
-        display: flex;
-        flex-direction: column;
-
-        margin: 0;
-        padding: 0;
-    }
-
-
-    .links a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-
-    .links a:hover {
-        text-decoration: underline;
-    }
-
-
     /* =========================
-       MAIN CONTENT
+       LOGO
        ========================= */
 
-    .content {
-        position: absolute;
+    .logo {
+        position: relative;
 
-        top: 50%;
-        left: 50%;
+        display: block;
 
-        transform: translate(-50%, -50%);
-
-        width: min(760px, 58vw);
+        width: 190px;
+        height: 52px;
 
         margin: 0;
         padding: 0;
+
+        color: inherit;
+        text-decoration: none;
+
+        cursor: pointer;
+    }
+
+
+    .logo-name {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+
+        white-space: nowrap;
+    }
+
+
+    .logo-aybak {
+        position: absolute;
+
+        top: 17px;
+        left: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+
+        letter-spacing: normal;
+
+        white-space: nowrap;
+    }
+
+
+    .logo-aybak span {
+        display: inline;
     }
 
 
@@ -113,21 +120,22 @@
        ========================= */
 
     .navigation {
-        margin: 0 0 22px 0;
+        display: flex;
+        flex-direction: column;
+
+        margin: 0;
         padding: 0;
+    }
+
+
+    .navigation a {
+        color: inherit;
+        text-decoration: none;
 
         font-family: Arial, Helvetica, sans-serif;
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
-    }
-
-
-    .navigation a {
-        display: block;
-
-        color: #000;
-        text-decoration: none;
     }
 
 
@@ -137,28 +145,112 @@
 
 
     /* =========================
+       CONTACT
+       ========================= */
+
+    .contact {
+        margin: 16px 0 0 0;
+        padding: 0;
+    }
+
+
+    .contact a {
+        display: block;
+
+        color: inherit;
+        text-decoration: none;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+    }
+
+
+    .contact a:hover {
+        text-decoration: underline;
+    }
+
+
+    /* =========================
+       SOCIAL
+       ========================= */
+
+    .social {
+        display: flex;
+        flex-direction: column;
+
+        margin: 0;
+        padding: 0;
+    }
+
+
+    .social a {
+        color: inherit;
+        text-decoration: none;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+    }
+
+
+    .social a:hover {
+        text-decoration: underline;
+    }
+
+
+    /* =========================
        BIOGRAPHY
        ========================= */
+
+    .content {
+        position: absolute;
+
+        /*
+            Same vertical starting point
+            as the logo on the left.
+        */
+
+        top: 32px;
+        left: calc(50% + 40px);
+
+        width: min(650px, 45vw);
+
+        margin: 0;
+        padding: 0;
+    }
+
 
     .biography {
         margin: 0;
         padding: 0;
 
-        font-family: "Times New Roman", Times, serif;
-        font-size: 26px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
         font-weight: 400;
-        line-height: 1.12;
+        line-height: 1.15;
     }
 
 
     .biography p {
-        margin: 0 0 24px 0;
+        margin: 0 0 17px 0;
         padding: 0;
     }
 
 
     .biography p:last-child {
         margin-bottom: 0;
+    }
+
+
+    /* =========================
+       LOGO ANIMATION
+       ========================= */
+
+    let {
+        display: none;
     }
 
 
@@ -178,34 +270,44 @@
         }
 
 
-        .content {
-            position: absolute;
-
-            top: auto;
-            left: 24px;
-            right: 24px;
-
-            bottom: 32px;
-
-            transform: none;
-
-            width: auto;
+        .logo {
+            width: 160px;
+            height: 45px;
         }
 
 
-        .navigation {
-            margin-bottom: 18px;
+        .logo-name {
+            font-size: 15px;
+        }
+
+
+        .logo-aybak {
+            top: 17px;
+            font-size: 15px;
+        }
+
+
+        .content {
+            position: absolute;
+
+            top: 24px;
+            left: 24px;
+            right: 24px;
+
+            width: auto;
+
+            margin-top: 210px;
         }
 
 
         .biography {
-            font-size: 22px;
-            line-height: 1.12;
+            font-size: 15px;
+            line-height: 1.15;
         }
 
 
         .biography p {
-            margin-bottom: 20px;
+            margin-bottom: 17px;
         }
 
     }
@@ -221,21 +323,58 @@
 
 
     <!-- =========================
-         LEFT INFORMATION
+         LEFT COLUMN
          ========================= -->
 
     <div class="info">
 
+
+        <!-- LOGO -->
+
         <a
             class="logo"
             href="https://denizalpaybak.com/"
+            target="_self"
         >
-            <span>Denizalp</span>
-            <span>aybak</span>
+
+            <span
+                class="logo-name"
+                id="logo-name"
+            >
+                Denizalp
+            </span>
+
+
+            <span class="logo-aybak">
+
+                <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
+
+            </span>
+
         </a>
 
 
-        <div class="links">
+        <!-- NAVIGATION -->
+
+        <nav class="navigation">
+
+            <a
+                href="https://photography.denizalpaybak.com/"
+            >
+                photography
+            </a>
+
+
+            <a href="#">
+                film
+            </a>
+
+        </nav>
+
+
+        <!-- CONTACT -->
+
+        <div class="contact">
 
             <a
                 href="mailto:d@denizalpaybak.com"
@@ -245,6 +384,12 @@
                 d@denizalpaybak.com
             </a>
 
+        </div>
+
+
+        <!-- SOCIAL -->
+
+        <div class="social">
 
             <a
                 href="https://www.instagram.com/denizalpaybak/"
@@ -265,66 +410,46 @@
 
         </div>
 
+
     </div>
 
 
     <!-- =========================
-         NAVIGATION + BIOGRAPHY
+         BIOGRAPHY
          ========================= -->
 
     <main class="content">
 
 
-        <nav class="navigation">
-
-            <a
-                href="https://photography.denizalpaybak.com/"
-            >
-                photography
-            </a>
-
-
-            <a href="#">
-                film
-            </a>
-
-        </nav>
-
-
         <section class="biography">
 
+
             <p>
-                Denizalp Aybak (b. 1997) is an Istanbul-based
-                fashion photographer and filmmaker.
+                is an Istanbul-based fashion photographer and filmmaker.
             </p>
 
 
             <p>
-                Having graduated top of his class in Management
-                at Sabanci University, Aybak approaches
-                image-making with both strategic precision and
-                artistic intuition.
+                Having graduated top of his class in Management at Sabanci University, Aybak approaches image-making with both strategic precision and artistic intuition.
             </p>
 
 
             <p>
-                His work is built around atmosphere, with every
-                creative decision made to evoke feeling.
+                His work is built around atmosphere, with every creative decision made to evoke feeling.
             </p>
 
 
             <p>
                 Selected Publications<br>
-                Vogue Türkiye, Harper’s Bazaar Türkiye,
-                ELLE Türkiye, L’Officiel Türkiye
+                Vogue Türkiye, Harper’s Bazaar Türkiye, ELLE Türkiye, L’Officiel Türkiye
             </p>
 
 
             <p>
                 Selected Clients<br>
-                Vakko, Bee Goddess, Zeynep Arcay, Peugeot,
-                Skechers, LC Waikiki
+                Vakko, Bee Goddess, Zeynep Arcay, Peugeot, Skechers, LC Waikiki
             </p>
+
 
         </section>
 
@@ -333,6 +458,346 @@
 
 
 </div>
+
+
+<script>
+
+
+    /* =====================================================
+       LOGO ANIMATION
+       Identical behaviour to photography page
+       ===================================================== */
+
+
+    const logo =
+        document.querySelector(".logo");
+
+
+    const logoName =
+        document.getElementById(
+            "logo-name"
+        );
+
+
+    const letters = [
+
+        document.getElementById(
+            "letter-a"
+        ),
+
+        document.getElementById(
+            "letter-y"
+        ),
+
+        document.getElementById(
+            "letter-b"
+        ),
+
+        document.getElementById(
+            "letter-a2"
+        ),
+
+        document.getElementById(
+            "letter-k"
+        )
+
+    ];
+
+
+    const lowercase = [
+        "a",
+        "y",
+        "b",
+        "a",
+        "k"
+    ];
+
+
+    const uppercase = [
+        "A",
+        "Y",
+        "B",
+        "A",
+        "K"
+    ];
+
+
+    let logoState = 0;
+
+    let logoTarget = 0;
+
+    let logoTimer = null;
+
+
+    function setLogoState(state) {
+
+        logoState = state;
+
+
+        /*
+            State 0:
+
+            Denizalp
+            aybak
+        */
+
+        if (state === 0) {
+
+            logoName.textContent =
+                "Denizalp";
+
+        } else {
+
+            /*
+                States 1–5:
+
+                denizalp
+                Aybak
+                AYbak
+                AYBak
+                AYBAk
+                AYBAK
+            */
+
+            logoName.textContent =
+                "denizalp";
+
+        }
+
+
+        for (
+            let i = 0;
+            i < letters.length;
+            i++
+        ) {
+
+            if (i < state) {
+
+                letters[i].textContent =
+                    uppercase[i];
+
+            } else {
+
+                letters[i].textContent =
+                    lowercase[i];
+
+            }
+
+        }
+
+    }
+
+
+    function cancelLogoAnimation() {
+
+        if (logoTimer !== null) {
+
+            clearTimeout(
+                logoTimer
+            );
+
+            logoTimer = null;
+
+        }
+
+    }
+
+
+    function moveLogo() {
+
+        if (
+            logoState ===
+            logoTarget
+        ) {
+
+            logoTimer = null;
+
+            return;
+
+        }
+
+
+        if (
+            logoState <
+            logoTarget
+        ) {
+
+            setLogoState(
+                logoState + 1
+            );
+
+        } else {
+
+            setLogoState(
+                logoState - 1
+            );
+
+        }
+
+
+        logoTimer =
+            setTimeout(
+                moveLogo,
+                120
+            );
+
+    }
+
+
+    function animateTo(target) {
+
+        logoTarget = target;
+
+        cancelLogoAnimation();
+
+        moveLogo();
+
+    }
+
+
+    /* =====================================================
+       DESKTOP HOVER
+       ===================================================== */
+
+
+    logo.addEventListener(
+        "mouseenter",
+        () => {
+
+            if (
+                window.matchMedia(
+                    "(min-width: 601px)"
+                ).matches
+            ) {
+
+                animateTo(5);
+
+            }
+
+        }
+    );
+
+
+    logo.addEventListener(
+        "mouseleave",
+        () => {
+
+            if (
+                window.matchMedia(
+                    "(min-width: 601px)"
+                ).matches
+            ) {
+
+                animateTo(0);
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       MOBILE LOOP
+       ===================================================== */
+
+
+    let mobileCycleTimer = null;
+
+
+    function startMobileCycle() {
+
+        /*
+            Start with:
+
+            Denizalp
+            aybak
+
+            Hold for 2 seconds.
+        */
+
+        mobileCycleTimer =
+            setTimeout(
+                () => {
+
+
+                    /*
+                        Animate to:
+
+                        denizalp
+                        AYBAK
+                    */
+
+                    animateTo(5);
+
+
+                    /*
+                        Hold final state
+                        for 2 seconds.
+                    */
+
+                    mobileCycleTimer =
+                        setTimeout(
+                            () => {
+
+
+                                /*
+                                    Return to:
+
+                                    Denizalp
+                                    aybak
+                                */
+
+                                animateTo(0);
+
+
+                                /*
+                                    Wait for reverse
+                                    animation to finish,
+                                    then hold for 2 seconds
+                                    and repeat.
+                                */
+
+                                mobileCycleTimer =
+                                    setTimeout(
+                                        () => {
+
+                                            startMobileCycle();
+
+                                        },
+                                        600 + 2000
+                                    );
+
+
+                            },
+                            600 + 2000
+                        );
+
+
+                },
+                2000
+            );
+
+    }
+
+
+    /*
+        Mobile initial state
+    */
+
+    if (
+        window.matchMedia(
+            "(max-width: 600px)"
+        ).matches
+    ) {
+
+        setLogoState(0);
+
+        startMobileCycle();
+
+    }
+
+
+</script>
 
 
 </body>
