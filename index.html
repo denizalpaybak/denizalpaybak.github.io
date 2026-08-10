@@ -38,29 +38,45 @@
         line-height: 1.15;
     }
 
-    .logo {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 17px;
-        font-weight: 550;
-        line-height: 1.15;
-        letter-spacing: 0;
 
+    /* NAME */
+
+    .logo {
+        position: relative;
         display: inline-block;
 
-        margin-left: 0;
-        margin-bottom: 14px;
+        font-family: Arial, Helvetica, sans-serif;
 
-        padding: 16px 48px 16px 12px;
+        /* Large at rest */
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: 0;
 
-        position: relative;
+        margin: 0 0 14px 0;
+
+        /* This keeps the text itself aligned with everything below */
+        padding: 13px 48px 13px 0;
+
+        transition:
+            font-size 0.12s ease,
+            font-weight 0.12s ease,
+            line-height 0.12s ease;
     }
+
+    /*
+        Border sits outside the text.
+        It does NOT affect the horizontal alignment.
+    */
 
     .logo:hover::after {
         content: "";
+
         position: absolute;
 
         top: 0;
         bottom: 0;
+
         left: -12px;
         right: -48px;
 
@@ -69,14 +85,32 @@
         pointer-events: none;
     }
 
+    /*
+        On hover the name becomes the same
+        size and weight as the information below.
+    */
+
+    .logo:hover {
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 1.15;
+    }
+
+
+    /* CONTACT / SOCIAL */
+
     .contact {
-        margin-bottom: 0;
+        margin: 0;
+        padding: 0;
     }
 
     .social {
         display: flex;
         flex-direction: column;
         gap: 0;
+
+        margin: 0;
+        padding: 0;
     }
 
     .info a {
@@ -136,10 +170,15 @@
         }
 
         .logo {
-            font-size: 14px;
-            margin-left: 0;
+            font-size: 18px;
+            line-height: 1.05;
             margin-bottom: 12px;
-            padding: 12px 34px 12px 10px;
+            padding: 11px 34px 11px 0;
+        }
+
+        .logo:hover {
+            font-size: 14px;
+            line-height: 1.15;
         }
 
         .logo:hover::after {
@@ -219,7 +258,7 @@
     }
 
 
-    // Automatic slideshow: every 3 seconds
+    /* Automatic slideshow: every 3 seconds */
 
     const autoplay = setInterval(() => {
 
@@ -230,12 +269,15 @@
     }, 3000);
 
 
-    // First click switches permanently to manual mode.
-    // The first click does NOT change the image.
+    /*
+        First click stops autoplay.
+        The first click does not change the image.
+    */
 
     document.body.addEventListener('click', (event) => {
 
-        // Clicking links does not control the slideshow.
+        /* Links do not control the slideshow */
+
         if (event.target.closest('a')) {
             return;
         }
