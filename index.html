@@ -38,7 +38,7 @@
 
 
     /* =========================
-       LEFT INFORMATION
+       LEFT COLUMN
        ========================= */
 
     .info {
@@ -107,11 +107,6 @@
         letter-spacing: normal;
 
         white-space: nowrap;
-    }
-
-
-    .logo-aybak span {
-        display: inline;
     }
 
 
@@ -202,7 +197,7 @@
 
 
     /* =========================
-       BIOGRAPHY
+       DESKTOP BIO
        ========================= */
 
     .content {
@@ -211,13 +206,13 @@
         top: 32px;
 
         /*
-            The first sentence begins immediately
-            to the right of the left-side logo.
+            The bio starts to the right of
+            the logo column.
         */
 
-        left: calc(50% + 40px);
+        left: 238px;
 
-        width: min(650px, 45vw);
+        width: min(650px, calc(100vw - 286px));
 
         margin: 0;
         padding: 0;
@@ -236,8 +231,8 @@
 
 
     /*
-       The opening sentence is aligned vertically
-       with "aybak" on the left.
+       Align the opening sentence with
+       "aybak" on the left.
     */
 
     .opening {
@@ -290,6 +285,15 @@
         }
 
 
+        /*
+            On mobile the biography uses
+            the same grid as the logo.
+
+            The first line starts beside
+            Denizalp, while the following
+            lines occupy the full width.
+        */
+
         .content {
             position: absolute;
 
@@ -299,23 +303,36 @@
 
             width: auto;
 
-            margin-top: 210px;
-        }
-
-
-        .opening {
-            margin-top: 0;
-            margin-bottom: 17px;
+            margin: 0;
+            padding: 0;
         }
 
 
         .biography {
+            display: grid;
+
+            grid-template-columns: 160px 1fr;
+
+            column-gap: 16px;
+
+            margin-top: 0;
+
             font-size: 15px;
             line-height: 1.15;
         }
 
 
-        .biography p {
+        .opening {
+            grid-column: 2;
+
+            margin-top: 17px;
+            margin-bottom: 17px;
+        }
+
+
+        .biography p:not(.opening) {
+            grid-column: 1 / -1;
+
             margin-bottom: 17px;
         }
 
@@ -434,32 +451,30 @@
         <section class="biography">
 
 
-            <!-- OPENING SENTENCE -->
-
             <p class="opening">
-                is an Istanbul-based fashion photographer and filmmaker.
+                is an istanbul-based fashion photographer and filmmaker.
             </p>
 
 
             <p>
-                Having graduated top of his class in Management at Sabanci University, Aybak approaches image-making with both strategic precision and artistic intuition.
+                having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
             </p>
 
 
             <p>
-                His work is built around atmosphere, with every creative decision made to evoke feeling.
+                his work is built around atmosphere, with every creative decision made to evoke feeling.
             </p>
 
 
             <p>
-                Selected Publications<br>
-                Vogue Türkiye, Harper’s Bazaar Türkiye, ELLE Türkiye, L’Officiel Türkiye
+                selected publications:<br>
+                vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
             </p>
 
 
             <p>
-                Selected Clients<br>
-                Vakko, Bee Goddess, Zeynep Arcay, Peugeot, Skechers, LC Waikiki
+                selected clients:<br>
+                vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
             </p>
 
 
@@ -545,30 +560,12 @@
         logoState = state;
 
 
-        /*
-            State 0:
-
-            Denizalp
-            aybak
-        */
-
         if (state === 0) {
 
             logoName.textContent =
                 "Denizalp";
 
         } else {
-
-            /*
-                States 1–5:
-
-                denizalp
-                Aybak
-                AYbak
-                AYBak
-                AYBAk
-                AYBAK
-            */
 
             logoName.textContent =
                 "denizalp";
@@ -672,7 +669,6 @@
        DESKTOP HOVER
        ===================================================== */
 
-
     logo.addEventListener(
         "mouseenter",
         () => {
@@ -713,7 +709,6 @@
        MOBILE LOOP
        ===================================================== */
 
-
     let mobileCycleTimer = null;
 
 
@@ -723,29 +718,12 @@
             setTimeout(
                 () => {
 
-                    /*
-                        Denizalp
-                        aybak
-
-                        →
-                        
-                        denizalp
-                        AYBAK
-                    */
-
                     animateTo(5);
 
 
                     mobileCycleTimer =
                         setTimeout(
                             () => {
-
-                                /*
-                                    Return to:
-
-                                    Denizalp
-                                    aybak
-                                */
 
                                 animateTo(0);
 
@@ -757,12 +735,11 @@
                                             startMobileCycle();
 
                                         },
-                                        600 + 2000
+                                        2600
                                     );
 
-
                             },
-                            600 + 2000
+                            2600
                         );
 
 
