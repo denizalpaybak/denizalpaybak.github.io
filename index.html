@@ -51,9 +51,14 @@
         display: block;
 
         width: 190px;
-        height: 70px;
 
-        margin: 0 0 0 0;
+        /*
+            Two text lines + exactly one
+            additional line of breathing room.
+        */
+        height: 52px;
+
+        margin: 0;
         padding: 0;
 
         color: inherit;
@@ -97,11 +102,6 @@
         white-space: nowrap;
     }
 
-
-    /*
-        Each letter is independent.
-        This lets us change them one by one.
-    */
 
     .logo-aybak span {
         display: inline-block;
@@ -188,7 +188,13 @@
 
         .logo {
             width: 160px;
-            height: 58px;
+
+            /*
+                2 lines + exactly one line
+                of breathing room on mobile.
+            */
+            height: 45px;
+
             margin-bottom: 0;
         }
 
@@ -305,11 +311,6 @@
     }
 
 
-    /*
-        Automatic slideshow.
-        Completely independent from the logo animation.
-    */
-
     setInterval(() => {
 
         if (!manualMode) {
@@ -318,11 +319,6 @@
 
     }, 3000);
 
-
-    /*
-        First click stops autoplay.
-        It does not change the current image.
-    */
 
     document.body.addEventListener('click', (event) => {
 
@@ -366,25 +362,44 @@
     const uppercase = ['A', 'Y', 'B', 'A', 'K'];
 
 
-    let logoAnimating = false;
-
-
     /*
-        State:
+        Logo state:
 
-        0 = Denizalp / aybak
-        1 = denizalp / Aybak
-        2 = denizalp / AYbak
-        3 = denizalp / AYBak
-        4 = denizalp / AYBAk
-        5 = denizalp / AYBAK
+        0 = Denizalp
+            aybak
+
+        1 = denizalp
+            Aybak
+
+        2 = denizalp
+            AYbak
+
+        3 = denizalp
+            AYBak
+
+        4 = denizalp
+            AYBAk
+
+        5 = denizalp
+            AYBAK
     */
+
+    let logoState = 0;
+
+    let logoTarget = 0;
+
+    let logoTimer = null;
+
+    let mobileCycleTimer = null;
+
 
     function setLogoState(state) {
 
+        logoState = state;
+
+
         /*
-            The first state is special:
-            the D is uppercase.
+            D is uppercase only in state 0.
         */
 
         if (state === 0) {
@@ -399,7 +414,7 @@
 
 
         /*
-            Change AYBAK letters one by one.
+            Uppercase letters according to state.
         */
 
         for (let i = 0; i < letters.length; i++) {
@@ -420,164 +435,67 @@
 
 
     /*
-        FORWARD
-
-        Denizalp
-        aybak
-
-            ↓
-
-        denizalp
-        aybak
-
-            ↓
-
-        denizalp
-        Aybak
-
-            ↓
-
-        denizalp
-        AYbak
-
-            ↓
-
-        denizalp
-        AYBak
-
-            ↓
-
-        denizalp
-        AYBAk
-
-            ↓
-
-        denizalp
-        AYBAK
+        Cancel whatever logo movement is currently happening.
     */
 
-    function animateForward() {
+    function cancelLogoAnimation() {
 
-        if (logoAnimating) {
-            return;
+        if (logoTimer !== null) {
+
+            clearTimeout(logoTimer);
+
+            logoTimer = null;
+
         }
-
-        logoAnimating = true;
-
-
-        setLogoState(0);
-
-
-        setTimeout(() => {
-            setLogoState(1);
-        }, 120);
-
-
-        setTimeout(() => {
-            setLogoState(2);
-        }, 240);
-
-
-        setTimeout(() => {
-            setLogoState(3);
-        }, 360);
-
-
-        setTimeout(() => {
-            setLogoState(4);
-        }, 480);
-
-
-        setTimeout(() => {
-            setLogoState(5);
-        }, 600);
-
-
-        setTimeout(() => {
-            logoAnimating = false;
-        }, 720);
 
     }
 
 
     /*
-        REVERSE
+        Move one step toward the target.
 
-        denizalp
-        AYBAK
-
-            ↓
-
-        denizalp
-        AYBAk
-
-            ↓
-
-        denizalp
-        AYBak
-
-            ↓
-
-        denizalp
-        AYbak
-
-            ↓
-
-        denizalp
-        Aybak
-
-            ↓
-
-        Denizalp
-        aybak
+        Because this checks the target every 120ms,
+        changing direction mid-animation works correctly.
     */
 
-    function animateReverse() {
+    function moveLogo() {
 
-        if (logoAnimating) {
+        if (logoState === logoTarget) {
+
+            logoTimer = null;
+
             return;
+
         }
 
-        logoAnimating = true;
+
+        if (logoState < logoTarget) {
+
+            setLogoState(logoState + 1);
+
+        } else {
+
+            setLogoState(logoState - 1);
+
+        }
 
 
-        setLogoState(5);
+        logoTimer = setTimeout(moveLogo, 120);
+
+    }
 
 
-        setTimeout(() => {
-            setLogoState(4);
-        }, 120);
+    /*
+        Tell the logo where it should go.
+    */
 
+    function animateTo(target) {
 
-        setTimeout(() => {
-            setLogoState(3);
-        }, 240);
+        logoTarget = target;
 
+        cancelLogoAnimation();
 
-        setTimeout(() => {
-            setLogoState(2);
-        }, 360);
-
-
-        setTimeout(() => {
-            setLogoState(1);
-        }, 480);
-
-
-        /*
-            Final step:
-            the D becomes uppercase and
-            the A becomes lowercase.
-        */
-
-        setTimeout(() => {
-            setLogoState(0);
-        }, 600);
-
-
-        setTimeout(() => {
-            logoAnimating = false;
-        }, 720);
+        moveLogo();
 
     }
 
@@ -587,18 +505,47 @@
        ===================================================== */
 
     /*
-        When the mouse enters the logo,
-        animate toward AYBAK.
+        Mouse enters:
+
+        Denizalp
+        aybak
+
+            ↓
+
+        denizalp
+        aybak
+
+            ↓
+
+        denizalp
+        Aybak
+
+            ↓
+
+        denizalp
+        AYbak
+
+            ↓
+
+        denizalp
+        AYBak
+
+            ↓
+
+        denizalp
+        AYBAk
+
+            ↓
+
+        denizalp
+        AYBAK
     */
 
     logo.addEventListener('mouseenter', () => {
 
-        if (
-            window.matchMedia('(min-width: 601px)').matches &&
-            !logoAnimating
-        ) {
+        if (window.matchMedia('(min-width: 601px)').matches) {
 
-            animateForward();
+            animateTo(5);
 
         }
 
@@ -606,18 +553,20 @@
 
 
     /*
-        When the mouse leaves the logo,
-        return to the original state.
+        Mouse leaves:
+
+        Wherever the animation currently is,
+        immediately start moving back toward:
+
+        Denizalp
+        aybak
     */
 
     logo.addEventListener('mouseleave', () => {
 
-        if (
-            window.matchMedia('(min-width: 601px)').matches &&
-            !logoAnimating
-        ) {
+        if (window.matchMedia('(min-width: 601px)').matches) {
 
-            animateReverse();
+            animateTo(0);
 
         }
 
@@ -629,48 +578,130 @@
        ===================================================== */
 
     /*
-        IMPORTANT:
+        Mobile animation:
 
-        Mobile starts as:
+        START
+
+        Denizalp
+        aybak
+
+        wait 2 seconds
+
+            ↓
+
+        denizalp
+        aybak
+
+            ↓
+
+        denizalp
+        Aybak
+
+            ↓
+
+        denizalp
+        AYbak
+
+            ↓
+
+        denizalp
+        AYBak
+
+            ↓
+
+        denizalp
+        AYBAk
+
+            ↓
 
         denizalp
         AYBAK
 
-        NOT:
+        wait 2 seconds
 
-        Denizalp
-        AYBAK
+            ↓
+
+        reverse
+
+        wait 2 seconds
+
+        repeat forever.
     */
+
+    function startMobileCycle() {
+
+
+        /*
+            Wait in the current state.
+        */
+
+        mobileCycleTimer = setTimeout(() => {
+
+
+            /*
+                Forward to AYBAK.
+            */
+
+            animateTo(5);
+
+
+            /*
+                The animation takes:
+
+                5 × 120ms = 600ms
+
+                Then wait 2 seconds.
+            */
+
+            mobileCycleTimer = setTimeout(() => {
+
+
+                /*
+                    Reverse back to the beginning.
+                */
+
+                animateTo(0);
+
+
+                /*
+                    Again:
+
+                    600ms animation
+                    + 2 second pause
+                */
+
+                mobileCycleTimer = setTimeout(() => {
+
+                    startMobileCycle();
+
+                }, 600 + 2000);
+
+            }, 600 + 2000);
+
+        }, 2000);
+
+    }
+
 
     if (window.matchMedia('(max-width: 600px)').matches) {
 
 
-        /* Lowercase D */
+        /*
+            EXACT mobile opening state:
 
-        logoName.textContent = 'denizalp';
+            Denizalp
+            aybak
+        */
 
-
-        /* Uppercase AYBAK */
-
-        for (let i = 0; i < letters.length; i++) {
-
-            letters[i].textContent = uppercase[i];
-
-        }
+        setLogoState(0);
 
 
         /*
-            Start the reverse animation
-            1 second after the page loads.
-
-            This is independent of the slideshow.
+            Start the infinite cycle after
+            the initial 2-second pause.
         */
 
-        setTimeout(() => {
-
-            animateReverse();
-
-        }, 1000);
+        startMobileCycle();
 
     }
 
