@@ -39,34 +39,52 @@
     }
 
 
-    /* NAME */
+    /* NAME / LOGO */
 
     .logo {
         position: relative;
-        display: inline-block;
+        display: block;
+
+        width: max-content;
+        height: 78px;
+
+        margin: 0 0 14px 0;
+        padding: 0;
 
         font-family: Arial, Helvetica, sans-serif;
-
-        /* Large at rest */
         font-size: 21px;
         font-weight: 500;
         line-height: 1.05;
         letter-spacing: 0;
 
-        margin: 0 0 14px 0;
+        text-decoration: none;
+        color: inherit;
 
-        /* This keeps the text itself aligned with everything below */
-        padding: 13px 48px 13px 0;
+        cursor: pointer;
+    }
+
+    .logo-text {
+        position: absolute;
+
+        top: 13px;
+        left: 0;
+
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 1.05;
+
+        transform-origin: left center;
 
         transition:
             font-size 0.12s ease,
             font-weight 0.12s ease,
-            line-height 0.12s ease;
+            line-height 0.12s ease,
+            top 0.12s ease;
     }
 
     /*
-        Border sits outside the text.
-        It does NOT affect the horizontal alignment.
+        Border stays in exactly the same position.
+        It does not affect the layout or push anything below it.
     */
 
     .logo:hover::after {
@@ -87,10 +105,13 @@
 
     /*
         On hover the name becomes the same
-        size and weight as the information below.
+        typographic level as the information below.
+        The logo container itself does NOT shrink.
     */
 
-    .logo:hover {
+    .logo:hover .logo-text {
+        top: 17px;
+
         font-size: 17px;
         font-weight: 400;
         line-height: 1.15;
@@ -170,14 +191,20 @@
         }
 
         .logo {
-            font-size: 18px;
-            line-height: 1.05;
+            height: 62px;
             margin-bottom: 12px;
-            padding: 11px 34px 11px 0;
         }
 
-        .logo:hover {
+        .logo-text {
+            top: 11px;
+            font-size: 18px;
+            line-height: 1.05;
+        }
+
+        .logo:hover .logo-text {
+            top: 14px;
             font-size: 14px;
+            font-weight: 400;
             line-height: 1.15;
         }
 
@@ -199,30 +226,42 @@
 
 <div class="info">
 
-    <div class="logo">
-        Denizalp<br>
-        aybak
-    </div>
+    <a
+        class="logo"
+        href="https://denizalpaybak.com/"
+        target="_self"
+    >
+        <span class="logo-text">
+            Denizalp<br>
+            aybak
+        </span>
+    </a>
 
     <div class="contact">
-        <a href="mailto:d@denizalpaybak.com"
-           target="_blank"
-           rel="noopener">
+        <a
+            href="mailto:d@denizalpaybak.com"
+            target="_blank"
+            rel="noopener"
+        >
             d@denizalpaybak.com
         </a>
     </div>
 
     <div class="social">
 
-        <a href="https://www.instagram.com/denizalpaybak/"
-           target="_blank"
-           rel="noopener">
+        <a
+            href="https://www.instagram.com/denizalpaybak/"
+            target="_blank"
+            rel="noopener"
+        >
             instagram @denizalpaybak
         </a>
 
-        <a href="https://models.com/people/denizalp-aybak"
-           target="_blank"
-           rel="noopener">
+        <a
+            href="https://models.com/people/denizalp-aybak"
+            target="_blank"
+            rel="noopener"
+        >
             models.com
         </a>
 
@@ -276,7 +315,10 @@
 
     document.body.addEventListener('click', (event) => {
 
-        /* Links do not control the slideshow */
+        /*
+            Links are handled normally.
+            They do not control the slideshow.
+        */
 
         if (event.target.closest('a')) {
             return;
