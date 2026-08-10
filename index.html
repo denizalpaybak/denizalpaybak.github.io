@@ -63,7 +63,7 @@
     .logo-text {
         position: absolute;
 
-        top: 17px;
+        top: 16px;
         left: 0;
 
         font-family: Arial, Helvetica, sans-serif;
@@ -83,12 +83,7 @@
     }
 
 
-    /*
-        Hover border.
-
-        It is attached to the fixed .logo container,
-        so it never changes the hover area or layout.
-    */
+    /* DESKTOP HOVER BORDER */
 
     .logo:hover::after {
         content: "";
@@ -107,12 +102,7 @@
     }
 
 
-    /*
-        On hover the name grows without changing
-        the size of the parent element.
-
-        This prevents the hover loop bug.
-    */
+    /* DESKTOP HOVER TEXT */
 
     .logo:hover .logo-text {
         transform: scale(1.4);
@@ -203,16 +193,31 @@
             font-size: 13px;
         }
 
-        .logo:hover::after {
-            left: -10px;
-            width: 160px;
-            height: 58px;
-            border-width: 3px;
+        /*
+            Mobile has no hover, so the logo animation
+            is triggered once when the page loads.
+        */
+
+        .logo.intro .logo-text {
+            animation: logoIntro 1s ease forwards;
         }
 
-        .logo:hover .logo-text {
-            transform: scale(1.4);
-            font-weight: 500;
+        .logo.intro::after {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -10px;
+
+            width: 160px;
+            height: 58px;
+
+            border: 3px solid #000;
+
+            pointer-events: none;
+
+            animation: borderIntro 1s ease forwards;
         }
 
         .slide {
@@ -220,6 +225,53 @@
             max-height: 72vh;
         }
     }
+
+
+    /* MOBILE LOGO ANIMATION */
+
+    @keyframes logoIntro {
+
+        0% {
+            transform: scale(1);
+            font-weight: 400;
+        }
+
+        35% {
+            transform: scale(1.4);
+            font-weight: 500;
+        }
+
+        65% {
+            transform: scale(1.4);
+            font-weight: 500;
+        }
+
+        100% {
+            transform: scale(1);
+            font-weight: 400;
+        }
+    }
+
+
+    @keyframes borderIntro {
+
+        0% {
+            opacity: 0;
+        }
+
+        35% {
+            opacity: 1;
+        }
+
+        65% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
 </style>
 </head>
 
@@ -288,6 +340,9 @@
     let current = 0;
     let manualMode = false;
 
+
+    /* SLIDESHOW */
+
     function nextSlide() {
 
         slides[current].classList.remove('active');
@@ -335,6 +390,22 @@
         nextSlide();
 
     });
+
+
+    /*
+        MOBILE LOGO INTRO
+
+        The animation plays once when the page loads.
+        It does not repeat.
+    */
+
+    if (window.matchMedia('(max-width: 600px)').matches) {
+
+        const logo = document.querySelector('.logo');
+
+        logo.classList.add('intro');
+
+    }
 
 </script>
 
