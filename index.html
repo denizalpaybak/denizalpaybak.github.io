@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+
     * {
         box-sizing: border-box;
     }
@@ -24,7 +25,9 @@
     }
 
 
-    /* LEFT INFORMATION */
+    /* =========================
+       LEFT INFORMATION
+       ========================= */
 
     .info {
         position: fixed;
@@ -39,7 +42,9 @@
     }
 
 
-    /* LOGO */
+    /* =========================
+       LOGO
+       ========================= */
 
     .logo {
         position: relative;
@@ -58,7 +63,7 @@
     }
 
 
-    /* LOGO TEXT */
+    /* NAME */
 
     .logo-name {
         position: absolute;
@@ -73,6 +78,9 @@
 
         white-space: nowrap;
     }
+
+
+    /* AYBAK */
 
     .logo-aybak {
         position: absolute;
@@ -91,18 +99,18 @@
 
 
     /*
-        Each letter is an independent inline-block.
-        This lets the uppercase transformation happen
-        one letter at a time without moving the layout.
+        Each letter is independent.
+        This lets us change them one by one.
     */
 
     .logo-aybak span {
         display: inline-block;
-        width: auto;
     }
 
 
-    /* CONTACT / SOCIAL */
+    /* =========================
+       CONTACT / SOCIAL
+       ========================= */
 
     .contact {
         margin: 0;
@@ -129,7 +137,9 @@
     }
 
 
-    /* SLIDESHOW */
+    /* =========================
+       SLIDESHOW
+       ========================= */
 
     #slideshow {
         position: fixed;
@@ -164,7 +174,9 @@
     }
 
 
-    /* MOBILE */
+    /* =========================
+       MOBILE
+       ========================= */
 
     @media (max-width: 600px) {
 
@@ -193,6 +205,7 @@
             max-width: 84vw;
             max-height: 72vh;
         }
+
     }
 
 </style>
@@ -209,12 +222,14 @@
         target="_self"
     >
 
-        <span class="logo-name">
+        <span class="logo-name" id="logo-name">
             Denizalp
         </span>
 
         <span class="logo-aybak">
+
             <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
+
         </span>
 
     </a>
@@ -268,6 +283,7 @@
 
 <script>
 
+
     /* =====================================================
        SLIDESHOW
        ===================================================== */
@@ -285,10 +301,14 @@
         current = (current + 1) % slides.length;
 
         slides[current].classList.add('active');
+
     }
 
 
-    /* Automatic slideshow: every 3 seconds */
+    /*
+        Automatic slideshow.
+        Completely independent from the logo animation.
+    */
 
     setInterval(() => {
 
@@ -301,7 +321,7 @@
 
     /*
         First click stops autoplay.
-        The first click does not change the image.
+        It does not change the current image.
     */
 
     document.body.addEventListener('click', (event) => {
@@ -328,41 +348,76 @@
 
     const logo = document.querySelector('.logo');
 
+    const logoName = document.getElementById('logo-name');
+
     const letters = [
+
         document.getElementById('letter-a'),
         document.getElementById('letter-y'),
         document.getElementById('letter-b'),
         document.getElementById('letter-a2'),
         document.getElementById('letter-k')
+
     ];
 
 
     const lowercase = ['a', 'y', 'b', 'a', 'k'];
+
     const uppercase = ['A', 'Y', 'B', 'A', 'K'];
 
+
+    /*
+        Prevent multiple animations from
+        being triggered simultaneously.
+    */
 
     let logoAnimating = false;
 
 
     /*
-        Set the logo to a specific state.
+        State:
 
-        0 = aybak
-        1 = Aybak
-        2 = AYbak
-        3 = AYBak
-        4 = AYBAk
-        5 = AYBAK
+        0 = Denizalp / aybak
+        1 = denizalp / Aybak
+        2 = denizalp / AYbak
+        3 = denizalp / AYBak
+        4 = denizalp / AYBAk
+        5 = denizalp / AYBAK
+
     */
 
     function setLogoState(state) {
 
+        /*
+            The first state is special:
+            the D is uppercase.
+        */
+
+        if (state === 0) {
+
+            logoName.textContent = 'Denizalp';
+
+        } else {
+
+            logoName.textContent = 'denizalp';
+
+        }
+
+
+        /*
+            Change AYBAK letters one by one.
+        */
+
         for (let i = 0; i < letters.length; i++) {
 
             if (i < state) {
+
                 letters[i].textContent = uppercase[i];
+
             } else {
+
                 letters[i].textContent = lowercase[i];
+
             }
 
         }
@@ -371,13 +426,39 @@
 
 
     /*
-        FORWARD
+        FORWARD ANIMATION
 
+        Denizalp
         aybak
+
+            ↓
+
+        denizalp
+        aybak
+
+            ↓
+
+        denizalp
         Aybak
+
+            ↓
+
+        denizalp
         AYbak
+
+            ↓
+
+        denizalp
         AYBak
+
+            ↓
+
+        denizalp
         AYBAk
+
+            ↓
+
+        denizalp
         AYBAK
     */
 
@@ -389,27 +470,34 @@
 
         logoAnimating = true;
 
+
         setLogoState(0);
+
 
         setTimeout(() => {
             setLogoState(1);
         }, 120);
 
+
         setTimeout(() => {
             setLogoState(2);
         }, 240);
+
 
         setTimeout(() => {
             setLogoState(3);
         }, 360);
 
+
         setTimeout(() => {
             setLogoState(4);
         }, 480);
 
+
         setTimeout(() => {
             setLogoState(5);
         }, 600);
+
 
         setTimeout(() => {
             logoAnimating = false;
@@ -419,13 +507,34 @@
 
 
     /*
-        REVERSE
+        REVERSE ANIMATION
 
+        denizalp
         AYBAK
+
+            ↓
+
+        denizalp
         AYBAk
+
+            ↓
+
+        denizalp
         AYBak
+
+            ↓
+
+        denizalp
         AYbak
+
+            ↓
+
+        denizalp
         Aybak
+
+            ↓
+
+        Denizalp
         aybak
     */
 
@@ -437,27 +546,40 @@
 
         logoAnimating = true;
 
+
         setLogoState(5);
+
 
         setTimeout(() => {
             setLogoState(4);
         }, 120);
 
+
         setTimeout(() => {
             setLogoState(3);
         }, 240);
+
 
         setTimeout(() => {
             setLogoState(2);
         }, 360);
 
+
         setTimeout(() => {
             setLogoState(1);
         }, 480);
 
+
+        /*
+            Final step:
+            lowercase the first letter of AYBAK
+            AND restore the capital D in Denizalp.
+        */
+
         setTimeout(() => {
             setLogoState(0);
         }, 600);
+
 
         setTimeout(() => {
             logoAnimating = false;
@@ -466,15 +588,13 @@
     }
 
 
+    /* =====================================================
+       DESKTOP
+       ===================================================== */
+
     /*
-        DESKTOP
-
-        Normal state:
-        Denizalp
-        aybak
-
-        On hover:
-        aybak -> AYBAK
+        When the mouse enters the logo,
+        animate toward AYBAK.
     */
 
     logo.addEventListener('mouseenter', () => {
@@ -492,38 +612,65 @@
 
 
     /*
-        MOBILE
+        When the mouse leaves the logo,
+        return to the original state.
+    */
 
-        Starts as:
+    logo.addEventListener('mouseleave', () => {
 
-        denizalp
-        AYBAK
+        if (
+            window.matchMedia('(min-width: 601px)').matches &&
+            !logoAnimating
+        ) {
 
-        After 3 seconds it reverses to:
+            animateReverse();
+
+        }
+
+    });
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    /*
+        Mobile starts at:
 
         Denizalp
-        aybak
+        AYBAK
+
+        Then, 1 second after loading,
+        it plays the reverse animation.
+
+        It is NOT tied to the slideshow.
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
 
+
         /*
-            Mobile starts uppercase.
+            Initial mobile state.
         */
 
-        setLogoState(5);
+        logoName.textContent = 'Denizalp';
+
+        for (let i = 0; i < letters.length; i++) {
+
+            letters[i].textContent = uppercase[i];
+
+        }
 
 
         /*
-            Wait 3 seconds, matching the
-            first slideshow interval.
+            Start after exactly 1 second.
         */
 
         setTimeout(() => {
 
             animateReverse();
 
-        }, 3000);
+        }, 1000);
 
     }
 
