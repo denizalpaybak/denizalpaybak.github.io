@@ -23,36 +23,34 @@
 
     body {
         color: #000;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
 
     /* =========================
-       MAIN LAYOUT
+       PAGE
        ========================= */
 
     .page {
         position: relative;
+
         width: 100%;
         min-height: 100vh;
+
+        padding: 32px 48px 48px 48px;
     }
 
 
     /* =========================
-       LEFT COLUMN
+       MAIN COLUMN
        ========================= */
 
-    .info {
-        position: fixed;
+    .column {
+        width: 100%;
+        max-width: 650px;
 
-        top: 32px;
-        left: 48px;
-
-        z-index: 10;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
+        margin: 0;
+        padding: 0;
     }
 
 
@@ -65,16 +63,21 @@
 
         display: block;
 
-        width: 190px;
-        height: 52px;
+        width: max-content;
+        height: 34px;
 
-        margin: 0;
+        margin: 0 0 17px 0;
         padding: 0;
 
-        color: inherit;
+        color: #000;
         text-decoration: none;
 
         cursor: pointer;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
     }
 
 
@@ -84,12 +87,12 @@
         top: 0;
         left: 0;
 
+        white-space: nowrap;
+
         font-family: Arial, Helvetica, sans-serif;
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
-
-        white-space: nowrap;
     }
 
 
@@ -99,14 +102,29 @@
         top: 17px;
         left: 0;
 
+        white-space: nowrap;
+
         font-family: Arial, Helvetica, sans-serif;
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
 
         letter-spacing: normal;
+    }
 
-        white-space: nowrap;
+
+    /* =========================
+       OPENING SENTENCE
+       ========================= */
+
+    .opening {
+        margin: 0 0 17px 0;
+        padding: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
     }
 
 
@@ -118,13 +136,15 @@
         display: flex;
         flex-direction: column;
 
-        margin: 0;
+        margin: 0 0 16px 0;
         padding: 0;
     }
 
 
     .navigation a {
-        color: inherit;
+        display: block;
+
+        color: #000;
         text-decoration: none;
 
         font-family: Arial, Helvetica, sans-serif;
@@ -144,7 +164,10 @@
        ========================= */
 
     .contact {
-        margin: 16px 0 0 0;
+        display: flex;
+        flex-direction: column;
+
+        margin: 0 0 17px 0;
         padding: 0;
     }
 
@@ -152,7 +175,7 @@
     .contact a {
         display: block;
 
-        color: inherit;
+        color: #000;
         text-decoration: none;
 
         font-family: Arial, Helvetica, sans-serif;
@@ -168,56 +191,8 @@
 
 
     /* =========================
-       SOCIAL
+       BIOGRAPHY
        ========================= */
-
-    .social {
-        display: flex;
-        flex-direction: column;
-
-        margin: 0;
-        padding: 0;
-    }
-
-
-    .social a {
-        color: inherit;
-        text-decoration: none;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-    }
-
-
-    .social a:hover {
-        text-decoration: underline;
-    }
-
-
-    /* =========================
-       DESKTOP BIO
-       ========================= */
-
-    .content {
-        position: absolute;
-
-        top: 32px;
-
-        /*
-            The bio starts to the right of
-            the logo column.
-        */
-
-        left: 238px;
-
-        width: min(650px, calc(100vw - 286px));
-
-        margin: 0;
-        padding: 0;
-    }
-
 
     .biography {
         margin: 0;
@@ -227,17 +202,6 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
-    }
-
-
-    /*
-       Align the opening sentence with
-       "aybak" on the left.
-    */
-
-    .opening {
-        margin-top: 17px;
-        margin-bottom: 17px;
     }
 
 
@@ -253,86 +217,68 @@
 
 
     /* =========================
+       DESKTOP
+       ========================= */
+
+    @media (min-width: 701px) {
+
+        .page {
+            padding-top: 32px;
+            padding-left: 48px;
+        }
+
+
+        .column {
+            max-width: 650px;
+        }
+
+    }
+
+
+    /* =========================
        MOBILE
        ========================= */
 
     @media (max-width: 700px) {
 
-        .info {
-            position: absolute;
+        .page {
+            padding: 24px;
+        }
 
-            top: 24px;
-            left: 24px;
 
-            font-size: 15px;
+        .column {
+            width: 100%;
+            max-width: none;
         }
 
 
         .logo {
-            width: 160px;
-            height: 45px;
+            margin-bottom: 17px;
         }
 
 
-        .logo-name {
-            font-size: 15px;
+        .opening {
+            margin-bottom: 17px;
         }
 
 
-        .logo-aybak {
-            top: 17px;
-            font-size: 15px;
+        .navigation {
+            margin-bottom: 16px;
         }
 
 
-        /*
-            On mobile the biography uses
-            the same grid as the logo.
-
-            The first line starts beside
-            Denizalp, while the following
-            lines occupy the full width.
-        */
-
-        .content {
-            position: absolute;
-
-            top: 24px;
-            left: 24px;
-            right: 24px;
-
-            width: auto;
-
-            margin: 0;
-            padding: 0;
+        .contact {
+            margin-bottom: 17px;
         }
 
 
         .biography {
-            display: grid;
-
-            grid-template-columns: 160px 1fr;
-
-            column-gap: 16px;
-
-            margin-top: 0;
-
             font-size: 15px;
             line-height: 1.15;
         }
 
 
-        .opening {
-            grid-column: 2;
-
-            margin-top: 17px;
-            margin-bottom: 17px;
-        }
-
-
-        .biography p:not(.opening) {
-            grid-column: 1 / -1;
-
+        .biography p {
             margin-bottom: 17px;
         }
 
@@ -347,19 +293,17 @@
 
 <div class="page">
 
-
-    <!-- =========================
-         LEFT COLUMN
-         ========================= -->
-
-    <div class="info">
+    <main class="column">
 
 
-        <!-- LOGO -->
+        <!-- =========================
+             LOGO
+             ========================= -->
 
         <a
             class="logo"
             href="https://denizalpaybak.com/"
+            aria-label="Denizalp Aybak"
         >
 
             <span
@@ -370,7 +314,10 @@
             </span>
 
 
-            <span class="logo-aybak">
+            <span
+                class="logo-aybak"
+                aria-hidden="true"
+            >
 
                 <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
 
@@ -379,44 +326,43 @@
         </a>
 
 
-        <!-- NAVIGATION -->
+        <!-- =========================
+             OPENING
+             ========================= -->
+
+        <p class="opening">
+            is an istanbul-based fashion photographer and filmmaker.
+        </p>
+
+
+        <!-- =========================
+             NAVIGATION
+             ========================= -->
 
         <nav class="navigation">
 
-            <a
-                href="https://photography.denizalpaybak.com/"
-            >
+            <a href="https://photography.denizalpaybak.com/">
                 photography
             </a>
 
 
-            <a
-                href="https://film.denizalpaybak.com/"
-            >
+            <a href="https://film.denizalpaybak.com/">
                 film
             </a>
 
         </nav>
 
 
-        <!-- CONTACT -->
+        <!-- =========================
+             CONTACT
+             ========================= -->
 
         <div class="contact">
 
-            <a
-                href="mailto:d@denizalpaybak.com"
-                target="_blank"
-                rel="noopener"
-            >
+            <a href="mailto:d@denizalpaybak.com">
                 d@denizalpaybak.com
             </a>
 
-        </div>
-
-
-        <!-- SOCIAL -->
-
-        <div class="social">
 
             <a
                 href="https://www.instagram.com/denizalpaybak/"
@@ -438,22 +384,11 @@
         </div>
 
 
-    </div>
-
-
-    <!-- =========================
-         BIOGRAPHY
-         ========================= -->
-
-    <main class="content">
-
+        <!-- =========================
+             BIOGRAPHY
+             ========================= -->
 
         <section class="biography">
-
-
-            <p class="opening">
-                is an istanbul-based fashion photographer and filmmaker.
-            </p>
 
 
             <p>
@@ -483,50 +418,25 @@
 
     </main>
 
-
 </div>
 
 
 <script>
 
-
     /* =====================================================
        LOGO ANIMATION
        ===================================================== */
 
+    const logo = document.querySelector(".logo");
 
-    const logo =
-        document.querySelector(".logo");
-
-
-    const logoName =
-        document.getElementById(
-            "logo-name"
-        );
-
+    const logoName = document.getElementById("logo-name");
 
     const letters = [
-
-        document.getElementById(
-            "letter-a"
-        ),
-
-        document.getElementById(
-            "letter-y"
-        ),
-
-        document.getElementById(
-            "letter-b"
-        ),
-
-        document.getElementById(
-            "letter-a2"
-        ),
-
-        document.getElementById(
-            "letter-k"
-        )
-
+        document.getElementById("letter-a"),
+        document.getElementById("letter-y"),
+        document.getElementById("letter-b"),
+        document.getElementById("letter-a2"),
+        document.getElementById("letter-k")
     ];
 
 
@@ -548,27 +458,47 @@
     ];
 
 
+    /*
+        0 = Denizalp / aybak
+        1 = denizalp / Aybak
+        2 = denizalp / AYbak
+        3 = denizalp / AYBak
+        4 = denizalp / AYBAk
+        5 = denizalp / AYBAK
+    */
+
     let logoState = 0;
 
-    let logoTarget = 0;
+    let logoDirection = 1;
 
     let logoTimer = null;
 
+    let logoPaused = false;
 
-    function setLogoState(state) {
+    let holdTimer = null;
+
+
+    const STEP_TIME = 120;
+
+    const HOLD_TIME = 2000;
+
+
+    function renderLogo(state) {
 
         logoState = state;
 
 
+        /*
+            First state keeps the capital D.
+        */
+
         if (state === 0) {
 
-            logoName.textContent =
-                "Denizalp";
+            logoName.textContent = "Denizalp";
 
         } else {
 
-            logoName.textContent =
-                "denizalp";
+            logoName.textContent = "denizalp";
 
         }
 
@@ -596,175 +526,195 @@
     }
 
 
-    function cancelLogoAnimation() {
+    function clearTimers() {
 
-        if (
-            logoTimer !== null
-        ) {
+        if (logoTimer !== null) {
 
-            clearTimeout(
-                logoTimer
-            );
+            clearTimeout(logoTimer);
 
             logoTimer = null;
+
+        }
+
+
+        if (holdTimer !== null) {
+
+            clearTimeout(holdTimer);
+
+            holdTimer = null;
 
         }
 
     }
 
 
-    function moveLogo() {
+    function runAnimation() {
 
-        if (
-            logoState ===
-            logoTarget
-        ) {
-
-            logoTimer = null;
+        if (logoPaused) {
 
             return;
 
         }
 
 
+        /*
+            Move one step.
+        */
+
+        const nextState =
+            logoState + logoDirection;
+
+
+        /*
+            Reached the end.
+        */
+
         if (
-            logoState <
-            logoTarget
+            nextState >= 5
         ) {
 
-            setLogoState(
-                logoState + 1
-            );
+            renderLogo(5);
 
-        } else {
+            logoDirection = -1;
 
-            setLogoState(
-                logoState - 1
-            );
+            holdTimer =
+                setTimeout(
+                    runAnimation,
+                    HOLD_TIME
+                );
+
+            return;
 
         }
 
 
+        /*
+            Reached the beginning.
+        */
+
+        if (
+            nextState <= 0
+        ) {
+
+            renderLogo(0);
+
+            logoDirection = 1;
+
+            holdTimer =
+                setTimeout(
+                    runAnimation,
+                    HOLD_TIME
+                );
+
+            return;
+
+        }
+
+
+        /*
+            Normal animation step.
+        */
+
+        renderLogo(nextState);
+
+
         logoTimer =
             setTimeout(
-                moveLogo,
-                120
+                runAnimation,
+                STEP_TIME
             );
 
     }
 
 
-    function animateTo(target) {
+    function startAnimation() {
 
-        logoTarget = target;
+        clearTimers();
 
-        cancelLogoAnimation();
+        logoPaused = false;
 
-        moveLogo();
+        renderLogo(0);
+
+        logoDirection = 1;
+
+
+        /*
+            Stay in the initial state
+            for two seconds.
+        */
+
+        holdTimer =
+            setTimeout(
+                runAnimation,
+                HOLD_TIME
+            );
+
+    }
+
+
+    function pauseAnimation() {
+
+        logoPaused = true;
+
+        clearTimers();
+
+    }
+
+
+    function resumeAnimation() {
+
+        /*
+            Continue from exactly
+            the current frame.
+        */
+
+        logoPaused = false;
+
+        logoTimer =
+            setTimeout(
+                runAnimation,
+                STEP_TIME
+            );
 
     }
 
 
     /* =====================================================
-       DESKTOP HOVER
+       DESKTOP + MOBILE
        ===================================================== */
+
+    startAnimation();
+
+
+    /*
+        Hover pauses the animation
+        exactly where it currently is.
+    */
 
     logo.addEventListener(
         "mouseenter",
         () => {
 
-            if (
-                window.matchMedia(
-                    "(min-width: 601px)"
-                ).matches
-            ) {
-
-                animateTo(5);
-
-            }
+            pauseAnimation();
 
         }
     );
 
+
+    /*
+        When the pointer leaves,
+        the animation continues from
+        the same frame.
+    */
 
     logo.addEventListener(
         "mouseleave",
         () => {
 
-            if (
-                window.matchMedia(
-                    "(min-width: 601px)"
-                ).matches
-            ) {
-
-                animateTo(0);
-
-            }
+            resumeAnimation();
 
         }
     );
-
-
-    /* =====================================================
-       MOBILE LOOP
-       ===================================================== */
-
-    let mobileCycleTimer = null;
-
-
-    function startMobileCycle() {
-
-        mobileCycleTimer =
-            setTimeout(
-                () => {
-
-                    animateTo(5);
-
-
-                    mobileCycleTimer =
-                        setTimeout(
-                            () => {
-
-                                animateTo(0);
-
-
-                                mobileCycleTimer =
-                                    setTimeout(
-                                        () => {
-
-                                            startMobileCycle();
-
-                                        },
-                                        2600
-                                    );
-
-                            },
-                            2600
-                        );
-
-
-                },
-                2000
-            );
-
-    }
-
-
-    /*
-        Mobile initial state
-    */
-
-    if (
-        window.matchMedia(
-            "(max-width: 600px)"
-        ).matches
-    ) {
-
-        setLogoState(0);
-
-        startMobileCycle();
-
-    }
 
 
 </script>
