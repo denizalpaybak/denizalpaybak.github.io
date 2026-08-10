@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Denizalp Aybak</title>
+
 <style>
 
     * {
@@ -15,13 +17,23 @@
         margin: 0;
         padding: 0;
         width: 100%;
-        height: 100%;
-        background: transparent;
-        overflow: hidden;
+        min-height: 100%;
+        background: #fff;
     }
 
     body {
-        cursor: pointer;
+        color: #000;
+    }
+
+
+    /* =========================
+       MAIN LAYOUT
+       ========================= */
+
+    .page {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
     }
 
 
@@ -33,7 +45,6 @@
         position: fixed;
         top: 32px;
         left: 48px;
-        z-index: 10;
 
         font-family: Arial, Helvetica, sans-serif;
         font-size: 15px;
@@ -41,127 +52,105 @@
         line-height: 1.15;
     }
 
-
-    /* =========================
-       LOGO
-       ========================= */
 
     .logo {
-        position: relative;
         display: block;
 
-        width: 190px;
-        height: 52px;
-
-        margin: 0;
+        margin: 0 0 16px 0;
         padding: 0;
 
         color: inherit;
         text-decoration: none;
-
-        cursor: pointer;
     }
 
 
-    .logo-name {
-        position: absolute;
-
-        top: 0;
-        left: 0;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-
-        white-space: nowrap;
+    .logo span {
+        display: block;
     }
 
 
-    .logo-aybak {
-        position: absolute;
-
-        top: 17px;
-        left: 0;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-        letter-spacing: 0;
-
-        white-space: nowrap;
-    }
-
-
-    .logo-aybak span {
-        display: inline-block;
-    }
-
-
-    /* =========================
-       CONTACT / SOCIAL
-       ========================= */
-
-    .contact {
-        margin: 0;
-        padding: 0;
-    }
-
-    .social {
+    .links {
         display: flex;
         flex-direction: column;
-        gap: 0;
 
         margin: 0;
         padding: 0;
     }
 
-    .info a {
+
+    .links a {
         color: inherit;
         text-decoration: none;
-        font-weight: 400;
     }
 
-    .info a:hover {
+
+    .links a:hover {
         text-decoration: underline;
     }
 
 
     /* =========================
-       SLIDESHOW
+       BIOGRAPHY
        ========================= */
 
-    #slideshow {
-        position: fixed;
-        inset: 0;
-
-        width: 100vw;
-        height: 100vh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        pointer-events: none;
-    }
-
-    .slide {
+    .content {
         position: absolute;
 
-        width: auto;
-        height: auto;
+        top: 50%;
+        left: 50%;
 
-        max-width: 70vw;
-        max-height: 80vh;
+        transform: translate(-50%, -50%);
 
-        object-fit: contain;
+        width: min(520px, 42vw);
 
-        opacity: 0;
+        margin: 0;
+        padding: 0;
     }
 
-    .slide.active {
-        opacity: 1;
+
+    .navigation {
+        margin: 0 0 18px 0;
+        padding: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+    }
+
+
+    .navigation a {
+        display: block;
+
+        color: #000;
+        text-decoration: none;
+    }
+
+
+    .navigation a:hover {
+        text-decoration: underline;
+    }
+
+
+    .biography {
+        margin: 0;
+        padding: 0;
+
+        font-family: "Times New Roman", Times, serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.25;
+    }
+
+
+    .biography p {
+        margin: 0 0 15px 0;
+        padding: 0;
+    }
+
+
+    .biography p:last-child {
+        margin-bottom: 0;
     }
 
 
@@ -169,32 +158,41 @@
        MOBILE
        ========================= */
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
 
         .info {
-            top: 20px;
+            position: absolute;
+
+            top: 24px;
             left: 24px;
-            font-size: 13px;
+
+            font-size: 15px;
         }
 
-        .logo {
-            width: 160px;
-            height: 45px;
-            margin-bottom: 0;
+
+        .content {
+            position: absolute;
+
+            top: auto;
+            left: 24px;
+            right: 24px;
+
+            bottom: 32px;
+
+            transform: none;
+
+            width: auto;
         }
 
-        .logo-name {
-            font-size: 13px;
+
+        .navigation {
+            margin-bottom: 18px;
         }
 
-        .logo-aybak {
-            top: 15px;
-            font-size: 13px;
-        }
 
-        .slide {
-            max-width: 84vw;
-            max-height: 72vh;
+        .biography {
+            font-size: 15px;
+            line-height: 1.25;
         }
 
     }
@@ -202,666 +200,113 @@
 </style>
 </head>
 
+
 <body>
 
 
-<div class="info">
-
-    <a
-        class="logo"
-        href="https://denizalpaybak.com/"
-        target="_self"
-    >
-
-        <span class="logo-name" id="logo-name">
-            Denizalp
-        </span>
-
-        <span class="logo-aybak">
-
-            <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
-
-        </span>
-
-    </a>
+<div class="page">
 
 
-    <div class="contact">
+    <!-- =========================
+         LEFT INFORMATION
+         ========================= -->
+
+    <div class="info">
 
         <a
-            href="mailto:d@denizalpaybak.com"
-            target="_blank"
-            rel="noopener"
+            class="logo"
+            href="https://denizalpaybak.com/"
         >
-            d@denizalpaybak.com
+            <span>Denizalp</span>
+            <span>aybak</span>
         </a>
+
+
+        <div class="links">
+
+            <a
+                href="mailto:d@denizalpaybak.com"
+                target="_blank"
+                rel="noopener"
+            >
+                d@denizalpaybak.com
+            </a>
+
+
+            <a
+                href="https://www.instagram.com/denizalpaybak/"
+                target="_blank"
+                rel="noopener"
+            >
+                instagram @denizalpaybak
+            </a>
+
+
+            <a
+                href="https://models.com/people/denizalp-aybak"
+                target="_blank"
+                rel="noopener"
+            >
+                models.com
+            </a>
+
+        </div>
 
     </div>
 
 
-    <div class="social">
+    <!-- =========================
+         NAVIGATION + BIOGRAPHY
+         ========================= -->
 
-        <a
-            href="https://www.instagram.com/denizalpaybak/"
-            target="_blank"
-            rel="noopener"
-        >
-            instagram @denizalpaybak
-        </a>
+    <main class="content">
 
-        <a
-            href="https://models.com/people/denizalp-aybak"
-            target="_blank"
-            rel="noopener"
-        >
-            models.com
-        </a>
 
-    </div>
+        <nav class="navigation">
+
+            <a
+                href="https://photography.denizalpaybak.com/"
+            >
+                photography
+            </a>
+
+
+            <a href="#">
+                film
+            </a>
+
+        </nav>
+
+
+        <section class="biography">
+
+            <p>
+                Denizalp Aybak (b. 1997) is an Istanbul-based
+                fashion photographer and filmmaker.
+            </p>
+
+
+            <p>
+                Having graduated first in his class in
+                Management at Sabanci University, Aybak
+                approaches image-making with both strategic
+                precision and artistic intuition.
+            </p>
+
+
+            <p>
+                His work is built around atmosphere, with
+                every creative decision made to evoke feeling.
+            </p>
+
+        </section>
+
+
+    </main>
+
 
 </div>
 
-
-<!--
-    SLIDESHOW
-
-    Images are loaded automatically from GitHub.
--->
-
-<div id="slideshow"></div>
-
-
-<script>
-
-
-    /* =====================================================
-       GITHUB PHOTO SETTINGS
-       ===================================================== */
-
-    const GITHUB_USERNAME = "denizalpaybak";
-
-    const GITHUB_REPOSITORY = "denizalpaybak.github.io";
-
-    /*
-        Photos are in the root of the repository,
-        so this stays empty.
-    */
-
-    const GITHUB_FOLDER = "";
-
-
-    /* =====================================================
-       DYNAMIC SLIDESHOW
-       ===================================================== */
-
-    const slideshow =
-        document.getElementById('slideshow');
-
-    let slides = [];
-
-    let current = 0;
-
-    let manualMode = false;
-
-
-    /*
-        Load all JPG photographs from GitHub.
-    */
-
-    async function loadPhotos() {
-
-        try {
-
-            const apiUrl =
-                `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPOSITORY}/contents/${GITHUB_FOLDER}`;
-
-
-            const response =
-                await fetch(apiUrl);
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    'GitHub repository could not be accessed.'
-                );
-
-            }
-
-
-            const files =
-                await response.json();
-
-
-            /*
-                Only accept files such as:
-
-                001.jpg
-                002.jpg
-                017.jpg
-                999.jpg
-
-                Other JPG files are ignored.
-            */
-
-            const photos = files
-
-                .filter(file => {
-
-                    return (
-                        file.type === 'file' &&
-                        /^\d+\.jpg$/i.test(file.name)
-                    );
-
-                })
-
-
-                /*
-                    Sort from highest number
-                    to lowest number.
-
-                    Example:
-
-                    017
-                    011
-                    005
-                    002
-                    001
-                */
-
-                .sort((a, b) => {
-
-                    const numberA =
-                        parseInt(
-                            a.name.replace(/\.jpg$/i, ''),
-                            10
-                        );
-
-                    const numberB =
-                        parseInt(
-                            b.name.replace(/\.jpg$/i, ''),
-                            10
-                        );
-
-                    return numberB - numberA;
-
-                });
-
-
-            /*
-                No photos found.
-            */
-
-            if (photos.length === 0) {
-
-                console.warn(
-                    'No numbered JPG photographs found.'
-                );
-
-                return;
-
-            }
-
-
-            /*
-                Create an <img> for every photograph.
-            */
-
-            photos.forEach((file, index) => {
-
-                const img =
-                    document.createElement('img');
-
-                img.className = 'slide';
-
-                /*
-                    Raw GitHub image URL.
-                */
-
-                img.src =
-                    `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY}/main/${GITHUB_FOLDER ? GITHUB_FOLDER + '/' : ''}${file.name}`;
-
-                img.alt = '';
-
-
-                /*
-                    Highest-numbered image
-                    becomes the opening image.
-                */
-
-                if (index === 0) {
-
-                    img.classList.add('active');
-
-                }
-
-
-                slideshow.appendChild(img);
-
-            });
-
-
-            /*
-                Save the generated slide collection.
-            */
-
-            slides =
-                document.querySelectorAll('.slide');
-
-            current = 0;
-
-
-        } catch (error) {
-
-            console.error(
-                'Could not load photographs:',
-                error
-            );
-
-        }
-
-    }
-
-
-    /*
-        Load photographs once when the page opens.
-    */
-
-    loadPhotos();
-
-
-    /*
-        Change photograph.
-    */
-
-    function nextSlide() {
-
-        if (slides.length <= 1) {
-
-            return;
-
-        }
-
-
-        slides[current]
-            .classList
-            .remove('active');
-
-
-        current =
-            (current + 1) % slides.length;
-
-
-        slides[current]
-            .classList
-            .add('active');
-
-    }
-
-
-    /*
-        Slideshow interval.
-
-        Completely independent from
-        the logo animation.
-    */
-
-    setInterval(() => {
-
-        if (!manualMode) {
-
-            nextSlide();
-
-        }
-
-    }, 3000);
-
-
-    /*
-        First click stops autoplay.
-        Subsequent clicks change images.
-    */
-
-    document.body.addEventListener(
-        'click',
-        (event) => {
-
-            if (event.target.closest('a')) {
-
-                return;
-
-            }
-
-
-            if (!manualMode) {
-
-                manualMode = true;
-
-                return;
-
-            }
-
-
-            nextSlide();
-
-        }
-    );
-
-
-    /* =====================================================
-       LOGO
-       ===================================================== */
-
-    const logo =
-        document.querySelector('.logo');
-
-    const logoName =
-        document.getElementById('logo-name');
-
-
-    const letters = [
-
-        document.getElementById('letter-a'),
-        document.getElementById('letter-y'),
-        document.getElementById('letter-b'),
-        document.getElementById('letter-a2'),
-        document.getElementById('letter-k')
-
-    ];
-
-
-    const lowercase = [
-        'a',
-        'y',
-        'b',
-        'a',
-        'k'
-    ];
-
-
-    const uppercase = [
-        'A',
-        'Y',
-        'B',
-        'A',
-        'K'
-    ];
-
-
-    /*
-        Logo states:
-
-        0 = Denizalp
-            aybak
-
-        1 = denizalp
-            Aybak
-
-        2 = denizalp
-            AYbak
-
-        3 = denizalp
-            AYBak
-
-        4 = denizalp
-            AYBAk
-
-        5 = denizalp
-            AYBAK
-    */
-
-    let logoState = 0;
-
-    let logoTarget = 0;
-
-    let logoTimer = null;
-
-
-    function setLogoState(state) {
-
-        logoState = state;
-
-
-        /*
-            D is uppercase only in state 0.
-        */
-
-        if (state === 0) {
-
-            logoName.textContent =
-                'Denizalp';
-
-        } else {
-
-            logoName.textContent =
-                'denizalp';
-
-        }
-
-
-        /*
-            Change AYBAK letters one by one.
-        */
-
-        for (
-            let i = 0;
-            i < letters.length;
-            i++
-        ) {
-
-            if (i < state) {
-
-                letters[i].textContent =
-                    uppercase[i];
-
-            } else {
-
-                letters[i].textContent =
-                    lowercase[i];
-
-            }
-
-        }
-
-    }
-
-
-    /*
-        Cancel current logo timer.
-    */
-
-    function cancelLogoAnimation() {
-
-        if (logoTimer !== null) {
-
-            clearTimeout(logoTimer);
-
-            logoTimer = null;
-
-        }
-
-    }
-
-
-    /*
-        Move one state at a time.
-    */
-
-    function moveLogo() {
-
-        if (logoState === logoTarget) {
-
-            logoTimer = null;
-
-            return;
-
-        }
-
-
-        if (logoState < logoTarget) {
-
-            setLogoState(
-                logoState + 1
-            );
-
-        } else {
-
-            setLogoState(
-                logoState - 1
-            );
-
-        }
-
-
-        logoTimer =
-            setTimeout(
-                moveLogo,
-                120
-            );
-
-    }
-
-
-    /*
-        Move toward a target state.
-    */
-
-    function animateTo(target) {
-
-        logoTarget = target;
-
-        cancelLogoAnimation();
-
-        moveLogo();
-
-    }
-
-
-    /* =====================================================
-       DESKTOP LOGO
-       ===================================================== */
-
-
-    logo.addEventListener(
-        'mouseenter',
-        () => {
-
-            if (
-                window.matchMedia(
-                    '(min-width: 601px)'
-                ).matches
-            ) {
-
-                animateTo(5);
-
-            }
-
-        }
-    );
-
-
-    logo.addEventListener(
-        'mouseleave',
-        () => {
-
-            if (
-                window.matchMedia(
-                    '(min-width: 601px)'
-                ).matches
-            ) {
-
-                animateTo(0);
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       MOBILE LOGO
-       ===================================================== */
-
-    let mobileCycleTimer = null;
-
-
-    function startMobileCycle() {
-
-
-        /*
-            Wait 2 seconds.
-        */
-
-        mobileCycleTimer =
-            setTimeout(() => {
-
-
-                /*
-                    Animate toward AYBAK.
-                */
-
-                animateTo(5);
-
-
-                /*
-                    Wait until animation finishes,
-                    then hold for 2 seconds.
-                */
-
-                mobileCycleTimer =
-                    setTimeout(() => {
-
-
-                        /*
-                            Reverse back to
-                            Denizalp / aybak.
-                        */
-
-                        animateTo(0);
-
-
-                        /*
-                            Wait for reverse animation
-                            + 2 second pause, then repeat.
-                        */
-
-                        mobileCycleTimer =
-                            setTimeout(() => {
-
-                                startMobileCycle();
-
-                            }, 600 + 2000);
-
-
-                    }, 600 + 2000);
-
-
-            }, 2000);
-
-    }
-
-
-    /*
-        Mobile opening state:
-
-        Denizalp
-        aybak
-    */
-
-    if (
-        window.matchMedia(
-            '(max-width: 600px)'
-        ).matches
-    ) {
-
-        setLogoState(0);
-
-        startMobileCycle();
-
-    }
-
-
-</script>
 
 </body>
 </html>
