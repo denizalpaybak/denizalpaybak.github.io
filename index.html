@@ -47,7 +47,7 @@
 
     .column {
         width: 100%;
-        max-width: 650px;
+        max-width: 530px;
 
         margin: 0;
         padding: 0;
@@ -114,7 +114,7 @@
 
 
     /* =========================
-       OPENING SENTENCE
+       OPENING
        ========================= */
 
     .opening {
@@ -151,11 +151,13 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
+
+        width: max-content;
     }
 
 
     .navigation a:hover {
-        text-decoration: underline;
+        text-decoration: none;
     }
 
 
@@ -195,6 +197,8 @@
        ========================= */
 
     .biography {
+        width: 100%;
+
         margin: 0;
         padding: 0;
 
@@ -217,25 +221,6 @@
 
 
     /* =========================
-       DESKTOP
-       ========================= */
-
-    @media (min-width: 701px) {
-
-        .page {
-            padding-top: 32px;
-            padding-left: 48px;
-        }
-
-
-        .column {
-            max-width: 650px;
-        }
-
-    }
-
-
-    /* =========================
        MOBILE
        ========================= */
 
@@ -248,7 +233,7 @@
 
         .column {
             width: 100%;
-            max-width: none;
+            max-width: 530px;
         }
 
 
@@ -273,6 +258,8 @@
 
 
         .biography {
+            width: 100%;
+
             font-size: 15px;
             line-height: 1.15;
         }
@@ -341,13 +328,21 @@
 
         <nav class="navigation">
 
-            <a href="https://photography.denizalpaybak.com/">
-                photography
+            <a
+                href="https://photography.denizalpaybak.com/"
+                class="animated-link"
+                data-word="photography"
+            >
+                <span class="nav-text">photography</span>
             </a>
 
 
-            <a href="https://film.denizalpaybak.com/">
-                film
+            <a
+                href="https://film.denizalpaybak.com/"
+                class="animated-link"
+                data-word="film"
+            >
+                <span class="nav-text">film</span>
             </a>
 
         </nav>
@@ -427,16 +422,22 @@
        LOGO ANIMATION
        ===================================================== */
 
-    const logo = document.querySelector(".logo");
 
-    const logoName = document.getElementById("logo-name");
+    const logo =
+        document.querySelector(".logo");
+
+    const logoName =
+        document.getElementById("logo-name");
+
 
     const letters = [
+
         document.getElementById("letter-a"),
         document.getElementById("letter-y"),
         document.getElementById("letter-b"),
         document.getElementById("letter-a2"),
         document.getElementById("letter-k")
+
     ];
 
 
@@ -467,6 +468,7 @@
         5 = denizalp / AYBAK
     */
 
+
     let logoState = 0;
 
     let logoDirection = 1;
@@ -475,12 +477,12 @@
 
     let logoPaused = false;
 
-    let holdTimer = null;
+    let logoHoldTimer = null;
 
 
-    const STEP_TIME = 120;
+    const LOGO_STEP_TIME = 120;
 
-    const HOLD_TIME = 2000;
+    const LOGO_HOLD_TIME = 2000;
 
 
     function renderLogo(state) {
@@ -488,17 +490,15 @@
         logoState = state;
 
 
-        /*
-            First state keeps the capital D.
-        */
-
         if (state === 0) {
 
-            logoName.textContent = "Denizalp";
+            logoName.textContent =
+                "Denizalp";
 
         } else {
 
-            logoName.textContent = "denizalp";
+            logoName.textContent =
+                "denizalp";
 
         }
 
@@ -526,7 +526,7 @@
     }
 
 
-    function clearTimers() {
+    function clearLogoTimers() {
 
         if (logoTimer !== null) {
 
@@ -537,18 +537,18 @@
         }
 
 
-        if (holdTimer !== null) {
+        if (logoHoldTimer !== null) {
 
-            clearTimeout(holdTimer);
+            clearTimeout(logoHoldTimer);
 
-            holdTimer = null;
+            logoHoldTimer = null;
 
         }
 
     }
 
 
-    function runAnimation() {
+    function runLogoAnimation() {
 
         if (logoPaused) {
 
@@ -557,30 +557,20 @@
         }
 
 
-        /*
-            Move one step.
-        */
-
         const nextState =
             logoState + logoDirection;
 
 
-        /*
-            Reached the end.
-        */
-
-        if (
-            nextState >= 5
-        ) {
+        if (nextState >= 5) {
 
             renderLogo(5);
 
             logoDirection = -1;
 
-            holdTimer =
+            logoHoldTimer =
                 setTimeout(
-                    runAnimation,
-                    HOLD_TIME
+                    runLogoAnimation,
+                    LOGO_HOLD_TIME
                 );
 
             return;
@@ -588,134 +578,372 @@
         }
 
 
-        /*
-            Reached the beginning.
-        */
-
-        if (
-            nextState <= 0
-        ) {
+        if (nextState <= 0) {
 
             renderLogo(0);
 
             logoDirection = 1;
 
-            holdTimer =
+            logoHoldTimer =
                 setTimeout(
-                    runAnimation,
-                    HOLD_TIME
+                    runLogoAnimation,
+                    LOGO_HOLD_TIME
                 );
 
             return;
 
         }
 
-
-        /*
-            Normal animation step.
-        */
 
         renderLogo(nextState);
 
 
         logoTimer =
             setTimeout(
-                runAnimation,
-                STEP_TIME
+                runLogoAnimation,
+                LOGO_STEP_TIME
             );
 
     }
 
 
-    function startAnimation() {
+    function startLogoAnimation() {
 
-        clearTimers();
+        clearLogoTimers();
 
         logoPaused = false;
-
-        renderLogo(0);
 
         logoDirection = 1;
 
+        renderLogo(0);
 
-        /*
-            Stay in the initial state
-            for two seconds.
-        */
 
-        holdTimer =
+        logoHoldTimer =
             setTimeout(
-                runAnimation,
-                HOLD_TIME
+                runLogoAnimation,
+                LOGO_HOLD_TIME
             );
 
     }
-
-
-    function pauseAnimation() {
-
-        logoPaused = true;
-
-        clearTimers();
-
-    }
-
-
-    function resumeAnimation() {
-
-        /*
-            Continue from exactly
-            the current frame.
-        */
-
-        logoPaused = false;
-
-        logoTimer =
-            setTimeout(
-                runAnimation,
-                STEP_TIME
-            );
-
-    }
-
-
-    /* =====================================================
-       DESKTOP + MOBILE
-       ===================================================== */
-
-    startAnimation();
 
 
     /*
-        Hover pauses the animation
-        exactly where it currently is.
+        Hover on logo pauses it.
+        It resumes from exactly
+        the current frame.
     */
 
     logo.addEventListener(
         "mouseenter",
         () => {
 
-            pauseAnimation();
+            logoPaused = true;
+
+            clearLogoTimers();
 
         }
     );
 
-
-    /*
-        When the pointer leaves,
-        the animation continues from
-        the same frame.
-    */
 
     logo.addEventListener(
         "mouseleave",
         () => {
 
-            resumeAnimation();
+            logoPaused = false;
+
+            logoTimer =
+                setTimeout(
+                    runLogoAnimation,
+                    LOGO_STEP_TIME
+                );
 
         }
     );
 
+
+    startLogoAnimation();
+
+
+    /* =====================================================
+       PHOTOGRAPHY / FILM ANIMATION
+       ===================================================== */
+
+
+    const animatedLinks =
+        document.querySelectorAll(
+            ".animated-link"
+        );
+
+
+    const NAV_STEP_TIME = 120;
+
+    const NAV_HOLD_TIME = 2000;
+
+
+    animatedLinks.forEach(
+        (link, index) => {
+
+            const word =
+                link.dataset.word;
+
+
+            const textElement =
+                link.querySelector(
+                    ".nav-text"
+                );
+
+
+            const characters =
+                word.split("");
+
+
+            let state = 0;
+
+            let direction = 1;
+
+            let timer = null;
+
+            let holdTimer = null;
+
+            let paused = false;
+
+            let hover = false;
+
+
+            /*
+                State progression:
+
+                film
+                Film
+                FIlm
+                FILm
+                FILM
+
+                then back.
+            */
+
+
+            function render(state) {
+
+                let result = "";
+
+
+                characters.forEach(
+                    (character, i) => {
+
+                        if (
+                            i < state
+                        ) {
+
+                            result +=
+                                character.toUpperCase();
+
+                        } else {
+
+                            result +=
+                                character.toLowerCase();
+
+                        }
+
+                    }
+                );
+
+
+                /*
+                    Hover state:
+                    only first letter uppercase.
+                */
+
+                if (hover) {
+
+                    result =
+                        characters[0].toUpperCase() +
+                        result.slice(1);
+
+                }
+
+
+                textElement.textContent =
+                    result;
+
+            }
+
+
+            function clearTimers() {
+
+                if (timer !== null) {
+
+                    clearTimeout(timer);
+
+                    timer = null;
+
+                }
+
+
+                if (holdTimer !== null) {
+
+                    clearTimeout(holdTimer);
+
+                    holdTimer = null;
+
+                }
+
+            }
+
+
+            function run() {
+
+                if (paused) {
+
+                    return;
+
+                }
+
+
+                const next =
+                    state + direction;
+
+
+                if (
+                    next >= characters.length
+                ) {
+
+                    state =
+                        characters.length;
+
+                    render(state);
+
+                    direction = -1;
+
+
+                    holdTimer =
+                        setTimeout(
+                            run,
+                            NAV_HOLD_TIME
+                        );
+
+                    return;
+
+                }
+
+
+                if (next <= 0) {
+
+                    state = 0;
+
+                    render(state);
+
+                    direction = 1;
+
+
+                    holdTimer =
+                        setTimeout(
+                            run,
+                            NAV_HOLD_TIME
+                        );
+
+                    return;
+
+                }
+
+
+                state = next;
+
+                render(state);
+
+
+                timer =
+                    setTimeout(
+                        run,
+                        NAV_STEP_TIME
+                    );
+
+            }
+
+
+            function start() {
+
+                clearTimers();
+
+                state = 0;
+
+                direction = 1;
+
+                paused = false;
+
+                hover = false;
+
+                render(0);
+
+
+                /*
+                    Slight stagger between
+                    photography and film.
+                */
+
+                holdTimer =
+                    setTimeout(
+                        run,
+                        NAV_HOLD_TIME +
+                        (index * 180)
+                    );
+
+            }
+
+
+            /*
+                Hover:
+                pause normal animation and
+                show minimal first-letter
+                uppercase state.
+            */
+
+            link.addEventListener(
+                "mouseenter",
+                () => {
+
+                    hover = true;
+
+                    paused = true;
+
+                    clearTimers();
+
+                    render(state);
+
+                }
+            );
+
+
+            /*
+                Mouse leaves:
+                return to normal animation.
+            */
+
+            link.addEventListener(
+                "mouseleave",
+                () => {
+
+                    hover = false;
+
+                    paused = false;
+
+                    render(state);
+
+
+                    timer =
+                        setTimeout(
+                            run,
+                            NAV_STEP_TIME
+                        );
+
+                }
+            );
+
+
+            start();
+
+        }
+    );
 
 </script>
 
