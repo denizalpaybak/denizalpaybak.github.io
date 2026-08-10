@@ -39,7 +39,7 @@
     }
 
 
-    /* NAME / LOGO */
+    /* LOGO */
 
     .logo {
         position: relative;
@@ -58,12 +58,26 @@
     }
 
 
-    /* NORMAL NAME */
+    /* LOGO TEXT */
 
-    .logo-text {
+    .logo-name {
         position: absolute;
 
-        top: 18px;
+        top: 0;
+        left: 0;
+
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.15;
+
+        white-space: nowrap;
+    }
+
+    .logo-aybak {
+        position: absolute;
+
+        top: 17px;
         left: 0;
 
         font-family: Arial, Helvetica, sans-serif;
@@ -76,87 +90,15 @@
     }
 
 
-    /* HOVER / AYBAK */
-
-    .logo-wordmark {
-        position: absolute;
-
-        top: 18px;
-        left: 0;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 500;
-        line-height: 1.15;
-        letter-spacing: 0.08em;
-
-        white-space: nowrap;
-
-        display: none;
-    }
-
-
-    /* SHOW AYBAK ON HOVER */
-
-    .logo:hover .logo-wordmark {
-        display: block;
-    }
-
-    .logo:hover .logo-text {
-        display: none;
-    }
-
-
     /*
-        LETTER-BY-LETTER TRANSITION
-
-        AYBAK -> aybak
+        Each letter is an independent inline-block.
+        This lets the uppercase transformation happen
+        one letter at a time without moving the layout.
     */
 
-    .logo-transition {
-        position: absolute;
-
-        top: 0;
-        left: 0;
-
-        width: 190px;
-        height: 70px;
-
-        display: none;
-
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .logo-transition .denizalp {
-        position: absolute;
-
-        top: 0;
-        left: 0;
-
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-
-        opacity: 0;
-    }
-
-    .logo-transition .aybak {
-        position: absolute;
-
-        top: 18px;
-        left: 0;
-
-        display: flex;
-
-        font-size: 15px;
-        font-weight: 500;
-        line-height: 1.15;
-
-        letter-spacing: 0.08em;
-    }
-
-    .logo-transition .letter {
+    .logo-aybak span {
         display: inline-block;
+        width: auto;
     }
 
 
@@ -238,26 +180,11 @@
             margin-bottom: 12px;
         }
 
-        .logo-text {
-            top: 15px;
+        .logo-name {
             font-size: 13px;
         }
 
-        .logo-wordmark {
-            top: 15px;
-            font-size: 13px;
-        }
-
-        .logo-transition {
-            width: 160px;
-            height: 58px;
-        }
-
-        .logo-transition .denizalp {
-            font-size: 13px;
-        }
-
-        .logo-transition .aybak {
+        .logo-aybak {
             top: 15px;
             font-size: 13px;
         }
@@ -273,6 +200,7 @@
 
 <body>
 
+
 <div class="info">
 
     <a
@@ -281,39 +209,12 @@
         target="_self"
     >
 
-        <!-- NORMAL -->
-
-        <span class="logo-text">
-            Denizalp<br>
-            aybak
+        <span class="logo-name">
+            Denizalp
         </span>
 
-
-        <!-- HOVER -->
-
-        <span class="logo-wordmark">
-            AYBAK
-        </span>
-
-
-        <!-- TRANSITION -->
-
-        <span class="logo-transition">
-
-            <span class="denizalp">
-                Denizalp
-            </span>
-
-            <span class="aybak">
-
-                <span class="letter">A</span>
-                <span class="letter">Y</span>
-                <span class="letter">B</span>
-                <span class="letter">A</span>
-                <span class="letter">K</span>
-
-            </span>
-
+        <span class="logo-aybak">
+            <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
         </span>
 
     </a>
@@ -367,13 +268,15 @@
 
 <script>
 
+    /* =====================================================
+       SLIDESHOW
+       ===================================================== */
+
     const slides = document.querySelectorAll('.slide');
 
     let current = 0;
     let manualMode = false;
 
-
-    /* SLIDESHOW */
 
     function nextSlide() {
 
@@ -387,7 +290,7 @@
 
     /* Automatic slideshow: every 3 seconds */
 
-    const autoplay = setInterval(() => {
+    setInterval(() => {
 
         if (!manualMode) {
             nextSlide();
@@ -419,105 +322,146 @@
     });
 
 
-    /*
-
-        LOGO TRANSITION
-
-        AYBAK
-        aYBAK
-        ayBAK
-        aybAK
-        aybaK
-        aybak
-
-        Then Denizalp appears above it.
-
-    */
+    /* =====================================================
+       LOGO
+       ===================================================== */
 
     const logo = document.querySelector('.logo');
-    const wordmark = document.querySelector('.logo-wordmark');
-    const normalLogo = document.querySelector('.logo-text');
-    const transition = document.querySelector('.logo-transition');
-    const denizalp = document.querySelector('.denizalp');
-    const letters = document.querySelectorAll('.logo-transition .letter');
 
-    let transitionRunning = false;
+    const letters = [
+        document.getElementById('letter-a'),
+        document.getElementById('letter-y'),
+        document.getElementById('letter-b'),
+        document.getElementById('letter-a2'),
+        document.getElementById('letter-k')
+    ];
 
 
-    function runLogoTransition() {
+    const lowercase = ['a', 'y', 'b', 'a', 'k'];
+    const uppercase = ['A', 'Y', 'B', 'A', 'K'];
 
-        if (transitionRunning) {
+
+    let logoAnimating = false;
+
+
+    /*
+        Set the logo to a specific state.
+
+        0 = aybak
+        1 = Aybak
+        2 = AYbak
+        3 = AYBak
+        4 = AYBAk
+        5 = AYBAK
+    */
+
+    function setLogoState(state) {
+
+        for (let i = 0; i < letters.length; i++) {
+
+            if (i < state) {
+                letters[i].textContent = uppercase[i];
+            } else {
+                letters[i].textContent = lowercase[i];
+            }
+
+        }
+
+    }
+
+
+    /*
+        FORWARD
+
+        aybak
+        Aybak
+        AYbak
+        AYBak
+        AYBAk
+        AYBAK
+    */
+
+    function animateForward() {
+
+        if (logoAnimating) {
             return;
         }
 
-        transitionRunning = true;
+        logoAnimating = true;
 
-        wordmark.style.display = 'none';
-        normalLogo.style.display = 'none';
-
-        transition.style.display = 'block';
-
-        denizalp.style.opacity = '0';
-
-        letters.forEach((letter) => {
-            letter.style.transform = 'scale(1)';
-        });
-
-
-        /*
-            Each letter becomes lowercase one after another.
-        */
-
-        letters[0].textContent = 'a';
+        setLogoState(0);
 
         setTimeout(() => {
-            letters[1].textContent = 'y';
-        }, 180);
+            setLogoState(1);
+        }, 120);
 
         setTimeout(() => {
-            letters[2].textContent = 'b';
+            setLogoState(2);
+        }, 240);
+
+        setTimeout(() => {
+            setLogoState(3);
         }, 360);
 
         setTimeout(() => {
-            letters[3].textContent = 'a';
-        }, 540);
+            setLogoState(4);
+        }, 480);
 
         setTimeout(() => {
-            letters[4].textContent = 'k';
+            setLogoState(5);
+        }, 600);
+
+        setTimeout(() => {
+            logoAnimating = false;
         }, 720);
 
+    }
 
-        /*
-            Denizalp appears after the lowercase
-            transformation has finished.
-        */
+
+    /*
+        REVERSE
+
+        AYBAK
+        AYBAk
+        AYBak
+        AYbak
+        Aybak
+        aybak
+    */
+
+    function animateReverse() {
+
+        if (logoAnimating) {
+            return;
+        }
+
+        logoAnimating = true;
+
+        setLogoState(5);
 
         setTimeout(() => {
-            denizalp.style.opacity = '1';
-        }, 900);
-
-
-        /*
-            Return to the normal logo.
-        */
+            setLogoState(4);
+        }, 120);
 
         setTimeout(() => {
+            setLogoState(3);
+        }, 240);
 
-            transition.style.display = 'none';
+        setTimeout(() => {
+            setLogoState(2);
+        }, 360);
 
-            normalLogo.style.display = 'block';
+        setTimeout(() => {
+            setLogoState(1);
+        }, 480);
 
-            denizalp.style.opacity = '0';
+        setTimeout(() => {
+            setLogoState(0);
+        }, 600);
 
-            letters[0].textContent = 'A';
-            letters[1].textContent = 'Y';
-            letters[2].textContent = 'B';
-            letters[3].textContent = 'A';
-            letters[4].textContent = 'K';
-
-            transitionRunning = false;
-
-        }, 1500);
+        setTimeout(() => {
+            logoAnimating = false;
+        }, 720);
 
     }
 
@@ -525,14 +469,23 @@
     /*
         DESKTOP
 
-        When leaving the AYBAK hover state,
-        play the transformation.
+        Normal state:
+        Denizalp
+        aybak
+
+        On hover:
+        aybak -> AYBAK
     */
 
-    logo.addEventListener('mouseleave', () => {
+    logo.addEventListener('mouseenter', () => {
 
-        if (window.matchMedia('(min-width: 601px)').matches) {
-            runLogoTransition();
+        if (
+            window.matchMedia('(min-width: 601px)').matches &&
+            !logoAnimating
+        ) {
+
+            animateForward();
+
         }
 
     });
@@ -541,31 +494,39 @@
     /*
         MOBILE
 
-        Mobile starts in the AYBAK state.
-        After the first 3 seconds, the same
-        transition runs automatically.
+        Starts as:
+
+        denizalp
+        AYBAK
+
+        After 3 seconds it reverses to:
+
+        Denizalp
+        aybak
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
 
-        normalLogo.style.display = 'none';
-        transition.style.display = 'block';
+        /*
+            Mobile starts uppercase.
+        */
 
-        letters[0].textContent = 'A';
-        letters[1].textContent = 'Y';
-        letters[2].textContent = 'B';
-        letters[3].textContent = 'A';
-        letters[4].textContent = 'K';
+        setLogoState(5);
 
-        denizalp.style.opacity = '0';
+
+        /*
+            Wait 3 seconds, matching the
+            first slideshow interval.
+        */
 
         setTimeout(() => {
 
-            runLogoTransition();
+            animateReverse();
 
         }, 3000);
 
     }
+
 
 </script>
 
