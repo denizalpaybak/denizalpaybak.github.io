@@ -63,7 +63,7 @@
     .logo-text {
         position: absolute;
 
-        top: 16px;
+        top: 18px;
         left: 0;
 
         font-family: Arial, Helvetica, sans-serif;
@@ -189,17 +189,18 @@
         }
 
         .logo-text {
-            top: 14px;
+            top: 15px;
             font-size: 13px;
         }
 
         /*
-            Mobile has no hover, so the logo animation
-            is triggered once when the page loads.
+            Mobile has no hover.
+            The intro animation is controlled by JavaScript
+            and lasts for the entire first 3-second slide.
         */
 
         .logo.intro .logo-text {
-            animation: logoIntro 1s ease forwards;
+            animation: logoIntro 3s linear forwards;
         }
 
         .logo.intro::after {
@@ -217,7 +218,7 @@
 
             pointer-events: none;
 
-            animation: borderIntro 1s ease forwards;
+            animation: borderIntro 3s linear forwards;
         }
 
         .slide {
@@ -232,16 +233,11 @@
     @keyframes logoIntro {
 
         0% {
-            transform: scale(1);
-            font-weight: 400;
-        }
-
-        35% {
             transform: scale(1.4);
             font-weight: 500;
         }
 
-        65% {
+        75% {
             transform: scale(1.4);
             font-weight: 500;
         }
@@ -256,14 +252,10 @@
     @keyframes borderIntro {
 
         0% {
-            opacity: 0;
-        }
-
-        35% {
             opacity: 1;
         }
 
-        65% {
+        75% {
             opacity: 1;
         }
 
@@ -395,8 +387,10 @@
     /*
         MOBILE LOGO INTRO
 
-        The animation plays once when the page loads.
-        It does not repeat.
+        The logo starts in its "hover" state.
+        It stays that way during the first image,
+        then returns to its normal state exactly
+        when the first 3-second autoplay interval ends.
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
@@ -404,6 +398,10 @@
         const logo = document.querySelector('.logo');
 
         logo.classList.add('intro');
+
+        setTimeout(() => {
+            logo.classList.remove('intro');
+        }, 3000);
 
     }
 
