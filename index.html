@@ -245,16 +245,13 @@
     .preview {
         position: fixed;
 
-        top: 50%;
         right: 48px;
 
-        width: min(40vw, 560px);
-
-        transform: translateY(-50%);
-
-        display: none;
+        width: min(50vw, 720px);
 
         z-index: 10;
+
+        display: none;
 
         pointer-events: none;
     }
@@ -267,7 +264,7 @@
         width: 100%;
         height: auto;
 
-        max-height: 75vh;
+        max-height: 82vh;
 
         object-fit: contain;
 
@@ -276,10 +273,24 @@
 
 
     /*
-       Desktop only:
-       preview becomes visible when
-       Photography / Film is hovered.
+       Photography preview:
+       positioned higher on the screen.
     */
+
+    .preview.photography-preview {
+        top: 10vh;
+    }
+
+
+    /*
+       Film preview:
+       positioned lower on the screen.
+    */
+
+    .preview.film-preview {
+        top: 42vh;
+    }
+
 
     @media (min-width: 701px) {
 
@@ -340,10 +351,6 @@
             margin-bottom: 17px;
         }
 
-
-        /*
-           No hover preview on mobile.
-        */
 
         .preview {
             display: none !important;
@@ -470,7 +477,6 @@
 
         <section class="biography">
 
-
             <p>
                 having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
             </p>
@@ -500,7 +506,6 @@
                 <span class="item">lc waikiki</span>
             </p>
 
-
         </section>
 
 
@@ -510,24 +515,35 @@
 
 
 <!-- =========================
-     HOVER PREVIEW
+     PHOTOGRAPHY PREVIEW
      ========================= -->
 
 <div
-    class="preview"
-    id="preview"
+    class="preview photography-preview"
+    id="photography-preview"
     aria-hidden="true"
 >
 
     <img
-        id="preview-image"
-        src=""
+        src="./photography.jpg"
         alt=""
     >
 
+</div>
+
+
+<!-- =========================
+     FILM PREVIEW
+     ========================= -->
+
+<div
+    class="preview film-preview"
+    id="film-preview"
+    aria-hidden="true"
+>
 
     <video
-        id="preview-video"
+        src="./film.mp4"
         muted
         autoplay
         loop
@@ -782,109 +798,90 @@
 
 
     /* =====================================================
-       HOVER PREVIEW
+       PHOTOGRAPHY / FILM PREVIEWS
        ===================================================== */
 
-    const preview =
-        document.getElementById("preview");
+    const photographyPreview =
+        document.getElementById(
+            "photography-preview"
+        );
 
-    const previewImage =
-        document.getElementById("preview-image");
 
-    const previewVideo =
-        document.getElementById("preview-video");
+    const filmPreview =
+        document.getElementById(
+            "film-preview"
+        );
+
+
+    const filmVideo =
+        filmPreview.querySelector(
+            "video"
+        );
 
 
     function showPreview(type) {
-
-        /*
-           Safety:
-           preview is only activated
-           on desktop.
-        */
 
         if (
             window.matchMedia(
                 "(max-width: 700px)"
             ).matches
         ) {
-
             return;
-
         }
+
+
+        photographyPreview.classList.remove(
+            "active"
+        );
+
+        filmPreview.classList.remove(
+            "active"
+        );
 
 
         if (type === "photography") {
 
-            previewVideo.pause();
-
-            previewVideo.removeAttribute(
-                "src"
+            photographyPreview.classList.add(
+                "active"
             );
-
-            previewVideo.load();
-
-
-            previewImage.src =
-                "./photography.jpg";
-
-            previewImage.style.display =
-                "block";
-
-
-            previewVideo.style.display =
-                "none";
 
         }
 
 
         if (type === "film") {
 
-            previewImage.removeAttribute(
-                "src"
+            filmPreview.classList.add(
+                "active"
             );
 
-            previewImage.style.display =
-                "none";
+            filmVideo.currentTime = 0;
 
-
-            previewVideo.src =
-                "./film.mp4";
-
-            previewVideo.style.display =
-                "block";
-
-
-            previewVideo.currentTime = 0;
-
-            previewVideo.play().catch(
+            filmVideo.play().catch(
                 () => {}
             );
 
         }
-
-
-        preview.classList.add(
-            "active"
-        );
 
     }
 
 
     function hidePreview() {
 
-        preview.classList.remove(
+        photographyPreview.classList.remove(
             "active"
         );
 
+        filmPreview.classList.remove(
+            "active"
+        );
 
-        previewVideo.pause();
+        filmVideo.pause();
 
     }
 
 
     /* =====================================================
-       PHOTOGRAPHY / FILM ANIMATION
+       PHOTOGRAPHY / FILM LETTER ANIMATION
        ===================================================== */
 
     const animatedLinks =
@@ -1077,21 +1074,12 @@
                     clearTimers();
 
 
-                    /*
-                       Start accelerated animation
-                       from the current letter state.
-                    */
-
                     timer =
                         setTimeout(
                             run,
                             HOVER_SPEED
                         );
 
-
-                    /*
-                       Show corresponding preview.
-                    */
 
                     showPreview(
                         link.dataset.preview
@@ -1114,20 +1102,12 @@
                     clearTimers();
 
 
-                    /*
-                       Return to normal animation speed.
-                    */
-
                     timer =
                         setTimeout(
                             run,
                             NORMAL_SPEED
                         );
 
-
-                    /*
-                       Remove preview immediately.
-                    */
 
                     hidePreview();
 
@@ -1142,7 +1122,7 @@
 
 
     /* =====================================================
-       CLEAN UP PREVIEW WHEN RESIZING TO MOBILE
+       MOBILE CLEANUP
        ===================================================== */
 
     window.addEventListener(
