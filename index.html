@@ -39,10 +39,10 @@
 
     .logo {
         font-family: Helvetica, Arial, sans-serif;
-        font-size: 24px;
+        font-size: 14px;
         font-weight: 500;
-        line-height: 0.9;
-        letter-spacing: -0.02em;
+        line-height: 1.2;
+        letter-spacing: 0;
         margin-bottom: 0;
     }
 
@@ -112,7 +112,7 @@
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 13px;
         }
 
         .slide {
@@ -202,7 +202,7 @@
 
     document.body.addEventListener('click', (event) => {
 
-        // Do not let clicks on links control the slideshow.
+        // Clicking links does not control the slideshow.
         if (event.target.closest('a')) {
             return;
         }
