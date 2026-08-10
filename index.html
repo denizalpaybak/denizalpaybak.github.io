@@ -125,6 +125,8 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
+
+        text-wrap: balance;
     }
 
 
@@ -144,6 +146,8 @@
     .navigation a {
         display: block;
 
+        width: max-content;
+
         color: #000;
         text-decoration: none;
 
@@ -151,8 +155,6 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
-
-        width: max-content;
     }
 
 
@@ -198,6 +200,7 @@
 
     .biography {
         width: 100%;
+        max-width: 530px;
 
         margin: 0;
         padding: 0;
@@ -206,17 +209,30 @@
         font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
+
+        text-align: left;
     }
 
 
     .biography p {
         margin: 0 0 17px 0;
         padding: 0;
+
+        text-wrap: balance;
     }
 
 
     .biography p:last-child {
         margin-bottom: 0;
+    }
+
+
+    /* =========================
+       PUBLICATIONS / CLIENTS
+       ========================= */
+
+    .item {
+        white-space: nowrap;
     }
 
 
@@ -259,6 +275,7 @@
 
         .biography {
             width: 100%;
+            max-width: none;
 
             font-size: 15px;
             line-height: 1.15;
@@ -398,13 +415,21 @@
 
             <p>
                 selected publications:<br>
-                vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
+                <span class="item">vogue türkiye</span>,
+                <span class="item">harper’s bazaar türkiye</span>,
+                <span class="item">elle türkiye</span>,
+                <span class="item">l’officiel türkiye</span>
             </p>
 
 
             <p>
                 selected clients:<br>
-                vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
+                <span class="item">vakko</span>,
+                <span class="item">bee goddess</span>,
+                <span class="item">zeynep arcay</span>,
+                <span class="item">peugeot</span>,
+                <span class="item">skechers</span>,
+                <span class="item">lc waikiki</span>
             </p>
 
 
@@ -419,9 +444,17 @@
 <script>
 
     /* =====================================================
-       LOGO ANIMATION
+       SHARED ANIMATION SETTINGS
        ===================================================== */
 
+    const NORMAL_SPEED = 120;
+    const HOVER_SPEED = 35;
+    const HOLD_TIME = 2000;
+
+
+    /* =====================================================
+       LOGO ANIMATION
+       ===================================================== */
 
     const logo =
         document.querySelector(".logo");
@@ -430,7 +463,7 @@
         document.getElementById("logo-name");
 
 
-    const letters = [
+    const logoLetters = [
 
         document.getElementById("letter-a"),
         document.getElementById("letter-y"),
@@ -441,7 +474,7 @@
     ];
 
 
-    const lowercase = [
+    const logoLowercase = [
         "a",
         "y",
         "b",
@@ -450,7 +483,7 @@
     ];
 
 
-    const uppercase = [
+    const logoUppercase = [
         "A",
         "Y",
         "B",
@@ -459,30 +492,15 @@
     ];
 
 
-    /*
-        0 = Denizalp / aybak
-        1 = denizalp / Aybak
-        2 = denizalp / AYbak
-        3 = denizalp / AYBak
-        4 = denizalp / AYBAk
-        5 = denizalp / AYBAK
-    */
-
-
     let logoState = 0;
 
     let logoDirection = 1;
 
     let logoTimer = null;
 
-    let logoPaused = false;
-
     let logoHoldTimer = null;
 
-
-    const LOGO_STEP_TIME = 120;
-
-    const LOGO_HOLD_TIME = 2000;
+    let logoHovered = false;
 
 
     function renderLogo(state) {
@@ -505,19 +523,19 @@
 
         for (
             let i = 0;
-            i < letters.length;
+            i < logoLetters.length;
             i++
         ) {
 
             if (i < state) {
 
-                letters[i].textContent =
-                    uppercase[i];
+                logoLetters[i].textContent =
+                    logoUppercase[i];
 
             } else {
 
-                letters[i].textContent =
-                    lowercase[i];
+                logoLetters[i].textContent =
+                    logoLowercase[i];
 
             }
 
@@ -548,29 +566,28 @@
     }
 
 
-    function runLogoAnimation() {
-
-        if (logoPaused) {
-
-            return;
-
-        }
-
+    function runLogo() {
 
         const nextState =
             logoState + logoDirection;
 
 
-        if (nextState >= 5) {
+        if (
+            nextState >=
+            logoUppercase.length
+        ) {
 
-            renderLogo(5);
+            renderLogo(
+                logoUppercase.length
+            );
 
             logoDirection = -1;
 
+
             logoHoldTimer =
                 setTimeout(
-                    runLogoAnimation,
-                    LOGO_HOLD_TIME
+                    runLogo,
+                    HOLD_TIME
                 );
 
             return;
@@ -584,10 +601,11 @@
 
             logoDirection = 1;
 
+
             logoHoldTimer =
                 setTimeout(
-                    runLogoAnimation,
-                    LOGO_HOLD_TIME
+                    runLogo,
+                    HOLD_TIME
                 );
 
             return;
@@ -600,46 +618,46 @@
 
         logoTimer =
             setTimeout(
-                runLogoAnimation,
-                LOGO_STEP_TIME
+                runLogo,
+                logoHovered
+                    ? HOVER_SPEED
+                    : NORMAL_SPEED
             );
 
     }
 
 
-    function startLogoAnimation() {
+    function startLogo() {
 
         clearLogoTimers();
 
-        logoPaused = false;
+        renderLogo(0);
 
         logoDirection = 1;
-
-        renderLogo(0);
 
 
         logoHoldTimer =
             setTimeout(
-                runLogoAnimation,
-                LOGO_HOLD_TIME
+                runLogo,
+                HOLD_TIME
             );
 
     }
 
-
-    /*
-        Hover on logo pauses it.
-        It resumes from exactly
-        the current frame.
-    */
 
     logo.addEventListener(
         "mouseenter",
         () => {
 
-            logoPaused = true;
+            logoHovered = true;
 
             clearLogoTimers();
+
+            logoTimer =
+                setTimeout(
+                    runLogo,
+                    HOVER_SPEED
+                );
 
         }
     );
@@ -649,35 +667,31 @@
         "mouseleave",
         () => {
 
-            logoPaused = false;
+            logoHovered = false;
+
+            clearLogoTimers();
 
             logoTimer =
                 setTimeout(
-                    runLogoAnimation,
-                    LOGO_STEP_TIME
+                    runLogo,
+                    NORMAL_SPEED
                 );
 
         }
     );
 
 
-    startLogoAnimation();
+    startLogo();
 
 
     /* =====================================================
        PHOTOGRAPHY / FILM ANIMATION
        ===================================================== */
 
-
     const animatedLinks =
         document.querySelectorAll(
             ".animated-link"
         );
-
-
-    const NAV_STEP_TIME = 120;
-
-    const NAV_HOLD_TIME = 2000;
 
 
     animatedLinks.forEach(
@@ -705,22 +719,7 @@
 
             let holdTimer = null;
 
-            let paused = false;
-
-            let hover = false;
-
-
-            /*
-                State progression:
-
-                film
-                Film
-                FIlm
-                FILm
-                FILM
-
-                then back.
-            */
+            let hovered = false;
 
 
             function render(state) {
@@ -747,20 +746,6 @@
 
                     }
                 );
-
-
-                /*
-                    Hover state:
-                    only first letter uppercase.
-                */
-
-                if (hover) {
-
-                    result =
-                        characters[0].toUpperCase() +
-                        result.slice(1);
-
-                }
 
 
                 textElement.textContent =
@@ -793,19 +778,13 @@
 
             function run() {
 
-                if (paused) {
-
-                    return;
-
-                }
-
-
                 const next =
                     state + direction;
 
 
                 if (
-                    next >= characters.length
+                    next >=
+                    characters.length
                 ) {
 
                     state =
@@ -819,7 +798,7 @@
                     holdTimer =
                         setTimeout(
                             run,
-                            NAV_HOLD_TIME
+                            HOLD_TIME
                         );
 
                     return;
@@ -839,7 +818,7 @@
                     holdTimer =
                         setTimeout(
                             run,
-                            NAV_HOLD_TIME
+                            HOLD_TIME
                         );
 
                     return;
@@ -855,7 +834,9 @@
                 timer =
                     setTimeout(
                         run,
-                        NAV_STEP_TIME
+                        hovered
+                            ? HOVER_SPEED
+                            : NORMAL_SPEED
                     );
 
             }
@@ -869,22 +850,15 @@
 
                 direction = 1;
 
-                paused = false;
-
-                hover = false;
+                hovered = false;
 
                 render(0);
 
 
-                /*
-                    Slight stagger between
-                    photography and film.
-                */
-
                 holdTimer =
                     setTimeout(
                         run,
-                        NAV_HOLD_TIME +
+                        HOLD_TIME +
                         (index * 180)
                     );
 
@@ -892,48 +866,45 @@
 
 
             /*
-                Hover:
-                pause normal animation and
-                show minimal first-letter
-                uppercase state.
+                Hover accelerates the animation.
+                It never pauses.
             */
 
             link.addEventListener(
                 "mouseenter",
                 () => {
 
-                    hover = true;
-
-                    paused = true;
+                    hovered = true;
 
                     clearTimers();
 
-                    render(state);
+                    timer =
+                        setTimeout(
+                            run,
+                            HOVER_SPEED
+                        );
 
                 }
             );
 
 
             /*
-                Mouse leaves:
-                return to normal animation.
+                Return to normal speed
+                when mouse leaves.
             */
 
             link.addEventListener(
                 "mouseleave",
                 () => {
 
-                    hover = false;
+                    hovered = false;
 
-                    paused = false;
-
-                    render(state);
-
+                    clearTimers();
 
                     timer =
                         setTimeout(
                             run,
-                            NAV_STEP_TIME
+                            NORMAL_SPEED
                         );
 
                 }
