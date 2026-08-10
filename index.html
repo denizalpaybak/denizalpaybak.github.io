@@ -53,7 +53,7 @@
         width: 190px;
         height: 70px;
 
-        margin: 0 0 14px 0;
+        margin: 0 0 0 0;
         padding: 0;
 
         color: inherit;
@@ -189,7 +189,7 @@
         .logo {
             width: 160px;
             height: 58px;
-            margin-bottom: 12px;
+            margin-bottom: 0;
         }
 
         .logo-name {
@@ -366,11 +366,6 @@
     const uppercase = ['A', 'Y', 'B', 'A', 'K'];
 
 
-    /*
-        Prevent multiple animations from
-        being triggered simultaneously.
-    */
-
     let logoAnimating = false;
 
 
@@ -383,7 +378,6 @@
         3 = denizalp / AYBak
         4 = denizalp / AYBAk
         5 = denizalp / AYBAK
-
     */
 
     function setLogoState(state) {
@@ -426,7 +420,7 @@
 
 
     /*
-        FORWARD ANIMATION
+        FORWARD
 
         Denizalp
         aybak
@@ -507,7 +501,7 @@
 
 
     /*
-        REVERSE ANIMATION
+        REVERSE
 
         denizalp
         AYBAK
@@ -572,8 +566,8 @@
 
         /*
             Final step:
-            lowercase the first letter of AYBAK
-            AND restore the capital D in Denizalp.
+            the D becomes uppercase and
+            the A becomes lowercase.
         */
 
         setTimeout(() => {
@@ -635,25 +629,28 @@
        ===================================================== */
 
     /*
-        Mobile starts at:
+        IMPORTANT:
+
+        Mobile starts as:
+
+        denizalp
+        AYBAK
+
+        NOT:
 
         Denizalp
         AYBAK
-
-        Then, 1 second after loading,
-        it plays the reverse animation.
-
-        It is NOT tied to the slideshow.
     */
 
     if (window.matchMedia('(max-width: 600px)').matches) {
 
 
-        /*
-            Initial mobile state.
-        */
+        /* Lowercase D */
 
         logoName.textContent = 'denizalp';
+
+
+        /* Uppercase AYBAK */
 
         for (let i = 0; i < letters.length; i++) {
 
@@ -663,7 +660,10 @@
 
 
         /*
-            Start after exactly 1 second.
+            Start the reverse animation
+            1 second after the page loads.
+
+            This is independent of the slideshow.
         */
 
         setTimeout(() => {
