@@ -208,12 +208,13 @@
     .content {
         position: absolute;
 
+        top: 32px;
+
         /*
-            Same vertical starting point
-            as the logo on the left.
+            The first sentence begins immediately
+            to the right of the left-side logo.
         */
 
-        top: 32px;
         left: calc(50% + 40px);
 
         width: min(650px, 45vw);
@@ -234,6 +235,17 @@
     }
 
 
+    /*
+       The opening sentence is aligned vertically
+       with "aybak" on the left.
+    */
+
+    .opening {
+        margin-top: 17px;
+        margin-bottom: 17px;
+    }
+
+
     .biography p {
         margin: 0 0 17px 0;
         padding: 0;
@@ -242,15 +254,6 @@
 
     .biography p:last-child {
         margin-bottom: 0;
-    }
-
-
-    /* =========================
-       LOGO ANIMATION
-       ========================= */
-
-    let {
-        display: none;
     }
 
 
@@ -300,6 +303,12 @@
         }
 
 
+        .opening {
+            margin-top: 0;
+            margin-bottom: 17px;
+        }
+
+
         .biography {
             font-size: 15px;
             line-height: 1.15;
@@ -334,7 +343,6 @@
         <a
             class="logo"
             href="https://denizalpaybak.com/"
-            target="_self"
         >
 
             <span
@@ -365,7 +373,9 @@
             </a>
 
 
-            <a href="#">
+            <a
+                href="https://film.denizalpaybak.com/"
+            >
                 film
             </a>
 
@@ -424,7 +434,9 @@
         <section class="biography">
 
 
-            <p>
+            <!-- OPENING SENTENCE -->
+
+            <p class="opening">
                 is an Istanbul-based fashion photographer and filmmaker.
             </p>
 
@@ -465,7 +477,6 @@
 
     /* =====================================================
        LOGO ANIMATION
-       Identical behaviour to photography page
        ===================================================== */
 
 
@@ -590,7 +601,9 @@
 
     function cancelLogoAnimation() {
 
-        if (logoTimer !== null) {
+        if (
+            logoTimer !== null
+        ) {
 
             clearTimeout(
                 logoTimer
@@ -706,23 +719,16 @@
 
     function startMobileCycle() {
 
-        /*
-            Start with:
-
-            Denizalp
-            aybak
-
-            Hold for 2 seconds.
-        */
-
         mobileCycleTimer =
             setTimeout(
                 () => {
 
-
                     /*
-                        Animate to:
+                        Denizalp
+                        aybak
 
+                        →
+                        
                         denizalp
                         AYBAK
                     */
@@ -730,15 +736,9 @@
                     animateTo(5);
 
 
-                    /*
-                        Hold final state
-                        for 2 seconds.
-                    */
-
                     mobileCycleTimer =
                         setTimeout(
                             () => {
-
 
                                 /*
                                     Return to:
@@ -749,13 +749,6 @@
 
                                 animateTo(0);
 
-
-                                /*
-                                    Wait for reverse
-                                    animation to finish,
-                                    then hold for 2 seconds
-                                    and repeat.
-                                */
 
                                 mobileCycleTimer =
                                     setTimeout(
