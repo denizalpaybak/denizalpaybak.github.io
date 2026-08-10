@@ -33,7 +33,7 @@
         z-index: 10;
 
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
     }
@@ -46,46 +46,42 @@
         display: block;
 
         width: max-content;
-        height: 78px;
+        height: 82px;
 
         margin: 0 0 14px 0;
         padding: 0;
 
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 21px;
-        font-weight: 500;
-        line-height: 1.05;
-        letter-spacing: 0;
-
-        text-decoration: none;
         color: inherit;
+        text-decoration: none;
 
         cursor: pointer;
     }
 
+
+    /* NAME TEXT */
+
     .logo-text {
         position: absolute;
 
-        top: 13px;
+        top: 15px;
         left: 0;
 
-        font-size: 21px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 24px;
         font-weight: 500;
-        line-height: 1.05;
+        line-height: 1.0;
+        letter-spacing: 0;
 
-        transform-origin: left center;
+        white-space: nowrap;
 
         transition:
             font-size 0.12s ease,
             font-weight 0.12s ease,
-            line-height 0.12s ease,
             top 0.12s ease;
     }
 
-    /*
-        Border stays in exactly the same position.
-        It does not affect the layout or push anything below it.
-    */
+
+    /* BORDER */
 
     .logo:hover::after {
         content: "";
@@ -93,26 +89,23 @@
         position: absolute;
 
         top: 0;
-        bottom: 0;
+        left: -14px;
 
-        left: -12px;
-        right: -48px;
+        width: 190px;
+        height: 82px;
 
         border: 4px solid #000;
 
         pointer-events: none;
     }
 
-    /*
-        On hover the name becomes the same
-        typographic level as the information below.
-        The logo container itself does NOT shrink.
-    */
+
+    /* HOVER TEXT */
 
     .logo:hover .logo-text {
-        top: 17px;
+        top: 24px;
 
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 400;
         line-height: 1.15;
     }
@@ -187,31 +180,31 @@
         .info {
             top: 20px;
             left: 24px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .logo {
-            height: 62px;
+            height: 64px;
             margin-bottom: 12px;
         }
 
         .logo-text {
             top: 11px;
-            font-size: 18px;
-            line-height: 1.05;
-        }
-
-        .logo:hover .logo-text {
-            top: 14px;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.15;
+            font-size: 20px;
         }
 
         .logo:hover::after {
+            top: 0;
             left: -10px;
-            right: -34px;
+            width: 160px;
+            height: 64px;
             border-width: 3px;
+        }
+
+        .logo:hover .logo-text {
+            top: 18px;
+            font-size: 13px;
+            line-height: 1.15;
         }
 
         .slide {
@@ -314,11 +307,6 @@
     */
 
     document.body.addEventListener('click', (event) => {
-
-        /*
-            Links are handled normally.
-            They do not control the slideshow.
-        */
 
         if (event.target.closest('a')) {
             return;
