@@ -51,11 +51,6 @@
         display: block;
 
         width: 190px;
-
-        /*
-            Two text lines + exactly one
-            additional line of breathing room.
-        */
         height: 52px;
 
         margin: 0;
@@ -67,8 +62,6 @@
         cursor: pointer;
     }
 
-
-    /* NAME */
 
     .logo-name {
         position: absolute;
@@ -84,8 +77,6 @@
         white-space: nowrap;
     }
 
-
-    /* AYBAK */
 
     .logo-aybak {
         position: absolute;
@@ -188,13 +179,7 @@
 
         .logo {
             width: 160px;
-
-            /*
-                2 lines + exactly one line
-                of breathing room on mobile.
-            */
             height: 45px;
-
             margin-bottom: 0;
         }
 
@@ -277,74 +262,302 @@
 </div>
 
 
-<div id="slideshow">
+<!--
+    SLIDESHOW
 
-    <img class="slide active" src="01.jpg">
-    <img class="slide" src="02.jpg">
-    <img class="slide" src="03.jpg">
-    <img class="slide" src="04.jpg">
+    Images are loaded automatically from GitHub.
+-->
 
-</div>
+<div id="slideshow"></div>
 
 
 <script>
 
 
     /* =====================================================
-       SLIDESHOW
+       GITHUB PHOTO SETTINGS
        ===================================================== */
 
-    const slides = document.querySelectorAll('.slide');
+    const GITHUB_USERNAME = "denizalpaybak";
+
+    const GITHUB_REPOSITORY = "denizalpaybak.github.io";
+
+    /*
+        Photos are in the root of the repository,
+        so this stays empty.
+    */
+
+    const GITHUB_FOLDER = "";
+
+
+    /* =====================================================
+       DYNAMIC SLIDESHOW
+       ===================================================== */
+
+    const slideshow =
+        document.getElementById('slideshow');
+
+    let slides = [];
 
     let current = 0;
+
     let manualMode = false;
 
 
-    function nextSlide() {
+    /*
+        Load all JPG photographs from GitHub.
+    */
 
-        slides[current].classList.remove('active');
+    async function loadPhotos() {
 
-        current = (current + 1) % slides.length;
+        try {
 
-        slides[current].classList.add('active');
+            const apiUrl =
+                `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPOSITORY}/contents/${GITHUB_FOLDER}`;
+
+
+            const response =
+                await fetch(apiUrl);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'GitHub repository could not be accessed.'
+                );
+
+            }
+
+
+            const files =
+                await response.json();
+
+
+            /*
+                Only accept files such as:
+
+                001.jpg
+                002.jpg
+                017.jpg
+                999.jpg
+
+                Other JPG files are ignored.
+            */
+
+            const photos = files
+
+                .filter(file => {
+
+                    return (
+                        file.type === 'file' &&
+                        /^\d+\.jpg$/i.test(file.name)
+                    );
+
+                })
+
+
+                /*
+                    Sort from highest number
+                    to lowest number.
+
+                    Example:
+
+                    017
+                    011
+                    005
+                    002
+                    001
+                */
+
+                .sort((a, b) => {
+
+                    const numberA =
+                        parseInt(
+                            a.name.replace(/\.jpg$/i, ''),
+                            10
+                        );
+
+                    const numberB =
+                        parseInt(
+                            b.name.replace(/\.jpg$/i, ''),
+                            10
+                        );
+
+                    return numberB - numberA;
+
+                });
+
+
+            /*
+                No photos found.
+            */
+
+            if (photos.length === 0) {
+
+                console.warn(
+                    'No numbered JPG photographs found.'
+                );
+
+                return;
+
+            }
+
+
+            /*
+                Create an <img> for every photograph.
+            */
+
+            photos.forEach((file, index) => {
+
+                const img =
+                    document.createElement('img');
+
+                img.className = 'slide';
+
+                /*
+                    Raw GitHub image URL.
+                */
+
+                img.src =
+                    `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPOSITORY}/main/${GITHUB_FOLDER ? GITHUB_FOLDER + '/' : ''}${file.name}`;
+
+                img.alt = '';
+
+
+                /*
+                    Highest-numbered image
+                    becomes the opening image.
+                */
+
+                if (index === 0) {
+
+                    img.classList.add('active');
+
+                }
+
+
+                slideshow.appendChild(img);
+
+            });
+
+
+            /*
+                Save the generated slide collection.
+            */
+
+            slides =
+                document.querySelectorAll('.slide');
+
+            current = 0;
+
+
+        } catch (error) {
+
+            console.error(
+                'Could not load photographs:',
+                error
+            );
+
+        }
 
     }
 
 
+    /*
+        Load photographs once when the page opens.
+    */
+
+    loadPhotos();
+
+
+    /*
+        Change photograph.
+    */
+
+    function nextSlide() {
+
+        if (slides.length <= 1) {
+
+            return;
+
+        }
+
+
+        slides[current]
+            .classList
+            .remove('active');
+
+
+        current =
+            (current + 1) % slides.length;
+
+
+        slides[current]
+            .classList
+            .add('active');
+
+    }
+
+
+    /*
+        Slideshow interval.
+
+        Completely independent from
+        the logo animation.
+    */
+
     setInterval(() => {
 
         if (!manualMode) {
+
             nextSlide();
+
         }
 
     }, 3000);
 
 
-    document.body.addEventListener('click', (event) => {
+    /*
+        First click stops autoplay.
+        Subsequent clicks change images.
+    */
 
-        if (event.target.closest('a')) {
-            return;
+    document.body.addEventListener(
+        'click',
+        (event) => {
+
+            if (event.target.closest('a')) {
+
+                return;
+
+            }
+
+
+            if (!manualMode) {
+
+                manualMode = true;
+
+                return;
+
+            }
+
+
+            nextSlide();
+
         }
-
-        if (!manualMode) {
-
-            manualMode = true;
-
-            return;
-        }
-
-        nextSlide();
-
-    });
+    );
 
 
     /* =====================================================
        LOGO
        ===================================================== */
 
-    const logo = document.querySelector('.logo');
+    const logo =
+        document.querySelector('.logo');
 
-    const logoName = document.getElementById('logo-name');
+    const logoName =
+        document.getElementById('logo-name');
+
 
     const letters = [
 
@@ -357,13 +570,26 @@
     ];
 
 
-    const lowercase = ['a', 'y', 'b', 'a', 'k'];
+    const lowercase = [
+        'a',
+        'y',
+        'b',
+        'a',
+        'k'
+    ];
 
-    const uppercase = ['A', 'Y', 'B', 'A', 'K'];
+
+    const uppercase = [
+        'A',
+        'Y',
+        'B',
+        'A',
+        'K'
+    ];
 
 
     /*
-        Logo state:
+        Logo states:
 
         0 = Denizalp
             aybak
@@ -390,8 +616,6 @@
 
     let logoTimer = null;
 
-    let mobileCycleTimer = null;
-
 
     function setLogoState(state) {
 
@@ -404,28 +628,36 @@
 
         if (state === 0) {
 
-            logoName.textContent = 'Denizalp';
+            logoName.textContent =
+                'Denizalp';
 
         } else {
 
-            logoName.textContent = 'denizalp';
+            logoName.textContent =
+                'denizalp';
 
         }
 
 
         /*
-            Uppercase letters according to state.
+            Change AYBAK letters one by one.
         */
 
-        for (let i = 0; i < letters.length; i++) {
+        for (
+            let i = 0;
+            i < letters.length;
+            i++
+        ) {
 
             if (i < state) {
 
-                letters[i].textContent = uppercase[i];
+                letters[i].textContent =
+                    uppercase[i];
 
             } else {
 
-                letters[i].textContent = lowercase[i];
+                letters[i].textContent =
+                    lowercase[i];
 
             }
 
@@ -435,7 +667,7 @@
 
 
     /*
-        Cancel whatever logo movement is currently happening.
+        Cancel current logo timer.
     */
 
     function cancelLogoAnimation() {
@@ -452,10 +684,7 @@
 
 
     /*
-        Move one step toward the target.
-
-        Because this checks the target every 120ms,
-        changing direction mid-animation works correctly.
+        Move one state at a time.
     */
 
     function moveLogo() {
@@ -471,22 +700,30 @@
 
         if (logoState < logoTarget) {
 
-            setLogoState(logoState + 1);
+            setLogoState(
+                logoState + 1
+            );
 
         } else {
 
-            setLogoState(logoState - 1);
+            setLogoState(
+                logoState - 1
+            );
 
         }
 
 
-        logoTimer = setTimeout(moveLogo, 120);
+        logoTimer =
+            setTimeout(
+                moveLogo,
+                120
+            );
 
     }
 
 
     /*
-        Tell the logo where it should go.
+        Move toward a target state.
     */
 
     function animateTo(target) {
@@ -501,205 +738,123 @@
 
 
     /* =====================================================
-       DESKTOP
+       DESKTOP LOGO
        ===================================================== */
 
-    /*
-        Mouse enters:
 
-        Denizalp
-        aybak
+    logo.addEventListener(
+        'mouseenter',
+        () => {
 
-            ↓
+            if (
+                window.matchMedia(
+                    '(min-width: 601px)'
+                ).matches
+            ) {
 
-        denizalp
-        aybak
+                animateTo(5);
 
-            ↓
-
-        denizalp
-        Aybak
-
-            ↓
-
-        denizalp
-        AYbak
-
-            ↓
-
-        denizalp
-        AYBak
-
-            ↓
-
-        denizalp
-        AYBAk
-
-            ↓
-
-        denizalp
-        AYBAK
-    */
-
-    logo.addEventListener('mouseenter', () => {
-
-        if (window.matchMedia('(min-width: 601px)').matches) {
-
-            animateTo(5);
+            }
 
         }
+    );
 
-    });
 
+    logo.addEventListener(
+        'mouseleave',
+        () => {
 
-    /*
-        Mouse leaves:
+            if (
+                window.matchMedia(
+                    '(min-width: 601px)'
+                ).matches
+            ) {
 
-        Wherever the animation currently is,
-        immediately start moving back toward:
+                animateTo(0);
 
-        Denizalp
-        aybak
-    */
-
-    logo.addEventListener('mouseleave', () => {
-
-        if (window.matchMedia('(min-width: 601px)').matches) {
-
-            animateTo(0);
+            }
 
         }
-
-    });
+    );
 
 
     /* =====================================================
-       MOBILE
+       MOBILE LOGO
        ===================================================== */
 
-    /*
-        Mobile animation:
+    let mobileCycleTimer = null;
 
-        START
-
-        Denizalp
-        aybak
-
-        wait 2 seconds
-
-            ↓
-
-        denizalp
-        aybak
-
-            ↓
-
-        denizalp
-        Aybak
-
-            ↓
-
-        denizalp
-        AYbak
-
-            ↓
-
-        denizalp
-        AYBak
-
-            ↓
-
-        denizalp
-        AYBAk
-
-            ↓
-
-        denizalp
-        AYBAK
-
-        wait 2 seconds
-
-            ↓
-
-        reverse
-
-        wait 2 seconds
-
-        repeat forever.
-    */
 
     function startMobileCycle() {
 
 
         /*
-            Wait in the current state.
+            Wait 2 seconds.
         */
 
-        mobileCycleTimer = setTimeout(() => {
-
-
-            /*
-                Forward to AYBAK.
-            */
-
-            animateTo(5);
-
-
-            /*
-                The animation takes:
-
-                5 × 120ms = 600ms
-
-                Then wait 2 seconds.
-            */
-
-            mobileCycleTimer = setTimeout(() => {
+        mobileCycleTimer =
+            setTimeout(() => {
 
 
                 /*
-                    Reverse back to the beginning.
+                    Animate toward AYBAK.
                 */
 
-                animateTo(0);
+                animateTo(5);
 
 
                 /*
-                    Again:
-
-                    600ms animation
-                    + 2 second pause
+                    Wait until animation finishes,
+                    then hold for 2 seconds.
                 */
 
-                mobileCycleTimer = setTimeout(() => {
+                mobileCycleTimer =
+                    setTimeout(() => {
 
-                    startMobileCycle();
 
-                }, 600 + 2000);
+                        /*
+                            Reverse back to
+                            Denizalp / aybak.
+                        */
 
-            }, 600 + 2000);
+                        animateTo(0);
 
-        }, 2000);
+
+                        /*
+                            Wait for reverse animation
+                            + 2 second pause, then repeat.
+                        */
+
+                        mobileCycleTimer =
+                            setTimeout(() => {
+
+                                startMobileCycle();
+
+                            }, 600 + 2000);
+
+
+                    }, 600 + 2000);
+
+
+            }, 2000);
 
     }
 
 
-    if (window.matchMedia('(max-width: 600px)').matches) {
+    /*
+        Mobile opening state:
 
+        Denizalp
+        aybak
+    */
 
-        /*
-            EXACT mobile opening state:
-
-            Denizalp
-            aybak
-        */
+    if (
+        window.matchMedia(
+            '(max-width: 600px)'
+        ).matches
+    ) {
 
         setLogoState(0);
-
-
-        /*
-            Start the infinite cycle after
-            the initial 2-second pause.
-        */
 
         startMobileCycle();
 
