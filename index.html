@@ -44,13 +44,11 @@ body {
     --page-bottom: 48px;
 
     /*
-        Updated dynamically by JS.
-
-        Preview begins underneath
-        the complete text column.
+        JS measures where the text column
+        actually ends and updates this.
     */
 
-    --preview-top: 600px;
+    --preview-left: 620px;
 
 }
 
@@ -252,32 +250,34 @@ body {
 /* =========================
    DESKTOP PREVIEW
 
-   Preview begins underneath
-   ALL landing text.
+   The preview owns the entire
+   free area to the RIGHT of
+   the text column.
 
-   Left edge:
-   same as text.
+   TOP:
+   same as Denizalp /
+   photography-page film position.
 
-   Right edge:
-   page margin.
+   RIGHT:
+   exactly same outer margin
+   as the text has on the left.
 
-   Bottom:
-   page margin.
+   LEFT:
+   actual text-column edge +
+   dynamically calculated gap.
 
-   Photography and film use
-   exactly the same frame.
-
-   Switching is hard:
-   no fade / no transition.
+   BOTTOM:
+   normal page bottom margin.
    ========================= */
 
 .preview {
     position: fixed;
 
-    top: var(--preview-top);
+    top: var(--page-top);
 
-    left: var(--page-x);
+    left: var(--preview-left);
     right: var(--page-x);
+
     bottom: var(--page-bottom);
 
     display: none;
@@ -290,9 +290,9 @@ body {
 }
 
 
-/*
-    Desktop only.
-*/
+/* =========================
+   ACTIVE PREVIEW
+   ========================= */
 
 @media (min-width: 601px) {
 
@@ -300,22 +300,24 @@ body {
         display: flex;
 
         align-items: flex-start;
-        justify-content: flex-start;
+        justify-content: flex-end;
     }
 
 }
 
 
-/*
-    The source uses the entire available
-    preview rectangle as its containment box.
+/* =========================
+   PREVIEW MEDIA
 
-    Aspect ratio is never changed.
+   The entire available box is
+   used as the containment area.
 
-    LEFT TOP is important:
-    image/video stays aligned with
-    the text column rather than centering.
-*/
+   Ratio is preserved.
+
+   Actual visible image/video
+   touches the TOP + RIGHT limits
+   whenever aspect ratio allows.
+   ========================= */
 
 .preview img,
 .preview video {
@@ -325,7 +327,7 @@ body {
     height: 100%;
 
     object-fit: contain;
-    object-position: left top;
+    object-position: right top;
 
     pointer-events: none;
 }
@@ -334,8 +336,8 @@ body {
 /* =========================
    MOBILE
 
-   Kept as before:
-   no preview behavior.
+   Intentionally unchanged:
+   no hover preview.
    ========================= */
 
 @media (max-width: 600px) {
@@ -406,12 +408,6 @@ body {
         margin-bottom: 15px;
     }
 
-
-    /*
-        Mobile remains exactly
-        non-preview.
-    */
-
     .preview {
         display: none !important;
     }
@@ -421,13 +417,6 @@ body {
 
 /* =========================
    SHORT LANDSCAPE
-
-   Typography remains as in
-   the original responsive layout.
-
-   Preview is still available
-   if device actually has hover
-   capability.
    ========================= */
 
 @media
@@ -662,11 +651,12 @@ body {
 /* =====================================================
    WORD TIMING
 
-   Photography + film use the
-   same shared clock.
+   Same rhythm as photography page.
 
-   Both transitions take exactly
-   400ms regardless of word length.
+   Photography and film share the
+   same transition clock, so both
+   begin and finish at exactly the
+   same moment.
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
@@ -705,10 +695,8 @@ function renderCaseWord(
 
         result +=
             i < upperCount
-                ? word[i]
-                    .toUpperCase()
-                : word[i]
-                    .toLowerCase();
+                ? word[i].toUpperCase()
+                : word[i].toLowerCase();
 
     }
 
@@ -720,8 +708,6 @@ function renderCaseWord(
 
 /* =====================================================
    LOGO
-
-   Photography-page rhythm:
 
    5 steps × 80ms = 400ms.
    ===================================================== */
@@ -953,11 +939,6 @@ setLogoState(
 
 /* =====================================================
    SYNCHRONIZED NAVIGATION WORDS
-
-   photography + film:
-   same beginning
-   same ending
-   same total transition time.
    ===================================================== */
 
 const animatedLinks =
@@ -1111,13 +1092,6 @@ function updateNavigationWords(
                 "up"
             ) {
 
-                /*
-                    Because this is based on normalized
-                    progress rather than fixed ms/letter,
-                    photography and film both reach full
-                    uppercase at the same moment.
-                */
-
                 upperCount =
                     Math.min(
                         word.length,
@@ -1169,7 +1143,7 @@ requestAnimationFrame(
 
 
 /* =====================================================
-   PREVIEWS
+   PREVIEW ELEMENTS
    ===================================================== */
 
 const landingColumn =
@@ -1197,9 +1171,10 @@ const previewVideo =
 
 
 /* =====================================================
-   CAN USE DESKTOP PREVIEW
+   DESKTOP PREVIEW AVAILABILITY
 
-   Mobile is intentionally untouched.
+   Mobile behavior intentionally remains
+   untouched.
    ===================================================== */
 
 function canUsePreview() {
@@ -1216,17 +1191,16 @@ function canUsePreview() {
 /* =====================================================
    PREVIEW GEOMETRY
 
-   Find the ACTUAL bottom of all text.
+   This is the key responsive part.
 
-   Preview starts underneath it and
-   occupies every remaining usable pixel
-   of the viewport.
+   We do NOT assume that the left column
+   is always exactly 530px wide.
 
-   This automatically adapts to:
-   - desktop height
-   - browser resizing
-   - short landscape windows
-   - text wrapping
+   Its real right edge is measured after
+   layout, including responsive changes.
+
+   Preview then receives all remaining
+   space on the right.
    ===================================================== */
 
 function updatePreviewGeometry() {
@@ -1245,52 +1219,135 @@ function updatePreviewGeometry() {
             .getBoundingClientRect();
 
 
+    const root =
+        document.documentElement;
+
+
     const rootStyle =
         getComputedStyle(
-            document.documentElement
+            root
         );
 
 
-    const fontSize =
+    const pageX =
         parseFloat(
-            getComputedStyle(
-                landingColumn
-            ).fontSize
-        ) || 15;
+            rootStyle.getPropertyValue(
+                "--page-x"
+            )
+        ) || 48;
 
 
     /*
-        One text-size of breathing room
-        between final line and preview.
+        Separation between text and image.
 
-        15px desktop,
-        ~13px short-landscape.
+        Desktop:
+        same 48px rhythm as the outer margin.
+
+        Short landscape:
+        automatically becomes 24px because
+        --page-x is 24px there.
+
+        This makes the layout feel like:
+
+        | 48 | text | 48 | IMAGE | 48 |
+
+        whenever there is enough room.
     */
 
-    const gap =
-        fontSize;
+    let desiredGap =
+        pageX;
 
 
-    const previewTop =
-        Math.ceil(
-            columnRect.bottom +
-            gap
+    /*
+        Calculate how much horizontal room
+        would remain if we used the full gap.
+    */
+
+    const rightLimit =
+        window.innerWidth -
+        pageX;
+
+
+    let previewLeft =
+        columnRect.right +
+        desiredGap;
+
+
+    let availableWidth =
+        rightLimit -
+        previewLeft;
+
+
+    /*
+        On narrower desktop/tablet windows,
+        don't let the gap destroy the usable
+        image area.
+
+        We shrink ONLY the internal gap,
+        never the outer margin and never
+        overlap the text.
+
+        16px is the absolute minimum
+        separation between copy and image.
+    */
+
+    const minimumPreviewWidth =
+        180;
+
+
+    if (
+        availableWidth <
+        minimumPreviewWidth
+    ) {
+
+        const reducedGap =
+            Math.max(
+                16,
+                rightLimit -
+                minimumPreviewWidth -
+                columnRect.right
+            );
+
+
+        previewLeft =
+            columnRect.right +
+            reducedGap;
+
+
+        availableWidth =
+            rightLimit -
+            previewLeft;
+
+    }
+
+
+    /*
+        Absolute collision protection.
+
+        Even under an unusually narrow
+        hover-capable viewport, preview can
+        never enter the text column.
+    */
+
+    previewLeft =
+        Math.max(
+            columnRect.right + 16,
+            previewLeft
         );
 
 
-    document
-        .documentElement
-        .style
-        .setProperty(
-            "--preview-top",
-            `${previewTop}px`
-        );
+    root.style.setProperty(
+        "--preview-left",
+        `${Math.ceil(
+            previewLeft
+        )}px`
+    );
 
 }
 
 
 /* =====================================================
-   HIDE ALL PREVIEWS
+   HIDE PREVIEWS
    ===================================================== */
 
 function hideAllPreviews() {
@@ -1317,9 +1374,10 @@ function hideAllPreviews() {
 /* =====================================================
    SHOW PREVIEW
 
-   Hard switch:
-   previous disappears immediately,
-   next appears immediately.
+   Hard switch.
+
+   Photography and film occupy
+   exactly the same rectangle.
    ===================================================== */
 
 function showPreviewFor(
@@ -1389,7 +1447,7 @@ function showPreviewFor(
 
 
 /* =====================================================
-   TITLE HOVER
+   TITLE HOVERS
    ===================================================== */
 
 animatedLinks.forEach(
@@ -1421,12 +1479,12 @@ animatedLinks.forEach(
 
 
 /* =====================================================
-   RESIZE / GEOMETRY
+   GEOMETRY CHANGES
 
-   Recalculate while browser dimensions
-   or wrapping change.
-
-   Mobile stays preview-free.
+   Re-measure after:
+   - browser resize
+   - orientation change
+   - responsive text reflow
    ===================================================== */
 
 function handleGeometryChange() {
@@ -1460,18 +1518,31 @@ window.addEventListener(
 
         setTimeout(
             handleGeometryChange,
-            250
+            100
+        );
+
+
+        setTimeout(
+            handleGeometryChange,
+            350
         );
 
     }
 );
 
 
-/* =====================================================
-   INITIAL GEOMETRY
-   ===================================================== */
+/*
+    Fonts/layout may settle after
+    first paint, so calculate twice.
+*/
 
 requestAnimationFrame(
+    updatePreviewGeometry
+);
+
+
+window.addEventListener(
+    "load",
     updatePreviewGeometry
 );
 
