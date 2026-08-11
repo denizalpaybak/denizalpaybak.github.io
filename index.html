@@ -30,8 +30,6 @@ body {
 body {
     color: #000;
     font-family: Arial, Helvetica, sans-serif;
-
-    overflow-x: hidden;
 }
 
 
@@ -45,7 +43,14 @@ body {
     --page-top: 32px;
     --page-bottom: 48px;
 
-    --preview-top: 150px;
+    /*
+        Updated dynamically by JS.
+
+        Preview begins underneath
+        the complete text column.
+    */
+
+    --preview-top: 600px;
 
 }
 
@@ -245,42 +250,25 @@ body {
 
 
 /* =========================
-   FOCUS MODE
+   DESKTOP PREVIEW
 
-   Keep:
-   - logo
-   - hovered navigation title
+   Preview begins underneath
+   ALL landing text.
 
-   Hide instantly:
-   - opening
-   - other navigation title
-   - contact
-   - biography
+   Left edge:
+   same as text.
 
-   visibility keeps every original
-   position intact.
-   ========================= */
+   Right edge:
+   page margin.
 
-body.preview-mode .opening,
-body.preview-mode .contact,
-body.preview-mode .biography {
-    visibility: hidden;
-}
+   Bottom:
+   page margin.
 
-body.preview-mode
-.animated-link:not(.preview-source) {
-    visibility: hidden;
-}
+   Photography and film use
+   exactly the same frame.
 
-
-/* =========================
-   PREVIEW AREA
-
-   JS sets --preview-top to the
-   exact bottom of the hovered title.
-
-   Same frame for photography + film.
-   Hard switch only.
+   Switching is hard:
+   no fade / no transition.
    ========================= */
 
 .preview {
@@ -298,29 +286,35 @@ body.preview-mode
 
     pointer-events: none;
 
-    align-items: flex-start;
-    justify-content: flex-start;
-
     overflow: hidden;
 }
 
 
 /*
-    No fade.
-    No transition.
+    Desktop only.
 */
 
-.preview.active {
-    display: flex;
+@media (min-width: 601px) {
+
+    .preview.active {
+        display: flex;
+
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
 }
 
 
 /*
-    Use all available space while
-    preserving the source ratio.
+    The source uses the entire available
+    preview rectangle as its containment box.
 
-    object-position keeps the image
-    tied to the same left edge as text.
+    Aspect ratio is never changed.
+
+    LEFT TOP is important:
+    image/video stays aligned with
+    the text column rather than centering.
 */
 
 .preview img,
@@ -339,6 +333,9 @@ body.preview-mode
 
 /* =========================
    MOBILE
+
+   Kept as before:
+   no preview behavior.
    ========================= */
 
 @media (max-width: 600px) {
@@ -411,26 +408,12 @@ body.preview-mode
 
 
     /*
-        No hover preview on mobile.
+        Mobile remains exactly
+        non-preview.
     */
 
     .preview {
         display: none !important;
-    }
-
-
-    /*
-        Defensive reset in case device
-        changes orientation while a
-        desktop preview was active.
-    */
-
-    body.preview-mode .opening,
-    body.preview-mode .contact,
-    body.preview-mode .biography,
-    body.preview-mode
-    .animated-link:not(.preview-source) {
-        visibility: visible;
     }
 
 }
@@ -438,6 +421,13 @@ body.preview-mode
 
 /* =========================
    SHORT LANDSCAPE
+
+   Typography remains as in
+   the original responsive layout.
+
+   Preview is still available
+   if device actually has hover
+   capability.
    ========================= */
 
 @media
@@ -515,7 +505,10 @@ body.preview-mode
 
 <div class="page">
 
-    <main class="column">
+    <main
+        class="column"
+        id="landing-column"
+    >
 
         <a
             class="logo"
@@ -669,11 +662,11 @@ body.preview-mode
 /* =====================================================
    WORD TIMING
 
-   Same duration for photography + film.
+   Photography + film use the
+   same shared clock.
 
-   Both are driven by one shared clock,
-   therefore they start and finish
-   capitalization simultaneously.
+   Both transitions take exactly
+   400ms regardless of word length.
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
@@ -727,6 +720,8 @@ function renderCaseWord(
 
 /* =====================================================
    LOGO
+
+   Photography-page rhythm:
 
    5 steps × 80ms = 400ms.
    ===================================================== */
@@ -958,6 +953,11 @@ setLogoState(
 
 /* =====================================================
    SYNCHRONIZED NAVIGATION WORDS
+
+   photography + film:
+   same beginning
+   same ending
+   same total transition time.
    ===================================================== */
 
 const animatedLinks =
@@ -1111,6 +1111,13 @@ function updateNavigationWords(
                 "up"
             ) {
 
+                /*
+                    Because this is based on normalized
+                    progress rather than fixed ms/letter,
+                    photography and film both reach full
+                    uppercase at the same moment.
+                */
+
                 upperCount =
                     Math.min(
                         word.length,
@@ -1162,8 +1169,14 @@ requestAnimationFrame(
 
 
 /* =====================================================
-   PREVIEW ELEMENTS
+   PREVIEWS
    ===================================================== */
+
+const landingColumn =
+    document.getElementById(
+        "landing-column"
+    );
+
 
 const photographyPreview =
     document.getElementById(
@@ -1184,7 +1197,9 @@ const previewVideo =
 
 
 /* =====================================================
-   DESKTOP PREVIEW AVAILABILITY
+   CAN USE DESKTOP PREVIEW
+
+   Mobile is intentionally untouched.
    ===================================================== */
 
 function canUsePreview() {
@@ -1199,7 +1214,83 @@ function canUsePreview() {
 
 
 /* =====================================================
-   HIDE PREVIEWS
+   PREVIEW GEOMETRY
+
+   Find the ACTUAL bottom of all text.
+
+   Preview starts underneath it and
+   occupies every remaining usable pixel
+   of the viewport.
+
+   This automatically adapts to:
+   - desktop height
+   - browser resizing
+   - short landscape windows
+   - text wrapping
+   ===================================================== */
+
+function updatePreviewGeometry() {
+
+    if (
+        !canUsePreview()
+    ) {
+
+        return;
+
+    }
+
+
+    const columnRect =
+        landingColumn
+            .getBoundingClientRect();
+
+
+    const rootStyle =
+        getComputedStyle(
+            document.documentElement
+        );
+
+
+    const fontSize =
+        parseFloat(
+            getComputedStyle(
+                landingColumn
+            ).fontSize
+        ) || 15;
+
+
+    /*
+        One text-size of breathing room
+        between final line and preview.
+
+        15px desktop,
+        ~13px short-landscape.
+    */
+
+    const gap =
+        fontSize;
+
+
+    const previewTop =
+        Math.ceil(
+            columnRect.bottom +
+            gap
+        );
+
+
+    document
+        .documentElement
+        .style
+        .setProperty(
+            "--preview-top",
+            `${previewTop}px`
+        );
+
+}
+
+
+/* =====================================================
+   HIDE ALL PREVIEWS
    ===================================================== */
 
 function hideAllPreviews() {
@@ -1224,70 +1315,14 @@ function hideAllPreviews() {
 
 
 /* =====================================================
-   PREVIEW GEOMETRY
+   SHOW PREVIEW
 
-   Preview begins directly underneath
-   the active title.
-
-   It then uses the complete remaining
-   viewport down to the page bottom margin.
+   Hard switch:
+   previous disappears immediately,
+   next appears immediately.
    ===================================================== */
 
-function updatePreviewGeometry(
-    link
-) {
-
-    const rect =
-        link.getBoundingClientRect();
-
-
-    /*
-        A small gap equivalent to roughly
-        one text rhythm.
-
-        Set to 14px on short landscape
-        through the actual computed font size.
-    */
-
-    const style =
-        getComputedStyle(
-            link
-        );
-
-
-    const fontSize =
-        parseFloat(
-            style.fontSize
-        ) || 15;
-
-
-    const gap =
-        fontSize;
-
-
-    const previewTop =
-        Math.ceil(
-            rect.bottom +
-            gap
-        );
-
-
-    document
-        .documentElement
-        .style
-        .setProperty(
-            "--preview-top",
-            `${previewTop}px`
-        );
-
-}
-
-
-/* =====================================================
-   ENTER FOCUS MODE
-   ===================================================== */
-
-function enterPreviewMode(
+function showPreviewFor(
     link
 ) {
 
@@ -1300,55 +1335,8 @@ function enterPreviewMode(
     }
 
 
-    /*
-        Mark only this title as surviving
-        focus mode.
-    */
+    updatePreviewGeometry();
 
-    animatedLinks.forEach(
-        item => {
-
-            item.classList.remove(
-                "preview-source"
-            );
-
-        }
-    );
-
-
-    link.classList.add(
-        "preview-source"
-    );
-
-
-    /*
-        Geometry is measured BEFORE hiding
-        the other content.
-
-        Because visibility keeps layout intact,
-        its position remains unchanged anyway.
-    */
-
-    updatePreviewGeometry(
-        link
-    );
-
-
-    /*
-        Everything disappears instantly.
-    */
-
-    document.body
-        .classList
-        .add(
-            "preview-mode"
-        );
-
-
-    /*
-        HARD SWITCH:
-        remove both first.
-    */
 
     hideAllPreviews();
 
@@ -1379,11 +1367,6 @@ function enterPreviewMode(
             );
 
 
-        /*
-            Begin preview from its start
-            each time film is entered.
-        */
-
         try {
 
             previewVideo.currentTime =
@@ -1406,32 +1389,7 @@ function enterPreviewMode(
 
 
 /* =====================================================
-   LEAVE FOCUS MODE
-   ===================================================== */
-
-function leavePreviewMode(
-    link
-) {
-
-    hideAllPreviews();
-
-
-    link.classList.remove(
-        "preview-source"
-    );
-
-
-    document.body
-        .classList
-        .remove(
-            "preview-mode"
-        );
-
-}
-
-
-/* =====================================================
-   TITLE HOVERS
+   TITLE HOVER
    ===================================================== */
 
 animatedLinks.forEach(
@@ -1441,7 +1399,7 @@ animatedLinks.forEach(
             "mouseenter",
             () => {
 
-                enterPreviewMode(
+                showPreviewFor(
                     link
                 );
 
@@ -1453,9 +1411,7 @@ animatedLinks.forEach(
             "mouseleave",
             () => {
 
-                leavePreviewMode(
-                    link
-                );
+                hideAllPreviews();
 
             }
         );
@@ -1465,14 +1421,15 @@ animatedLinks.forEach(
 
 
 /* =====================================================
-   RESIZE
+   RESIZE / GEOMETRY
 
-   If viewport changes while a title
-   remains hovered, recalculate the
-   available preview rectangle.
+   Recalculate while browser dimensions
+   or wrapping change.
+
+   Mobile stays preview-free.
    ===================================================== */
 
-function updateActivePreviewGeometry() {
+function handleGeometryChange() {
 
     if (
         !canUsePreview()
@@ -1481,51 +1438,19 @@ function updateActivePreviewGeometry() {
         hideAllPreviews();
 
 
-        document.body
-            .classList
-            .remove(
-                "preview-mode"
-            );
-
-
-        animatedLinks.forEach(
-            link => {
-
-                link.classList.remove(
-                    "preview-source"
-                );
-
-            }
-        );
-
-
         return;
 
     }
 
 
-    const activeLink =
-        document.querySelector(
-            ".animated-link.preview-source"
-        );
-
-
-    if (
-        activeLink
-    ) {
-
-        updatePreviewGeometry(
-            activeLink
-        );
-
-    }
+    updatePreviewGeometry();
 
 }
 
 
 window.addEventListener(
     "resize",
-    updateActivePreviewGeometry
+    handleGeometryChange
 );
 
 
@@ -1534,11 +1459,20 @@ window.addEventListener(
     () => {
 
         setTimeout(
-            updateActivePreviewGeometry,
+            handleGeometryChange,
             250
         );
 
     }
+);
+
+
+/* =====================================================
+   INITIAL GEOMETRY
+   ===================================================== */
+
+requestAnimationFrame(
+    updatePreviewGeometry
 );
 
 </script>
