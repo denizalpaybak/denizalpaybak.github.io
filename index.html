@@ -36,7 +36,6 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
-
     padding: 32px 48px 48px 48px;
 }
 
@@ -48,7 +47,6 @@ body {
 .column {
     width: 100%;
     max-width: 530px;
-
     margin: 0;
     padding: 0;
 }
@@ -66,14 +64,12 @@ body {
     height: 34px;
 
     margin: 0 0 17px 0;
-    padding: 0;
 
     color: #000;
     text-decoration: none;
 
     cursor: pointer;
 
-    font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     font-weight: 400;
     line-height: 1.15;
@@ -87,8 +83,6 @@ body {
     white-space: nowrap;
 
     font-size: 15px;
-    font-weight: 400;
-    line-height: 1.15;
 }
 
 .logo-aybak {
@@ -99,9 +93,6 @@ body {
     white-space: nowrap;
 
     font-size: 15px;
-    font-weight: 400;
-    line-height: 1.15;
-
     letter-spacing: normal;
 }
 
@@ -112,10 +103,8 @@ body {
 
 .opening {
     margin: 0 0 17px 0;
-    padding: 0;
 
     font-size: 15px;
-    font-weight: 400;
     line-height: 1.15;
 
     text-wrap: balance;
@@ -131,7 +120,6 @@ body {
     flex-direction: column;
 
     margin: 0 0 16px 0;
-    padding: 0;
 }
 
 .navigation a {
@@ -142,7 +130,6 @@ body {
     text-decoration: none;
 
     font-size: 15px;
-    font-weight: 400;
     line-height: 1.15;
 }
 
@@ -156,17 +143,13 @@ body {
     flex-direction: column;
 
     margin: 0 0 17px 0;
-    padding: 0;
 }
 
 .contact a {
-    display: block;
-
     color: #000;
     text-decoration: none;
 
     font-size: 15px;
-    font-weight: 400;
     line-height: 1.15;
 }
 
@@ -176,27 +159,19 @@ body {
 
 
 /* =========================
-   BIOGRAPHY
+   BIO
    ========================= */
 
 .biography {
     width: 100%;
     max-width: 530px;
 
-    margin: 0;
-    padding: 0;
-
     font-size: 15px;
-    font-weight: 400;
     line-height: 1.15;
-
-    text-align: left;
 }
 
 .biography p {
     margin: 0 0 17px 0;
-    padding: 0;
-
     text-wrap: balance;
 }
 
@@ -210,7 +185,7 @@ body {
 
 
 /* =========================
-   DESKTOP PREVIEWS
+   PREVIEWS
    ========================= */
 
 .preview {
@@ -267,26 +242,22 @@ body {
     }
 
     .column {
-        width: 100%;
         max-width: none;
     }
 
     .logo {
         height: 30px;
-
         margin-bottom: 15px;
-
         font-size: 13px;
     }
 
-    .logo-name {
+    .logo-name,
+    .logo-aybak {
         font-size: 13px;
     }
 
     .logo-aybak {
         top: 15px;
-
-        font-size: 13px;
     }
 
     .opening,
@@ -316,6 +287,69 @@ body {
 
 }
 
+
+/* =========================
+   SHORT LANDSCAPE
+   ========================= */
+
+@media (orientation: landscape) and (max-height: 700px) {
+
+    .page {
+        padding: 20px 24px 24px 24px;
+    }
+
+    .column {
+        max-width: 470px;
+    }
+
+    .logo {
+        height: 30px;
+        margin-bottom: 14px;
+    }
+
+    .logo-name,
+    .logo-aybak,
+    .opening,
+    .navigation a,
+    .contact a,
+    .biography {
+        font-size: 13px;
+    }
+
+    .logo-aybak {
+        top: 15px;
+    }
+
+    .opening,
+    .biography p {
+        margin-bottom: 14px;
+    }
+
+    .navigation,
+    .contact {
+        margin-bottom: 14px;
+    }
+
+    .preview {
+        width: min(52vw, 650px);
+        right: 24px;
+    }
+
+    .preview img,
+    .preview video {
+        max-height: 70vh;
+    }
+
+    .photography-preview {
+        top: 10vh;
+    }
+
+    .film-preview {
+        top: 24vh;
+    }
+
+}
+
 </style>
 
 </head>
@@ -326,9 +360,6 @@ body {
 <div class="page">
 
     <main class="column">
-
-
-        <!-- LOGO -->
 
         <a
             class="logo"
@@ -352,14 +383,10 @@ body {
         </a>
 
 
-        <!-- OPENING -->
-
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
-
-        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
@@ -383,8 +410,6 @@ body {
 
         </nav>
 
-
-        <!-- CONTACT -->
 
         <div class="contact">
 
@@ -414,8 +439,6 @@ body {
 
         </div>
 
-
-        <!-- BIO -->
 
         <section class="biography">
 
@@ -452,8 +475,6 @@ body {
 </div>
 
 
-<!-- PHOTOGRAPHY PREVIEW -->
-
 <div
     class="preview photography-preview"
     id="photography-preview"
@@ -464,8 +485,6 @@ body {
     >
 </div>
 
-
-<!-- FILM PREVIEW -->
 
 <div
     class="preview film-preview"
@@ -484,19 +503,13 @@ body {
 
 <script>
 
-/* =====================================================
-   SETTINGS
-   ===================================================== */
-
 const NORMAL_SPEED = 120;
 const HOLD_TIME = 2000;
 
 
-/* =====================================================
-   LANDING LOGO
-   DESKTOP HOVER ONLY
-   MOBILE STATIC
-   ===================================================== */
+/* =========================
+   LOGO
+   ========================= */
 
 const logo =
     document.querySelector(".logo");
@@ -512,21 +525,8 @@ const logoLetters = [
     document.getElementById("letter-k")
 ];
 
-const lowercase = [
-    "a",
-    "y",
-    "b",
-    "a",
-    "k"
-];
-
-const uppercase = [
-    "A",
-    "Y",
-    "B",
-    "A",
-    "K"
-];
+const lowercase = ["a","y","b","a","k"];
+const uppercase = ["A","Y","B","A","K"];
 
 let logoState = 0;
 let logoTarget = 0;
@@ -561,32 +561,20 @@ function setLogoState(state) {
 function moveLogo() {
 
     if (
-        logoState === logoTarget
+        logoState ===
+        logoTarget
     ) {
 
         logoTimer = null;
-
         return;
 
     }
 
-    if (
+    setLogoState(
         logoState < logoTarget
-    ) {
-
-        setLogoState(
-            logoState + 1
-        );
-
-    }
-
-    else {
-
-        setLogoState(
-            logoState - 1
-        );
-
-    }
+            ? logoState + 1
+            : logoState - 1
+    );
 
     logoTimer =
         setTimeout(
@@ -655,9 +643,9 @@ logo.addEventListener(
 setLogoState(0);
 
 
-/* =====================================================
-   PHOTOGRAPHY / FILM AUTO ANIMATION
-   ===================================================== */
+/* =========================
+   NAV ANIMATION
+   ========================= */
 
 const animatedLinks =
     document.querySelectorAll(
@@ -710,7 +698,6 @@ animatedLinks.forEach(
             const next =
                 state + direction;
 
-
             if (
                 next >= chars.length
             ) {
@@ -732,13 +719,11 @@ animatedLinks.forEach(
 
             }
 
-
             if (
                 next <= 0
             ) {
 
                 state = 0;
-
                 direction = 1;
 
                 render();
@@ -753,11 +738,9 @@ animatedLinks.forEach(
 
             }
 
-
             state = next;
 
             render();
-
 
             timer =
                 setTimeout(
@@ -770,7 +753,6 @@ animatedLinks.forEach(
 
         render();
 
-
         timer =
             setTimeout(
                 run,
@@ -778,8 +760,6 @@ animatedLinks.forEach(
                 index * 180
             );
 
-
-        /* DESKTOP PREVIEW */
 
         link.addEventListener(
             "mouseenter",
@@ -791,7 +771,6 @@ animatedLinks.forEach(
                     return;
                 }
 
-
                 const photographyPreview =
                     document.getElementById(
                         "photography-preview"
@@ -801,7 +780,6 @@ animatedLinks.forEach(
                     document.getElementById(
                         "film-preview"
                     );
-
 
                 photographyPreview
                     .classList
@@ -833,15 +811,14 @@ animatedLinks.forEach(
                         .classList
                         .add("active");
 
-                    const video =
-                        filmPreview
-                            .querySelector(
-                                "video"
-                            );
+                    const previewVideo =
+                        filmPreview.querySelector(
+                            "video"
+                        );
 
-                    video.currentTime = 0;
+                    previewVideo.currentTime = 0;
 
-                    video.play().catch(
+                    previewVideo.play().catch(
                         () => {}
                     );
 
