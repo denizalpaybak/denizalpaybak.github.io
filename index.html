@@ -30,6 +30,23 @@ body {
 body {
     color: #000;
     font-family: Arial, Helvetica, sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   VARIABLES
+   ========================= */
+
+:root {
+
+    --page-x: 48px;
+    --page-top: 32px;
+    --page-bottom: 48px;
+
+    --preview-top: 150px;
+
 }
 
 
@@ -43,7 +60,13 @@ body {
     width: 100%;
     min-height: 100vh;
 
-    padding: 32px 48px 48px 48px;
+    padding:
+        var(--page-top)
+        var(--page-x)
+        var(--page-bottom)
+        var(--page-x);
+
+    z-index: 20;
 }
 
 
@@ -222,48 +245,95 @@ body {
 
 
 /* =========================
-   PREVIEWS
+   FOCUS MODE
 
-   Photography + film now occupy
-   exactly the same position.
+   Keep:
+   - logo
+   - hovered navigation title
 
-   Hard switch only:
-   no opacity / fade transition.
+   Hide instantly:
+   - opening
+   - other navigation title
+   - contact
+   - biography
+
+   visibility keeps every original
+   position intact.
+   ========================= */
+
+body.preview-mode .opening,
+body.preview-mode .contact,
+body.preview-mode .biography {
+    visibility: hidden;
+}
+
+body.preview-mode
+.animated-link:not(.preview-source) {
+    visibility: hidden;
+}
+
+
+/* =========================
+   PREVIEW AREA
+
+   JS sets --preview-top to the
+   exact bottom of the hovered title.
+
+   Same frame for photography + film.
+   Hard switch only.
    ========================= */
 
 .preview {
     position: fixed;
 
-    top: 7vh;
-    right: 48px;
+    top: var(--preview-top);
 
-    width: min(60vw, 900px);
+    left: var(--page-x);
+    right: var(--page-x);
+    bottom: var(--page-bottom);
 
     display: none;
 
     z-index: 10;
 
     pointer-events: none;
+
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    overflow: hidden;
 }
+
+
+/*
+    No fade.
+    No transition.
+*/
+
+.preview.active {
+    display: flex;
+}
+
+
+/*
+    Use all available space while
+    preserving the source ratio.
+
+    object-position keeps the image
+    tied to the same left edge as text.
+*/
 
 .preview img,
 .preview video {
     display: block;
 
     width: 100%;
-    height: auto;
-
-    max-height: 86vh;
+    height: 100%;
 
     object-fit: contain;
-}
+    object-position: left top;
 
-@media (min-width: 701px) {
-
-    .preview.active {
-        display: block;
-    }
-
+    pointer-events: none;
 }
 
 
@@ -273,8 +343,20 @@ body {
 
 @media (max-width: 600px) {
 
+    :root {
+
+        --page-x: 24px;
+        --page-top: 20px;
+        --page-bottom: 32px;
+
+    }
+
     .page {
-        padding: 20px 24px 32px 24px;
+        padding:
+            var(--page-top)
+            var(--page-x)
+            var(--page-bottom)
+            var(--page-x);
     }
 
     .column {
@@ -327,8 +409,28 @@ body {
         margin-bottom: 15px;
     }
 
+
+    /*
+        No hover preview on mobile.
+    */
+
     .preview {
         display: none !important;
+    }
+
+
+    /*
+        Defensive reset in case device
+        changes orientation while a
+        desktop preview was active.
+    */
+
+    body.preview-mode .opening,
+    body.preview-mode .contact,
+    body.preview-mode .biography,
+    body.preview-mode
+    .animated-link:not(.preview-source) {
+        visibility: visible;
     }
 
 }
@@ -338,10 +440,24 @@ body {
    SHORT LANDSCAPE
    ========================= */
 
-@media (orientation: landscape) and (max-height: 700px) {
+@media
+    (orientation: landscape)
+    and (max-height: 700px) {
+
+    :root {
+
+        --page-x: 24px;
+        --page-top: 20px;
+        --page-bottom: 24px;
+
+    }
 
     .page {
-        padding: 20px 24px 24px 24px;
+        padding:
+            var(--page-top)
+            var(--page-x)
+            var(--page-bottom)
+            var(--page-x);
     }
 
     .column {
@@ -386,18 +502,6 @@ body {
     .navigation,
     .contact {
         margin-bottom: 14px;
-    }
-
-    .preview {
-        top: 10vh;
-
-        width: min(52vw, 650px);
-        right: 24px;
-    }
-
-    .preview img,
-    .preview video {
-        max-height: 70vh;
     }
 
 }
@@ -446,8 +550,11 @@ body {
                 data-word="photography"
                 data-preview="photography"
             >
-                <span class="nav-text">photography</span>
+                <span class="nav-text">
+                    photography
+                </span>
             </a>
+
 
             <a
                 href="https://film.denizalpaybak.com/"
@@ -455,7 +562,9 @@ body {
                 data-word="film"
                 data-preview="film"
             >
-                <span class="nav-text">film</span>
+                <span class="nav-text">
+                    film
+                </span>
             </a>
 
         </nav>
@@ -518,53 +627,62 @@ body {
 
 
 <!-- =========================
-     SHARED PREVIEW POSITION
+     PHOTOGRAPHY PREVIEW
      ========================= -->
 
 <div
-    class="preview photography-preview"
+    class="preview"
     id="photography-preview"
 >
+
     <img
         src="./photo.jpg"
         alt=""
     >
+
 </div>
 
 
+<!-- =========================
+     FILM PREVIEW
+     ========================= -->
+
 <div
-    class="preview film-preview"
+    class="preview"
     id="film-preview"
 >
+
     <video
         src="./film.mp4"
         muted
-        autoplay
         loop
         playsinline
         preload="auto"
     ></video>
+
 </div>
 
 
 <script>
 
+
 /* =====================================================
-   GLOBAL WORD TIMING
+   WORD TIMING
 
-   Matches photography interface:
+   Same duration for photography + film.
 
-   400ms lowercase -> uppercase
-   400ms uppercase -> lowercase
-
-   Photography and film share one clock,
-   therefore both transformations begin
-   and end simultaneously despite the
-   different word lengths.
+   Both are driven by one shared clock,
+   therefore they start and finish
+   capitalization simultaneously.
    ===================================================== */
 
-const WORD_TRANSITION_DURATION = 400;
-const WORD_HOLD_DURATION = 2000;
+const WORD_TRANSITION_DURATION =
+    400;
+
+
+const WORD_HOLD_DURATION =
+    2000;
+
 
 const WORD_CYCLE_DURATION =
     WORD_HOLD_DURATION +
@@ -582,7 +700,9 @@ function renderCaseWord(
     upperCount
 ) {
 
-    let result = "";
+    let result =
+        "";
+
 
     for (
         let i = 0;
@@ -592,10 +712,13 @@ function renderCaseWord(
 
         result +=
             i < upperCount
-                ? word[i].toUpperCase()
-                : word[i].toLowerCase();
+                ? word[i]
+                    .toUpperCase()
+                : word[i]
+                    .toLowerCase();
 
     }
+
 
     return result;
 
@@ -605,57 +728,96 @@ function renderCaseWord(
 /* =====================================================
    LOGO
 
-   Photography page timing:
-   5 × 80ms = 400ms
+   5 steps × 80ms = 400ms.
    ===================================================== */
 
 const logo =
-    document.querySelector(".logo");
+    document.querySelector(
+        ".logo"
+    );
+
 
 const logoName =
     document.getElementById(
         "logo-name"
     );
 
-const logoLetters = [
-    document.getElementById("letter-a"),
-    document.getElementById("letter-y"),
-    document.getElementById("letter-b"),
-    document.getElementById("letter-a2"),
-    document.getElementById("letter-k")
-];
 
-const lowercase = [
-    "a",
-    "y",
-    "b",
-    "a",
-    "k"
-];
+const logoLetters =
+    [
 
-const uppercase = [
-    "A",
-    "Y",
-    "B",
-    "A",
-    "K"
-];
+        document.getElementById(
+            "letter-a"
+        ),
 
-let logoState = 0;
-let logoTarget = 0;
-let logoTimer = null;
+        document.getElementById(
+            "letter-y"
+        ),
 
+        document.getElementById(
+            "letter-b"
+        ),
+
+        document.getElementById(
+            "letter-a2"
+        ),
+
+        document.getElementById(
+            "letter-k"
+        )
+
+    ];
+
+
+const lowercase =
+    [
+        "a",
+        "y",
+        "b",
+        "a",
+        "k"
+    ];
+
+
+const uppercase =
+    [
+        "A",
+        "Y",
+        "B",
+        "A",
+        "K"
+    ];
+
+
+let logoState =
+    0;
+
+
+let logoTarget =
+    0;
+
+
+let logoTimer =
+    null;
+
+
+/* =====================================================
+   SET LOGO STATE
+   ===================================================== */
 
 function setLogoState(
     state
 ) {
 
-    logoState = state;
+    logoState =
+        state;
+
 
     logoName.textContent =
         state === 0
             ? "Denizalp"
             : "denizalp";
+
 
     for (
         let i = 0;
@@ -663,15 +825,25 @@ function setLogoState(
         i++
     ) {
 
-        logoLetters[i].textContent =
+        logoLetters[
+            i
+        ].textContent =
             i < state
-                ? uppercase[i]
-                : lowercase[i];
+                ? uppercase[
+                    i
+                ]
+                : lowercase[
+                    i
+                ];
 
     }
 
 }
 
+
+/* =====================================================
+   MOVE LOGO
+   ===================================================== */
 
 function moveLogo() {
 
@@ -680,17 +852,22 @@ function moveLogo() {
         logoTarget
     ) {
 
-        logoTimer = null;
+        logoTimer =
+            null;
+
 
         return;
 
     }
 
+
     setLogoState(
-        logoState < logoTarget
+        logoState <
+        logoTarget
             ? logoState + 1
             : logoState - 1
     );
+
 
     logoTimer =
         setTimeout(
@@ -701,14 +878,21 @@ function moveLogo() {
 }
 
 
+/* =====================================================
+   ANIMATE LOGO
+   ===================================================== */
+
 function animateLogoTo(
     target
 ) {
 
-    logoTarget = target;
+    logoTarget =
+        target;
+
 
     if (
-        logoTimer !== null
+        logoTimer !==
+        null
     ) {
 
         clearTimeout(
@@ -717,10 +901,15 @@ function animateLogoTo(
 
     }
 
+
     moveLogo();
 
 }
 
+
+/* =====================================================
+   LOGO HOVER
+   ===================================================== */
 
 logo.addEventListener(
     "mouseenter",
@@ -728,11 +917,13 @@ logo.addEventListener(
 
         if (
             window.matchMedia(
-                "(min-width: 601px)"
+                "(hover: hover) and (min-width: 601px)"
             ).matches
         ) {
 
-            animateLogoTo(5);
+            animateLogoTo(
+                5
+            );
 
         }
 
@@ -746,11 +937,13 @@ logo.addEventListener(
 
         if (
             window.matchMedia(
-                "(min-width: 601px)"
+                "(hover: hover) and (min-width: 601px)"
             ).matches
         ) {
 
-            animateLogoTo(0);
+            animateLogoTo(
+                0
+            );
 
         }
 
@@ -758,17 +951,13 @@ logo.addEventListener(
 );
 
 
-setLogoState(0);
+setLogoState(
+    0
+);
 
 
 /* =====================================================
-   SYNCHRONIZED NAV WORDS
-
-   One shared clock.
-   No accumulated timeout drift.
-
-   Both words complete each transition
-   in exactly 400ms.
+   SYNCHRONIZED NAVIGATION WORDS
    ===================================================== */
 
 const animatedLinks =
@@ -799,9 +988,7 @@ function updateNavigationWords(
     let progress;
 
 
-    /*
-        LOWERCASE HOLD
-    */
+    /* LOWERCASE HOLD */
 
     if (
         elapsed <
@@ -811,15 +998,14 @@ function updateNavigationWords(
         phase =
             "lower";
 
+
         progress =
             0;
 
     }
 
 
-    /*
-        LOWER → UPPER
-    */
+    /* LOWER → UPPER */
 
     else if (
         elapsed <
@@ -829,6 +1015,7 @@ function updateNavigationWords(
 
         phase =
             "up";
+
 
         progress =
             (
@@ -840,9 +1027,7 @@ function updateNavigationWords(
     }
 
 
-    /*
-        UPPERCASE HOLD
-    */
+    /* UPPERCASE HOLD */
 
     else if (
         elapsed <
@@ -854,20 +1039,20 @@ function updateNavigationWords(
         phase =
             "upper";
 
+
         progress =
             1;
 
     }
 
 
-    /*
-        UPPER → LOWER
-    */
+    /* UPPER → LOWER */
 
     else {
 
         phase =
             "down";
+
 
         progress =
             (
@@ -889,6 +1074,7 @@ function updateNavigationWords(
             const word =
                 link.dataset.word;
 
+
             const text =
                 link.querySelector(
                     ".nav-text"
@@ -903,9 +1089,11 @@ function updateNavigationWords(
                 "lower"
             ) {
 
-                upperCount = 0;
+                upperCount =
+                    0;
 
             }
+
 
             else if (
                 phase ===
@@ -916,6 +1104,7 @@ function updateNavigationWords(
                     word.length;
 
             }
+
 
             else if (
                 phase ===
@@ -932,6 +1121,7 @@ function updateNavigationWords(
                     );
 
             }
+
 
             else {
 
@@ -972,18 +1162,7 @@ requestAnimationFrame(
 
 
 /* =====================================================
-   DESKTOP PREVIEWS
-
-   Both preview elements occupy exactly
-   the same CSS position.
-
-   Switching is intentionally hard:
-   current preview disappears immediately,
-   next preview appears immediately.
-
-   No opacity.
-   No transition.
-   No movement.
+   PREVIEW ELEMENTS
    ===================================================== */
 
 const photographyPreview =
@@ -1004,6 +1183,25 @@ const previewVideo =
     );
 
 
+/* =====================================================
+   DESKTOP PREVIEW AVAILABILITY
+   ===================================================== */
+
+function canUsePreview() {
+
+    return window
+        .matchMedia(
+            "(hover: hover) and (min-width: 601px)"
+        )
+        .matches;
+
+}
+
+
+/* =====================================================
+   HIDE PREVIEWS
+   ===================================================== */
+
 function hideAllPreviews() {
 
     photographyPreview
@@ -1019,8 +1217,222 @@ function hideAllPreviews() {
             "active"
         );
 
+
+    previewVideo.pause();
+
 }
 
+
+/* =====================================================
+   PREVIEW GEOMETRY
+
+   Preview begins directly underneath
+   the active title.
+
+   It then uses the complete remaining
+   viewport down to the page bottom margin.
+   ===================================================== */
+
+function updatePreviewGeometry(
+    link
+) {
+
+    const rect =
+        link.getBoundingClientRect();
+
+
+    /*
+        A small gap equivalent to roughly
+        one text rhythm.
+
+        Set to 14px on short landscape
+        through the actual computed font size.
+    */
+
+    const style =
+        getComputedStyle(
+            link
+        );
+
+
+    const fontSize =
+        parseFloat(
+            style.fontSize
+        ) || 15;
+
+
+    const gap =
+        fontSize;
+
+
+    const previewTop =
+        Math.ceil(
+            rect.bottom +
+            gap
+        );
+
+
+    document
+        .documentElement
+        .style
+        .setProperty(
+            "--preview-top",
+            `${previewTop}px`
+        );
+
+}
+
+
+/* =====================================================
+   ENTER FOCUS MODE
+   ===================================================== */
+
+function enterPreviewMode(
+    link
+) {
+
+    if (
+        !canUsePreview()
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        Mark only this title as surviving
+        focus mode.
+    */
+
+    animatedLinks.forEach(
+        item => {
+
+            item.classList.remove(
+                "preview-source"
+            );
+
+        }
+    );
+
+
+    link.classList.add(
+        "preview-source"
+    );
+
+
+    /*
+        Geometry is measured BEFORE hiding
+        the other content.
+
+        Because visibility keeps layout intact,
+        its position remains unchanged anyway.
+    */
+
+    updatePreviewGeometry(
+        link
+    );
+
+
+    /*
+        Everything disappears instantly.
+    */
+
+    document.body
+        .classList
+        .add(
+            "preview-mode"
+        );
+
+
+    /*
+        HARD SWITCH:
+        remove both first.
+    */
+
+    hideAllPreviews();
+
+
+    if (
+        link.dataset.preview ===
+        "photography"
+    ) {
+
+        photographyPreview
+            .classList
+            .add(
+                "active"
+            );
+
+    }
+
+
+    else if (
+        link.dataset.preview ===
+        "film"
+    ) {
+
+        filmPreview
+            .classList
+            .add(
+                "active"
+            );
+
+
+        /*
+            Begin preview from its start
+            each time film is entered.
+        */
+
+        try {
+
+            previewVideo.currentTime =
+                0;
+
+        }
+
+        catch (error) {}
+
+
+        previewVideo
+            .play()
+            .catch(
+                () => {}
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   LEAVE FOCUS MODE
+   ===================================================== */
+
+function leavePreviewMode(
+    link
+) {
+
+    hideAllPreviews();
+
+
+    link.classList.remove(
+        "preview-source"
+    );
+
+
+    document.body
+        .classList
+        .remove(
+            "preview-mode"
+        );
+
+}
+
+
+/* =====================================================
+   TITLE HOVERS
+   ===================================================== */
 
 animatedLinks.forEach(
     link => {
@@ -1029,60 +1441,9 @@ animatedLinks.forEach(
             "mouseenter",
             () => {
 
-                if (
-                    window.innerWidth <=
-                    600
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                    HARD SWITCH
-                */
-
-                hideAllPreviews();
-
-
-                if (
-                    link.dataset.preview ===
-                    "photography"
-                ) {
-
-                    photographyPreview
-                        .classList
-                        .add(
-                            "active"
-                        );
-
-                }
-
-
-                if (
-                    link.dataset.preview ===
-                    "film"
-                ) {
-
-                    filmPreview
-                        .classList
-                        .add(
-                            "active"
-                        );
-
-
-                    previewVideo.currentTime =
-                        0;
-
-
-                    previewVideo
-                        .play()
-                        .catch(
-                            () => {}
-                        );
-
-                }
+                enterPreviewMode(
+                    link
+                );
 
             }
         );
@@ -1092,12 +1453,89 @@ animatedLinks.forEach(
             "mouseleave",
             () => {
 
-                hideAllPreviews();
-
-
-                previewVideo.pause();
+                leavePreviewMode(
+                    link
+                );
 
             }
+        );
+
+    }
+);
+
+
+/* =====================================================
+   RESIZE
+
+   If viewport changes while a title
+   remains hovered, recalculate the
+   available preview rectangle.
+   ===================================================== */
+
+function updateActivePreviewGeometry() {
+
+    if (
+        !canUsePreview()
+    ) {
+
+        hideAllPreviews();
+
+
+        document.body
+            .classList
+            .remove(
+                "preview-mode"
+            );
+
+
+        animatedLinks.forEach(
+            link => {
+
+                link.classList.remove(
+                    "preview-source"
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    const activeLink =
+        document.querySelector(
+            ".animated-link.preview-source"
+        );
+
+
+    if (
+        activeLink
+    ) {
+
+        updatePreviewGeometry(
+            activeLink
+        );
+
+    }
+
+}
+
+
+window.addEventListener(
+    "resize",
+    updateActivePreviewGeometry
+);
+
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+
+        setTimeout(
+            updateActivePreviewGeometry,
+            250
         );
 
     }
