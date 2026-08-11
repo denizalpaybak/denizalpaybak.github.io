@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,371 +9,326 @@
 
 <style>
 
-    * {
-        box-sizing: border-box;
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #fff;
+}
+
+body {
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================
+   PAGE
+   ========================= */
+
+.page {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 32px 48px 48px 48px;
+}
+
+
+/* =========================
+   COLUMN
+   ========================= */
+
+.column {
+    width: 100%;
+    max-width: 530px;
+
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================
+   LOGO
+   ========================= */
+
+.logo {
+    position: relative;
+    display: block;
+
+    width: max-content;
+    height: 34px;
+
+    margin: 0 0 17px 0;
+    padding: 0;
+
+    color: #000;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.logo-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    white-space: nowrap;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.logo-aybak {
+    position: absolute;
+    top: 17px;
+    left: 0;
+
+    white-space: nowrap;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+
+    letter-spacing: normal;
+}
+
+
+/* =========================
+   OPENING
+   ========================= */
+
+.opening {
+    margin: 0 0 17px 0;
+    padding: 0;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+
+    text-wrap: balance;
+}
+
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+.navigation a {
+    display: block;
+    width: max-content;
+
+    color: #000;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+
+/* =========================
+   CONTACT
+   ========================= */
+
+.contact {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0 0 17px 0;
+    padding: 0;
+}
+
+.contact a {
+    display: block;
+
+    color: #000;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.contact a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   BIOGRAPHY
+   ========================= */
+
+.biography {
+    width: 100%;
+    max-width: 530px;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.15;
+
+    text-align: left;
+}
+
+.biography p {
+    margin: 0 0 17px 0;
+    padding: 0;
+
+    text-wrap: balance;
+}
+
+.biography p:last-child {
+    margin-bottom: 0;
+}
+
+.item {
+    white-space: nowrap;
+}
+
+
+/* =========================
+   DESKTOP PREVIEWS
+   ========================= */
+
+.preview {
+    position: fixed;
+
+    right: 48px;
+
+    width: min(60vw, 900px);
+
+    display: none;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+.preview img,
+.preview video {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-height: 86vh;
+
+    object-fit: contain;
+}
+
+.photography-preview {
+    top: 7vh;
+}
+
+.film-preview {
+    top: 38vh;
+}
+
+@media (min-width: 701px) {
+
+    .preview.active {
+        display: block;
     }
 
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        min-height: 100%;
-        background: #fff;
-    }
-
-    body {
-        color: #000;
-        font-family: Arial, Helvetica, sans-serif;
-    }
+}
 
 
-    /* =========================
-       PAGE
-       ========================= */
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
 
     .page {
-        position: relative;
-
-        width: 100%;
-        min-height: 100vh;
-
-        padding: 32px 48px 48px 48px;
+        padding: 20px 24px 32px 24px;
     }
-
-
-    /* =========================
-       MAIN COLUMN
-       ========================= */
 
     .column {
         width: 100%;
-        max-width: 530px;
-
-        margin: 0;
-        padding: 0;
+        max-width: none;
     }
-
-
-    /* =========================
-       LOGO
-       ========================= */
 
     .logo {
-        position: relative;
+        height: 30px;
 
-        display: block;
+        margin-bottom: 15px;
 
-        width: max-content;
-        height: 34px;
-
-        margin: 0 0 17px 0;
-        padding: 0;
-
-        color: #000;
-        text-decoration: none;
-
-        cursor: pointer;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
+        font-size: 13px;
     }
-
 
     .logo-name {
-        position: absolute;
-
-        top: 0;
-        left: 0;
-
-        white-space: nowrap;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
+        font-size: 13px;
     }
-
 
     .logo-aybak {
-        position: absolute;
+        top: 15px;
 
-        top: 17px;
-        left: 0;
-
-        white-space: nowrap;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-
-        letter-spacing: normal;
+        font-size: 13px;
     }
 
-
-    /* =========================
-       OPENING
-       ========================= */
-
-    .opening {
-        margin: 0 0 17px 0;
-        padding: 0;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
+    .opening,
+    .navigation a,
+    .contact a,
+    .biography {
+        font-size: 13px;
         line-height: 1.15;
-
-        text-wrap: balance;
     }
 
-
-    /* =========================
-       NAVIGATION
-       ========================= */
+    .opening,
+    .biography p {
+        margin-bottom: 15px;
+    }
 
     .navigation {
-        display: flex;
-        flex-direction: column;
-
-        margin: 0 0 16px 0;
-        padding: 0;
+        margin-bottom: 15px;
     }
-
-
-    .navigation a {
-        display: block;
-
-        width: max-content;
-
-        color: #000;
-        text-decoration: none;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-
-        cursor: pointer;
-    }
-
-
-    .navigation a:hover {
-        text-decoration: none;
-    }
-
-
-    /* =========================
-       CONTACT
-       ========================= */
 
     .contact {
-        display: flex;
-        flex-direction: column;
-
-        margin: 0 0 17px 0;
-        padding: 0;
+        margin-bottom: 15px;
     }
-
-
-    .contact a {
-        display: block;
-
-        color: #000;
-        text-decoration: none;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-    }
-
-
-    .contact a:hover {
-        text-decoration: underline;
-    }
-
-
-    /* =========================
-       BIOGRAPHY
-       ========================= */
-
-    .biography {
-        width: 100%;
-        max-width: 530px;
-
-        margin: 0;
-        padding: 0;
-
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.15;
-
-        text-align: left;
-    }
-
-
-    .biography p {
-        margin: 0 0 17px 0;
-        padding: 0;
-
-        text-wrap: balance;
-    }
-
-
-    .biography p:last-child {
-        margin-bottom: 0;
-    }
-
-
-    /* =========================
-       PUBLICATIONS / CLIENTS
-       ========================= */
-
-    .item {
-        white-space: nowrap;
-    }
-
-
-    /* =========================
-       HOVER PREVIEW
-       ========================= */
 
     .preview {
-        position: fixed;
-
-        right: 48px;
-
-        width: min(60vw, 900px);
-
-        z-index: 10;
-
-        display: none;
-
-        pointer-events: none;
+        display: none !important;
     }
 
-
-    .preview img,
-    .preview video {
-        display: block;
-
-        width: 100%;
-        height: auto;
-
-        max-height: 86vh;
-
-        object-fit: contain;
-
-        pointer-events: none;
-    }
-
-
-    /*
-       Photography preview:
-       positioned higher on the screen.
-    */
-
-    .preview.photography-preview {
-        top: 7vh;
-    }
-
-
-    /*
-       Film preview:
-       positioned lower on the screen.
-    */
-
-    .preview.film-preview {
-        top: 38vh;
-    }
-
-
-    @media (min-width: 701px) {
-
-        .preview.active {
-            display: block;
-        }
-
-    }
-
-
-    /* =========================
-       MOBILE
-       ========================= */
-
-    @media (max-width: 700px) {
-
-        .page {
-            padding: 24px;
-        }
-
-
-        .column {
-            width: 100%;
-            max-width: 530px;
-        }
-
-
-        .logo {
-            margin-bottom: 17px;
-        }
-
-
-        .opening {
-            margin-bottom: 17px;
-        }
-
-
-        .navigation {
-            margin-bottom: 16px;
-        }
-
-
-        .contact {
-            margin-bottom: 17px;
-        }
-
-
-        .biography {
-            width: 100%;
-            max-width: none;
-
-            font-size: 15px;
-            line-height: 1.15;
-        }
-
-
-        .biography p {
-            margin-bottom: 17px;
-        }
-
-
-        .preview {
-            display: none !important;
-        }
-
-    }
+}
 
 </style>
+
 </head>
 
 
 <body>
-
 
 <div class="page">
 
     <main class="column">
 
 
-        <!-- =========================
-             LOGO
-             ========================= -->
+        <!-- LOGO -->
 
         <a
             class="logo"
@@ -387,11 +343,7 @@
                 Denizalp
             </span>
 
-
-            <span
-                class="logo-aybak"
-                aria-hidden="true"
-            >
+            <span class="logo-aybak">
 
                 <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
 
@@ -400,18 +352,14 @@
         </a>
 
 
-        <!-- =========================
-             OPENING
-             ========================= -->
+        <!-- OPENING -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- =========================
-             NAVIGATION
-             ========================= -->
+        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
@@ -423,7 +371,6 @@
             >
                 <span class="nav-text">photography</span>
             </a>
-
 
             <a
                 href="https://film.denizalpaybak.com/"
@@ -437,19 +384,17 @@
         </nav>
 
 
-        <!-- =========================
-             CONTACT
-             ========================= -->
+        <!-- CONTACT -->
 
         <div class="contact">
 
             <a
                 href="mailto:d@denizalpaybak.com"
                 target="_blank"
+                rel="noopener"
             >
                 d@denizalpaybak.com
             </a>
-
 
             <a
                 href="https://www.instagram.com/denizalpaybak/"
@@ -458,7 +403,6 @@
             >
                 instagram @denizalpaybak
             </a>
-
 
             <a
                 href="https://models.com/people/denizalp-aybak"
@@ -471,9 +415,7 @@
         </div>
 
 
-        <!-- =========================
-             BIOGRAPHY
-             ========================= -->
+        <!-- BIO -->
 
         <section class="biography">
 
@@ -481,11 +423,9 @@
                 having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
             </p>
 
-
             <p>
                 his work is built around atmosphere, with every creative decision made to evoke feeling.
             </p>
-
 
             <p>
                 selected publications:<br>
@@ -494,7 +434,6 @@
                 <span class="item">elle türkiye</span>,
                 <span class="item">l’officiel türkiye</span>
             </p>
-
 
             <p>
                 selected clients:<br>
@@ -508,40 +447,30 @@
 
         </section>
 
-
     </main>
 
 </div>
 
 
-<!-- =========================
-     PHOTOGRAPHY PREVIEW
-     ========================= -->
+<!-- PHOTOGRAPHY PREVIEW -->
 
 <div
     class="preview photography-preview"
     id="photography-preview"
-    aria-hidden="true"
 >
-
     <img
         src="./photo.jpg"
         alt=""
     >
-
 </div>
 
 
-<!-- =========================
-     FILM PREVIEW
-     ========================= -->
+<!-- FILM PREVIEW -->
 
 <div
     class="preview film-preview"
     id="film-preview"
-    aria-hidden="true"
 >
-
     <video
         src="./film.mp4"
         muted
@@ -550,600 +479,409 @@
         playsinline
         preload="auto"
     ></video>
-
 </div>
 
 
 <script>
 
-    /* =====================================================
-       SHARED ANIMATION SETTINGS
-       ===================================================== */
+/* =====================================================
+   SETTINGS
+   ===================================================== */
 
-    const NORMAL_SPEED = 120;
-    const HOVER_SPEED = 35;
-    const HOLD_TIME = 2000;
-
-
-    /* =====================================================
-       LOGO ANIMATION
-       ===================================================== */
-
-    const logo =
-        document.querySelector(".logo");
-
-    const logoName =
-        document.getElementById("logo-name");
+const NORMAL_SPEED = 120;
+const HOLD_TIME = 2000;
 
 
-    const logoLetters = [
+/* =====================================================
+   LANDING LOGO
+   DESKTOP HOVER ONLY
+   MOBILE STATIC
+   ===================================================== */
 
-        document.getElementById("letter-a"),
-        document.getElementById("letter-y"),
-        document.getElementById("letter-b"),
-        document.getElementById("letter-a2"),
-        document.getElementById("letter-k")
+const logo =
+    document.querySelector(".logo");
 
-    ];
+const logoName =
+    document.getElementById("logo-name");
 
+const logoLetters = [
+    document.getElementById("letter-a"),
+    document.getElementById("letter-y"),
+    document.getElementById("letter-b"),
+    document.getElementById("letter-a2"),
+    document.getElementById("letter-k")
+];
 
-    const logoLowercase = [
-        "a",
-        "y",
-        "b",
-        "a",
-        "k"
-    ];
+const lowercase = [
+    "a",
+    "y",
+    "b",
+    "a",
+    "k"
+];
 
+const uppercase = [
+    "A",
+    "Y",
+    "B",
+    "A",
+    "K"
+];
 
-    const logoUppercase = [
-        "A",
-        "Y",
-        "B",
-        "A",
-        "K"
-    ];
-
-
-    let logoState = 0;
-
-    let logoDirection = 1;
-
-    let logoTimer = null;
-
-    let logoHoldTimer = null;
-
-    let logoHovered = false;
-
-
-    function renderLogo(state) {
-
-        logoState = state;
+let logoState = 0;
+let logoTarget = 0;
+let logoTimer = null;
 
 
-        if (state === 0) {
+function setLogoState(state) {
 
-            logoName.textContent =
-                "Denizalp";
+    logoState = state;
 
-        } else {
+    logoName.textContent =
+        state === 0
+            ? "Denizalp"
+            : "denizalp";
 
-            logoName.textContent =
-                "denizalp";
+    for (
+        let i = 0;
+        i < logoLetters.length;
+        i++
+    ) {
 
-        }
-
-
-        for (
-            let i = 0;
-            i < logoLetters.length;
-            i++
-        ) {
-
-            if (i < state) {
-
-                logoLetters[i].textContent =
-                    logoUppercase[i];
-
-            } else {
-
-                logoLetters[i].textContent =
-                    logoLowercase[i];
-
-            }
-
-        }
+        logoLetters[i].textContent =
+            i < state
+                ? uppercase[i]
+                : lowercase[i];
 
     }
 
-
-    function clearLogoTimers() {
-
-        if (logoTimer !== null) {
-
-            clearTimeout(logoTimer);
-
-            logoTimer = null;
-
-        }
+}
 
 
-        if (logoHoldTimer !== null) {
+function moveLogo() {
 
-            clearTimeout(logoHoldTimer);
+    if (
+        logoState === logoTarget
+    ) {
 
-            logoHoldTimer = null;
+        logoTimer = null;
 
-        }
+        return;
 
     }
 
+    if (
+        logoState < logoTarget
+    ) {
 
-    function runLogo() {
-
-        const nextState =
-            logoState + logoDirection;
-
-
-        if (
-            nextState >=
-            logoUppercase.length
-        ) {
-
-            renderLogo(
-                logoUppercase.length
-            );
-
-            logoDirection = -1;
-
-
-            logoHoldTimer =
-                setTimeout(
-                    runLogo,
-                    HOLD_TIME
-                );
-
-            return;
-
-        }
-
-
-        if (nextState <= 0) {
-
-            renderLogo(0);
-
-            logoDirection = 1;
-
-
-            logoHoldTimer =
-                setTimeout(
-                    runLogo,
-                    HOLD_TIME
-                );
-
-            return;
-
-        }
-
-
-        renderLogo(nextState);
-
-
-        logoTimer =
-            setTimeout(
-                runLogo,
-                logoHovered
-                    ? HOVER_SPEED
-                    : NORMAL_SPEED
-            );
-
-    }
-
-
-    function startLogo() {
-
-        clearLogoTimers();
-
-        renderLogo(0);
-
-        logoDirection = 1;
-
-
-        logoHoldTimer =
-            setTimeout(
-                runLogo,
-                HOLD_TIME
-            );
-
-    }
-
-
-    logo.addEventListener(
-        "mouseenter",
-        () => {
-
-            logoHovered = true;
-
-            clearLogoTimers();
-
-            logoTimer =
-                setTimeout(
-                    runLogo,
-                    HOVER_SPEED
-                );
-
-        }
-    );
-
-
-    logo.addEventListener(
-        "mouseleave",
-        () => {
-
-            logoHovered = false;
-
-            clearLogoTimers();
-
-            logoTimer =
-                setTimeout(
-                    runLogo,
-                    NORMAL_SPEED
-                );
-
-        }
-    );
-
-
-    startLogo();
-
-
-    /* =====================================================
-       PHOTOGRAPHY / FILM PREVIEWS
-       ===================================================== */
-
-    const photographyPreview =
-        document.getElementById(
-            "photography-preview"
+        setLogoState(
+            logoState + 1
         );
 
+    }
 
-    const filmPreview =
-        document.getElementById(
-            "film-preview"
+    else {
+
+        setLogoState(
+            logoState - 1
         );
 
+    }
 
-    const filmVideo =
-        filmPreview.querySelector(
-            "video"
+    logoTimer =
+        setTimeout(
+            moveLogo,
+            NORMAL_SPEED
         );
 
+}
 
-    function showPreview(type) {
+
+function animateLogoTo(target) {
+
+    logoTarget = target;
+
+    if (
+        logoTimer !== null
+    ) {
+
+        clearTimeout(
+            logoTimer
+        );
+
+    }
+
+    moveLogo();
+
+}
+
+
+logo.addEventListener(
+    "mouseenter",
+    () => {
 
         if (
             window.matchMedia(
-                "(max-width: 700px)"
+                "(min-width: 601px)"
             ).matches
         ) {
-            return;
-        }
 
-
-        photographyPreview.classList.remove(
-            "active"
-        );
-
-        filmPreview.classList.remove(
-            "active"
-        );
-
-
-        if (type === "photography") {
-
-            photographyPreview.classList.add(
-                "active"
-            );
-
-        }
-
-
-        if (type === "film") {
-
-            filmPreview.classList.add(
-                "active"
-            );
-
-            filmVideo.currentTime = 0;
-
-            filmVideo.play().catch(
-                () => {}
-            );
+            animateLogoTo(5);
 
         }
 
     }
+);
 
 
-    function hidePreview() {
+logo.addEventListener(
+    "mouseleave",
+    () => {
 
-        photographyPreview.classList.remove(
-            "active"
-        );
+        if (
+            window.matchMedia(
+                "(min-width: 601px)"
+            ).matches
+        ) {
 
-        filmPreview.classList.remove(
-            "active"
-        );
+            animateLogoTo(0);
 
-        filmVideo.pause();
+        }
 
     }
+);
 
 
-    /* =====================================================
-       PHOTOGRAPHY / FILM LETTER ANIMATION
-       ===================================================== */
-
-    const animatedLinks =
-        document.querySelectorAll(
-            ".animated-link"
-        );
+setLogoState(0);
 
 
-    animatedLinks.forEach(
-        (link, index) => {
+/* =====================================================
+   PHOTOGRAPHY / FILM AUTO ANIMATION
+   ===================================================== */
 
-            const word =
-                link.dataset.word;
-
-
-            const textElement =
-                link.querySelector(
-                    ".nav-text"
-                );
+const animatedLinks =
+    document.querySelectorAll(
+        ".animated-link"
+    );
 
 
-            const characters =
-                word.split("");
+animatedLinks.forEach(
+    (link, index) => {
+
+        const word =
+            link.dataset.word;
+
+        const text =
+            link.querySelector(
+                ".nav-text"
+            );
+
+        const chars =
+            word.split("");
+
+        let state = 0;
+        let direction = 1;
+        let timer = null;
 
 
-            let state = 0;
+        function render() {
 
-            let direction = 1;
+            let result = "";
 
-            let timer = null;
+            chars.forEach(
+                (char, i) => {
 
-            let holdTimer = null;
-
-            let hovered = false;
-
-
-            function render(state) {
-
-                let result = "";
-
-
-                characters.forEach(
-                    (character, i) => {
-
-                        if (
-                            i < state
-                        ) {
-
-                            result +=
-                                character.toUpperCase();
-
-                        } else {
-
-                            result +=
-                                character.toLowerCase();
-
-                        }
-
-                    }
-                );
-
-
-                textElement.textContent =
-                    result;
-
-            }
-
-
-            function clearTimers() {
-
-                if (timer !== null) {
-
-                    clearTimeout(timer);
-
-                    timer = null;
+                    result +=
+                        i < state
+                            ? char.toUpperCase()
+                            : char.toLowerCase();
 
                 }
+            );
+
+            text.textContent =
+                result;
+
+        }
 
 
-                if (holdTimer !== null) {
+        function run() {
 
-                    clearTimeout(holdTimer);
-
-                    holdTimer = null;
-
-                }
-
-            }
+            const next =
+                state + direction;
 
 
-            function run() {
+            if (
+                next >= chars.length
+            ) {
 
-                const next =
-                    state + direction;
+                state =
+                    chars.length;
 
+                direction = -1;
 
-                if (
-                    next >=
-                    characters.length
-                ) {
-
-                    state =
-                        characters.length;
-
-                    render(state);
-
-                    direction = -1;
-
-
-                    holdTimer =
-                        setTimeout(
-                            run,
-                            HOLD_TIME
-                        );
-
-                    return;
-
-                }
-
-
-                if (next <= 0) {
-
-                    state = 0;
-
-                    render(state);
-
-                    direction = 1;
-
-
-                    holdTimer =
-                        setTimeout(
-                            run,
-                            HOLD_TIME
-                        );
-
-                    return;
-
-                }
-
-
-                state = next;
-
-                render(state);
-
+                render();
 
                 timer =
                     setTimeout(
                         run,
-                        hovered
-                            ? HOVER_SPEED
-                            : NORMAL_SPEED
+                        HOLD_TIME
                     );
+
+                return;
 
             }
 
 
-            function start() {
-
-                clearTimers();
+            if (
+                next <= 0
+            ) {
 
                 state = 0;
 
                 direction = 1;
 
-                hovered = false;
+                render();
 
-                render(0);
-
-
-                holdTimer =
+                timer =
                     setTimeout(
                         run,
-                        HOLD_TIME +
-                        (index * 180)
+                        HOLD_TIME
                     );
+
+                return;
 
             }
 
 
-            /* =========================
-               MOUSE ENTER
-               ========================= */
+            state = next;
 
-            link.addEventListener(
-                "mouseenter",
-                () => {
-
-                    hovered = true;
-
-                    clearTimers();
+            render();
 
 
-                    timer =
-                        setTimeout(
-                            run,
-                            HOVER_SPEED
-                        );
+            timer =
+                setTimeout(
+                    run,
+                    NORMAL_SPEED
+                );
+
+        }
 
 
-                    showPreview(
-                        link.dataset.preview
+        render();
+
+
+        timer =
+            setTimeout(
+                run,
+                HOLD_TIME +
+                index * 180
+            );
+
+
+        /* DESKTOP PREVIEW */
+
+        link.addEventListener(
+            "mouseenter",
+            () => {
+
+                if (
+                    window.innerWidth <= 600
+                ) {
+                    return;
+                }
+
+
+                const photographyPreview =
+                    document.getElementById(
+                        "photography-preview"
+                    );
+
+                const filmPreview =
+                    document.getElementById(
+                        "film-preview"
+                    );
+
+
+                photographyPreview
+                    .classList
+                    .remove("active");
+
+                filmPreview
+                    .classList
+                    .remove("active");
+
+
+                if (
+                    link.dataset.preview ===
+                    "photography"
+                ) {
+
+                    photographyPreview
+                        .classList
+                        .add("active");
+
+                }
+
+
+                if (
+                    link.dataset.preview ===
+                    "film"
+                ) {
+
+                    filmPreview
+                        .classList
+                        .add("active");
+
+                    const video =
+                        filmPreview
+                            .querySelector(
+                                "video"
+                            );
+
+                    video.currentTime = 0;
+
+                    video.play().catch(
+                        () => {}
                     );
 
                 }
-            );
-
-
-            /* =========================
-               MOUSE LEAVE
-               ========================= */
-
-            link.addEventListener(
-                "mouseleave",
-                () => {
-
-                    hovered = false;
-
-                    clearTimers();
-
-
-                    timer =
-                        setTimeout(
-                            run,
-                            NORMAL_SPEED
-                        );
-
-
-                    hidePreview();
-
-                }
-            );
-
-
-            start();
-
-        }
-    );
-
-
-    /* =====================================================
-       MOBILE CLEANUP
-       ===================================================== */
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            if (
-                window.matchMedia(
-                    "(max-width: 700px)"
-                ).matches
-            ) {
-
-                hidePreview();
 
             }
+        );
 
-        }
-    );
+
+        link.addEventListener(
+            "mouseleave",
+            () => {
+
+                document
+                    .getElementById(
+                        "photography-preview"
+                    )
+                    .classList
+                    .remove("active");
+
+                const filmPreview =
+                    document.getElementById(
+                        "film-preview"
+                    );
+
+                filmPreview
+                    .classList
+                    .remove("active");
+
+                filmPreview
+                    .querySelector("video")
+                    .pause();
+
+            }
+        );
+
+    }
+);
 
 </script>
-
 
 </body>
 </html>
