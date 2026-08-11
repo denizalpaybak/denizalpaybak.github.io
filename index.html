@@ -43,10 +43,6 @@ body {
     --page-top: 32px;
     --page-bottom: 48px;
 
-    /*
-        Updated dynamically.
-    */
-
     --preview-left: 620px;
     --preview-top: 32px;
     --preview-height: 500px;
@@ -251,14 +247,14 @@ body {
 /* =========================
    PREVIEW
 
-   Preview lives entirely to the
-   right of the text column.
+   Safe frame:
+   - entirely right of text
+   - same vertical territory as text
+   - never taller than text column
 
-   Its vertical frame matches the
-   height occupied by the left copy.
-
-   The actual image/video is centered
-   vertically inside that frame.
+   Actual media:
+   centered horizontally
+   centered vertically
    ========================= */
 
 .preview {
@@ -287,7 +283,7 @@ body {
         display: flex;
 
         align-items: center;
-        justify-content: flex-end;
+        justify-content: center;
     }
 
 }
@@ -296,10 +292,8 @@ body {
 /* =========================
    PREVIEW MEDIA
 
-   Right aligned.
-   Vertically centered.
-
-   Aspect ratio is preserved.
+   Fully centered inside the
+   available right-side frame.
    ========================= */
 
 .preview img,
@@ -310,7 +304,7 @@ body {
     height: 100%;
 
     object-fit: contain;
-    object-position: right center;
+    object-position: center center;
 
     pointer-events: none;
 }
@@ -318,8 +312,6 @@ body {
 
 /* =========================
    MOBILE
-
-   Preview behavior remains disabled.
    ========================= */
 
 @media (max-width: 600px) {
@@ -590,32 +582,21 @@ body {
 </div>
 
 
-<!-- =========================
-     PHOTOGRAPHY PREVIEW
-     ========================= -->
-
 <div
     class="preview"
     id="photography-preview"
 >
-
     <img
         src="./photo.jpg"
         alt=""
     >
-
 </div>
 
-
-<!-- =========================
-     FILM PREVIEW
-     ========================= -->
 
 <div
     class="preview"
     id="film-preview"
 >
-
     <video
         src="./film.mp4"
         muted
@@ -623,7 +604,6 @@ body {
         playsinline
         preload="auto"
     ></video>
-
 </div>
 
 
@@ -637,10 +617,8 @@ body {
 const WORD_TRANSITION_DURATION =
     400;
 
-
 const WORD_HOLD_DURATION =
     2000;
-
 
 const WORD_CYCLE_DURATION =
     WORD_HOLD_DURATION +
@@ -690,74 +668,60 @@ const logo =
         ".logo"
     );
 
-
 const logoName =
     document.getElementById(
         "logo-name"
     );
 
+const logoLetters = [
 
-const logoLetters =
-    [
+    document.getElementById(
+        "letter-a"
+    ),
 
-        document.getElementById(
-            "letter-a"
-        ),
+    document.getElementById(
+        "letter-y"
+    ),
 
-        document.getElementById(
-            "letter-y"
-        ),
+    document.getElementById(
+        "letter-b"
+    ),
 
-        document.getElementById(
-            "letter-b"
-        ),
+    document.getElementById(
+        "letter-a2"
+    ),
 
-        document.getElementById(
-            "letter-a2"
-        ),
+    document.getElementById(
+        "letter-k"
+    )
 
-        document.getElementById(
-            "letter-k"
-        )
+];
 
-    ];
+const lowercase = [
+    "a",
+    "y",
+    "b",
+    "a",
+    "k"
+];
 
-
-const lowercase =
-    [
-        "a",
-        "y",
-        "b",
-        "a",
-        "k"
-    ];
-
-
-const uppercase =
-    [
-        "A",
-        "Y",
-        "B",
-        "A",
-        "K"
-    ];
-
+const uppercase = [
+    "A",
+    "Y",
+    "B",
+    "A",
+    "K"
+];
 
 let logoState =
     0;
 
-
 let logoTarget =
     0;
-
 
 let logoTimer =
     null;
 
-
-/* =====================================================
-   SET LOGO
-   ===================================================== */
 
 function setLogoState(
     state
@@ -791,10 +755,6 @@ function setLogoState(
 }
 
 
-/* =====================================================
-   MOVE LOGO
-   ===================================================== */
-
 function moveLogo() {
 
     if (
@@ -804,6 +764,7 @@ function moveLogo() {
 
         logoTimer =
             null;
+
 
         return;
 
@@ -826,10 +787,6 @@ function moveLogo() {
 
 }
 
-
-/* =====================================================
-   ANIMATE LOGO
-   ===================================================== */
 
 function animateLogoTo(
     target
@@ -855,10 +812,6 @@ function animateLogoTo(
 
 }
 
-
-/* =====================================================
-   LOGO HOVER
-   ===================================================== */
 
 logo.addEventListener(
     "mouseenter",
@@ -917,32 +870,8 @@ const animatedLinks =
     );
 
 
-const photographyLink =
-    animatedLinks.find(
-        link =>
-            link.dataset.word ===
-            "photography"
-    );
-
-
-const filmLink =
-    animatedLinks.find(
-        link =>
-            link.dataset.word ===
-            "film"
-    );
-
-
 /* =====================================================
-   NAV STATE
-
-   currentCount:
-   number of uppercase characters currently shown.
-
-   baseCount:
-   what the global automatic clock currently wants.
-
-   Hover temporarily overrides the base clock.
+   NAV STATES
    ===================================================== */
 
 const navStates =
@@ -966,7 +895,7 @@ animatedLinks.forEach(
 
 
 /* =====================================================
-   RENDER NAV COUNT
+   RENDER NAV STATE
    ===================================================== */
 
 function renderNavCount(
@@ -1014,13 +943,7 @@ function renderNavCount(
 
 
 /* =====================================================
-   NAV COUNT ANIMATION
-
-   Duration is the SAME regardless
-   of word length or number of steps.
-
-   Therefore photography and film
-   always finish simultaneously.
+   ANIMATE NAV STATE
    ===================================================== */
 
 function animateNavCount(
@@ -1113,11 +1036,6 @@ function animateNavCount(
                     progress;
 
 
-                /*
-                    Direction-aware rounding makes
-                    capitalization progress cleanly.
-                */
-
                 const rendered =
                     targetCount >
                     startCount
@@ -1138,7 +1056,8 @@ function animateNavCount(
 
 
                 if (
-                    progress < 1
+                    progress <
+                    1
                 ) {
 
                     state.frame =
@@ -1179,7 +1098,7 @@ function animateNavCount(
 
 
 /* =====================================================
-   AUTOMATIC SHARED CLOCK
+   SHARED AUTOMATIC CLOCK
    ===================================================== */
 
 const navAnimationStart =
@@ -1193,10 +1112,6 @@ let navHoverMode =
 let navReturning =
     false;
 
-
-/* =====================================================
-   GET BASE COUNT AT CURRENT TIME
-   ===================================================== */
 
 function getBaseUpperCount(
     word,
@@ -1332,10 +1247,6 @@ function getBaseUpperCount(
 }
 
 
-/* =====================================================
-   SHARED CLOCK LOOP
-   ===================================================== */
-
 function updateNavigationWords(
     now
 ) {
@@ -1359,17 +1270,6 @@ function updateNavigationWords(
             state.baseCount =
                 baseCount;
 
-
-            /*
-                Normal state:
-                render directly from shared clock.
-
-                Hover:
-                animation controller owns rendering.
-
-                Returning:
-                animation controller also owns rendering.
-            */
 
             if (
                 navHoverMode ===
@@ -1446,19 +1346,16 @@ function canUsePreview() {
 /* =====================================================
    PREVIEW GEOMETRY
 
-   Horizontal:
+   Right-side safe frame:
 
-   | outer | copy | gap | preview | outer |
+   horizontal:
+   text edge -> gap -> preview -> outer margin
 
-   Vertical:
+   vertical:
+   same height territory as the text column
 
-   Preview frame occupies the same vertical
-   territory as the text column.
-
-   Media itself is vertically centered inside
-   that frame.
-
-   Preview can never be taller than text.
+   media:
+   fully centered inside that frame
    ===================================================== */
 
 function updatePreviewGeometry() {
@@ -1503,9 +1400,9 @@ function updatePreviewGeometry() {
         ) || 48;
 
 
-    /* =================================================
+    /* =========================
        HORIZONTAL
-       ================================================= */
+       ========================= */
 
 
     const rightLimit =
@@ -1526,12 +1423,6 @@ function updatePreviewGeometry() {
     const minimumPreviewWidth =
         180;
 
-
-    /*
-        If needed, shrink ONLY the inner gap.
-
-        The outer left/right margins remain intact.
-    */
 
     if (
         availableWidth <
@@ -1561,9 +1452,9 @@ function updatePreviewGeometry() {
         );
 
 
-    /* =================================================
+    /* =========================
        VERTICAL
-       ================================================= */
+       ========================= */
 
 
     const columnTop =
@@ -1573,12 +1464,6 @@ function updatePreviewGeometry() {
     const textHeight =
         columnRect.height;
 
-
-    /*
-        Do not exceed viewport safe bottom.
-
-        Normally this equals textHeight.
-    */
 
     const maximumViewportHeight =
         window.innerHeight -
@@ -1596,21 +1481,13 @@ function updatePreviewGeometry() {
         );
 
 
-    /*
-        The preview frame itself starts at the
-        same Y as the copy.
-
-        The visible media is vertically centered
-        INSIDE this frame by object-position:center.
-    */
-
     const previewTop =
         columnTop;
 
 
-    /* =================================================
+    /* =========================
        APPLY
-       ================================================= */
+       ========================= */
 
 
     root.style.setProperty(
@@ -1663,10 +1540,6 @@ function hideAllPreviews() {
 
 }
 
-
-/* =====================================================
-   SHOW PREVIEW
-   ===================================================== */
 
 function showPreviewFor(
     link
@@ -1735,19 +1608,12 @@ function showPreviewFor(
    HOVER OVERRIDE
 
    photography hover:
-
-       whatever current state
-              ↓
-       PHOTOGRAPHY
-       film
+   PHOTOGRAPHY
+   film
 
    film hover:
-
-       photography
-       FILM
-
-   Both transformations use the SAME 400ms
-   duration and therefore end together.
+   photography
+   FILM
    ===================================================== */
 
 async function activateNavigationHover(
@@ -1770,10 +1636,6 @@ async function activateNavigationHover(
     navReturning =
         false;
 
-
-    /*
-        Cancel any in-progress return animations.
-    */
 
     animatedLinks.forEach(
         link => {
@@ -1833,7 +1695,7 @@ async function activateNavigationHover(
 
 
 /* =====================================================
-   RETURN TO SHARED CLOCK
+   RETURN TO AUTOMATIC CLOCK
    ===================================================== */
 
 async function restoreNavigationClock() {
@@ -1855,11 +1717,6 @@ async function restoreNavigationClock() {
     const now =
         performance.now();
 
-
-    /*
-        Recalculate the REAL current shared-clock
-        state at the moment the mouse leaves.
-    */
 
     const targets =
         animatedLinks.map(
@@ -1899,11 +1756,6 @@ async function restoreNavigationClock() {
     );
 
 
-    /*
-        A new hover may have begun while
-        restoration was running.
-    */
-
     if (
         navHoverMode ===
         null
@@ -1939,12 +1791,6 @@ animatedLinks.forEach(
         link.addEventListener(
             "mouseleave",
             () => {
-
-                /*
-                    Delay one task so moving directly
-                    photography → film does not create
-                    an intermediate restore flash.
-                */
 
                 setTimeout(
                     () => {
