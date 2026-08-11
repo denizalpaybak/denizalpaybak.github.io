@@ -44,11 +44,11 @@ body {
     --page-bottom: 48px;
 
     /*
-        JS measures where the text column
-        actually ends and updates this.
+        Updated dynamically by JS.
     */
 
     --preview-left: 620px;
+    --preview-height: 500px;
 
 }
 
@@ -250,24 +250,20 @@ body {
 /* =========================
    DESKTOP PREVIEW
 
-   The preview owns the entire
-   free area to the RIGHT of
-   the text column.
+   RIGHT SIDE ONLY.
 
    TOP:
-   same as Denizalp /
-   photography-page film position.
+   same as left text column.
 
    RIGHT:
-   exactly same outer margin
-   as the text has on the left.
+   mirrors left outer margin.
 
    LEFT:
-   actual text-column edge +
-   dynamically calculated gap.
+   actual text edge + responsive gap.
 
-   BOTTOM:
-   normal page bottom margin.
+   HEIGHT:
+   NEVER taller than the complete
+   left text column.
    ========================= */
 
 .preview {
@@ -278,7 +274,7 @@ body {
     left: var(--preview-left);
     right: var(--page-x);
 
-    bottom: var(--page-bottom);
+    height: var(--preview-height);
 
     display: none;
 
@@ -308,15 +304,6 @@ body {
 
 /* =========================
    PREVIEW MEDIA
-
-   The entire available box is
-   used as the containment area.
-
-   Ratio is preserved.
-
-   Actual visible image/video
-   touches the TOP + RIGHT limits
-   whenever aspect ratio allows.
    ========================= */
 
 .preview img,
@@ -336,8 +323,8 @@ body {
 /* =========================
    MOBILE
 
-   Intentionally unchanged:
-   no hover preview.
+   Unchanged:
+   no preview behavior.
    ========================= */
 
 @media (max-width: 600px) {
@@ -650,13 +637,6 @@ body {
 
 /* =====================================================
    WORD TIMING
-
-   Same rhythm as photography page.
-
-   Photography and film share the
-   same transition clock, so both
-   begin and finish at exactly the
-   same moment.
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
@@ -708,8 +688,6 @@ function renderCaseWord(
 
 /* =====================================================
    LOGO
-
-   5 steps × 80ms = 400ms.
    ===================================================== */
 
 const logo =
@@ -969,8 +947,6 @@ function updateNavigationWords(
     let progress;
 
 
-    /* LOWERCASE HOLD */
-
     if (
         elapsed <
         WORD_HOLD_DURATION
@@ -979,14 +955,11 @@ function updateNavigationWords(
         phase =
             "lower";
 
-
         progress =
             0;
 
     }
 
-
-    /* LOWER → UPPER */
 
     else if (
         elapsed <
@@ -996,7 +969,6 @@ function updateNavigationWords(
 
         phase =
             "up";
-
 
         progress =
             (
@@ -1008,8 +980,6 @@ function updateNavigationWords(
     }
 
 
-    /* UPPERCASE HOLD */
-
     else if (
         elapsed <
         WORD_HOLD_DURATION +
@@ -1020,20 +990,16 @@ function updateNavigationWords(
         phase =
             "upper";
 
-
         progress =
             1;
 
     }
 
 
-    /* UPPER → LOWER */
-
     else {
 
         phase =
             "down";
-
 
         progress =
             (
@@ -1172,9 +1138,6 @@ const previewVideo =
 
 /* =====================================================
    DESKTOP PREVIEW AVAILABILITY
-
-   Mobile behavior intentionally remains
-   untouched.
    ===================================================== */
 
 function canUsePreview() {
@@ -1191,16 +1154,19 @@ function canUsePreview() {
 /* =====================================================
    PREVIEW GEOMETRY
 
-   This is the key responsive part.
+   Horizontal:
+   | margin | copy | gap | preview | margin |
 
-   We do NOT assume that the left column
-   is always exactly 530px wide.
+   Vertical:
+   preview top aligns with copy top.
 
-   Its real right edge is measured after
-   layout, including responsive changes.
+   NEW RULE:
+   preview height can NEVER exceed
+   the actual height occupied by the
+   entire left text column.
 
-   Preview then receives all remaining
-   space on the right.
+   It is also prevented from exceeding
+   the viewport's safe bottom edge.
    ===================================================== */
 
 function updatePreviewGeometry() {
@@ -1237,34 +1203,33 @@ function updatePreviewGeometry() {
         ) || 48;
 
 
-    /*
-        Separation between text and image.
-
-        Desktop:
-        same 48px rhythm as the outer margin.
-
-        Short landscape:
-        automatically becomes 24px because
-        --page-x is 24px there.
-
-        This makes the layout feel like:
-
-        | 48 | text | 48 | IMAGE | 48 |
-
-        whenever there is enough room.
-    */
-
-    let desiredGap =
-        pageX;
+    const pageTop =
+        parseFloat(
+            rootStyle.getPropertyValue(
+                "--page-top"
+            )
+        ) || 32;
 
 
-    /*
-        Calculate how much horizontal room
-        would remain if we used the full gap.
-    */
+    const pageBottom =
+        parseFloat(
+            rootStyle.getPropertyValue(
+                "--page-bottom"
+            )
+        ) || 48;
+
+
+    /* =================================================
+       HORIZONTAL
+       ================================================= */
+
 
     const rightLimit =
         window.innerWidth -
+        pageX;
+
+
+    let desiredGap =
         pageX;
 
 
@@ -1278,22 +1243,16 @@ function updatePreviewGeometry() {
         previewLeft;
 
 
-    /*
-        On narrower desktop/tablet windows,
-        don't let the gap destroy the usable
-        image area.
-
-        We shrink ONLY the internal gap,
-        never the outer margin and never
-        overlap the text.
-
-        16px is the absolute minimum
-        separation between copy and image.
-    */
-
     const minimumPreviewWidth =
         180;
 
+
+    /*
+        If screen becomes narrower, reduce ONLY
+        the gap between copy and preview.
+
+        Never overlap copy.
+    */
 
     if (
         availableWidth <
@@ -1313,21 +1272,8 @@ function updatePreviewGeometry() {
             columnRect.right +
             reducedGap;
 
-
-        availableWidth =
-            rightLimit -
-            previewLeft;
-
     }
 
-
-    /*
-        Absolute collision protection.
-
-        Even under an unusually narrow
-        hover-capable viewport, preview can
-        never enter the text column.
-    */
 
     previewLeft =
         Math.max(
@@ -1336,10 +1282,54 @@ function updatePreviewGeometry() {
         );
 
 
+    /* =================================================
+       VERTICAL
+
+       Rule 1:
+       never taller than left text column.
+
+       Rule 2:
+       never leave viewport.
+       ================================================= */
+
+
+    const textColumnHeight =
+        columnRect.height;
+
+
+    const viewportSafeHeight =
+        window.innerHeight -
+        pageTop -
+        pageBottom;
+
+
+    const previewHeight =
+        Math.max(
+            0,
+            Math.min(
+                textColumnHeight,
+                viewportSafeHeight
+            )
+        );
+
+
+    /* =================================================
+       APPLY
+       ================================================= */
+
+
     root.style.setProperty(
         "--preview-left",
         `${Math.ceil(
             previewLeft
+        )}px`
+    );
+
+
+    root.style.setProperty(
+        "--preview-height",
+        `${Math.floor(
+            previewHeight
         )}px`
     );
 
@@ -1373,11 +1363,6 @@ function hideAllPreviews() {
 
 /* =====================================================
    SHOW PREVIEW
-
-   Hard switch.
-
-   Photography and film occupy
-   exactly the same rectangle.
    ===================================================== */
 
 function showPreviewFor(
@@ -1480,11 +1465,6 @@ animatedLinks.forEach(
 
 /* =====================================================
    GEOMETRY CHANGES
-
-   Re-measure after:
-   - browser resize
-   - orientation change
-   - responsive text reflow
    ===================================================== */
 
 function handleGeometryChange() {
@@ -1494,7 +1474,6 @@ function handleGeometryChange() {
     ) {
 
         hideAllPreviews();
-
 
         return;
 
@@ -1530,11 +1509,6 @@ window.addEventListener(
     }
 );
 
-
-/*
-    Fonts/layout may settle after
-    first paint, so calculate twice.
-*/
 
 requestAnimationFrame(
     updatePreviewGeometry
