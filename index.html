@@ -44,10 +44,11 @@ body {
     --page-bottom: 48px;
 
     /*
-        Updated dynamically by JS.
+        Updated dynamically.
     */
 
     --preview-left: 620px;
+    --preview-top: 32px;
     --preview-height: 500px;
 
 }
@@ -248,28 +249,22 @@ body {
 
 
 /* =========================
-   DESKTOP PREVIEW
+   PREVIEW
 
-   RIGHT SIDE ONLY.
+   Preview lives entirely to the
+   right of the text column.
 
-   TOP:
-   same as left text column.
+   Its vertical frame matches the
+   height occupied by the left copy.
 
-   RIGHT:
-   mirrors left outer margin.
-
-   LEFT:
-   actual text edge + responsive gap.
-
-   HEIGHT:
-   NEVER taller than the complete
-   left text column.
+   The actual image/video is centered
+   vertically inside that frame.
    ========================= */
 
 .preview {
     position: fixed;
 
-    top: var(--page-top);
+    top: var(--preview-top);
 
     left: var(--preview-left);
     right: var(--page-x);
@@ -286,16 +281,12 @@ body {
 }
 
 
-/* =========================
-   ACTIVE PREVIEW
-   ========================= */
-
 @media (min-width: 601px) {
 
     .preview.active {
         display: flex;
 
-        align-items: flex-start;
+        align-items: center;
         justify-content: flex-end;
     }
 
@@ -304,6 +295,11 @@ body {
 
 /* =========================
    PREVIEW MEDIA
+
+   Right aligned.
+   Vertically centered.
+
+   Aspect ratio is preserved.
    ========================= */
 
 .preview img,
@@ -314,7 +310,7 @@ body {
     height: 100%;
 
     object-fit: contain;
-    object-position: right top;
+    object-position: right center;
 
     pointer-events: none;
 }
@@ -323,8 +319,7 @@ body {
 /* =========================
    MOBILE
 
-   Unchanged:
-   no preview behavior.
+   Preview behavior remains disabled.
    ========================= */
 
 @media (max-width: 600px) {
@@ -636,7 +631,7 @@ body {
 
 
 /* =====================================================
-   WORD TIMING
+   TIMING
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
@@ -655,7 +650,7 @@ const WORD_CYCLE_DURATION =
 
 
 /* =====================================================
-   CASE RENDER
+   WORD HELPERS
    ===================================================== */
 
 function renderCaseWord(
@@ -761,7 +756,7 @@ let logoTimer =
 
 
 /* =====================================================
-   SET LOGO STATE
+   SET LOGO
    ===================================================== */
 
 function setLogoState(
@@ -788,12 +783,8 @@ function setLogoState(
             i
         ].textContent =
             i < state
-                ? uppercase[
-                    i
-                ]
-                : lowercase[
-                    i
-                ];
+                ? uppercase[i]
+                : lowercase[i];
 
     }
 
@@ -813,7 +804,6 @@ function moveLogo() {
 
         logoTimer =
             null;
-
 
         return;
 
@@ -916,7 +906,7 @@ setLogoState(
 
 
 /* =====================================================
-   SYNCHRONIZED NAVIGATION WORDS
+   NAVIGATION ELEMENTS
    ===================================================== */
 
 const animatedLinks =
@@ -927,11 +917,289 @@ const animatedLinks =
     );
 
 
+const photographyLink =
+    animatedLinks.find(
+        link =>
+            link.dataset.word ===
+            "photography"
+    );
+
+
+const filmLink =
+    animatedLinks.find(
+        link =>
+            link.dataset.word ===
+            "film"
+    );
+
+
+/* =====================================================
+   NAV STATE
+
+   currentCount:
+   number of uppercase characters currently shown.
+
+   baseCount:
+   what the global automatic clock currently wants.
+
+   Hover temporarily overrides the base clock.
+   ===================================================== */
+
+const navStates =
+    new Map();
+
+
+animatedLinks.forEach(
+    link => {
+
+        navStates.set(
+            link,
+            {
+                currentCount: 0,
+                baseCount: 0,
+                frame: null
+            }
+        );
+
+    }
+);
+
+
+/* =====================================================
+   RENDER NAV COUNT
+   ===================================================== */
+
+function renderNavCount(
+    link,
+    count
+) {
+
+    const word =
+        link.dataset.word;
+
+
+    const state =
+        navStates.get(
+            link
+        );
+
+
+    const normalized =
+        Math.max(
+            0,
+            Math.min(
+                word.length,
+                Math.round(
+                    count
+                )
+            )
+        );
+
+
+    state.currentCount =
+        normalized;
+
+
+    link
+        .querySelector(
+            ".nav-text"
+        )
+        .textContent =
+            renderCaseWord(
+                word,
+                normalized
+            );
+
+}
+
+
+/* =====================================================
+   NAV COUNT ANIMATION
+
+   Duration is the SAME regardless
+   of word length or number of steps.
+
+   Therefore photography and film
+   always finish simultaneously.
+   ===================================================== */
+
+function animateNavCount(
+    link,
+    target,
+    duration =
+        WORD_TRANSITION_DURATION
+) {
+
+    const state =
+        navStates.get(
+            link
+        );
+
+
+    if (
+        state.frame !==
+        null
+    ) {
+
+        cancelAnimationFrame(
+            state.frame
+        );
+
+
+        state.frame =
+            null;
+
+    }
+
+
+    const startCount =
+        state.currentCount;
+
+
+    const targetCount =
+        Math.max(
+            0,
+            Math.min(
+                link.dataset.word.length,
+                target
+            )
+        );
+
+
+    if (
+        startCount ===
+        targetCount
+    ) {
+
+        renderNavCount(
+            link,
+            targetCount
+        );
+
+
+        return Promise.resolve();
+
+    }
+
+
+    const start =
+        performance.now();
+
+
+    return new Promise(
+        resolve => {
+
+            function frame(
+                now
+            ) {
+
+                const progress =
+                    Math.min(
+                        1,
+                        (
+                            now -
+                            start
+                        ) /
+                        duration
+                    );
+
+
+                const value =
+                    startCount +
+                    (
+                        targetCount -
+                        startCount
+                    ) *
+                    progress;
+
+
+                /*
+                    Direction-aware rounding makes
+                    capitalization progress cleanly.
+                */
+
+                const rendered =
+                    targetCount >
+                    startCount
+                        ? Math.floor(
+                            value +
+                            0.0001
+                        )
+                        : Math.ceil(
+                            value -
+                            0.0001
+                        );
+
+
+                renderNavCount(
+                    link,
+                    rendered
+                );
+
+
+                if (
+                    progress < 1
+                ) {
+
+                    state.frame =
+                        requestAnimationFrame(
+                            frame
+                        );
+
+                }
+
+                else {
+
+                    state.frame =
+                        null;
+
+
+                    renderNavCount(
+                        link,
+                        targetCount
+                    );
+
+
+                    resolve();
+
+                }
+
+            }
+
+
+            state.frame =
+                requestAnimationFrame(
+                    frame
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   AUTOMATIC SHARED CLOCK
+   ===================================================== */
+
 const navAnimationStart =
     performance.now();
 
 
-function updateNavigationWords(
+let navHoverMode =
+    null;
+
+
+let navReturning =
+    false;
+
+
+/* =====================================================
+   GET BASE COUNT AT CURRENT TIME
+   ===================================================== */
+
+function getBaseUpperCount(
+    word,
     now
 ) {
 
@@ -1015,82 +1283,106 @@ function updateNavigationWords(
     }
 
 
+    if (
+        phase ===
+        "lower"
+    ) {
+
+        return 0;
+
+    }
+
+
+    if (
+        phase ===
+        "upper"
+    ) {
+
+        return word.length;
+
+    }
+
+
+    if (
+        phase ===
+        "up"
+    ) {
+
+        return Math.min(
+            word.length,
+            Math.floor(
+                progress *
+                word.length
+            ) + 1
+        );
+
+    }
+
+
+    return Math.max(
+        0,
+        word.length -
+        Math.floor(
+            progress *
+            word.length
+        ) -
+        1
+    );
+
+}
+
+
+/* =====================================================
+   SHARED CLOCK LOOP
+   ===================================================== */
+
+function updateNavigationWords(
+    now
+) {
+
     animatedLinks.forEach(
         link => {
 
-            const word =
-                link.dataset.word;
-
-
-            const text =
-                link.querySelector(
-                    ".nav-text"
+            const state =
+                navStates.get(
+                    link
                 );
 
 
-            let upperCount;
+            const baseCount =
+                getBaseUpperCount(
+                    link.dataset.word,
+                    now
+                );
 
+
+            state.baseCount =
+                baseCount;
+
+
+            /*
+                Normal state:
+                render directly from shared clock.
+
+                Hover:
+                animation controller owns rendering.
+
+                Returning:
+                animation controller also owns rendering.
+            */
 
             if (
-                phase ===
-                "lower"
+                navHoverMode ===
+                null &&
+                !navReturning
             ) {
 
-                upperCount =
-                    0;
-
-            }
-
-
-            else if (
-                phase ===
-                "upper"
-            ) {
-
-                upperCount =
-                    word.length;
-
-            }
-
-
-            else if (
-                phase ===
-                "up"
-            ) {
-
-                upperCount =
-                    Math.min(
-                        word.length,
-                        Math.floor(
-                            progress *
-                            word.length
-                        ) + 1
-                    );
-
-            }
-
-
-            else {
-
-                upperCount =
-                    Math.max(
-                        0,
-                        word.length -
-                        Math.floor(
-                            progress *
-                            word.length
-                        ) -
-                        1
-                    );
-
-            }
-
-
-            text.textContent =
-                renderCaseWord(
-                    word,
-                    upperCount
+                renderNavCount(
+                    link,
+                    baseCount
                 );
+
+            }
 
         }
     );
@@ -1155,18 +1447,18 @@ function canUsePreview() {
    PREVIEW GEOMETRY
 
    Horizontal:
-   | margin | copy | gap | preview | margin |
+
+   | outer | copy | gap | preview | outer |
 
    Vertical:
-   preview top aligns with copy top.
 
-   NEW RULE:
-   preview height can NEVER exceed
-   the actual height occupied by the
-   entire left text column.
+   Preview frame occupies the same vertical
+   territory as the text column.
 
-   It is also prevented from exceeding
-   the viewport's safe bottom edge.
+   Media itself is vertically centered inside
+   that frame.
+
+   Preview can never be taller than text.
    ===================================================== */
 
 function updatePreviewGeometry() {
@@ -1203,14 +1495,6 @@ function updatePreviewGeometry() {
         ) || 48;
 
 
-    const pageTop =
-        parseFloat(
-            rootStyle.getPropertyValue(
-                "--page-top"
-            )
-        ) || 32;
-
-
     const pageBottom =
         parseFloat(
             rootStyle.getPropertyValue(
@@ -1229,13 +1513,9 @@ function updatePreviewGeometry() {
         pageX;
 
 
-    let desiredGap =
-        pageX;
-
-
     let previewLeft =
         columnRect.right +
-        desiredGap;
+        pageX;
 
 
     let availableWidth =
@@ -1248,10 +1528,9 @@ function updatePreviewGeometry() {
 
 
     /*
-        If screen becomes narrower, reduce ONLY
-        the gap between copy and preview.
+        If needed, shrink ONLY the inner gap.
 
-        Never overlap copy.
+        The outer left/right margins remain intact.
     */
 
     if (
@@ -1284,22 +1563,26 @@ function updatePreviewGeometry() {
 
     /* =================================================
        VERTICAL
-
-       Rule 1:
-       never taller than left text column.
-
-       Rule 2:
-       never leave viewport.
        ================================================= */
 
 
-    const textColumnHeight =
+    const columnTop =
+        columnRect.top;
+
+
+    const textHeight =
         columnRect.height;
 
 
-    const viewportSafeHeight =
+    /*
+        Do not exceed viewport safe bottom.
+
+        Normally this equals textHeight.
+    */
+
+    const maximumViewportHeight =
         window.innerHeight -
-        pageTop -
+        columnTop -
         pageBottom;
 
 
@@ -1307,10 +1590,22 @@ function updatePreviewGeometry() {
         Math.max(
             0,
             Math.min(
-                textColumnHeight,
-                viewportSafeHeight
+                textHeight,
+                maximumViewportHeight
             )
         );
+
+
+    /*
+        The preview frame itself starts at the
+        same Y as the copy.
+
+        The visible media is vertically centered
+        INSIDE this frame by object-position:center.
+    */
+
+    const previewTop =
+        columnTop;
 
 
     /* =================================================
@@ -1327,6 +1622,14 @@ function updatePreviewGeometry() {
 
 
     root.style.setProperty(
+        "--preview-top",
+        `${Math.ceil(
+            previewTop
+        )}px`
+    );
+
+
+    root.style.setProperty(
         "--preview-height",
         `${Math.floor(
             previewHeight
@@ -1337,7 +1640,7 @@ function updatePreviewGeometry() {
 
 
 /* =====================================================
-   HIDE PREVIEWS
+   PREVIEW VISIBILITY
    ===================================================== */
 
 function hideAllPreviews() {
@@ -1398,10 +1701,7 @@ function showPreviewFor(
     }
 
 
-    else if (
-        link.dataset.preview ===
-        "film"
-    ) {
+    else {
 
         filmPreview
             .classList
@@ -1432,7 +1732,193 @@ function showPreviewFor(
 
 
 /* =====================================================
-   TITLE HOVERS
+   HOVER OVERRIDE
+
+   photography hover:
+
+       whatever current state
+              ↓
+       PHOTOGRAPHY
+       film
+
+   film hover:
+
+       photography
+       FILM
+
+   Both transformations use the SAME 400ms
+   duration and therefore end together.
+   ===================================================== */
+
+async function activateNavigationHover(
+    activeLink
+) {
+
+    if (
+        !canUsePreview()
+    ) {
+
+        return;
+
+    }
+
+
+    navHoverMode =
+        activeLink;
+
+
+    navReturning =
+        false;
+
+
+    /*
+        Cancel any in-progress return animations.
+    */
+
+    animatedLinks.forEach(
+        link => {
+
+            const state =
+                navStates.get(
+                    link
+                );
+
+
+            if (
+                state.frame !==
+                null
+            ) {
+
+                cancelAnimationFrame(
+                    state.frame
+                );
+
+
+                state.frame =
+                    null;
+
+            }
+
+        }
+    );
+
+
+    showPreviewFor(
+        activeLink
+    );
+
+
+    await Promise.all(
+        animatedLinks.map(
+            link => {
+
+                const target =
+                    link ===
+                    activeLink
+                        ? link.dataset.word.length
+                        : 0;
+
+
+                return animateNavCount(
+                    link,
+                    target,
+                    WORD_TRANSITION_DURATION
+                );
+
+            }
+        )
+    );
+
+}
+
+
+/* =====================================================
+   RETURN TO SHARED CLOCK
+   ===================================================== */
+
+async function restoreNavigationClock() {
+
+    if (
+        navHoverMode !==
+        null
+    ) {
+
+        return;
+
+    }
+
+
+    navReturning =
+        true;
+
+
+    const now =
+        performance.now();
+
+
+    /*
+        Recalculate the REAL current shared-clock
+        state at the moment the mouse leaves.
+    */
+
+    const targets =
+        animatedLinks.map(
+            link => {
+
+                const target =
+                    getBaseUpperCount(
+                        link.dataset.word,
+                        now
+                    );
+
+
+                navStates.get(
+                    link
+                ).baseCount =
+                    target;
+
+
+                return {
+                    link,
+                    target
+                };
+
+            }
+        );
+
+
+    await Promise.all(
+        targets.map(
+            item =>
+                animateNavCount(
+                    item.link,
+                    item.target,
+                    WORD_TRANSITION_DURATION
+                )
+        )
+    );
+
+
+    /*
+        A new hover may have begun while
+        restoration was running.
+    */
+
+    if (
+        navHoverMode ===
+        null
+    ) {
+
+        navReturning =
+            false;
+
+    }
+
+}
+
+
+/* =====================================================
+   NAV HOVER EVENTS
    ===================================================== */
 
 animatedLinks.forEach(
@@ -1442,7 +1928,7 @@ animatedLinks.forEach(
             "mouseenter",
             () => {
 
-                showPreviewFor(
+                activateNavigationHover(
                     link
                 );
 
@@ -1454,7 +1940,42 @@ animatedLinks.forEach(
             "mouseleave",
             () => {
 
-                hideAllPreviews();
+                /*
+                    Delay one task so moving directly
+                    photography → film does not create
+                    an intermediate restore flash.
+                */
+
+                setTimeout(
+                    () => {
+
+                        const hovered =
+                            document.querySelector(
+                                ".animated-link:hover"
+                            );
+
+
+                        if (
+                            hovered
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        navHoverMode =
+                            null;
+
+
+                        hideAllPreviews();
+
+
+                        restoreNavigationClock();
+
+                    },
+                    0
+                );
 
             }
         );
@@ -1474,6 +1995,7 @@ function handleGeometryChange() {
     ) {
 
         hideAllPreviews();
+
 
         return;
 
