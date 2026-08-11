@@ -555,36 +555,55 @@ body {
 <script>
 
 /* =====================================================
-   GLOBAL ANIMATION TIMING
+   GLOBAL WORD TIMING
    ===================================================== */
 
-const WORD_ANIMATION_DURATION =
-    600;
+const WORD_TRANSITION_DURATION = 600;
+const WORD_HOLD_DURATION = 2000;
 
-const HOLD_TIME =
-    2000;
+const WORD_CYCLE_DURATION =
+    WORD_HOLD_DURATION +
+    WORD_TRANSITION_DURATION +
+    WORD_HOLD_DURATION +
+    WORD_TRANSITION_DURATION;
 
-function getWordStepDuration(
-    word
+
+/* =====================================================
+   CASE RENDER
+   ===================================================== */
+
+function renderCaseWord(
+    word,
+    upperCount
 ) {
 
-    return (
-        WORD_ANIMATION_DURATION /
-        word.length
-    );
+    let result = "";
+
+    for (
+        let i = 0;
+        i < word.length;
+        i++
+    ) {
+
+        result +=
+            i < upperCount
+                ? word[i].toUpperCase()
+                : word[i].toLowerCase();
+
+    }
+
+    return result;
 
 }
 
 
 /* =====================================================
    LOGO
-   Reference animation: 5 steps x 120ms
+   Reference: 5 × 120ms = 600ms
    ===================================================== */
 
 const logo =
-    document.querySelector(
-        ".logo"
-    );
+    document.querySelector(".logo");
 
 const logoName =
     document.getElementById(
@@ -615,22 +634,16 @@ const uppercase = [
     "K"
 ];
 
-let logoState =
-    0;
-
-let logoTarget =
-    0;
-
-let logoTimer =
-    null;
+let logoState = 0;
+let logoTarget = 0;
+let logoTimer = null;
 
 
 function setLogoState(
     state
 ) {
 
-    logoState =
-        state;
+    logoState = state;
 
     logoName.textContent =
         state === 0
@@ -643,8 +656,7 @@ function setLogoState(
         i++
     ) {
 
-        logoLetters[i]
-            .textContent =
+        logoLetters[i].textContent =
             i < state
                 ? uppercase[i]
                 : lowercase[i];
@@ -661,16 +673,14 @@ function moveLogo() {
         logoTarget
     ) {
 
-        logoTimer =
-            null;
+        logoTimer = null;
 
         return;
 
     }
 
     setLogoState(
-        logoState <
-        logoTarget
+        logoState < logoTarget
             ? logoState + 1
             : logoState - 1
     );
@@ -688,12 +698,10 @@ function animateLogoTo(
     target
 ) {
 
-    logoTarget =
-        target;
+    logoTarget = target;
 
     if (
-        logoTimer !==
-        null
+        logoTimer !== null
     ) {
 
         clearTimeout(
@@ -717,9 +725,7 @@ logo.addEventListener(
             ).matches
         ) {
 
-            animateLogoTo(
-                5
-            );
+            animateLogoTo(5);
 
         }
 
@@ -737,9 +743,7 @@ logo.addEventListener(
             ).matches
         ) {
 
-            animateLogoTo(
-                0
-            );
+            animateLogoTo(0);
 
         }
 
@@ -747,144 +751,222 @@ logo.addEventListener(
 );
 
 
-setLogoState(
-    0
+setLogoState(0);
+
+
+/* =====================================================
+   SYNCHRONIZED NAV WORDS
+
+   One shared clock.
+   No accumulated timeout drift.
+   ===================================================== */
+
+const animatedLinks =
+    Array.from(
+        document.querySelectorAll(
+            ".animated-link"
+        )
+    );
+
+
+const navAnimationStart =
+    performance.now();
+
+
+function updateNavigationWords(
+    now
+) {
+
+    const elapsed =
+        (
+            now -
+            navAnimationStart
+        ) %
+        WORD_CYCLE_DURATION;
+
+
+    let phase;
+    let progress;
+
+
+    /*
+        LOWERCASE HOLD
+    */
+
+    if (
+        elapsed <
+        WORD_HOLD_DURATION
+    ) {
+
+        phase =
+            "lower";
+
+        progress =
+            0;
+
+    }
+
+
+    /*
+        LOWER → UPPER
+    */
+
+    else if (
+        elapsed <
+        WORD_HOLD_DURATION +
+        WORD_TRANSITION_DURATION
+    ) {
+
+        phase =
+            "up";
+
+        progress =
+            (
+                elapsed -
+                WORD_HOLD_DURATION
+            ) /
+            WORD_TRANSITION_DURATION;
+
+    }
+
+
+    /*
+        UPPERCASE HOLD
+    */
+
+    else if (
+        elapsed <
+        WORD_HOLD_DURATION +
+        WORD_TRANSITION_DURATION +
+        WORD_HOLD_DURATION
+    ) {
+
+        phase =
+            "upper";
+
+        progress =
+            1;
+
+    }
+
+
+    /*
+        UPPER → LOWER
+    */
+
+    else {
+
+        phase =
+            "down";
+
+        progress =
+            (
+                elapsed -
+                (
+                    WORD_HOLD_DURATION +
+                    WORD_TRANSITION_DURATION +
+                    WORD_HOLD_DURATION
+                )
+            ) /
+            WORD_TRANSITION_DURATION;
+
+    }
+
+
+    animatedLinks.forEach(
+        link => {
+
+            const word =
+                link.dataset.word;
+
+            const text =
+                link.querySelector(
+                    ".nav-text"
+                );
+
+
+            let upperCount;
+
+
+            if (
+                phase ===
+                "lower"
+            ) {
+
+                upperCount = 0;
+
+            }
+
+            else if (
+                phase ===
+                "upper"
+            ) {
+
+                upperCount =
+                    word.length;
+
+            }
+
+            else if (
+                phase ===
+                "up"
+            ) {
+
+                upperCount =
+                    Math.min(
+                        word.length,
+                        Math.floor(
+                            progress *
+                            word.length
+                        ) + 1
+                    );
+
+            }
+
+            else {
+
+                upperCount =
+                    Math.max(
+                        0,
+                        word.length -
+                        Math.floor(
+                            progress *
+                            word.length
+                        ) -
+                        1
+                    );
+
+            }
+
+
+            text.textContent =
+                renderCaseWord(
+                    word,
+                    upperCount
+                );
+
+        }
+    );
+
+
+    requestAnimationFrame(
+        updateNavigationWords
+    );
+
+}
+
+
+requestAnimationFrame(
+    updateNavigationWords
 );
 
 
 /* =====================================================
-   PHOTOGRAPHY / FILM AUTO ANIMATION
-   Same total transition duration for every word
+   DESKTOP PREVIEWS
    ===================================================== */
 
-const animatedLinks =
-    document.querySelectorAll(
-        ".animated-link"
-    );
-
-
 animatedLinks.forEach(
-    (link, index) => {
-
-        const word =
-            link.dataset.word;
-
-        const text =
-            link.querySelector(
-                ".nav-text"
-            );
-
-        const chars =
-            word.split("");
-
-        const stepDuration =
-            getWordStepDuration(
-                word
-            );
-
-        let state =
-            0;
-
-        let direction =
-            1;
-
-
-        function render() {
-
-            let result =
-                "";
-
-            chars.forEach(
-                (char, i) => {
-
-                    result +=
-                        i < state
-                            ? char.toUpperCase()
-                            : char.toLowerCase();
-
-                }
-            );
-
-            text.textContent =
-                result;
-
-        }
-
-
-        function run() {
-
-            const next =
-                state +
-                direction;
-
-
-            if (
-                next >=
-                chars.length
-            ) {
-
-                state =
-                    chars.length;
-
-                direction =
-                    -1;
-
-                render();
-
-                setTimeout(
-                    run,
-                    HOLD_TIME
-                );
-
-                return;
-
-            }
-
-
-            if (
-                next <= 0
-            ) {
-
-                state =
-                    0;
-
-                direction =
-                    1;
-
-                render();
-
-                setTimeout(
-                    run,
-                    HOLD_TIME
-                );
-
-                return;
-
-            }
-
-
-            state =
-                next;
-
-            render();
-
-            setTimeout(
-                run,
-                stepDuration
-            );
-
-        }
-
-
-        render();
-
-
-        setTimeout(
-            run,
-            HOLD_TIME +
-            index * 180
-        );
-
+    link => {
 
         link.addEventListener(
             "mouseenter",
@@ -949,15 +1031,17 @@ animatedLinks.forEach(
                             "active"
                         );
 
+
                     const previewVideo =
                         filmPreview
                             .querySelector(
                                 "video"
                             );
 
-                    previewVideo
-                        .currentTime =
+
+                    previewVideo.currentTime =
                         0;
+
 
                     previewVideo
                         .play()
