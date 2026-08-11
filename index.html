@@ -223,11 +223,18 @@ body {
 
 /* =========================
    PREVIEWS
+
+   Photography + film now occupy
+   exactly the same position.
+
+   Hard switch only:
+   no opacity / fade transition.
    ========================= */
 
 .preview {
     position: fixed;
 
+    top: 7vh;
     right: 48px;
 
     width: min(60vw, 900px);
@@ -249,14 +256,6 @@ body {
     max-height: 86vh;
 
     object-fit: contain;
-}
-
-.photography-preview {
-    top: 7vh;
-}
-
-.film-preview {
-    top: 38vh;
 }
 
 @media (min-width: 701px) {
@@ -390,6 +389,8 @@ body {
     }
 
     .preview {
+        top: 10vh;
+
         width: min(52vw, 650px);
         right: 24px;
     }
@@ -397,14 +398,6 @@ body {
     .preview img,
     .preview video {
         max-height: 70vh;
-    }
-
-    .photography-preview {
-        top: 10vh;
-    }
-
-    .film-preview {
-        top: 24vh;
     }
 
 }
@@ -434,9 +427,7 @@ body {
             </span>
 
             <span class="logo-aybak">
-
                 <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
-
             </span>
 
         </a>
@@ -526,6 +517,10 @@ body {
 </div>
 
 
+<!-- =========================
+     SHARED PREVIEW POSITION
+     ========================= -->
+
 <div
     class="preview photography-preview"
     id="photography-preview"
@@ -556,9 +551,19 @@ body {
 
 /* =====================================================
    GLOBAL WORD TIMING
+
+   Matches photography interface:
+
+   400ms lowercase -> uppercase
+   400ms uppercase -> lowercase
+
+   Photography and film share one clock,
+   therefore both transformations begin
+   and end simultaneously despite the
+   different word lengths.
    ===================================================== */
 
-const WORD_TRANSITION_DURATION = 600;
+const WORD_TRANSITION_DURATION = 400;
 const WORD_HOLD_DURATION = 2000;
 
 const WORD_CYCLE_DURATION =
@@ -599,7 +604,9 @@ function renderCaseWord(
 
 /* =====================================================
    LOGO
-   Reference: 5 × 120ms = 600ms
+
+   Photography page timing:
+   5 × 80ms = 400ms
    ===================================================== */
 
 const logo =
@@ -688,7 +695,7 @@ function moveLogo() {
     logoTimer =
         setTimeout(
             moveLogo,
-            120
+            80
         );
 
 }
@@ -759,6 +766,9 @@ setLogoState(0);
 
    One shared clock.
    No accumulated timeout drift.
+
+   Both words complete each transition
+   in exactly 400ms.
    ===================================================== */
 
 const animatedLinks =
@@ -963,7 +973,54 @@ requestAnimationFrame(
 
 /* =====================================================
    DESKTOP PREVIEWS
+
+   Both preview elements occupy exactly
+   the same CSS position.
+
+   Switching is intentionally hard:
+   current preview disappears immediately,
+   next preview appears immediately.
+
+   No opacity.
+   No transition.
+   No movement.
    ===================================================== */
+
+const photographyPreview =
+    document.getElementById(
+        "photography-preview"
+    );
+
+
+const filmPreview =
+    document.getElementById(
+        "film-preview"
+    );
+
+
+const previewVideo =
+    filmPreview.querySelector(
+        "video"
+    );
+
+
+function hideAllPreviews() {
+
+    photographyPreview
+        .classList
+        .remove(
+            "active"
+        );
+
+
+    filmPreview
+        .classList
+        .remove(
+            "active"
+        );
+
+}
+
 
 animatedLinks.forEach(
     link => {
@@ -982,28 +1039,11 @@ animatedLinks.forEach(
                 }
 
 
-                const photographyPreview =
-                    document.getElementById(
-                        "photography-preview"
-                    );
+                /*
+                    HARD SWITCH
+                */
 
-                const filmPreview =
-                    document.getElementById(
-                        "film-preview"
-                    );
-
-
-                photographyPreview
-                    .classList
-                    .remove(
-                        "active"
-                    );
-
-                filmPreview
-                    .classList
-                    .remove(
-                        "active"
-                    );
+                hideAllPreviews();
 
 
                 if (
@@ -1032,13 +1072,6 @@ animatedLinks.forEach(
                         );
 
 
-                    const previewVideo =
-                        filmPreview
-                            .querySelector(
-                                "video"
-                            );
-
-
                     previewVideo.currentTime =
                         0;
 
@@ -1059,34 +1092,10 @@ animatedLinks.forEach(
             "mouseleave",
             () => {
 
-                document
-                    .getElementById(
-                        "photography-preview"
-                    )
-                    .classList
-                    .remove(
-                        "active"
-                    );
+                hideAllPreviews();
 
 
-                const filmPreview =
-                    document.getElementById(
-                        "film-preview"
-                    );
-
-
-                filmPreview
-                    .classList
-                    .remove(
-                        "active"
-                    );
-
-
-                filmPreview
-                    .querySelector(
-                        "video"
-                    )
-                    .pause();
+                previewVideo.pause();
 
             }
         );
