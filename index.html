@@ -309,12 +309,6 @@ body {
 
 /* =====================================================
    MEDIA FIELD
-
-   Photography:
-   entire available white field.
-
-   Film:
-   centered 16:9.
    ===================================================== */
 
 .media-field {
@@ -362,7 +356,7 @@ body {
 
 
 /* =====================================================
-   WHOLE PHOTOGRAPHY AREA LINK
+   PHOTOGRAPHY LINK
    ===================================================== */
 
 .photography-stage-link {
@@ -380,7 +374,7 @@ body {
 
 
 /* =====================================================
-   SCATTERED STAGE
+   STAGE
    ===================================================== */
 
 #scattered-stage {
@@ -396,17 +390,11 @@ body {
 
 
 /* =====================================================
-   PROJECT CLUSTER
+   PROJECT GROUP
 
-   One project =
-   cover
-   +
-   optional landscape image.
-
-   The two photographs are close,
-   but NOT aligned.
-
-   Position and scale are compositor-friendly.
+   No fade.
+   No opacity transition.
+   No scale transition.
    ===================================================== */
 
 .photo-group {
@@ -418,7 +406,7 @@ body {
     width: var(--group-width, 100px);
     height: var(--group-height, 100px);
 
-    opacity: 0;
+    visibility: hidden;
 
     pointer-events: none;
 
@@ -427,91 +415,22 @@ body {
             var(--group-x, 0px),
             var(--group-y, 0px),
             0
-        )
-        scale(.975);
-
-    transform-origin: center center;
-
-    transition-property:
-        opacity,
-        transform;
-
-    transition-duration:
-        220ms,
-        260ms;
-
-    transition-timing-function:
-        linear,
-        cubic-bezier(.65, 0, .35, 1);
-
-    transition-delay:
-        var(--group-delay, 0ms);
+        );
 
     backface-visibility: hidden;
 
-    will-change:
-        transform,
-        opacity;
+    contain:
+        layout
+        paint;
 }
-
-
-/* =====================================================
-   VISIBLE
-   ===================================================== */
 
 .photo-group.visible {
-    opacity: 1;
-
-    transform:
-        translate3d(
-            var(--group-x, 0px),
-            var(--group-y, 0px),
-            0
-        )
-        scale(1);
-}
-
-
-/* =====================================================
-   EXITING
-
-   GPU-friendly exit.
-
-   No DOM rebuild.
-   No per-image JS animation.
-   ===================================================== */
-
-.photo-group.exiting {
-    opacity: 0;
-
-    transform:
-        translate3d(
-            var(--group-x, 0px),
-            calc(
-                var(--group-y, 0px)
-                + var(--exit-y, 4px)
-            ),
-            0
-        )
-        scale(.985);
-
-    transition-duration:
-        180ms,
-        220ms;
-
-    transition-delay:
-        var(--exit-delay, 0ms);
+    visibility: visible;
 }
 
 
 /* =====================================================
    INDIVIDUAL PHOTOS
-
-   Every photo can have a completely
-   different height.
-
-   Position inside its project group
-   is also independent.
    ===================================================== */
 
 .project-photo {
@@ -521,10 +440,23 @@ body {
 
     width: auto;
 
-    height: var(--photo-height, 100px);
+    height:
+        var(
+            --photo-height,
+            100px
+        );
 
-    top: var(--photo-y, 0px);
-    left: var(--photo-x, 0px);
+    top:
+        var(
+            --photo-y,
+            0px
+        );
+
+    left:
+        var(
+            --photo-x,
+            0px
+        );
 
     object-fit: contain;
 
@@ -563,7 +495,7 @@ body {
 
 
 /* =====================================================
-   FILM LINK
+   FILM
    ===================================================== */
 
 .film-link {
@@ -706,11 +638,6 @@ body {
 
 /* =====================================================
    MOBILE LANDSCAPE
-
-   No font shrinking.
-
-   Text 2/3
-   Media 1/3
    ===================================================== */
 
 @media
@@ -832,9 +759,7 @@ body {
     >
 
 
-        <!-- =================================================
-             LOGO
-             ================================================= -->
+        <!-- LOGO -->
 
         <button
             class="logo"
@@ -859,18 +784,14 @@ body {
         </button>
 
 
-        <!-- =================================================
-             OPENING
-             ================================================= -->
+        <!-- OPENING -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
@@ -896,9 +817,7 @@ body {
         </nav>
 
 
-        <!-- =================================================
-             MEDIA
-             ================================================= -->
+        <!-- MEDIA -->
 
         <div
             class="media-field"
@@ -956,9 +875,7 @@ body {
         </div>
 
 
-        <!-- =================================================
-             CONTACT
-             ================================================= -->
+        <!-- CONTACT -->
 
         <div class="contact">
 
@@ -989,9 +906,7 @@ body {
         </div>
 
 
-        <!-- =================================================
-             BIOGRAPHY
-             ================================================= -->
+        <!-- BIOGRAPHY -->
 
         <section class="biography">
 
@@ -1042,8 +957,8 @@ const WORD_TRANSITION_DURATION =
     400;
 
 
-const PHOTO_BUILD_DURATION =
-    420;
+const PHOTO_SEQUENCE_DURATION =
+    400;
 
 
 const PHOTO_HOLD_DURATION =
@@ -1051,22 +966,15 @@ const PHOTO_HOLD_DURATION =
 
 
 /*
-    Exit is deliberately short.
+    FILM is now the opening state.
 
-    CSS handles the animation;
-    JS only waits for completion.
+    No artificial film duration is used:
+    the complete video controls the duration
+    through its "ended" event.
 */
 
-const PHOTO_EXIT_BASE_DURATION =
-    220;
-
-
-const PHOTO_EXIT_STAGGER_TOTAL =
-    150;
-
-
-const INITIAL_DELAY =
-    700;
+const INITIAL_FILM_DELAY =
+    0;
 
 
 /* =====================================================
@@ -1085,30 +993,13 @@ const LOGO_MOBILE_HOLD =
    LAYOUT
    ===================================================== */
 
-
-/*
-    Minimum horizontal distance
-    between separate project clusters.
-*/
-
 const PROJECT_GAP_MIN =
     18;
 
 
-/*
-    Maximum randomized gap.
-*/
-
 const PROJECT_GAP_MAX =
     46;
 
-
-/*
-    Distance between two photos
-    of the SAME project.
-
-    They stay close, but don't align.
-*/
 
 const PAIR_DISTANCE_MIN =
     8;
@@ -1177,8 +1068,12 @@ const filmVideo =
 
 
 /* =====================================================
-   PROJECT DATA
+   STATE
    ===================================================== */
+
+let projectRecords =
+    [];
+
 
 let projectVisualGroups =
     [];
@@ -1188,8 +1083,20 @@ let groupElements =
     [];
 
 
+let photographyInitialReady =
+    false;
+
+
+let supplementalAnalysisFinished =
+    false;
+
+
+let photographyLoadPromise =
+    null;
+
+
 /* =====================================================
-   IMAGE HELPERS
+   HELPERS
    ===================================================== */
 
 function looksLikeImage(
@@ -1206,15 +1113,11 @@ function looksLikeImage(
     }
 
 
-    const clean =
-        value
-            .split("?")[0]
-            .split("#")[0];
-
-
     return /\.(jpe?g|png|webp|avif)$/i
         .test(
-            clean
+            value
+                .split("?")[0]
+                .split("#")[0]
         );
 
 }
@@ -1248,9 +1151,10 @@ function resolvePhotoUrl(
 
 
     if (
-        /^https?:\/\//i.test(
-            trimmed
-        )
+        /^https?:\/\//i
+            .test(
+                trimmed
+            )
     ) {
 
         return trimmed;
@@ -1259,17 +1163,15 @@ function resolvePhotoUrl(
 
 
     let path =
-        trimmed.replace(
-            /^\/+/,
-            ""
-        );
-
-
-    path =
-        path.replace(
-            /^photos\//i,
-            ""
-        );
+        trimmed
+            .replace(
+                /^\/+/,
+                ""
+            )
+            .replace(
+                /^photos\//i,
+                ""
+            );
 
 
     return (
@@ -1338,7 +1240,7 @@ function uniqueUrls(
 
 
 /* =====================================================
-   FIND FIRST IMAGE
+   RECURSIVE IMAGE HELPERS
    ===================================================== */
 
 function findFirstImage(
@@ -1437,10 +1339,6 @@ function findFirstImage(
 }
 
 
-/* =====================================================
-   COLLECT IMAGES
-   ===================================================== */
-
 function collectImages(
     value,
     output
@@ -1538,23 +1436,12 @@ function collectImages(
 
 
 /* =====================================================
-   PROJECT COVER
+   COVER
    ===================================================== */
 
 function getProjectCover(
     project
 ) {
-
-    if (
-        !project ||
-        typeof project !==
-        "object"
-    ) {
-
-        return null;
-
-    }
-
 
     const keys =
         [
@@ -1787,69 +1674,213 @@ function loadImageMetadata(
 
 
 /* =====================================================
-   LOAD PROJECTS
+   PHOTOGRAPHY LOAD
 
-   For every project:
-
-   1. thumbnail / cover
-   2. if available:
-      widest landscape image
-
-   maximum 2.
+   This now runs WHILE the opening film is visible.
    ===================================================== */
 
-async function loadPhotographyProjects() {
+async function loadInitialPhotography() {
+
+    if (
+        photographyLoadPromise
+    ) {
+
+        return photographyLoadPromise;
+
+    }
+
+
+    photographyLoadPromise =
+        (
+            async () => {
+
+                const response =
+                    await fetch(
+                        PROJECTS_JSON_URL,
+                        {
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                if (
+                    !response.ok
+                ) {
+
+                    throw new Error(
+                        `projects.json could not be loaded: ${response.status}`
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const projects =
+                    getProjectsArray(
+                        data
+                    );
+
+
+                projectRecords =
+                    projects.map(
+                        (
+                            project,
+                            projectIndex
+                        ) => {
+
+                            const coverUrl =
+                                getProjectCover(
+                                    project
+                                );
+
+
+                            const allUrls =
+                                [];
+
+
+                            collectImages(
+                                project,
+                                allUrls
+                            );
+
+
+                            return {
+
+                                projectIndex,
+
+                                project,
+
+                                coverUrl,
+
+                                allUrls:
+                                    uniqueUrls(
+                                        allUrls
+                                    )
+
+                            };
+
+                        }
+                    ).filter(
+                        record =>
+                            record.coverUrl
+                    );
+
+
+                /*
+                    Initial visual set:
+                    covers only.
+
+                    This is enough to guarantee
+                    PHOTOGRAPHY can start without
+                    waiting for the whole archive.
+                */
+
+                const initialGroups =
+                    await Promise.all(
+
+                        projectRecords.map(
+                            async record => {
+
+                                const cover =
+                                    await loadImageMetadata(
+                                        record.coverUrl
+                                    );
+
+
+                                if (
+                                    !cover
+                                ) {
+
+                                    return null;
+
+                                }
+
+
+                                return {
+
+                                    projectIndex:
+                                        record.projectIndex,
+
+                                    photos:
+                                        [
+                                            cover
+                                        ]
+
+                                };
+
+                            }
+                        )
+
+                    );
+
+
+                projectVisualGroups =
+                    initialGroups.filter(
+                        Boolean
+                    );
+
+
+                buildPhotographyDOM();
+
+
+                randomizePhotographyLayout();
+
+
+                photographyInitialReady =
+                    true;
+
+
+                /*
+                    Start deeper analysis immediately,
+                    but DO NOT await it.
+                */
+
+                analyzeSupplementalImagesInBackground();
+
+            }
+        )();
+
+
+    return photographyLoadPromise;
+
+}
+
+
+/* =====================================================
+   BACKGROUND LANDSCAPE ANALYSIS
+
+   Per project:
+   cover
+   +
+   widest landscape frame
+
+   maximum 2 images.
+   ===================================================== */
+
+async function analyzeSupplementalImagesInBackground() {
 
     try {
 
-        const response =
-            await fetch(
-                PROJECTS_JSON_URL,
-                {
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                `projects.json could not be loaded: ${response.status}`
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const projects =
-            getProjectsArray(
-                data
-            );
-
-
-        const groups =
+        const completed =
             await Promise.all(
 
-                projects.map(
-                    async (
-                        project,
-                        projectIndex
-                    ) => {
+                projectRecords.map(
+                    async record => {
 
-                        const coverUrl =
-                            getProjectCover(
-                                project
+                        const current =
+                            projectVisualGroups.find(
+                                group =>
+                                    group.projectIndex ===
+                                    record.projectIndex
                             );
 
 
                         if (
-                            !coverUrl
+                            !current
                         ) {
 
                             return null;
@@ -1858,45 +1889,26 @@ async function loadPhotographyProjects() {
 
 
                         const cover =
-                            await loadImageMetadata(
-                                coverUrl
+                            current.photos[0];
+
+
+                        const coverKey =
+                            normalizeUrl(
+                                record.coverUrl
                             );
 
 
-                        if (
-                            !cover
-                        ) {
-
-                            return null;
-
-                        }
-
-
-                        const allUrls =
-                            [];
-
-
-                        collectImages(
-                            project,
-                            allUrls
-                        );
-
-
                         const otherUrls =
-                            uniqueUrls(
-                                allUrls
-                            ).filter(
+                            record.allUrls.filter(
                                 url =>
                                     normalizeUrl(
                                         url
                                     ) !==
-                                    normalizeUrl(
-                                        coverUrl
-                                    )
+                                    coverKey
                             );
 
 
-                        const others =
+                        const metadata =
                             (
                                 await Promise.all(
                                     otherUrls.map(
@@ -1908,15 +1920,11 @@ async function loadPhotographyProjects() {
                             );
 
 
-                        /*
-                            Only distinctly landscape.
-                        */
-
-                        const landscapes =
-                            others
+                        const landscape =
+                            metadata
                                 .filter(
-                                    image =>
-                                        image.ratio >
+                                    photo =>
+                                        photo.ratio >
                                         1.05
                                 )
                                 .sort(
@@ -1926,24 +1934,20 @@ async function loadPhotographyProjects() {
                                     ) =>
                                         b.ratio -
                                         a.ratio
-                                );
-
-
-                        const second =
-                            landscapes.length
-                                ? landscapes[0]
-                                : null;
+                                )[0] ||
+                            null;
 
 
                         return {
 
-                            projectIndex,
+                            projectIndex:
+                                record.projectIndex,
 
                             photos:
-                                second
+                                landscape
                                     ? [
                                         cover,
-                                        second
+                                        landscape
                                     ]
                                     : [
                                         cover
@@ -1958,15 +1962,33 @@ async function loadPhotographyProjects() {
 
 
         projectVisualGroups =
-            groups.filter(
+            completed.filter(
                 Boolean
             );
 
 
-        buildPhotographyDOM();
+        supplementalAnalysisFinished =
+            true;
 
 
-        randomizePhotographyLayout();
+        /*
+            Never rebuild underneath an
+            active PHOTOGRAPHY presentation.
+
+            The richer set is adopted at
+            the next PHOTOGRAPHY cycle.
+        */
+
+        if (
+            activeMode !==
+            "photography"
+        ) {
+
+            buildPhotographyDOM();
+
+            randomizePhotographyLayout();
+
+        }
 
     }
 
@@ -1975,7 +1997,7 @@ async function loadPhotographyProjects() {
     ) {
 
         console.error(
-            "Photography could not be loaded:",
+            "Background photography analysis failed:",
             error
         );
 
@@ -1985,9 +2007,7 @@ async function loadPhotographyProjects() {
 
 
 /* =====================================================
-   BUILD STATIC DOM
-
-   Created only once.
+   PHOTOGRAPHY DOM
    ===================================================== */
 
 function buildPhotographyDOM() {
@@ -2010,17 +2030,17 @@ function buildPhotographyDOM() {
             groupIndex
         ) => {
 
-            const groupElement =
+            const element =
                 document.createElement(
                     "div"
                 );
 
 
-            groupElement.className =
+            element.className =
                 "photo-group";
 
 
-            groupElement.dataset.groupIndex =
+            element.dataset.groupIndex =
                 groupIndex;
 
 
@@ -2056,7 +2076,7 @@ function buildPhotographyDOM() {
                         photoIndex;
 
 
-                    groupElement.appendChild(
+                    element.appendChild(
                         image
                     );
 
@@ -2065,12 +2085,12 @@ function buildPhotographyDOM() {
 
 
             fragment.appendChild(
-                groupElement
+                element
             );
 
 
             groupElements.push(
-                groupElement
+                element
             );
 
         }
@@ -2116,19 +2136,7 @@ function randomSign() {
 
 
 /* =====================================================
-   CREATE RANDOM PROJECT GEOMETRY
-
-   IMPORTANT:
-
-   Project order is NOT randomized.
-
-   Only:
-   - photo sizes
-   - second-photo position
-   - project gaps
-   - vertical offsets
-
-   change each cycle.
+   PROJECT GEOMETRY
    ===================================================== */
 
 function createProjectGeometry(
@@ -2136,15 +2144,11 @@ function createProjectGeometry(
     baseHeight
 ) {
 
-    /*
-        Cover has random height.
-    */
-
     const firstHeight =
         baseHeight *
         randomBetween(
-            0.76,
-            1.18
+            0.72,
+            1.22
         );
 
 
@@ -2170,10 +2174,6 @@ function createProjectGeometry(
         };
 
 
-    /*
-        Single-photo project.
-    */
-
     if (
         group.photos.length ===
         1
@@ -2197,10 +2197,6 @@ function createProjectGeometry(
     }
 
 
-    /*
-        Second image has a DIFFERENT size.
-    */
-
     const secondPhoto =
         group.photos[1];
 
@@ -2208,8 +2204,8 @@ function createProjectGeometry(
     const secondHeight =
         baseHeight *
         randomBetween(
-            0.68,
-            1.12
+            0.65,
+            1.18
         );
 
 
@@ -2218,15 +2214,7 @@ function createProjectGeometry(
         secondPhoto.ratio;
 
 
-    /*
-        Nearby horizontally,
-        but vertically deliberately offset.
-
-        Sometimes slightly above,
-        sometimes below.
-    */
-
-    const pairGap =
+    const horizontalGap =
         randomBetween(
             PAIR_DISTANCE_MIN,
             PAIR_DISTANCE_MAX
@@ -2235,45 +2223,27 @@ function createProjectGeometry(
 
     const secondX =
         first.width +
-        pairGap;
+        horizontalGap;
 
 
-    const maxVerticalOffset =
+    const verticalOffset =
         baseHeight *
-        0.42;
-
-
-    const secondY =
         randomBetween(
-            0,
-            maxVerticalOffset
+            0.10,
+            0.48
         ) *
         randomSign();
 
 
-    /*
-        Normalize negative y so cluster
-        bounding box starts at 0.
-    */
-
     const minY =
         Math.min(
             0,
-            secondY
+            verticalOffset
         );
 
 
-    const firstNormalizedY =
-        -minY;
-
-
-    const secondNormalizedY =
-        secondY -
-        minY;
-
-
     first.y =
-        firstNormalizedY;
+        -minY;
 
 
     const second =
@@ -2292,24 +2262,10 @@ function createProjectGeometry(
                 secondX,
 
             y:
-                secondNormalizedY
+                verticalOffset -
+                minY
 
         };
-
-
-    const totalHeight =
-        Math.max(
-            first.y +
-            first.height,
-
-            second.y +
-            second.height
-        );
-
-
-    const totalWidth =
-        second.x +
-        second.width;
 
 
     return {
@@ -2321,10 +2277,17 @@ function createProjectGeometry(
             ],
 
         width:
-            totalWidth,
+            second.x +
+            second.width,
 
         height:
-            totalHeight
+            Math.max(
+                first.y +
+                first.height,
+
+                second.y +
+                second.height
+            )
 
     };
 
@@ -2332,7 +2295,7 @@ function createProjectGeometry(
 
 
 /* =====================================================
-   CREATE ALL PROJECT GEOMETRIES
+   ALL PROJECT GEOMETRIES
    ===================================================== */
 
 function createAllProjectGeometries(
@@ -2354,14 +2317,6 @@ function createAllProjectGeometries(
                     baseHeight
                 ),
 
-                /*
-                    Random gap AFTER this project.
-
-                    This is why white spacing changes
-                    each photography cycle even though
-                    project order remains stable.
-                */
-
                 gapAfter:
                     randomBetween(
                         PROJECT_GAP_MIN,
@@ -2377,18 +2332,7 @@ function createAllProjectGeometries(
 
 
 /* =====================================================
-   PACK IN FIXED PROJECT ORDER
-
-   Projects always follow projects.json order.
-
-   But:
-   - row break point varies because sizes vary
-   - vertical positions vary
-   - gaps vary
-   - individual photo sizes vary
-
-   Therefore composition changes without
-   Vogue suddenly becoming the last project.
+   PACK PROJECTS
    ===================================================== */
 
 function packOrderedProjects(
@@ -2416,35 +2360,30 @@ function packOrderedProjects(
     geometries.forEach(
         geometry => {
 
-            const needed =
-                geometry.width +
-                (
-                    currentRow.length
-                        ? geometry.gapAfter
-                        : 0
-                );
-
-
-            /*
-                Row breaking threshold itself has
-                a little randomness.
-
-                This gives different wrapping
-                without changing project sequence.
-            */
-
             const rowLimit =
                 fieldWidth *
                 randomBetween(
-                    0.83,
+                    0.82,
                     0.98
                 );
+
+
+            const addition =
+                currentRow.length
+                    ? (
+                        currentRow[
+                            currentRow.length -
+                            1
+                        ].gapAfter +
+                        geometry.width
+                    )
+                    : geometry.width;
 
 
             if (
                 currentRow.length &&
                 currentWidth +
-                needed >
+                addition >
                 rowLimit
             ) {
 
@@ -2478,35 +2417,26 @@ function packOrderedProjects(
             }
 
 
+            if (
+                currentRow.length
+            ) {
+
+                currentWidth +=
+                    currentRow[
+                        currentRow.length -
+                        1
+                    ].gapAfter;
+
+            }
+
+
             currentRow.push(
                 geometry
             );
 
 
-            if (
-                currentRow.length ===
-                1
-            ) {
-
-                currentWidth =
-                    geometry.width;
-
-            }
-
-            else {
-
-                const previous =
-                    currentRow[
-                        currentRow.length -
-                        2
-                    ];
-
-
-                currentWidth +=
-                    previous.gapAfter +
-                    geometry.width;
-
-            }
+            currentWidth +=
+                geometry.width;
 
 
             rowHeight =
@@ -2540,10 +2470,6 @@ function packOrderedProjects(
 
     }
 
-
-    /*
-        Random vertical gaps between rows.
-    */
 
     const rowGaps =
         [];
@@ -2597,20 +2523,12 @@ function packOrderedProjects(
     }
 
 
-    /*
-        Need all rows to fit width.
-    */
-
-    const tooWide =
+    if (
         rows.some(
             row =>
                 row.width >
                 fieldWidth
-        );
-
-
-    if (
-        tooWide
+        )
     ) {
 
         return null;
@@ -2632,7 +2550,7 @@ function packOrderedProjects(
 
 
 /* =====================================================
-   FIND LARGEST RANDOM BASE SIZE THAT FITS
+   CREATE PHOTOGRAPHY COMPOSITION
    ===================================================== */
 
 function createPhotographyComposition(
@@ -2641,8 +2559,7 @@ function createPhotographyComposition(
 ) {
 
     if (
-        projectVisualGroups.length ===
-        0
+        !projectVisualGroups.length
     ) {
 
         return null;
@@ -2650,24 +2567,18 @@ function createPhotographyComposition(
     }
 
 
-    /*
-        Binary-search an overall base,
-        but EVERY actual image varies
-        around that base.
-    */
-
     let low =
         Math.max(
-            34,
+            28,
             fieldHeight *
-            0.08
+            0.07
         );
 
 
     let high =
         Math.min(
             fieldHeight *
-            0.32,
+            0.30,
             fieldWidth *
             0.22
         );
@@ -2679,7 +2590,7 @@ function createPhotographyComposition(
 
     for (
         let iteration = 0;
-        iteration < 9;
+        iteration < 7;
         iteration++
     ) {
 
@@ -2695,15 +2606,9 @@ function createPhotographyComposition(
             null;
 
 
-        /*
-            Because geometry is random,
-            test several arrangements
-            for this base size.
-        */
-
         for (
             let test = 0;
-            test < 8;
+            test < 4;
             test++
         ) {
 
@@ -2728,11 +2633,7 @@ function createPhotographyComposition(
                 candidate =
                     {
 
-                        baseHeight:
-                            mid,
-
                         geometries,
-
                         packed
 
                     };
@@ -2752,7 +2653,6 @@ function createPhotographyComposition(
             best =
                 candidate;
 
-
             low =
                 mid;
 
@@ -2768,66 +2668,13 @@ function createPhotographyComposition(
     }
 
 
-    if (
-        !best
-    ) {
-
-        /*
-            Emergency conservative layout.
-        */
-
-        const geometries =
-            createAllProjectGeometries(
-                low
-            );
-
-
-        const packed =
-            packOrderedProjects(
-                geometries,
-                fieldWidth,
-                fieldHeight
-            );
-
-
-        if (
-            !packed
-        ) {
-
-            return null;
-
-        }
-
-
-        best =
-            {
-
-                baseHeight:
-                    low,
-
-                geometries,
-
-                packed
-
-            };
-
-    }
-
-
     return best;
 
 }
 
 
 /* =====================================================
-   APPLY COMPOSITION
-
-   Projects retain their order.
-
-   Rows themselves get irregular:
-   - horizontal starting point
-   - vertical offset of each group
-   - random inter-project spacing
+   APPLY PHOTOGRAPHY COMPOSITION
    ===================================================== */
 
 function applyPhotographyComposition(
@@ -2836,6 +2683,15 @@ function applyPhotographyComposition(
     fieldHeight
 ) {
 
+    if (
+        !composition
+    ) {
+
+        return;
+
+    }
+
+
     const {
         rows,
         rowGaps,
@@ -2843,13 +2699,6 @@ function applyPhotographyComposition(
     } =
         composition.packed;
 
-
-    /*
-        Use the whole vertical field,
-        but don't force exact centering.
-
-        Every cycle can sit slightly higher/lower.
-    */
 
     const spareVertical =
         Math.max(
@@ -2868,7 +2717,7 @@ function applyPhotographyComposition(
         );
 
 
-    const placementMap =
+    const placements =
         new Map();
 
 
@@ -2886,14 +2735,6 @@ function applyPhotographyComposition(
                 );
 
 
-            /*
-                Row starts at a different position
-                every cycle.
-
-                BUT project order inside row
-                does not change.
-            */
-
             let x =
                 randomBetween(
                     0,
@@ -2904,14 +2745,8 @@ function applyPhotographyComposition(
             row.items.forEach(
                 (
                     geometry,
-                    itemIndex
+                    index
                 ) => {
-
-                    /*
-                        Independent vertical jitter
-                        prevents projects in a row
-                        from sharing a baseline.
-                    */
 
                     const verticalFreedom =
                         Math.max(
@@ -2921,22 +2756,18 @@ function applyPhotographyComposition(
                         );
 
 
-                    const groupY =
-                        y +
-                        randomBetween(
-                            0,
-                            verticalFreedom
-                        );
-
-
-                    placementMap.set(
+                    placements.set(
                         geometry.index,
                         {
 
                             x,
 
                             y:
-                                groupY,
+                                y +
+                                randomBetween(
+                                    0,
+                                    verticalFreedom
+                                ),
 
                             geometry
 
@@ -2949,7 +2780,7 @@ function applyPhotographyComposition(
 
 
                     if (
-                        itemIndex <
+                        index <
                         row.items.length - 1
                     ) {
 
@@ -2982,19 +2813,15 @@ function applyPhotographyComposition(
     );
 
 
-    /* ---------------------------------------------
-       Apply to DOM
-       --------------------------------------------- */
-
     groupElements.forEach(
         (
-            groupElement,
-            groupIndex
+            element,
+            index
         ) => {
 
             const placement =
-                placementMap.get(
-                    groupIndex
+                placements.get(
+                    index
                 );
 
 
@@ -3011,28 +2838,28 @@ function applyPhotographyComposition(
                 placement.geometry;
 
 
-            groupElement.style
+            element.style
                 .setProperty(
                     "--group-x",
                     `${placement.x}px`
                 );
 
 
-            groupElement.style
+            element.style
                 .setProperty(
                     "--group-y",
                     `${placement.y}px`
                 );
 
 
-            groupElement.style
+            element.style
                 .setProperty(
                     "--group-width",
                     `${geometry.width}px`
                 );
 
 
-            groupElement.style
+            element.style
                 .setProperty(
                     "--group-height",
                     `${geometry.height}px`
@@ -3040,16 +2867,14 @@ function applyPhotographyComposition(
 
 
             const images =
-                Array.from(
-                    groupElement.querySelectorAll(
-                        ".project-photo"
-                    )
+                element.querySelectorAll(
+                    ".project-photo"
                 );
 
 
             geometry.photos.forEach(
                 (
-                    photoGeometry,
+                    photo,
                     photoIndex
                 ) => {
 
@@ -3071,21 +2896,21 @@ function applyPhotographyComposition(
                     image.style
                         .setProperty(
                             "--photo-height",
-                            `${photoGeometry.height}px`
+                            `${photo.height}px`
                         );
 
 
                     image.style
                         .setProperty(
                             "--photo-x",
-                            `${photoGeometry.x}px`
+                            `${photo.x}px`
                         );
 
 
                     image.style
                         .setProperty(
                             "--photo-y",
-                            `${photoGeometry.y}px`
+                            `${photo.y}px`
                         );
 
                 }
@@ -3099,10 +2924,6 @@ function applyPhotographyComposition(
 
 /* =====================================================
    RANDOMIZE PHOTOGRAPHY
-
-   New sizes + spacing each cycle.
-
-   Project order stays fixed.
    ===================================================== */
 
 function randomizePhotographyLayout() {
@@ -3130,15 +2951,6 @@ function randomizePhotographyLayout() {
         );
 
 
-    if (
-        !composition
-    ) {
-
-        return;
-
-    }
-
-
     applyPhotographyComposition(
         composition,
         rect.width,
@@ -3149,30 +2961,33 @@ function randomizePhotographyLayout() {
 
 
 /* =====================================================
-   PHOTO ENTRANCE / EXIT
+   PHOTO SEQUENCE
    ===================================================== */
 
-let photoPhaseTimer =
+let photoSequenceFrame =
     null;
 
 
-/* =====================================================
-   CLEAR PHOTO TIMER
-   ===================================================== */
+let photoSequenceToken =
+    0;
 
-function clearPhotoPhaseTimer() {
+
+function cancelPhotoSequence() {
+
+    photoSequenceToken++;
+
 
     if (
-        photoPhaseTimer !==
+        photoSequenceFrame !==
         null
     ) {
 
-        clearTimeout(
-            photoPhaseTimer
+        cancelAnimationFrame(
+            photoSequenceFrame
         );
 
 
-        photoPhaseTimer =
+        photoSequenceFrame =
             null;
 
     }
@@ -3180,16 +2995,18 @@ function clearPhotoPhaseTimer() {
 }
 
 
-/* =====================================================
-   PREPARE GROUPS
+function setVisiblePhotoGroupCount(
+    count
+) {
 
-   Set delays once, then browser handles
-   transitions on compositor.
-   ===================================================== */
-
-function preparePhotoEntrance() {
-
-    clearPhotoPhaseTimer();
+    const normalized =
+        Math.max(
+            0,
+            Math.min(
+                groupElements.length,
+                count
+            )
+        );
 
 
     groupElements.forEach(
@@ -3199,57 +3016,10 @@ function preparePhotoEntrance() {
         ) => {
 
             group.classList
-                .remove(
+                .toggle(
                     "visible",
-                    "exiting"
-                );
-
-
-            const delay =
-                groupElements.length >
-                1
-                    ? (
-                        index /
-                        (
-                            groupElements.length -
-                            1
-                        )
-                    ) *
-                    PHOTO_BUILD_DURATION
-                    : 0;
-
-
-            group.style
-                .setProperty(
-                    "--group-delay",
-                    `${delay}ms`
-                );
-
-
-            group.style
-                .setProperty(
-                    "--exit-delay",
-                    "0ms"
-                );
-
-        }
-    );
-
-
-    /*
-        One forced style flush for ALL groups,
-        not one flush per image.
-    */
-
-    void scatteredStage.offsetWidth;
-
-
-    groupElements.forEach(
-        group => {
-
-            group.classList
-                .add(
-                    "visible"
+                    index <
+                    normalized
                 );
 
         }
@@ -3259,25 +3029,45 @@ function preparePhotoEntrance() {
 
 
 /* =====================================================
-   ANIMATED EXIT
-
-   No JS animation loop.
-   No one-timeout-per-image.
-
-   Just one class change per project group,
-   browser composites the transition.
+   HARD SEQUENTIAL PHOTO ANIMATION
    ===================================================== */
 
-function animatePhotoExit(
-    onComplete
+function animatePhotoGroups(
+    targetCount,
+    onComplete =
+        null
 ) {
 
-    clearPhotoPhaseTimer();
+    cancelPhotoSequence();
+
+
+    const token =
+        photoSequenceToken;
+
+
+    const currentCount =
+        groupElements.filter(
+            group =>
+                group.classList
+                    .contains(
+                        "visible"
+                    )
+        ).length;
+
+
+    const target =
+        Math.max(
+            0,
+            Math.min(
+                groupElements.length,
+                targetCount
+            )
+        );
 
 
     if (
-        groupElements.length ===
-        0
+        currentCount ===
+        target
     ) {
 
         if (
@@ -3295,118 +3085,111 @@ function animatePhotoExit(
     }
 
 
-    /*
-        Slight stagger, but very short.
-
-        Reverse order gives a quiet collapse.
-    */
-
-    groupElements.forEach(
-        (
-            group,
-            index
-        ) => {
-
-            const reverseIndex =
-                groupElements.length -
-                1 -
-                index;
+    const started =
+        performance.now();
 
 
-            const delay =
-                groupElements.length >
-                1
-                    ? (
-                        reverseIndex /
-                        (
-                            groupElements.length -
-                            1
-                        )
-                    ) *
-                    PHOTO_EXIT_STAGGER_TOTAL
-                    : 0;
+    function frame(
+        now
+    ) {
 
+        if (
+            token !==
+            photoSequenceToken
+        ) {
 
-            group.style
-                .setProperty(
-                    "--exit-delay",
-                    `${delay}ms`
-                );
-
-
-            group.style
-                .setProperty(
-                    "--exit-y",
-                    `${randomBetween(
-                        -6,
-                        6
-                    )}px`
-                );
+            return;
 
         }
-    );
 
 
-    /*
-        One frame, then all exit transitions begin.
-    */
-
-    requestAnimationFrame(
-        () => {
-
-            groupElements.forEach(
-                group => {
-
-                    group.classList
-                        .remove(
-                            "visible"
-                        );
-
-
-                    group.classList
-                        .add(
-                            "exiting"
-                        );
-
-                }
+        const progress =
+            Math.min(
+                1,
+                (
+                    now -
+                    started
+                ) /
+                PHOTO_SEQUENCE_DURATION
             );
 
 
-            /*
-                SINGLE JS timer for complete exit.
-            */
-
-            photoPhaseTimer =
-                setTimeout(
-                    () => {
-
-                        photoPhaseTimer =
-                            null;
+        const raw =
+            currentCount +
+            (
+                target -
+                currentCount
+            ) *
+            progress;
 
 
-                        if (
-                            typeof onComplete ===
-                            "function"
-                        ) {
-
-                            onComplete();
-
-                        }
-
-                    },
-                    PHOTO_EXIT_BASE_DURATION +
-                    PHOTO_EXIT_STAGGER_TOTAL +
-                    30
+        const count =
+            target >
+            currentCount
+                ? Math.floor(
+                    raw +
+                    0.0001
+                )
+                : Math.ceil(
+                    raw -
+                    0.0001
                 );
 
+
+        setVisiblePhotoGroupCount(
+            count
+        );
+
+
+        if (
+            progress <
+            1
+        ) {
+
+            photoSequenceFrame =
+                requestAnimationFrame(
+                    frame
+                );
+
+
+            return;
+
         }
-    );
+
+
+        setVisiblePhotoGroupCount(
+            target
+        );
+
+
+        photoSequenceFrame =
+            null;
+
+
+        if (
+            typeof onComplete ===
+            "function"
+        ) {
+
+            requestAnimationFrame(
+                onComplete
+            );
+
+        }
+
+    }
+
+
+    photoSequenceFrame =
+        requestAnimationFrame(
+            frame
+        );
 
 }
 
 
 /* =====================================================
-   NAV WORD STATE
+   WORD STATE
    ===================================================== */
 
 const navItems =
@@ -3441,10 +3224,6 @@ const navItems =
 
     };
 
-
-/* =====================================================
-   CASE RENDER
-   ===================================================== */
 
 function renderCaseWord(
     word,
@@ -3720,7 +3499,7 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   MODE
+   MODE STATE
    ===================================================== */
 
 let activeMode =
@@ -3756,7 +3535,7 @@ function clearPhaseTimer() {
 
 
 /* =====================================================
-   PRIME VIDEO
+   PRIME FILM
    ===================================================== */
 
 function primeFilm() {
@@ -3764,58 +3543,33 @@ function primeFilm() {
     filmVideo.pause();
 
 
-    const seek =
-        () => {
+    try {
 
-            try {
+        if (
+            filmVideo.readyState >=
+            1 &&
+            Math.abs(
+                filmVideo.currentTime
+            ) >
+            0.01
+        ) {
 
-                if (
-                    Math.abs(
-                        filmVideo.currentTime
-                    ) >
-                    0.01
-                ) {
+            filmVideo.currentTime =
+                0;
 
-                    filmVideo.currentTime =
-                        0;
-
-                }
-
-            }
-
-            catch (
-                error
-            ) {}
-
-        };
-
-
-    if (
-        filmVideo.readyState >= 1
-    ) {
-
-        seek();
+        }
 
     }
 
-    else {
-
-        filmVideo.addEventListener(
-            "loadedmetadata",
-            seek,
-            {
-                once:
-                    true
-            }
-        );
-
-    }
+    catch (
+        error
+    ) {}
 
 }
 
 
 /* =====================================================
-   SWITCH TO FILM
+   SHOW FILM LAYER
    ===================================================== */
 
 async function switchToFilmLayer() {
@@ -3836,6 +3590,10 @@ async function switchToFilmLayer() {
 
     try {
 
+        filmVideo.currentTime =
+            0;
+
+
         await filmVideo.play();
 
     }
@@ -3848,7 +3606,59 @@ async function switchToFilmLayer() {
 
 
 /* =====================================================
+   REFRESH PHOTOGRAPHY DOM
+   ===================================================== */
+
+function refreshPhotographyDOMIfNeeded() {
+
+    if (
+        !supplementalAnalysisFinished
+    ) {
+
+        return;
+
+    }
+
+
+    const expectedImages =
+        projectVisualGroups.reduce(
+            (
+                total,
+                group
+            ) =>
+                total +
+                group.photos.length,
+            0
+        );
+
+
+    const currentImages =
+        scatteredStage
+            .querySelectorAll(
+                ".project-photo"
+            )
+            .length;
+
+
+    if (
+        expectedImages ===
+        currentImages
+    ) {
+
+        return;
+
+    }
+
+
+    buildPhotographyDOM();
+
+}
+
+
+/* =====================================================
    START PHOTOGRAPHY
+
+   FILM -> PHOTOGRAPHY
    ===================================================== */
 
 function startPhotography(
@@ -3856,14 +3666,54 @@ function startPhotography(
         true
 ) {
 
+    clearPhaseTimer();
+
+
+    /*
+        If projects.json has not even produced
+        the cover set yet, do not freeze the UI.
+
+        Retry shortly while film / current state
+        remains usable.
+    */
+
+    if (
+        !photographyInitialReady
+    ) {
+
+        phaseTimer =
+            setTimeout(
+                () => {
+
+                    if (
+                        hoverMode ===
+                        "film"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    startPhotography(
+                        automatic
+                    );
+
+                },
+                100
+            );
+
+
+        return;
+
+    }
+
+
     activeMode =
         "photography";
 
 
-    clearPhaseTimer();
-
-
-    clearPhotoPhaseTimer();
+    cancelPhotoSequence();
 
 
     filmVideo.pause();
@@ -3876,13 +3726,15 @@ function startPhotography(
         );
 
 
-    /*
-        NEW:
-        project order remains fixed,
-        but sizes and spaces change.
-    */
+    refreshPhotographyDOMIfNeeded();
+
 
     randomizePhotographyLayout();
+
+
+    setVisiblePhotoGroupCount(
+        0
+    );
 
 
     photographyField
@@ -3892,15 +3744,21 @@ function startPhotography(
         );
 
 
-    primeFilm();
+    /*
+        Typography and photo appearance begin
+        together.
 
+        No fade on photography.
+    */
 
     animateTitlesTo(
         "photography"
     );
 
 
-    preparePhotoEntrance();
+    animatePhotoGroups(
+        groupElements.length
+    );
 
 
     if (
@@ -3913,10 +3771,6 @@ function startPhotography(
 
     }
 
-
-    /*
-        Full photography hold.
-    */
 
     phaseTimer =
         setTimeout(
@@ -3935,13 +3789,12 @@ function startPhotography(
 
 
                 /*
-                    First animate photographs out.
-
-                    Typography is NOT morphing
-                    at the same exact time.
+                    PHOTOGRAPHY exits:
+                    images disappear sequentially.
                 */
 
-                animatePhotoExit(
+                animatePhotoGroups(
+                    0,
                     () => {
 
                         if (
@@ -3957,8 +3810,9 @@ function startPhotography(
 
 
                         /*
-                            Now title morph gets
-                            the main thread to itself.
+                            Then typography returns:
+                            PHOTOGRAPHY -> photography
+                            film -> FILM
                         */
 
                         animateTitlesTo(
@@ -3990,7 +3844,8 @@ function startPhotography(
                 );
 
             },
-            PHOTO_BUILD_DURATION +
+
+            PHOTO_SEQUENCE_DURATION +
             PHOTO_HOLD_DURATION
         );
 
@@ -3998,7 +3853,9 @@ function startPhotography(
 
 
 /* =====================================================
-   MANUAL FILM START
+   START FILM
+
+   This is now also the INITIAL state.
    ===================================================== */
 
 function startFilm(
@@ -4006,33 +3863,35 @@ function startFilm(
         true
 ) {
 
-    activeMode =
-        "film";
-
-
     clearPhaseTimer();
 
 
-    clearPhotoPhaseTimer();
+    cancelPhotoSequence();
 
 
-    primeFilm();
-
-
-    /*
-        If photography is visible,
-        animate it out first.
-    */
-
-    if (
+    const photographyVisible =
         photographyField
             .classList
             .contains(
                 "active"
-            )
+            );
+
+
+    activeMode =
+        "film";
+
+
+    /*
+        If photography is currently on screen,
+        remove its images first.
+    */
+
+    if (
+        photographyVisible
     ) {
 
-        animatePhotoExit(
+        animatePhotoGroups(
+            0,
             () => {
 
                 if (
@@ -4073,6 +3932,21 @@ function startFilm(
     }
 
 
+    /*
+        INITIAL LOAD enters here.
+
+        photography
+        film
+
+        becomes:
+
+        photography
+        FILM
+
+        while projects.json + image analysis
+        are already running in background.
+    */
+
     animateTitlesTo(
         "film",
         () => {
@@ -4096,7 +3970,13 @@ function startFilm(
 
 
 /* =====================================================
-   VIDEO END
+   VIDEO ENDED
+
+   Because video is exactly 77 frames at
+   23.976 fps, its natural ended event is the
+   cleanest timing source.
+
+   FILM stays visible for the complete video.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -4130,7 +4010,7 @@ filmVideo.addEventListener(
 
 
 /* =====================================================
-   HOVER CAPABILITY
+   HOVER
    ===================================================== */
 
 function canHover() {
@@ -4143,10 +4023,6 @@ function canHover() {
 
 }
 
-
-/* =====================================================
-   PHOTOGRAPHY HOVER
-   ===================================================== */
 
 photographyLink.addEventListener(
     "mouseenter",
@@ -4226,10 +4102,6 @@ photographyLink.addEventListener(
     }
 );
 
-
-/* =====================================================
-   FILM HOVER
-   ===================================================== */
 
 filmLink.addEventListener(
     "mouseenter",
@@ -4388,10 +4260,6 @@ let logoReturnTimer =
     null;
 
 
-/* =====================================================
-   LOGO STATE
-   ===================================================== */
-
 function setLogoState(
     state
 ) {
@@ -4434,10 +4302,6 @@ function setLogoState(
 
 }
 
-
-/* =====================================================
-   LOGO MORPH
-   ===================================================== */
 
 function animateLogoTo(
     target,
@@ -4513,10 +4377,6 @@ function animateLogoTo(
 }
 
 
-/* =====================================================
-   DESKTOP LOGO
-   ===================================================== */
-
 logo.addEventListener(
     "mouseenter",
     () => {
@@ -4574,10 +4434,6 @@ logo.addEventListener(
     }
 );
 
-
-/* =====================================================
-   MOBILE LOGO TAP
-   ===================================================== */
 
 logo.addEventListener(
     "click",
@@ -4668,7 +4524,8 @@ window.addEventListener(
 
                     if (
                         activeMode ===
-                        "photography"
+                        "photography" &&
+                        photographyInitialReady
                     ) {
 
                         randomizePhotographyLayout();
@@ -4697,7 +4554,7 @@ document.addEventListener(
 
             clearPhaseTimer();
 
-            clearPhotoPhaseTimer();
+            cancelPhotoSequence();
 
             filmVideo.pause();
 
@@ -4739,16 +4596,16 @@ document.addEventListener(
 
         if (
             activeMode ===
-            "film"
+            "photography"
         ) {
 
-            startFilm();
+            startPhotography();
 
         }
 
         else {
 
-            startPhotography();
+            startFilm();
 
         }
 
@@ -4758,9 +4615,19 @@ document.addEventListener(
 
 /* =====================================================
    INIT
+
+   NEW STARTUP ORDER
+
+   1. page text renders immediately
+   2. FILM becomes the first animated state
+   3. video begins
+   4. photography JSON/covers load in parallel
+   5. horizontal-image analysis continues in background
+   6. video finishes
+   7. PHOTOGRAPHY begins
    ===================================================== */
 
-async function init() {
+function init() {
 
     setLogoState(
         0
@@ -4779,35 +4646,53 @@ async function init() {
     );
 
 
-    try {
+    /*
+        IMPORTANT:
 
-        filmVideo.load();
+        Start photography preparation immediately,
+        but DO NOT await it.
+
+        The user sees FILM while this happens.
+    */
+
+    loadInitialPhotography()
+        .catch(
+            error => {
+
+                console.error(
+                    "Photography preparation failed:",
+                    error
+                );
+
+            }
+        );
+
+
+    /*
+        FILM is now the opening visual state.
+    */
+
+    if (
+        INITIAL_FILM_DELAY >
+        0
+    ) {
+
+        setTimeout(
+            () => {
+
+                startFilm();
+
+            },
+            INITIAL_FILM_DELAY
+        );
 
     }
 
-    catch (
-        error
-    ) {}
+    else {
 
+        startFilm();
 
-    await loadPhotographyProjects();
-
-
-    setTimeout(
-        () => {
-
-            if (
-                activeMode ===
-                null
-            ) {
-
-                startPhotography();
-
-            }
-
-        },
-        INITIAL_DELAY
-    );
+    }
 
 }
 
