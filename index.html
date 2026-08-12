@@ -13,6 +13,10 @@
 
 <style>
 
+/* =====================================================
+   RESET
+   ===================================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -68,6 +72,7 @@ body {
 
 .page {
     width: 100%;
+
     height: 100vh;
     height: 100dvh;
 
@@ -132,7 +137,6 @@ body {
     padding: 0;
 
     border: 0;
-    border-radius: 0;
 
     appearance: none;
     -webkit-appearance: none;
@@ -324,7 +328,7 @@ body {
 
 
 /* =====================================================
-   MEDIA LINKS
+   MEDIA LINK
    ===================================================== */
 
 .media-layer {
@@ -349,20 +353,17 @@ body {
 
 .media-layer.active {
     display: flex;
+
     pointer-events: auto;
 }
 
 
 /* =====================================================
-   PHOTOGRAPHY SEQUENCE
+   PHOTO
    ===================================================== */
 
-.photo-frame {
-    position: absolute;
-
-    inset: 0;
-
-    display: none;
+#landing-photo {
+    display: block;
 
     width: 100%;
     height: 100%;
@@ -373,16 +374,12 @@ body {
     pointer-events: none;
 }
 
-.photo-frame.active {
-    display: block;
-}
-
 
 /* =====================================================
    VIDEO
    ===================================================== */
 
-.media-layer video {
+#film-video {
     display: block;
 
     width: 100%;
@@ -520,6 +517,11 @@ body {
 
 /* =====================================================
    MOBILE LANDSCAPE
+
+   More aggressive typography compression.
+
+   The goal is explicit:
+   the final client line must always remain visible.
    ===================================================== */
 
 @media
@@ -530,12 +532,13 @@ body {
     :root {
 
         --page-x: 24px;
-        --page-top: 16px;
-        --page-bottom: 16px;
+        --page-top: 12px;
+        --page-bottom: 12px;
 
-        --font-size: 13px;
+        --font-size: 11px;
+        --line-height: 1.08;
 
-        --major-gap: 7px;
+        --major-gap: 5px;
         --column-gap: 24px;
 
     }
@@ -544,7 +547,7 @@ body {
     .landing-grid {
 
         grid-template-columns:
-            minmax(260px, 42%)
+            minmax(275px, 43%)
             minmax(0, 1fr);
 
         grid-template-rows:
@@ -558,18 +561,30 @@ body {
 
 
     .logo {
-        height: 30px;
+
+        height:
+            calc(
+                var(--font-size) * 2.15
+            );
+
     }
 
 
     .logo-aybak {
-        top: 15px;
+
+        top:
+            calc(
+                var(--font-size) * 1.08
+            );
+
     }
 
 
     .biography p {
+
         margin-bottom:
             var(--major-gap);
+
     }
 
 
@@ -586,6 +601,41 @@ body {
 
         font-size: var(--font-size) !important;
         line-height: var(--line-height) !important;
+
+    }
+
+}
+
+
+/* =====================================================
+   VERY SHORT LANDSCAPE
+   ===================================================== */
+
+@media
+    (orientation: landscape)
+    and (max-height: 480px) {
+
+    :root {
+
+        --page-x: 18px;
+
+        --page-top: 8px;
+        --page-bottom: 8px;
+
+        --font-size: 10px;
+        --line-height: 1.05;
+
+        --major-gap: 3px;
+        --column-gap: 18px;
+
+    }
+
+
+    .landing-grid {
+
+        grid-template-columns:
+            minmax(250px, 44%)
+            minmax(0, 1fr);
 
     }
 
@@ -641,27 +691,6 @@ body {
 
 }
 
-
-/* =====================================================
-   VERY SHORT LANDSCAPE
-   ===================================================== */
-
-@media
-    (orientation: landscape)
-    and (max-height: 450px) {
-
-    :root {
-
-        --page-top: 10px;
-        --page-bottom: 10px;
-
-        --major-gap: 4px;
-        --column-gap: 20px;
-
-    }
-
-}
-
 </style>
 
 </head>
@@ -677,7 +706,9 @@ body {
     >
 
 
-        <!-- LOGO -->
+        <!-- =================================================
+             LOGO
+             ================================================= -->
 
         <button
             class="logo"
@@ -702,14 +733,18 @@ body {
         </button>
 
 
-        <!-- OPENING -->
+        <!-- =================================================
+             OPENING
+             ================================================= -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- NAVIGATION -->
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
 
         <nav class="navigation">
 
@@ -741,7 +776,9 @@ body {
         </nav>
 
 
-        <!-- MEDIA -->
+        <!-- =================================================
+             MEDIA
+             ================================================= -->
 
         <div
             class="media-slot"
@@ -759,23 +796,8 @@ body {
             >
 
                 <img
-                    class="photo-frame"
-                    id="photo-01"
-                    src="./photo_01.jpg"
-                    alt=""
-                >
-
-                <img
-                    class="photo-frame"
-                    id="photo-02"
-                    src="./photo_02.jpg"
-                    alt=""
-                >
-
-                <img
-                    class="photo-frame"
-                    id="photo-03"
-                    src="./photo_03.jpg"
+                    id="landing-photo"
+                    src=""
                     alt=""
                 >
 
@@ -804,7 +826,9 @@ body {
         </div>
 
 
-        <!-- CONTACT -->
+        <!-- =================================================
+             CONTACT
+             ================================================= -->
 
         <div class="contact">
 
@@ -835,7 +859,9 @@ body {
         </div>
 
 
-        <!-- BIO -->
+        <!-- =================================================
+             BIO
+             ================================================= -->
 
         <section
             class="biography"
@@ -870,6 +896,18 @@ body {
 <script>
 
 /* =====================================================
+   MEDIA SOURCES
+   ===================================================== */
+
+const R2_BASE =
+    "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
+
+
+const LANDING_PHOTOS_JSON =
+    "./landingPhotos.json";
+
+
+/* =====================================================
    TIMING
    ===================================================== */
 
@@ -878,7 +916,24 @@ const WORD_TRANSITION_DURATION =
 
 
 /*
-    77 frames / 23.976 fps
+    Photography is deliberately shorter
+    than film.
+
+    One static photograph = 1.5 sec.
+*/
+
+const PHOTOGRAPHY_DURATION =
+    1500;
+
+
+/*
+    Film clip:
+
+    77 / 23.976
+    = 3.211544878... sec
+
+    We still use the real VIDEO ENDED event
+    rather than trusting a JS timeout.
 */
 
 const VIDEO_FRAME_COUNT =
@@ -889,7 +944,7 @@ const VIDEO_FPS =
     23.976;
 
 
-const PHASE_DURATION =
+const VIDEO_DURATION_MS =
     (
         VIDEO_FRAME_COUNT /
         VIDEO_FPS
@@ -898,20 +953,16 @@ const PHASE_DURATION =
 
 
 /*
-    = approx 3211.545 ms
+    Brief typographic opening before
+    the first photo appears.
 */
-
 
 const INITIAL_MEDIA_DELAY =
     700;
 
 
 /*
-    Mobile logo interaction:
-
-    expand
-    hold
-    return
+    Logo.
 */
 
 const LOGO_STEP_DURATION =
@@ -923,55 +974,259 @@ const LOGO_MOBILE_HOLD =
 
 
 /* =====================================================
-   PHOTOGRAPHY MOTION SEQUENCE
-
-   Total MUST equal PHASE_DURATION.
-
-   01   900ms
-   02   180ms
-   03   1050ms
-   02   180ms
-   01   remaining time
-
-   The blurred / transitional image therefore
-   appears briefly rather than behaving like
-   another equal slideshow image.
+   LANDING PHOTO POOL
    ===================================================== */
 
-const PHOTO_SEQUENCE =
-    [
+let landingPhotos =
+    [];
 
-        {
-            index: 0,
-            duration: 900
-        },
 
-        {
-            index: 1,
-            duration: 180
-        },
+let photoBag =
+    [];
 
-        {
-            index: 2,
-            duration: 1050
-        },
 
-        {
-            index: 1,
-            duration: 180
-        },
+let currentPhoto =
+    null;
 
-        {
-            index: 0,
-            duration:
-                PHASE_DURATION -
-                900 -
-                180 -
-                1050 -
-                180
+
+/* =====================================================
+   SHUFFLE
+   ===================================================== */
+
+function shuffle(
+    array
+) {
+
+    const result =
+        array.slice();
+
+
+    for (
+        let i =
+            result.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (
+                    i + 1
+                )
+            );
+
+
+        [
+            result[i],
+            result[j]
+        ] =
+        [
+            result[j],
+            result[i]
+        ];
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   REFILL BAG
+
+   Every photograph is shown once
+   before anything repeats.
+
+   Also prevent the last photo of
+   one bag becoming the first photo
+   of the next bag.
+   ===================================================== */
+
+function refillPhotoBag() {
+
+    photoBag =
+        shuffle(
+            landingPhotos
+        );
+
+
+    if (
+        currentPhoto &&
+        photoBag.length > 1 &&
+        photoBag[0] ===
+        currentPhoto
+    ) {
+
+        [
+            photoBag[0],
+            photoBag[1]
+        ] =
+        [
+            photoBag[1],
+            photoBag[0]
+        ];
+
+    }
+
+}
+
+
+/* =====================================================
+   NEXT CURATED RANDOM PHOTO
+   ===================================================== */
+
+function getNextLandingPhoto() {
+
+    if (
+        landingPhotos.length ===
+        0
+    ) {
+
+        return null;
+
+    }
+
+
+    if (
+        photoBag.length ===
+        0
+    ) {
+
+        refillPhotoBag();
+
+    }
+
+
+    currentPhoto =
+        photoBag.shift();
+
+
+    return currentPhoto;
+
+}
+
+
+/* =====================================================
+   PRELOAD
+   ===================================================== */
+
+function preloadPhoto(
+    filename
+) {
+
+    if (
+        !filename
+    ) {
+
+        return;
+
+    }
+
+
+    const image =
+        new Image();
+
+
+    image.src =
+        R2_BASE +
+        encodeURIComponent(
+            filename
+        );
+
+}
+
+
+/* =====================================================
+   LOAD LANDING PHOTO MANIFEST
+   ===================================================== */
+
+async function loadLandingPhotos() {
+
+    try {
+
+        const response =
+            await fetch(
+                LANDING_PHOTOS_JSON,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                "landingPhotos.json could not be loaded."
+            );
+
         }
 
-    ];
+
+        const data =
+            await response.json();
+
+
+        landingPhotos =
+            data.filter(
+                item =>
+                    typeof item ===
+                    "string" &&
+                    item.trim() !==
+                    ""
+            );
+
+
+        if (
+            landingPhotos.length ===
+            0
+        ) {
+
+            throw new Error(
+                "landingPhotos.json contains no images."
+            );
+
+        }
+
+
+        refillPhotoBag();
+
+
+        /*
+            Preload the whole small curated pool.
+
+            10–15 images is small enough,
+            and prevents hard-switch loading flashes.
+        */
+
+        landingPhotos.forEach(
+            preloadPhoto
+        );
+
+
+        return true;
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+
+        return false;
+
+    }
+
+}
 
 
 /* =====================================================
@@ -1014,32 +1269,20 @@ const filmMedia =
     );
 
 
+const landingPhoto =
+    document.getElementById(
+        "landing-photo"
+    );
+
+
 const filmVideo =
     document.getElementById(
         "film-video"
     );
 
 
-const photoFrames =
-    [
-
-        document.getElementById(
-            "photo-01"
-        ),
-
-        document.getElementById(
-            "photo-02"
-        ),
-
-        document.getElementById(
-            "photo-03"
-        )
-
-    ];
-
-
 /* =====================================================
-   NAV STATE
+   NAV WORD STATE
    ===================================================== */
 
 const navItems =
@@ -1105,8 +1348,10 @@ function renderCaseWord(
         result +=
             i <
             count
-                ? word[i].toUpperCase()
-                : word[i].toLowerCase();
+                ? word[i]
+                    .toUpperCase()
+                : word[i]
+                    .toLowerCase();
 
     }
 
@@ -1173,6 +1418,10 @@ function animateTitlesTo(
         cancelAnimationFrame(
             titleAnimationFrame
         );
+
+
+        titleAnimationFrame =
+            null;
 
     }
 
@@ -1329,120 +1578,36 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   PHOTOGRAPHY SEQUENCE
-   ===================================================== */
-
-let photoSequenceTimers =
-    [];
-
-
-function clearPhotoSequence() {
-
-    photoSequenceTimers.forEach(
-        timer => {
-
-            clearTimeout(
-                timer
-            );
-
-        }
-    );
-
-
-    photoSequenceTimers =
-        [];
-
-}
-
-
-function showPhotoFrame(
-    index
-) {
-
-    photoFrames.forEach(
-        (
-            frame,
-            frameIndex
-        ) => {
-
-            frame.classList.toggle(
-                "active",
-                frameIndex ===
-                index
-            );
-
-        }
-    );
-
-}
-
-
-function startPhotoSequence() {
-
-    clearPhotoSequence();
-
-
-    let elapsed =
-        0;
-
-
-    PHOTO_SEQUENCE.forEach(
-        (
-            item,
-            sequenceIndex
-        ) => {
-
-            if (
-                sequenceIndex ===
-                0
-            ) {
-
-                showPhotoFrame(
-                    item.index
-                );
-
-            }
-
-            else {
-
-                photoSequenceTimers.push(
-
-                    setTimeout(
-                        () => {
-
-                            showPhotoFrame(
-                                item.index
-                            );
-
-                        },
-                        elapsed
-                    )
-
-                );
-
-            }
-
-
-            elapsed +=
-                item.duration;
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   MEDIA
+   SHOW PHOTOGRAPHY
    ===================================================== */
 
 function showPhotographyMedia() {
+
+    filmVideo.pause();
+
 
     filmMedia
         .classList
         .remove(
             "active"
         );
+
+
+    const nextPhoto =
+        getNextLandingPhoto();
+
+
+    if (
+        nextPhoto
+    ) {
+
+        landingPhoto.src =
+            R2_BASE +
+            encodeURIComponent(
+                nextPhoto
+            );
+
+    }
 
 
     photographyMedia
@@ -1452,18 +1617,29 @@ function showPhotographyMedia() {
         );
 
 
-    filmVideo.pause();
+    /*
+        Preload next likely image while
+        current photo is being viewed.
+    */
 
+    if (
+        photoBag.length > 0
+    ) {
 
-    startPhotoSequence();
+        preloadPhoto(
+            photoBag[0]
+        );
+
+    }
 
 }
 
 
+/* =====================================================
+   SHOW FILM
+   ===================================================== */
+
 async function showFilmMedia() {
-
-    clearPhotoSequence();
-
 
     photographyMedia
         .classList
@@ -1489,7 +1665,9 @@ async function showFilmMedia() {
 
     }
 
-    catch (error) {}
+    catch (
+        error
+    ) {}
 
 
     filmVideo.playbackRate =
@@ -1502,13 +1680,15 @@ async function showFilmMedia() {
 
     }
 
-    catch (error) {}
+    catch (
+        error
+    ) {}
 
 }
 
 
 /* =====================================================
-   MODE
+   MODE STATE
    ===================================================== */
 
 let activeMode =
@@ -1526,6 +1706,10 @@ let photographyTimer =
 let modeToken =
     0;
 
+
+/* =====================================================
+   CLEAR PHOTO TIMER
+   ===================================================== */
 
 function clearAutomaticTimers() {
 
@@ -1547,10 +1731,17 @@ function clearAutomaticTimers() {
 }
 
 
+/* =====================================================
+   ACTIVATE MODE
+   ===================================================== */
+
 async function activateMode(
     mode,
     {
         automatic =
+            true,
+
+        chooseNewPhoto =
             true
     } = {}
 ) {
@@ -1574,7 +1765,41 @@ async function activateMode(
         "photography"
     ) {
 
-        showPhotographyMedia();
+        /*
+            Normally every NEW photography phase
+            receives another shuffled photo.
+
+            Re-entering photography through an
+            edge case can preserve it if requested.
+        */
+
+        if (
+            chooseNewPhoto
+        ) {
+
+            showPhotographyMedia();
+
+        }
+
+        else {
+
+            filmVideo.pause();
+
+
+            filmMedia
+                .classList
+                .remove(
+                    "active"
+                );
+
+
+            photographyMedia
+                .classList
+                .add(
+                    "active"
+                );
+
+        }
 
     }
 
@@ -1585,10 +1810,19 @@ async function activateMode(
     }
 
 
+    /*
+        Media hard-switches immediately;
+        typography performs the transition.
+    */
+
     animateTitlesTo(
         mode
     );
 
+
+    /*
+        Desktop hover freezes the chosen state.
+    */
 
     if (
         !automatic ||
@@ -1600,6 +1834,12 @@ async function activateMode(
 
     }
 
+
+    /*
+        Photography stays only 1.5 seconds.
+
+        This is intentionally shorter than film.
+    */
 
     if (
         mode ===
@@ -1627,16 +1867,24 @@ async function activateMode(
                     );
 
                 },
-                PHASE_DURATION
+                PHOTOGRAPHY_DURATION
             );
 
     }
+
+
+    /*
+        Film has NO phase timeout.
+
+        Its real encoded ending controls
+        the next change.
+    */
 
 }
 
 
 /* =====================================================
-   VIDEO END
+   FILM ENDED
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -1652,6 +1900,13 @@ filmVideo.addEventListener(
 
         }
 
+
+        /*
+            Hovering film:
+            remain on its actual final frame.
+
+            No frame is replayed.
+        */
 
         if (
             hoverMode ===
@@ -1672,7 +1927,7 @@ filmVideo.addEventListener(
 
 
 /* =====================================================
-   DESKTOP HOVER
+   HOVER
    ===================================================== */
 
 function canHover() {
@@ -1685,6 +1940,10 @@ function canHover() {
 
 }
 
+
+/* =====================================================
+   TITLE HOVER ENTER
+   ===================================================== */
 
 function titleHoverEnter(
     mode
@@ -1699,6 +1958,11 @@ function titleHoverEnter(
     }
 
 
+    const wasAlreadyPhotography =
+        activeMode ===
+        "photography";
+
+
     hoverMode =
         mode;
 
@@ -1707,12 +1971,32 @@ function titleHoverEnter(
         mode,
         {
             automatic:
-                false
+                false,
+
+            /*
+                If photo is already visible and user
+                merely hovers the word photography,
+                DON'T randomly replace the image.
+
+                Only a genuine new photo phase gets
+                another image.
+            */
+
+            chooseNewPhoto:
+                !(
+                    mode ===
+                    "photography" &&
+                    wasAlreadyPhotography
+                )
         }
     );
 
 }
 
+
+/* =====================================================
+   TITLE HOVER LEAVE
+   ===================================================== */
 
 function titleHoverLeave(
     leavingMode
@@ -1741,6 +2025,12 @@ function titleHoverLeave(
                     ":hover"
                 );
 
+
+            /*
+                Direct photography -> film hover
+                or film -> photography hover:
+                new mouseenter owns the transition.
+            */
 
             if (
                 photographyHovered ||
@@ -1906,6 +2196,10 @@ let logoMobileReturnTimer =
     null;
 
 
+/* =====================================================
+   LOGO RENDER
+   ===================================================== */
+
 function setLogoState(
     state
 ) {
@@ -1933,17 +2227,26 @@ function setLogoState(
         i++
     ) {
 
-        logoLetters[i]
-            .textContent =
+        logoLetters[
+            i
+        ].textContent =
             i <
             logoState
-                ? logoUppercase[i]
-                : logoLowercase[i];
+                ? logoUppercase[
+                    i
+                ]
+                : logoLowercase[
+                    i
+                ];
 
     }
 
 }
 
+
+/* =====================================================
+   LOGO MORPH
+   ===================================================== */
 
 function stopLogoStep() {
 
@@ -2052,6 +2355,10 @@ logo.addEventListener(
                 logoMobileReturnTimer
             );
 
+
+            logoMobileReturnTimer =
+                null;
+
         }
 
 
@@ -2087,13 +2394,25 @@ logo.addEventListener(
 /* =====================================================
    MOBILE LOGO TAP
 
-   one tap:
-   lowercase -> uppercase
-   HOLD
-   automatically return
+   ONE tap:
+
+   Denizalp
+   aybak
+
+       ↓
+
+   denizalp
+   AYBAK
+
+   2 second hold
+
+       ↓
+
+   Denizalp
+   aybak
 
    No navigation.
-   No double tap.
+   No second tap.
    ===================================================== */
 
 logo.addEventListener(
@@ -2121,6 +2440,10 @@ logo.addEventListener(
                 logoMobileReturnTimer
             );
 
+
+            logoMobileReturnTimer =
+                null;
+
         }
 
 
@@ -2136,6 +2459,10 @@ logo.addEventListener(
                                 0
                             );
 
+
+                            logoMobileReturnTimer =
+                                null;
+
                         },
                         LOGO_MOBILE_HOLD
                     );
@@ -2150,15 +2477,13 @@ logo.addEventListener(
 /* =====================================================
    LANDSCAPE FIT
 
-   On short landscape devices we measure the
-   actual LEFT typography height.
+   Final safety pass for browser chrome /
+   unusual phone aspect ratios.
 
-   If it does not fit:
-   first reduce gap,
-   then reduce type only as much as necessary.
+   CSS handles the normal case.
 
-   This prevents selected clients / lc waikiki
-   from being clipped.
+   JS only intervenes if the final line
+   still physically extends below the page.
    ===================================================== */
 
 const landingGrid =
@@ -2170,6 +2495,24 @@ const landingGrid =
 const biography =
     document.getElementById(
         "biography"
+    );
+
+
+const opening =
+    document.querySelector(
+        ".opening"
+    );
+
+
+const navigation =
+    document.querySelector(
+        ".navigation"
+    );
+
+
+const contact =
+    document.querySelector(
+        ".contact"
     );
 
 
@@ -2186,39 +2529,36 @@ function isCompactLandscape() {
 
 function getLeftContentBottom() {
 
-    const elements =
-        [
-
-            logo,
-
-            document.querySelector(
-                ".opening"
-            ),
-
-            document.querySelector(
-                ".navigation"
-            ),
-
-            document.querySelector(
-                ".contact"
-            ),
-
-            biography
-
-        ];
-
-
     return Math.max(
-        ...elements.map(
-            element =>
-                element
-                    .getBoundingClientRect()
-                    .bottom
-        )
+
+        logo
+            .getBoundingClientRect()
+            .bottom,
+
+        opening
+            .getBoundingClientRect()
+            .bottom,
+
+        navigation
+            .getBoundingClientRect()
+            .bottom,
+
+        contact
+            .getBoundingClientRect()
+            .bottom,
+
+        biography
+            .getBoundingClientRect()
+            .bottom
+
     );
 
 }
 
+
+/* =====================================================
+   DYNAMIC LANDSCAPE FIT
+   ===================================================== */
 
 function fitLandscapeTypography() {
 
@@ -2227,11 +2567,17 @@ function fitLandscapeTypography() {
 
 
     /*
-        Remove JS override first.
+        Remove only JS-level emergency overrides.
+        CSS media query becomes source of truth again.
     */
 
     root.style.removeProperty(
         "--font-size"
+    );
+
+
+    root.style.removeProperty(
+        "--line-height"
     );
 
 
@@ -2249,20 +2595,13 @@ function fitLandscapeTypography() {
     }
 
 
-    const page =
-        document.querySelector(
-            ".page"
-        );
-
-
     const pageRect =
-        page.getBoundingClientRect();
+        document
+            .querySelector(
+                ".page"
+            )
+            .getBoundingClientRect();
 
-
-    /*
-        Keep a small safety gap above
-        the bottom page boundary.
-    */
 
     const safeBottom =
         pageRect.bottom -
@@ -2280,47 +2619,33 @@ function fitLandscapeTypography() {
 
 
     /*
-        First compress vertical rhythm.
-    */
+        Find the largest type size that physically fits.
 
-    root.style.setProperty(
-        "--major-gap",
-        "3px"
-    );
-
-
-    if (
-        getLeftContentBottom() <=
-        safeBottom
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-        Then binary-search the largest font size
-        that still fits.
-
-        This affects landscape only.
+        This is only an emergency rule for short
+        landscape devices/browser UI combinations.
     */
 
     let low =
-        10;
+        8.5;
 
 
     let high =
-        13;
+        parseFloat(
+            getComputedStyle(
+                root
+            ).getPropertyValue(
+                "--font-size"
+            )
+        ) || 11;
 
 
     let best =
-        10;
+        low;
 
 
     for (
         let i = 0;
-        i < 12;
+        i < 14;
         i++
     ) {
 
@@ -2332,24 +2657,35 @@ function fitLandscapeTypography() {
             2;
 
 
+        const lineHeight =
+            mid <= 9.5
+                ? 1.02
+                : 1.06;
+
+
+        const gap =
+            Math.max(
+                1.5,
+                mid *
+                0.3
+            );
+
+
         root.style.setProperty(
             "--font-size",
             `${mid}px`
         );
 
 
-        /*
-            Maintain an appropriately compact
-            gap as typography shrinks.
-        */
+        root.style.setProperty(
+            "--line-height",
+            `${lineHeight}`
+        );
+
 
         root.style.setProperty(
             "--major-gap",
-            `${Math.max(
-                2.5,
-                mid *
-                0.3
-            )}px`
+            `${gap}px`
         );
 
 
@@ -2377,6 +2713,12 @@ function fitLandscapeTypography() {
     }
 
 
+    const finalLineHeight =
+        best <= 9.5
+            ? 1.02
+            : 1.06;
+
+
     root.style.setProperty(
         "--font-size",
         `${best}px`
@@ -2384,9 +2726,15 @@ function fitLandscapeTypography() {
 
 
     root.style.setProperty(
+        "--line-height",
+        `${finalLineHeight}`
+    );
+
+
+    root.style.setProperty(
         "--major-gap",
         `${Math.max(
-            2.5,
+            1.5,
             best *
             0.3
         )}px`
@@ -2409,9 +2757,9 @@ document.addEventListener(
 
             clearAutomaticTimers();
 
-            clearPhotoSequence();
 
             filmVideo.pause();
+
 
             return;
 
@@ -2427,6 +2775,9 @@ document.addEventListener(
                 hoverMode,
                 {
                     automatic:
+                        false,
+
+                    chooseNewPhoto:
                         false
                 }
             );
@@ -2451,7 +2802,11 @@ document.addEventListener(
         else {
 
             activateMode(
-                "photography"
+                "photography",
+                {
+                    chooseNewPhoto:
+                        false
+                }
             );
 
         }
@@ -2461,7 +2816,7 @@ document.addEventListener(
 
 
 /* =====================================================
-   RESIZE
+   GEOMETRY
    ===================================================== */
 
 window.addEventListener(
@@ -2499,51 +2854,65 @@ window.addEventListener(
    INITIALIZE
    ===================================================== */
 
-setLogoState(
-    0
-);
+async function initialize() {
+
+    setLogoState(
+        0
+    );
 
 
-setWordCount(
-    navItems.photography,
-    0
-);
+    setWordCount(
+        navItems.photography,
+        0
+    );
 
 
-setWordCount(
-    navItems.film,
-    0
-);
+    setWordCount(
+        navItems.film,
+        0
+    );
 
 
-requestAnimationFrame(
-    fitLandscapeTypography
-);
+    await loadLandingPhotos();
+
+
+    requestAnimationFrame(
+        fitLandscapeTypography
+    );
+
+
+    setTimeout(
+        () => {
+
+            if (
+                activeMode ===
+                null
+            ) {
+
+                activateMode(
+                    "photography"
+                );
+
+            }
+
+        },
+        INITIAL_MEDIA_DELAY
+    );
+
+}
 
 
 window.addEventListener(
     "load",
-    fitLandscapeTypography
-);
-
-
-setTimeout(
     () => {
 
-        if (
-            activeMode ===
-            null
-        ) {
+        fitLandscapeTypography();
 
-            activateMode(
-                "photography"
-            );
-
-        }
-
-    },
-    INITIAL_MEDIA_DELAY
+    }
 );
+
+
+initialize();
 
 </script>
 
