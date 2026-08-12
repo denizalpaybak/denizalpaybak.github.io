@@ -25,25 +25,17 @@ html,
 body {
     margin: 0;
     padding: 0;
-
     width: 100%;
     height: 100%;
-
     overflow: hidden;
-
     background: #fff;
-
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
 }
 
 body {
     color: #000;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 
@@ -52,7 +44,6 @@ body {
    ===================================================== */
 
 :root {
-
     --page-x: 48px;
     --page-top: 32px;
     --page-bottom: 48px;
@@ -62,7 +53,6 @@ body {
 
     --major-gap: 17px;
     --column-gap: 48px;
-
 }
 
 
@@ -109,11 +99,8 @@ body {
         auto
         minmax(0, 1fr);
 
-    column-gap:
-        var(--column-gap);
-
-    row-gap:
-        var(--major-gap);
+    column-gap: var(--column-gap);
+    row-gap: var(--major-gap);
 
     width: 100%;
     height: 100%;
@@ -123,13 +110,6 @@ body {
 
     pointer-events: none;
 }
-
-
-/*
-    Interactive elements remain clickable even though
-    the grid itself allows the photography layer behind
-    it to occupy the full page.
-*/
 
 .logo,
 .navigation,
@@ -164,7 +144,6 @@ body {
     -webkit-appearance: none;
 
     background: transparent;
-
     color: #000;
 
     cursor: pointer;
@@ -181,7 +160,6 @@ body {
 
 .logo-name {
     position: absolute;
-
     top: 0;
     left: 0;
 
@@ -190,7 +168,6 @@ body {
 
 .logo-aybak {
     position: absolute;
-
     top: 17px;
     left: 0;
 
@@ -328,12 +305,9 @@ body {
     white-space: nowrap;
 }
 
-
 /*
-    Keeps the ending together.
-
-    If there isn't enough room for the whole phrase,
-    "made to evoke feeling." moves as one unit.
+    Desktopta son satırın yalnızca
+    "evoke feeling." olarak kalmasını önler.
 */
 
 .bio-ending {
@@ -362,12 +336,7 @@ body {
 
 
 /* =====================================================
-   PHOTOGRAPHY FIELD
-
-   DESKTOP photography is no longer restricted
-   to grid column 2.
-
-   It occupies the entire usable page.
+   PHOTOGRAPHY FIELD — DESKTOP
    ===================================================== */
 
 .photography-field {
@@ -391,13 +360,11 @@ body {
 
 .photography-field.active {
     visibility: visible;
-
-    pointer-events: none;
 }
 
 
 /* =====================================================
-   STAGE
+   PHOTOGRAPHY STAGE
    ===================================================== */
 
 #scattered-stage {
@@ -440,9 +407,7 @@ body {
 
     backface-visibility: hidden;
 
-    contain:
-        layout
-        paint;
+    contain: layout paint;
 }
 
 .photo-group.visible {
@@ -510,7 +475,6 @@ body {
 
 .film-field.active {
     visibility: visible;
-
     pointer-events: auto;
 }
 
@@ -572,7 +536,6 @@ body {
     and (orientation: portrait) {
 
     :root {
-
         --page-x: 24px;
         --page-top: 20px;
         --page-bottom: 32px;
@@ -581,12 +544,9 @@ body {
         --line-height: 1.15;
 
         --major-gap: 15px;
-
     }
 
-
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 1fr);
 
@@ -600,11 +560,8 @@ body {
 
         column-gap: 0;
 
-        row-gap:
-            var(--major-gap);
-
+        row-gap: var(--major-gap);
     }
-
 
     .logo {
         grid-column: 1;
@@ -613,50 +570,55 @@ body {
         height: 30px;
     }
 
-
     .logo-aybak {
         top: 15px;
     }
-
 
     .opening {
         grid-column: 1;
         grid-row: 2;
     }
 
-
     .navigation {
         grid-column: 1;
         grid-row: 3;
     }
-
 
     .media-field {
         grid-column: 1;
         grid-row: 4;
     }
 
-
     /*
-        On mobile photography remains inside the
-        dedicated media area rather than spreading
-        behind the text.
+        IMPORTANT:
+        Mobile photography is locked back into
+        the old media-field.
+
+        It cannot spread behind / over the text.
     */
 
     .photography-field {
         position: absolute;
 
+        z-index: 1;
+
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+
         inset: 0;
 
-        z-index: auto;
-    }
+        width: 100%;
+        height: 100%;
 
+        overflow: hidden;
+    }
 
     .contact {
         grid-column: 1;
         grid-row: 5;
     }
-
 
     .biography {
         grid-column: 1;
@@ -665,16 +627,13 @@ body {
         max-width: none;
     }
 
-
     .bio-ending {
         white-space: normal;
     }
 
-
     .film-link {
         max-width: 100%;
     }
-
 }
 
 
@@ -688,7 +647,6 @@ body {
     and (max-width: 1000px) {
 
     :root {
-
         --page-x: 24px;
         --page-top: 14px;
         --page-bottom: 14px;
@@ -698,9 +656,7 @@ body {
 
         --major-gap: 8px;
         --column-gap: 24px;
-
     }
-
 
     .landing-grid {
         grid-template-columns:
@@ -708,58 +664,58 @@ body {
             minmax(0, 1fr);
     }
 
-
     .logo {
         height: 30px;
     }
 
-
     .logo-aybak {
         top: 15px;
     }
-
 
     .opening,
     .biography {
         max-width: none;
     }
 
-
     .opening,
     .biography p {
         text-wrap: pretty;
     }
 
-
     .biography p {
-        margin-bottom:
-            var(--major-gap);
+        margin-bottom: var(--major-gap);
     }
 
-
     /*
-        Keep mobile landscape photography inside
-        the media column.
+        Landscape mobile also stays completely
+        inside the media column.
     */
 
     .photography-field {
         position: absolute;
 
+        z-index: 1;
+
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+
         inset: 0;
 
-        z-index: auto;
-    }
+        width: 100%;
+        height: 100%;
 
+        overflow: hidden;
+    }
 
     .bio-ending {
         white-space: normal;
     }
 
-
     .film-link {
         max-width: 100%;
     }
-
 }
 
 
@@ -773,7 +729,6 @@ body {
     and (max-height: 700px) {
 
     :root {
-
         --page-x: 24px;
         --page-top: 20px;
         --page-bottom: 20px;
@@ -783,9 +738,7 @@ body {
 
         --major-gap: 9px;
         --column-gap: 32px;
-
     }
-
 
     .landing-grid {
         grid-template-columns:
@@ -793,16 +746,13 @@ body {
             minmax(0, 1fr);
     }
 
-
     .logo {
         height: 30px;
     }
 
-
     .logo-aybak {
         top: 15px;
     }
-
 }
 
 </style>
@@ -817,12 +767,7 @@ body {
     id="page"
 >
 
-    <!--
-        PHOTOGRAPHY IS OUTSIDE THE GRID.
-
-        This is what allows it to use the lower-left
-        desktop whitespace.
-    -->
+    <!-- DESKTOP PHOTOGRAPHY FIELD -->
 
     <div
         class="photography-field"
@@ -886,7 +831,6 @@ body {
                     photography
                 </span>
             </a>
-
 
             <a
                 href="https://film.denizalpaybak.com/"
@@ -1005,7 +949,6 @@ body {
 const PROJECTS_JSON_URL =
     "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
 
-
 const R2_PHOTOS_BASE =
     "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
 
@@ -1014,80 +957,56 @@ const R2_PHOTOS_BASE =
    TIMING
    ===================================================== */
 
-const WORD_TRANSITION_DURATION =
-    400;
+const WORD_TRANSITION_DURATION = 400;
 
+const PHOTO_SEQUENCE_DURATION = 400;
 
-const PHOTO_SEQUENCE_DURATION =
-    400;
+const PHOTO_HOLD_DURATION = 1150;
 
+/*
+    Mobile only:
+    blank breathing space between photography and film.
+*/
 
-const PHOTO_HOLD_DURATION =
-    1150;
-
-
-const INITIAL_FILM_DELAY =
-    0;
+const MOBILE_INTERLUDE_DURATION = 800;
 
 
 /* =====================================================
    LOGO
    ===================================================== */
 
-const LOGO_STEP_DURATION =
-    80;
+const LOGO_STEP_DURATION = 80;
 
-
-const LOGO_MOBILE_HOLD =
-    2000;
+const LOGO_MOBILE_HOLD = 2000;
 
 
 /* =====================================================
    DESKTOP LAYOUT
    ===================================================== */
 
-const DESKTOP_PROJECT_GAP_MIN =
-    18;
+const DESKTOP_PROJECT_GAP_MIN = 18;
 
+const DESKTOP_PROJECT_GAP_MAX = 46;
 
-const DESKTOP_PROJECT_GAP_MAX =
-    46;
+const DESKTOP_PAIR_DISTANCE_MIN = 8;
 
+const DESKTOP_PAIR_DISTANCE_MAX = 24;
 
-const DESKTOP_PAIR_DISTANCE_MIN =
-    8;
+const DESKTOP_TEXT_CLEARANCE_X = 42;
 
-
-const DESKTOP_PAIR_DISTANCE_MAX =
-    24;
-
-
-/*
-    Distance kept around the text block.
-
-    This makes the photography composition feel
-    deliberately separate from the typography rather
-    than accidentally almost touching it.
-*/
-
-const DESKTOP_TEXT_CLEARANCE_X =
-    42;
-
-
-const DESKTOP_TEXT_CLEARANCE_Y =
-    34;
+const DESKTOP_TEXT_CLEARANCE_Y = 34;
 
 
 /* =====================================================
    MOBILE LAYOUT
+
+   Slightly tighter than before so photos can be
+   somewhat larger without filling the entire field.
    ===================================================== */
 
-const MOBILE_PROJECT_GAP_MIN =
-    8;
+const MOBILE_PROJECT_GAP_MIN = 6;
 
-
-const MOBILE_PROJECT_GAP_MAX =
-    22;
+const MOBILE_PROJECT_GAP_MAX = 16;
 
 
 /* =====================================================
@@ -1099,66 +1018,55 @@ const page =
         "page"
     );
 
-
 const landingGrid =
     document.getElementById(
         "landing-grid"
     );
-
 
 const biography =
     document.getElementById(
         "biography"
     );
 
-
 const mediaField =
     document.getElementById(
         "media-field"
     );
-
 
 const photographyField =
     document.getElementById(
         "photography-field"
     );
 
-
 const filmField =
     document.getElementById(
         "film-field"
     );
-
 
 const scatteredStage =
     document.getElementById(
         "scattered-stage"
     );
 
-
 const photographyLink =
     document.getElementById(
         "photography-link"
     );
-
 
 const filmLink =
     document.getElementById(
         "film-link"
     );
 
-
 const photographyText =
     document.getElementById(
         "photography-text"
     );
 
-
 const filmText =
     document.getElementById(
         "film-text"
     );
-
 
 const filmVideo =
     document.getElementById(
@@ -1180,39 +1088,80 @@ function isMobileLayout() {
 
 
 /* =====================================================
+   IMPORTANT:
+   MOVE PHOTOGRAPHY FIELD BETWEEN DESKTOP + MOBILE
+   ===================================================== */
+
+function mountPhotographyField() {
+
+    if (
+        isMobileLayout()
+    ) {
+
+        /*
+            Mobile:
+            photography lives INSIDE media-field.
+
+            This guarantees that it cannot collide
+            with the typography above or below.
+        */
+
+        if (
+            photographyField.parentElement !==
+            mediaField
+        ) {
+
+            mediaField.prepend(
+                photographyField
+            );
+
+        }
+
+    }
+
+    else {
+
+        /*
+            Desktop:
+            photography returns to the page layer
+            so it can use the larger L-shaped area.
+        */
+
+        if (
+            photographyField.parentElement !==
+            page
+        ) {
+
+            page.prepend(
+                photographyField
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
    STATE
    ===================================================== */
 
-let projectRecords =
-    [];
+let projectRecords = [];
 
+let desktopProjectVisualGroups = [];
 
-let desktopProjectVisualGroups =
-    [];
+let projectVisualGroups = [];
 
+let groupElements = [];
 
-let projectVisualGroups =
-    [];
+let photographyInitialReady = false;
 
+let supplementalAnalysisFinished = false;
 
-let groupElements =
-    [];
+let photographyLoadPromise = null;
 
-
-let photographyInitialReady =
-    false;
-
-
-let supplementalAnalysisFinished =
-    false;
-
-
-let photographyLoadPromise =
-    null;
-
-
-let renderedMobileMode =
-    null;
+let renderedMobileMode = null;
 
 
 /* =====================================================
@@ -1231,7 +1180,6 @@ function looksLikeImage(
         return false;
 
     }
-
 
     return /\.(jpe?g|png|webp|avif)$/i
         .test(
@@ -1256,10 +1204,8 @@ function resolvePhotoUrl(
 
     }
 
-
     const trimmed =
         value.trim();
-
 
     if (
         !trimmed
@@ -1268,7 +1214,6 @@ function resolvePhotoUrl(
         return null;
 
     }
-
 
     if (
         /^https?:\/\//i
@@ -1281,7 +1226,6 @@ function resolvePhotoUrl(
 
     }
 
-
     let path =
         trimmed
             .replace(
@@ -1292,7 +1236,6 @@ function resolvePhotoUrl(
                 /^photos\//i,
                 ""
             );
-
 
     return (
         R2_PHOTOS_BASE +
@@ -1325,7 +1268,6 @@ function uniqueUrls(
     const seen =
         new Set();
 
-
     return urls.filter(
         url => {
 
@@ -1333,7 +1275,6 @@ function uniqueUrls(
                 normalizeUrl(
                     url
                 );
-
 
             if (
                 seen.has(
@@ -1345,11 +1286,9 @@ function uniqueUrls(
 
             }
 
-
             seen.add(
                 key
             );
-
 
             return true;
 
@@ -1376,7 +1315,6 @@ function findFirstImage(
 
     }
 
-
     if (
         typeof value ===
         "string"
@@ -1389,7 +1327,6 @@ function findFirstImage(
             : null;
 
     }
-
 
     if (
         Array.isArray(
@@ -1406,7 +1343,6 @@ function findFirstImage(
                     item
                 );
 
-
             if (
                 result
             ) {
@@ -1417,11 +1353,9 @@ function findFirstImage(
 
         }
 
-
         return null;
 
     }
-
 
     if (
         typeof value ===
@@ -1440,7 +1374,6 @@ function findFirstImage(
                     child
                 );
 
-
             if (
                 result
             ) {
@@ -1452,7 +1385,6 @@ function findFirstImage(
         }
 
     }
-
 
     return null;
 
@@ -1473,7 +1405,6 @@ function collectImages(
 
     }
 
-
     if (
         typeof value ===
         "string"
@@ -1490,7 +1421,6 @@ function collectImages(
                     value
                 );
 
-
             if (
                 url
             ) {
@@ -1503,11 +1433,9 @@ function collectImages(
 
         }
 
-
         return;
 
     }
-
 
     if (
         Array.isArray(
@@ -1526,11 +1454,9 @@ function collectImages(
             }
         );
 
-
         return;
 
     }
-
 
     if (
         typeof value ===
@@ -1565,7 +1491,6 @@ function getProjectCover(
 
     const keys =
         [
-
             "indexImage",
             "index_image",
 
@@ -1585,9 +1510,7 @@ function getProjectCover(
             "preview",
             "previewImage",
             "preview_image"
-
         ];
-
 
     for (
         const key of keys
@@ -1602,12 +1525,10 @@ function getProjectCover(
 
         }
 
-
         const candidate =
             findFirstImage(
                 project[key]
             );
-
 
         if (
             candidate
@@ -1620,7 +1541,6 @@ function getProjectCover(
         }
 
     }
-
 
     if (
         project.index &&
@@ -1633,7 +1553,6 @@ function getProjectCover(
                 project.index
             );
 
-
         if (
             candidate
         ) {
@@ -1646,12 +1565,10 @@ function getProjectCover(
 
     }
 
-
     const fallback =
         findFirstImage(
             project
         );
-
 
     return fallback
         ? resolvePhotoUrl(
@@ -1680,7 +1597,6 @@ function getProjectsArray(
 
     }
 
-
     if (
         data &&
         Array.isArray(
@@ -1691,7 +1607,6 @@ function getProjectsArray(
         return data.projects;
 
     }
-
 
     if (
         data &&
@@ -1709,7 +1624,6 @@ function getProjectsArray(
         );
 
     }
-
 
     return [];
 
@@ -1730,10 +1644,8 @@ function loadImageMetadata(
             const image =
                 new Image();
 
-
             image.decoding =
                 "async";
-
 
             image.onload =
                 () => {
@@ -1747,15 +1659,12 @@ function loadImageMetadata(
                             null
                         );
 
-
                         return;
 
                     }
 
-
                     resolve(
                         {
-
                             url,
 
                             width:
@@ -1767,12 +1676,10 @@ function loadImageMetadata(
                             ratio:
                                 image.naturalWidth /
                                 image.naturalHeight
-
                         }
                     );
 
                 };
-
 
             image.onerror =
                 () => {
@@ -1782,7 +1689,6 @@ function loadImageMetadata(
                     );
 
                 };
-
 
             image.src =
                 url;
@@ -1802,10 +1708,14 @@ function updateActiveVisualGroups() {
     const mobile =
         isMobileLayout();
 
-
     if (
         mobile
     ) {
+
+        /*
+            Mobile:
+            ONLY one cover / thumbnail per project.
+        */
 
         projectVisualGroups =
             desktopProjectVisualGroups
@@ -1813,7 +1723,6 @@ function updateActiveVisualGroups() {
                     group => {
 
                         return {
-
                             projectIndex:
                                 group.projectIndex,
 
@@ -1823,7 +1732,6 @@ function updateActiveVisualGroups() {
                                         group.photos[0]
                                     ]
                                     : []
-
                         };
 
                     }
@@ -1837,12 +1745,16 @@ function updateActiveVisualGroups() {
 
     else {
 
+        /*
+            Desktop:
+            cover + optional landscape image.
+        */
+
         projectVisualGroups =
             desktopProjectVisualGroups.map(
                 group => {
 
                     return {
-
                         projectIndex:
                             group.projectIndex,
 
@@ -1851,14 +1763,12 @@ function updateActiveVisualGroups() {
                                 0,
                                 2
                             )
-
                     };
 
                 }
             );
 
     }
-
 
     renderedMobileMode =
         mobile;
@@ -1880,7 +1790,6 @@ async function loadInitialPhotography() {
 
     }
 
-
     photographyLoadPromise =
         (
             async () => {
@@ -1894,7 +1803,6 @@ async function loadInitialPhotography() {
                         }
                     );
 
-
                 if (
                     !response.ok
                 ) {
@@ -1905,16 +1813,13 @@ async function loadInitialPhotography() {
 
                 }
 
-
                 const data =
                     await response.json();
-
 
                 const projects =
                     getProjectsArray(
                         data
                     );
-
 
                 projectRecords =
                     projects
@@ -1929,30 +1834,23 @@ async function loadInitialPhotography() {
                                         project
                                     );
 
-
                                 const allUrls =
                                     [];
-
 
                                 collectImages(
                                     project,
                                     allUrls
                                 );
 
-
                                 return {
-
                                     projectIndex,
-
                                     project,
-
                                     coverUrl,
 
                                     allUrls:
                                         uniqueUrls(
                                             allUrls
                                         )
-
                                 };
 
                             }
@@ -1961,7 +1859,6 @@ async function loadInitialPhotography() {
                             record =>
                                 record.coverUrl
                         );
-
 
                 const initialGroups =
                     await Promise.all(
@@ -1974,7 +1871,6 @@ async function loadInitialPhotography() {
                                         record.coverUrl
                                     );
 
-
                                 if (
                                     !cover
                                 ) {
@@ -1983,9 +1879,7 @@ async function loadInitialPhotography() {
 
                                 }
 
-
                                 return {
-
                                     projectIndex:
                                         record.projectIndex,
 
@@ -1993,7 +1887,6 @@ async function loadInitialPhotography() {
                                         [
                                             cover
                                         ]
-
                                 };
 
                             }
@@ -2001,31 +1894,29 @@ async function loadInitialPhotography() {
 
                     );
 
-
                 desktopProjectVisualGroups =
                     initialGroups.filter(
                         Boolean
                     );
 
-
                 updateActiveVisualGroups();
-
 
                 buildPhotographyDOM();
 
-
                 randomizePhotographyLayout();
-
 
                 photographyInitialReady =
                     true;
 
+                /*
+                    Optional second landscape images
+                    are prepared quietly in background.
+                */
 
                 analyzeSupplementalImagesInBackground();
 
             }
         )();
-
 
     return photographyLoadPromise;
 
@@ -2053,7 +1944,6 @@ async function analyzeSupplementalImagesInBackground() {
                                     record.projectIndex
                             );
 
-
                         if (
                             !current
                         ) {
@@ -2062,16 +1952,13 @@ async function analyzeSupplementalImagesInBackground() {
 
                         }
 
-
                         const cover =
                             current.photos[0];
-
 
                         const coverKey =
                             normalizeUrl(
                                 record.coverUrl
                             );
-
 
                         const otherUrls =
                             record.allUrls.filter(
@@ -2081,7 +1968,6 @@ async function analyzeSupplementalImagesInBackground() {
                                     ) !==
                                     coverKey
                             );
-
 
                         const metadata =
                             (
@@ -2093,7 +1979,6 @@ async function analyzeSupplementalImagesInBackground() {
                             ).filter(
                                 Boolean
                             );
-
 
                         const landscape =
                             metadata
@@ -2112,9 +1997,7 @@ async function analyzeSupplementalImagesInBackground() {
                                 )[0] ||
                             null;
 
-
                         return {
-
                             projectIndex:
                                 record.projectIndex,
 
@@ -2127,7 +2010,6 @@ async function analyzeSupplementalImagesInBackground() {
                                     : [
                                         cover
                                     ]
-
                         };
 
                     }
@@ -2135,16 +2017,13 @@ async function analyzeSupplementalImagesInBackground() {
 
             );
 
-
         desktopProjectVisualGroups =
             completed.filter(
                 Boolean
             );
 
-
         supplementalAnalysisFinished =
             true;
-
 
         if (
             activeMode !==
@@ -2153,9 +2032,7 @@ async function analyzeSupplementalImagesInBackground() {
 
             updateActiveVisualGroups();
 
-
             buildPhotographyDOM();
-
 
             randomizePhotographyLayout();
 
@@ -2186,14 +2063,11 @@ function buildPhotographyDOM() {
     scatteredStage.innerHTML =
         "";
 
-
     groupElements =
         [];
 
-
     const fragment =
         document.createDocumentFragment();
-
 
     projectVisualGroups.forEach(
         (
@@ -2206,14 +2080,11 @@ function buildPhotographyDOM() {
                     "div"
                 );
 
-
             element.className =
                 "photo-group";
 
-
             element.dataset.groupIndex =
                 groupIndex;
-
 
             group.photos.forEach(
                 (
@@ -2226,26 +2097,20 @@ function buildPhotographyDOM() {
                             "img"
                         );
 
-
                     image.className =
                         "project-photo";
-
 
                     image.src =
                         photo.url;
 
-
                     image.alt =
                         "";
-
 
                     image.decoding =
                         "async";
 
-
                     image.dataset.photoIndex =
                         photoIndex;
-
 
                     element.appendChild(
                         image
@@ -2254,11 +2119,9 @@ function buildPhotographyDOM() {
                 }
             );
 
-
             fragment.appendChild(
                 element
             );
-
 
             groupElements.push(
                 element
@@ -2266,7 +2129,6 @@ function buildPhotographyDOM() {
 
         }
     );
-
 
     scatteredStage.appendChild(
         fragment
@@ -2318,27 +2180,28 @@ function createProjectGeometry(
     const mobile =
         isMobileLayout();
 
+    /*
+        Mobile size variation is still obvious,
+        but slightly larger overall than before.
+    */
 
     const firstScale =
         mobile
             ? randomBetween(
-                0.68,
-                1.46
+                0.82,
+                1.58
             )
             : randomBetween(
                 0.64,
                 1.38
             );
 
-
     const firstHeight =
         baseHeight *
         firstScale;
 
-
     const first =
         {
-
             photo:
                 group.photos[0],
 
@@ -2354,9 +2217,7 @@ function createProjectGeometry(
 
             y:
                 0
-
         };
-
 
     if (
         group.photos.length ===
@@ -2364,7 +2225,6 @@ function createProjectGeometry(
     ) {
 
         return {
-
             photos:
                 [
                     first
@@ -2375,15 +2235,12 @@ function createProjectGeometry(
 
             height:
                 first.height
-
         };
 
     }
 
-
     const secondPhoto =
         group.photos[1];
-
 
     const secondHeight =
         baseHeight *
@@ -2392,11 +2249,9 @@ function createProjectGeometry(
             1.34
         );
 
-
     const secondWidth =
         secondHeight *
         secondPhoto.ratio;
-
 
     const horizontalGap =
         randomBetween(
@@ -2404,11 +2259,9 @@ function createProjectGeometry(
             DESKTOP_PAIR_DISTANCE_MAX
         );
 
-
     const secondX =
         first.width +
         horizontalGap;
-
 
     const verticalOffset =
         baseHeight *
@@ -2418,21 +2271,17 @@ function createProjectGeometry(
         ) *
         randomSign();
 
-
     const minY =
         Math.min(
             0,
             verticalOffset
         );
 
-
     first.y =
         -minY;
 
-
     const second =
         {
-
             photo:
                 secondPhoto,
 
@@ -2448,12 +2297,9 @@ function createProjectGeometry(
             y:
                 verticalOffset -
                 minY
-
         };
 
-
     return {
-
         photos:
             [
                 first,
@@ -2472,7 +2318,6 @@ function createProjectGeometry(
                 second.y +
                 second.height
             )
-
     };
 
 }
@@ -2489,18 +2334,15 @@ function createAllProjectGeometries(
     const mobile =
         isMobileLayout();
 
-
     const gapMin =
         mobile
             ? MOBILE_PROJECT_GAP_MIN
             : DESKTOP_PROJECT_GAP_MIN;
 
-
     const gapMax =
         mobile
             ? MOBILE_PROJECT_GAP_MAX
             : DESKTOP_PROJECT_GAP_MAX;
-
 
     return projectVisualGroups.map(
         (
@@ -2509,7 +2351,6 @@ function createAllProjectGeometries(
         ) => {
 
             return {
-
                 index,
 
                 ...createProjectGeometry(
@@ -2522,7 +2363,6 @@ function createAllProjectGeometries(
                         gapMin,
                         gapMax
                     )
-
             };
 
         }
@@ -2533,11 +2373,6 @@ function createAllProjectGeometries(
 
 /* =====================================================
    DESKTOP EXCLUSION ZONE
-
-   The upper-left text area is excluded.
-
-   Everything below the biography is free space,
-   including the area highlighted in the screenshot.
    ===================================================== */
 
 function getDesktopExclusionZone() {
@@ -2550,25 +2385,17 @@ function getDesktopExclusionZone() {
 
     }
 
-
     const stageRect =
         photographyField
             .getBoundingClientRect();
-
 
     const bioRect =
         biography
             .getBoundingClientRect();
 
-
     const gridRect =
         landingGrid
             .getBoundingClientRect();
-
-
-    const left =
-        0;
-
 
     const right =
         Math.min(
@@ -2582,7 +2409,6 @@ function getDesktopExclusionZone() {
             DESKTOP_TEXT_CLEARANCE_X
         );
 
-
     const bottom =
         Math.min(
             stageRect.height,
@@ -2594,20 +2420,13 @@ function getDesktopExclusionZone() {
             DESKTOP_TEXT_CLEARANCE_Y
         );
 
-
     return {
-
-        left,
+        left: 0,
         top: 0,
         right,
         bottom,
-
-        width:
-            right,
-
-        height:
-            bottom
-
+        width: right,
+        height: bottom
     };
 
 }
@@ -2630,30 +2449,19 @@ function packRegion(
     ) {
 
         return {
-
             rows: [],
             totalHeight: 0
-
         };
 
     }
 
+    const rows = [];
 
-    const rows =
-        [];
+    let row = [];
 
+    let rowWidth = 0;
 
-    let row =
-        [];
-
-
-    let rowWidth =
-        0;
-
-
-    let rowHeight =
-        0;
-
+    let rowHeight = 0;
 
     for (
         const geometry of geometries
@@ -2667,7 +2475,6 @@ function packRegion(
                 )
                 : 0;
 
-
         if (
             row.length &&
             rowWidth +
@@ -2678,7 +2485,6 @@ function packRegion(
 
             rows.push(
                 {
-
                     items:
                         row,
 
@@ -2687,24 +2493,16 @@ function packRegion(
 
                     height:
                         rowHeight
-
                 }
             );
 
+            row = [];
 
-            row =
-                [];
+            rowWidth = 0;
 
-
-            rowWidth =
-                0;
-
-
-            rowHeight =
-                0;
+            rowHeight = 0;
 
         }
-
 
         const actualGap =
             row.length
@@ -2714,23 +2512,18 @@ function packRegion(
                 )
                 : 0;
 
-
         row.push(
             {
-
                 geometry,
 
                 gapBefore:
                     actualGap
-
             }
         );
-
 
         rowWidth +=
             actualGap +
             geometry.width;
-
 
         rowHeight =
             Math.max(
@@ -2740,14 +2533,12 @@ function packRegion(
 
     }
 
-
     if (
         row.length
     ) {
 
         rows.push(
             {
-
                 items:
                     row,
 
@@ -2756,16 +2547,12 @@ function packRegion(
 
                 height:
                     rowHeight
-
             }
         );
 
     }
 
-
-    let totalHeight =
-        0;
-
+    let totalHeight = 0;
 
     rows.forEach(
         (
@@ -2775,7 +2562,6 @@ function packRegion(
 
             totalHeight +=
                 current.height;
-
 
             if (
                 index <
@@ -2793,7 +2579,6 @@ function packRegion(
         }
     );
 
-
     if (
         totalHeight >
         regionHeight
@@ -2803,12 +2588,9 @@ function packRegion(
 
     }
 
-
     return {
-
         rows,
         totalHeight
-
     };
 
 }
@@ -2816,15 +2598,6 @@ function packRegion(
 
 /* =====================================================
    DESKTOP L-SHAPE COMPOSITION
-
-   Upper section:
-       only the area to the RIGHT of the text.
-
-   Lower section:
-       entire page width.
-
-   This is the key change that fills the formerly
-   unused lower-left white area.
    ===================================================== */
 
 function createDesktopComposition(
@@ -2838,10 +2611,8 @@ function createDesktopComposition(
             baseHeight
         );
 
-
     const exclusion =
         getDesktopExclusionZone();
-
 
     if (
         !exclusion
@@ -2851,10 +2622,8 @@ function createDesktopComposition(
 
     }
 
-
     const upperX =
         exclusion.right;
-
 
     const upperWidth =
         Math.max(
@@ -2863,17 +2632,14 @@ function createDesktopComposition(
             upperX
         );
 
-
     const upperHeight =
         Math.max(
             0,
             exclusion.bottom
         );
 
-
     const lowerY =
         exclusion.bottom;
-
 
     const lowerHeight =
         Math.max(
@@ -2882,20 +2648,8 @@ function createDesktopComposition(
             lowerY
         );
 
-
-    /*
-        Try different split points.
-
-        Projects remain in their original order.
-
-        We look for the split that uses the upper-right
-        region efficiently while still allowing the rest
-        to fit across the entire lower area.
-    */
-
     let best =
         null;
-
 
     for (
         let split = 0;
@@ -2909,12 +2663,10 @@ function createDesktopComposition(
                 split
             );
 
-
         const lowerItems =
             geometries.slice(
                 split
             );
-
 
         const upper =
             packRegion(
@@ -2925,7 +2677,6 @@ function createDesktopComposition(
                 DESKTOP_PROJECT_GAP_MAX
             );
 
-
         if (
             !upper
         ) {
@@ -2933,7 +2684,6 @@ function createDesktopComposition(
             continue;
 
         }
-
 
         const lower =
             packRegion(
@@ -2944,7 +2694,6 @@ function createDesktopComposition(
                 DESKTOP_PROJECT_GAP_MAX
             );
 
-
         if (
             !lower
         ) {
@@ -2953,21 +2702,11 @@ function createDesktopComposition(
 
         }
 
-
-        /*
-            Prefer using more of the upper-right region,
-            but avoid forcing everything into it.
-
-            Lower-area occupancy is rewarded because
-            that's precisely the previously unused space.
-        */
-
         const upperFill =
             upperHeight > 0
                 ? upper.totalHeight /
                   upperHeight
                 : 0;
-
 
         const lowerFill =
             lowerHeight > 0
@@ -2975,13 +2714,11 @@ function createDesktopComposition(
                   lowerHeight
                 : 0;
 
-
         const score =
             upperFill *
             0.45 +
             lowerFill *
             0.55;
-
 
         if (
             !best ||
@@ -2991,11 +2728,8 @@ function createDesktopComposition(
 
             best =
                 {
-
                     score,
-
                     upper,
-
                     lower,
 
                     upperX,
@@ -3006,13 +2740,11 @@ function createDesktopComposition(
                     lowerHeight,
 
                     geometries
-
                 };
 
         }
 
     }
-
 
     return best;
 
@@ -3029,32 +2761,27 @@ function packMobileProjects(
     fieldHeight
 ) {
 
-    const rows =
-        [];
+    const rows = [];
 
+    let currentRow = [];
 
-    let currentRow =
-        [];
+    let currentWidth = 0;
 
-
-    let currentWidth =
-        0;
-
-
-    let rowHeight =
-        0;
-
+    let rowHeight = 0;
 
     geometries.forEach(
         geometry => {
 
+            /*
+                Use nearly all horizontal space.
+            */
+
             const rowLimit =
                 fieldWidth *
                 randomBetween(
-                    0.94,
+                    0.97,
                     1
                 );
-
 
             const addition =
                 currentRow.length
@@ -3067,7 +2794,6 @@ function packMobileProjects(
                     )
                     : geometry.width;
 
-
             if (
                 currentRow.length &&
                 currentWidth +
@@ -3077,7 +2803,6 @@ function packMobileProjects(
 
                 rows.push(
                     {
-
                         items:
                             currentRow,
 
@@ -3086,24 +2811,16 @@ function packMobileProjects(
 
                         height:
                             rowHeight
-
                     }
                 );
 
+                currentRow = [];
 
-                currentRow =
-                    [];
+                currentWidth = 0;
 
-
-                currentWidth =
-                    0;
-
-
-                rowHeight =
-                    0;
+                rowHeight = 0;
 
             }
-
 
             if (
                 currentRow.length
@@ -3117,15 +2834,12 @@ function packMobileProjects(
 
             }
 
-
             currentRow.push(
                 geometry
             );
 
-
             currentWidth +=
                 geometry.width;
-
 
             rowHeight =
                 Math.max(
@@ -3136,14 +2850,12 @@ function packMobileProjects(
         }
     );
 
-
     if (
         currentRow.length
     ) {
 
         rows.push(
             {
-
                 items:
                     currentRow,
 
@@ -3152,16 +2864,12 @@ function packMobileProjects(
 
                 height:
                     rowHeight
-
             }
         );
 
     }
 
-
-    const rowGaps =
-        [];
-
+    const rowGaps = [];
 
     for (
         let i = 0;
@@ -3171,13 +2879,12 @@ function packMobileProjects(
 
         rowGaps.push(
             randomBetween(
-                8,
-                22
+                6,
+                16
             )
         );
 
     }
-
 
     const totalHeight =
         rows.reduce(
@@ -3199,7 +2906,6 @@ function packMobileProjects(
             0
         );
 
-
     if (
         totalHeight >
         fieldHeight
@@ -3208,7 +2914,6 @@ function packMobileProjects(
         return null;
 
     }
-
 
     if (
         rows.some(
@@ -3222,13 +2927,10 @@ function packMobileProjects(
 
     }
 
-
     return {
-
         rows,
         rowGaps,
         totalHeight
-
     };
 
 }
@@ -3251,17 +2953,19 @@ function createPhotographyComposition(
 
     }
 
-
     const mobile =
         isMobileLayout();
 
+    /*
+        Mobile starts slightly larger than before.
+    */
 
     let low =
         mobile
             ? Math.max(
-                38,
+                42,
                 fieldHeight *
-                0.11
+                0.13
             )
             : Math.max(
                 34,
@@ -3269,14 +2973,13 @@ function createPhotographyComposition(
                 0.075
             );
 
-
     let high =
         mobile
             ? Math.min(
                 fieldHeight *
-                0.42,
+                0.48,
                 fieldWidth *
-                0.34
+                0.40
             )
             : Math.min(
                 fieldHeight *
@@ -3285,10 +2988,8 @@ function createPhotographyComposition(
                 0.18
             );
 
-
     let best =
         null;
-
 
     for (
         let iteration = 0;
@@ -3303,10 +3004,8 @@ function createPhotographyComposition(
             ) /
             2;
 
-
         let candidate =
             null;
-
 
         for (
             let test = 0;
@@ -3323,7 +3022,6 @@ function createPhotographyComposition(
                         mid
                     );
 
-
                 const packed =
                     packMobileProjects(
                         geometries,
@@ -3331,22 +3029,18 @@ function createPhotographyComposition(
                         fieldHeight
                     );
 
-
                 if (
                     packed
                 ) {
 
                     candidate =
                         {
-
                             type:
                                 "mobile",
 
                             geometries,
                             packed
-
                         };
-
 
                     break;
 
@@ -3363,21 +3057,17 @@ function createPhotographyComposition(
                         mid
                     );
 
-
                 if (
                     desktop
                 ) {
 
                     candidate =
                         {
-
                             type:
                                 "desktop",
 
                             ...desktop
-
                         };
-
 
                     break;
 
@@ -3387,14 +3077,12 @@ function createPhotographyComposition(
 
         }
 
-
         if (
             candidate
         ) {
 
             best =
                 candidate;
-
 
             low =
                 mid;
@@ -3409,7 +3097,6 @@ function createPhotographyComposition(
         }
 
     }
-
 
     return best;
 
@@ -3437,7 +3124,6 @@ function placeRegionRows(
 
     }
 
-
     const totalRowHeight =
         rows.reduce(
             (
@@ -3449,7 +3135,6 @@ function placeRegionRows(
             0
         );
 
-
     const minimumGap =
         rows.length > 1
             ? DESKTOP_PROJECT_GAP_MIN *
@@ -3459,7 +3144,6 @@ function placeRegionRows(
               )
             : 0;
 
-
     const spare =
         Math.max(
             0,
@@ -3467,12 +3151,6 @@ function placeRegionRows(
             totalRowHeight -
             minimumGap
         );
-
-
-    /*
-        Don't center the whole region too rigidly.
-        A small random offset keeps the scattered feel.
-    */
 
     let y =
         regionY +
@@ -3484,7 +3162,6 @@ function placeRegionRows(
                 30
             )
         );
-
 
     rows.forEach(
         (
@@ -3499,14 +3176,12 @@ function placeRegionRows(
                     row.width
                 );
 
-
             let x =
                 regionX +
                 randomBetween(
                     0,
                     spareX
                 );
-
 
             row.items.forEach(
                 item => {
@@ -3515,10 +3190,8 @@ function placeRegionRows(
                         item.gapBefore ||
                         0;
 
-
                     const geometry =
                         item.geometry;
-
 
                     const verticalFreedom =
                         Math.max(
@@ -3527,11 +3200,9 @@ function placeRegionRows(
                             geometry.height
                         );
 
-
                     placements.set(
                         geometry.index,
                         {
-
                             x,
 
                             y:
@@ -3542,10 +3213,8 @@ function placeRegionRows(
                                 ),
 
                             geometry
-
                         }
                     );
-
 
                     x +=
                         geometry.width;
@@ -3553,10 +3222,8 @@ function placeRegionRows(
                 }
             );
 
-
             y +=
                 row.height;
-
 
             if (
                 rowIndex <
@@ -3590,7 +3257,6 @@ function applyDesktopComposition(
     const placements =
         new Map();
 
-
     placeRegionRows(
         composition.upper.rows,
         composition.upperX,
@@ -3600,15 +3266,6 @@ function applyDesktopComposition(
         placements
     );
 
-
-    /*
-        The lower region starts at the biography's
-        bottom and spans THE ENTIRE WIDTH.
-
-        Therefore images can now occupy the lower-left
-        area underneath the text.
-    */
-
     placeRegionRows(
         composition.lower.rows,
         0,
@@ -3617,7 +3274,6 @@ function applyDesktopComposition(
         composition.lowerHeight,
         placements
     );
-
 
     applyPlacements(
         placements
@@ -3643,7 +3299,6 @@ function applyMobileComposition(
     } =
         composition.packed;
 
-
     const spareVertical =
         Math.max(
             0,
@@ -3651,19 +3306,21 @@ function applyMobileComposition(
             totalHeight
         );
 
+    /*
+        Keep some breathing room,
+        but much less empty space than before.
+    */
 
     let y =
         randomBetween(
             spareVertical *
-            0.02,
+            0.01,
             spareVertical *
-            0.22
+            0.10
         );
-
 
     const placements =
         new Map();
-
 
     rows.forEach(
         (
@@ -3678,17 +3335,15 @@ function applyMobileComposition(
                     row.width
                 );
 
-
             let x =
                 randomBetween(
                     0,
                     Math.min(
                         spareHorizontal,
                         fieldWidth *
-                        0.10
+                        0.05
                     )
                 );
-
 
             row.items.forEach(
                 (
@@ -3703,11 +3358,9 @@ function applyMobileComposition(
                             geometry.height
                         );
 
-
                     placements.set(
                         geometry.index,
                         {
-
                             x,
 
                             y:
@@ -3718,14 +3371,11 @@ function applyMobileComposition(
                                 ),
 
                             geometry
-
                         }
                     );
 
-
                     x +=
                         geometry.width;
-
 
                     if (
                         index <
@@ -3740,10 +3390,8 @@ function applyMobileComposition(
                 }
             );
 
-
             y +=
                 row.height;
-
 
             if (
                 rowIndex <
@@ -3759,7 +3407,6 @@ function applyMobileComposition(
 
         }
     );
-
 
     applyPlacements(
         placements
@@ -3787,7 +3434,6 @@ function applyPlacements(
                     index
                 );
 
-
             if (
                 !placement
             ) {
@@ -3796,10 +3442,8 @@ function applyPlacements(
 
             }
 
-
             const geometry =
                 placement.geometry;
-
 
             element.style
                 .setProperty(
@@ -3807,13 +3451,11 @@ function applyPlacements(
                     `${placement.x}px`
                 );
 
-
             element.style
                 .setProperty(
                     "--group-y",
                     `${placement.y}px`
                 );
-
 
             element.style
                 .setProperty(
@@ -3821,19 +3463,16 @@ function applyPlacements(
                     `${geometry.width}px`
                 );
 
-
             element.style
                 .setProperty(
                     "--group-height",
                     `${geometry.height}px`
                 );
 
-
             const images =
                 element.querySelectorAll(
                     ".project-photo"
                 );
-
 
             geometry.photos.forEach(
                 (
@@ -3846,7 +3485,6 @@ function applyPlacements(
                             photoIndex
                         ];
 
-
                     if (
                         !image
                     ) {
@@ -3855,20 +3493,17 @@ function applyPlacements(
 
                     }
 
-
                     image.style
                         .setProperty(
                             "--photo-height",
                             `${photo.height}px`
                         );
 
-
                     image.style
                         .setProperty(
                             "--photo-x",
                             `${photo.x}px`
                         );
-
 
                     image.style
                         .setProperty(
@@ -3895,7 +3530,6 @@ function randomizePhotographyLayout() {
         photographyField
             .getBoundingClientRect();
 
-
     if (
         rect.width <= 0 ||
         rect.height <= 0 ||
@@ -3906,13 +3540,11 @@ function randomizePhotographyLayout() {
 
     }
 
-
     const composition =
         createPhotographyComposition(
             rect.width,
             rect.height
         );
-
 
     if (
         !composition
@@ -3921,7 +3553,6 @@ function randomizePhotographyLayout() {
         return;
 
     }
-
 
     if (
         composition.type ===
@@ -3956,7 +3587,6 @@ function randomizePhotographyLayout() {
 let photoSequenceFrame =
     null;
 
-
 let photoSequenceToken =
     0;
 
@@ -3964,7 +3594,6 @@ let photoSequenceToken =
 function cancelPhotoSequence() {
 
     photoSequenceToken++;
-
 
     if (
         photoSequenceFrame !==
@@ -3974,7 +3603,6 @@ function cancelPhotoSequence() {
         cancelAnimationFrame(
             photoSequenceFrame
         );
-
 
         photoSequenceFrame =
             null;
@@ -3996,7 +3624,6 @@ function setVisiblePhotoGroupCount(
                 count
             )
         );
-
 
     groupElements.forEach(
         (
@@ -4029,10 +3656,8 @@ function animatePhotoGroups(
 
     cancelPhotoSequence();
 
-
     const token =
         photoSequenceToken;
-
 
     const currentCount =
         groupElements.filter(
@@ -4043,7 +3668,6 @@ function animatePhotoGroups(
                     )
         ).length;
 
-
     const target =
         Math.max(
             0,
@@ -4052,7 +3676,6 @@ function animatePhotoGroups(
                 targetCount
             )
         );
-
 
     if (
         currentCount ===
@@ -4068,15 +3691,12 @@ function animatePhotoGroups(
 
         }
 
-
         return;
 
     }
 
-
     const started =
         performance.now();
-
 
     function frame(
         now
@@ -4091,7 +3711,6 @@ function animatePhotoGroups(
 
         }
 
-
         const progress =
             Math.min(
                 1,
@@ -4102,7 +3721,6 @@ function animatePhotoGroups(
                 PHOTO_SEQUENCE_DURATION
             );
 
-
         const raw =
             currentCount +
             (
@@ -4110,7 +3728,6 @@ function animatePhotoGroups(
                 currentCount
             ) *
             progress;
-
 
         const count =
             target >
@@ -4124,11 +3741,9 @@ function animatePhotoGroups(
                     0.0001
                 );
 
-
         setVisiblePhotoGroupCount(
             count
         );
-
 
         if (
             progress <
@@ -4140,20 +3755,16 @@ function animatePhotoGroups(
                     frame
                 );
 
-
             return;
 
         }
-
 
         setVisiblePhotoGroupCount(
             target
         );
 
-
         photoSequenceFrame =
             null;
-
 
         if (
             typeof onComplete ===
@@ -4167,7 +3778,6 @@ function animatePhotoGroups(
         }
 
     }
-
 
     photoSequenceFrame =
         requestAnimationFrame(
@@ -4183,9 +3793,7 @@ function animatePhotoGroups(
 
 const navItems =
     {
-
         photography: {
-
             word:
                 "photography",
 
@@ -4194,12 +3802,9 @@ const navItems =
 
             count:
                 0
-
         },
 
-
         film: {
-
             word:
                 "film",
 
@@ -4208,9 +3813,7 @@ const navItems =
 
             count:
                 0
-
         }
-
     };
 
 
@@ -4222,7 +3825,6 @@ function renderCaseWord(
     let result =
         "";
 
-
     const normalized =
         Math.max(
             0,
@@ -4233,7 +3835,6 @@ function renderCaseWord(
                 )
             )
         );
-
 
     for (
         let i = 0;
@@ -4250,7 +3851,6 @@ function renderCaseWord(
                     .toLowerCase();
 
     }
-
 
     return result;
 
@@ -4273,7 +3873,6 @@ function setWordCount(
             )
         );
 
-
     item.element.textContent =
         renderCaseWord(
             item.word,
@@ -4290,7 +3889,6 @@ function setWordCount(
 let titleFrame =
     null;
 
-
 let titleToken =
     0;
 
@@ -4303,10 +3901,8 @@ function animateTitlesTo(
 
     titleToken++;
 
-
     const token =
         titleToken;
-
 
     if (
         titleFrame !==
@@ -4317,28 +3913,22 @@ function animateTitlesTo(
             titleFrame
         );
 
-
         titleFrame =
             null;
 
     }
 
-
     const photography =
         navItems.photography;
-
 
     const film =
         navItems.film;
 
-
     const photoStart =
         photography.count;
 
-
     const filmStart =
         film.count;
-
 
     const photoTarget =
         mode ===
@@ -4346,17 +3936,14 @@ function animateTitlesTo(
             ? photography.word.length
             : 0;
 
-
     const filmTarget =
         mode ===
         "film"
             ? film.word.length
             : 0;
 
-
     const started =
         performance.now();
-
 
     function frame(
         now
@@ -4371,7 +3958,6 @@ function animateTitlesTo(
 
         }
 
-
         const progress =
             Math.min(
                 1,
@@ -4382,7 +3968,6 @@ function animateTitlesTo(
                 WORD_TRANSITION_DURATION
             );
 
-
         const photoRaw =
             photoStart +
             (
@@ -4391,7 +3976,6 @@ function animateTitlesTo(
             ) *
             progress;
 
-
         const filmRaw =
             filmStart +
             (
@@ -4399,7 +3983,6 @@ function animateTitlesTo(
                 filmStart
             ) *
             progress;
-
 
         setWordCount(
             photography,
@@ -4416,7 +3999,6 @@ function animateTitlesTo(
                 )
         );
 
-
         setWordCount(
             film,
 
@@ -4432,7 +4014,6 @@ function animateTitlesTo(
                 )
         );
 
-
         if (
             progress <
             1
@@ -4443,27 +4024,22 @@ function animateTitlesTo(
                     frame
                 );
 
-
             return;
 
         }
-
 
         setWordCount(
             photography,
             photoTarget
         );
 
-
         setWordCount(
             film,
             filmTarget
         );
 
-
         titleFrame =
             null;
-
 
         if (
             typeof onComplete ===
@@ -4477,7 +4053,6 @@ function animateTitlesTo(
         }
 
     }
-
 
     titleFrame =
         requestAnimationFrame(
@@ -4494,10 +4069,8 @@ function animateTitlesTo(
 let activeMode =
     null;
 
-
 let hoverMode =
     null;
-
 
 let phaseTimer =
     null;
@@ -4513,7 +4086,6 @@ function clearPhaseTimer() {
         clearTimeout(
             phaseTimer
         );
-
 
         phaseTimer =
             null;
@@ -4535,19 +4107,16 @@ async function switchToFilmLayer() {
             "active"
         );
 
-
     filmField
         .classList
         .add(
             "active"
         );
 
-
     try {
 
         filmVideo.currentTime =
             0;
-
 
         await filmVideo.play();
 
@@ -4569,7 +4138,6 @@ function refreshPhotographyDOMIfNeeded() {
     const currentMobileMode =
         isMobileLayout();
 
-
     if (
         renderedMobileMode !==
         currentMobileMode
@@ -4577,14 +4145,11 @@ function refreshPhotographyDOMIfNeeded() {
 
         updateActiveVisualGroups();
 
-
         buildPhotographyDOM();
-
 
         return;
 
     }
-
 
     if (
         !supplementalAnalysisFinished
@@ -4594,9 +4159,7 @@ function refreshPhotographyDOMIfNeeded() {
 
     }
 
-
     updateActiveVisualGroups();
-
 
     const expectedImages =
         projectVisualGroups.reduce(
@@ -4609,14 +4172,12 @@ function refreshPhotographyDOMIfNeeded() {
             0
         );
 
-
     const currentImages =
         scatteredStage
             .querySelectorAll(
                 ".project-photo"
             )
             .length;
-
 
     if (
         expectedImages ===
@@ -4627,8 +4188,134 @@ function refreshPhotographyDOMIfNeeded() {
 
     }
 
-
     buildPhotographyDOM();
+
+}
+
+
+/* =====================================================
+   IDLE
+   ===================================================== */
+
+function enterIdle() {
+
+    clearPhaseTimer();
+
+    cancelPhotoSequence();
+
+    activeMode =
+        null;
+
+    filmVideo.pause();
+
+    filmField
+        .classList
+        .remove(
+            "active"
+        );
+
+    /*
+        Photos and title retract simultaneously.
+    */
+
+    animatePhotoGroups(
+        0
+    );
+
+    animateTitlesTo(
+        null,
+        () => {
+
+            photographyField
+                .classList
+                .remove(
+                    "active"
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   MOBILE INTERLUDE
+   ===================================================== */
+
+function scheduleMobilePhotography() {
+
+    if (
+        !isMobileLayout()
+    ) {
+
+        return;
+
+    }
+
+    clearPhaseTimer();
+
+    /*
+        Empty 800ms breathing space.
+    */
+
+    phaseTimer =
+        setTimeout(
+            () => {
+
+                if (
+                    !isMobileLayout()
+                ) {
+
+                    return;
+
+                }
+
+                startPhotography(
+                    true
+                );
+
+            },
+            MOBILE_INTERLUDE_DURATION
+        );
+
+}
+
+
+function scheduleMobileFilm() {
+
+    if (
+        !isMobileLayout()
+    ) {
+
+        return;
+
+    }
+
+    clearPhaseTimer();
+
+    /*
+        Empty 800ms breathing space.
+    */
+
+    phaseTimer =
+        setTimeout(
+            () => {
+
+                if (
+                    !isMobileLayout()
+                ) {
+
+                    return;
+
+                }
+
+                startFilm(
+                    true
+                );
+
+            },
+            MOBILE_INTERLUDE_DURATION
+        );
 
 }
 
@@ -4643,7 +4330,6 @@ function startPhotography(
 ) {
 
     clearPhaseTimer();
-
 
     if (
         !photographyInitialReady
@@ -4662,7 +4348,6 @@ function startPhotography(
 
                     }
 
-
                     startPhotography(
                         automatic
                     );
@@ -4671,21 +4356,16 @@ function startPhotography(
                 100
             );
 
-
         return;
 
     }
 
-
     activeMode =
         "photography";
 
-
     cancelPhotoSequence();
 
-
     filmVideo.pause();
-
 
     filmField
         .classList
@@ -4693,17 +4373,13 @@ function startPhotography(
             "active"
         );
 
-
     refreshPhotographyDOMIfNeeded();
 
-
     randomizePhotographyLayout();
-
 
     setVisiblePhotoGroupCount(
         0
     );
-
 
     photographyField
         .classList
@@ -4711,70 +4387,83 @@ function startPhotography(
             "active"
         );
 
+    /*
+        PHOTOGRAPHY and photos start together.
+    */
 
     animateTitlesTo(
         "photography"
     );
 
-
     animatePhotoGroups(
         groupElements.length
     );
 
+    /*
+        DESKTOP:
+        no automatic transition whatsoever.
+
+        Photography exists only while user is
+        interacting with photography.
+    */
 
     if (
-        !automatic ||
-        hoverMode !==
-        null
+        !isMobileLayout() ||
+        !automatic
     ) {
 
         return;
 
     }
 
+    /*
+        MOBILE:
+        hold photography briefly,
+        then retract everything simultaneously.
+    */
 
     phaseTimer =
         setTimeout(
             () => {
 
                 if (
+                    !isMobileLayout() ||
                     activeMode !==
-                    "photography" ||
-                    hoverMode !==
-                    null
+                    "photography"
                 ) {
 
                     return;
 
                 }
 
-
                 animatePhotoGroups(
                     0
                 );
 
-
                 animateTitlesTo(
-                    "film",
+                    null,
                     () => {
 
                         if (
+                            !isMobileLayout() ||
                             activeMode !==
-                            "photography" ||
-                            hoverMode !==
-                            null
+                            "photography"
                         ) {
 
                             return;
 
                         }
 
+                        photographyField
+                            .classList
+                            .remove(
+                                "active"
+                            );
 
                         activeMode =
-                            "film";
+                            null;
 
-
-                        switchToFilmLayer();
+                        scheduleMobileFilm();
 
                     }
                 );
@@ -4799,9 +4488,7 @@ function startFilm(
 
     clearPhaseTimer();
 
-
     cancelPhotoSequence();
-
 
     const photographyVisible =
         photographyField
@@ -4810,47 +4497,10 @@ function startFilm(
                 "active"
             );
 
-
     activeMode =
         "film";
 
-
-    if (
-        photographyVisible
-    ) {
-
-        animatePhotoGroups(
-            0
-        );
-
-
-        animateTitlesTo(
-            "film",
-            () => {
-
-                if (
-                    activeMode !==
-                    "film"
-                ) {
-
-                    return;
-
-                }
-
-
-                switchToFilmLayer();
-
-            }
-        );
-
-
-        return;
-
-    }
-
-
-    animateTitlesTo(
-        "film",
+    const revealFilm =
         () => {
 
             if (
@@ -4862,10 +4512,36 @@ function startFilm(
 
             }
 
+            photographyField
+                .classList
+                .remove(
+                    "active"
+                );
 
             switchToFilmLayer();
 
-        }
+        };
+
+    if (
+        photographyVisible
+    ) {
+
+        animatePhotoGroups(
+            0
+        );
+
+        animateTitlesTo(
+            "film",
+            revealFilm
+        );
+
+        return;
+
+    }
+
+    animateTitlesTo(
+        "film",
+        revealFilm
     );
 
 }
@@ -4888,25 +4564,70 @@ filmVideo.addEventListener(
 
         }
 
+        /*
+            DESKTOP:
+            film normally won't reach here unless
+            mouse stays over it for the full duration.
+
+            Do NOT begin an automatic photography cycle.
+        */
 
         if (
-            hoverMode ===
-            "film"
+            !isMobileLayout()
         ) {
+
+            if (
+                hoverMode ===
+                "film"
+            ) {
+
+                /*
+                    Keep FILM state while hovered.
+                    Freeze on final frame.
+                */
+
+                return;
+
+            }
+
+            enterIdle();
 
             return;
 
         }
 
+        /*
+            MOBILE:
+            film ends -> everything disappears ->
+            blank pause -> photography.
+        */
 
-        startPhotography();
+        filmVideo.pause();
+
+        filmField
+            .classList
+            .remove(
+                "active"
+            );
+
+        activeMode =
+            null;
+
+        animateTitlesTo(
+            null,
+            () => {
+
+                scheduleMobilePhotography();
+
+            }
+        );
 
     }
 );
 
 
 /* =====================================================
-   HOVER
+   HOVER CAPABILITY
    ===================================================== */
 
 function canHover() {
@@ -4920,6 +4641,10 @@ function canHover() {
 }
 
 
+/* =====================================================
+   DESKTOP PHOTOGRAPHY HOVER
+   ===================================================== */
+
 photographyLink.addEventListener(
     "mouseenter",
     () => {
@@ -4932,10 +4657,8 @@ photographyLink.addEventListener(
 
         }
 
-
         hoverMode =
             "photography";
-
 
         startPhotography(
             false
@@ -4957,9 +4680,14 @@ photographyLink.addEventListener(
 
         }
 
-
         setTimeout(
             () => {
+
+                /*
+                    If user moved directly from
+                    photography to film, film's
+                    mouseenter owns the new state.
+                */
 
                 if (
                     photographyLink.matches(
@@ -4974,7 +4702,6 @@ photographyLink.addEventListener(
 
                 }
 
-
                 if (
                     hoverMode !==
                     "photography"
@@ -4984,12 +4711,10 @@ photographyLink.addEventListener(
 
                 }
 
-
                 hoverMode =
                     null;
 
-
-                startFilm();
+                enterIdle();
 
             },
             0
@@ -4998,6 +4723,10 @@ photographyLink.addEventListener(
     }
 );
 
+
+/* =====================================================
+   DESKTOP FILM HOVER
+   ===================================================== */
 
 filmLink.addEventListener(
     "mouseenter",
@@ -5011,10 +4740,8 @@ filmLink.addEventListener(
 
         }
 
-
         hoverMode =
             "film";
-
 
         startFilm(
             false
@@ -5036,7 +4763,6 @@ filmLink.addEventListener(
 
         }
 
-
         setTimeout(
             () => {
 
@@ -5053,7 +4779,6 @@ filmLink.addEventListener(
 
                 }
 
-
                 if (
                     hoverMode !==
                     "film"
@@ -5063,12 +4788,10 @@ filmLink.addEventListener(
 
                 }
 
-
                 hoverMode =
                     null;
 
-
-                startPhotography();
+                enterIdle();
 
             },
             0
@@ -5087,16 +4810,13 @@ const logo =
         "logo"
     );
 
-
 const logoName =
     document.getElementById(
         "logo-name"
     );
 
-
 const logoLetters =
     [
-
         document.getElementById(
             "letter-a"
         ),
@@ -5116,9 +4836,7 @@ const logoLetters =
         document.getElementById(
             "letter-k"
         )
-
     ];
-
 
 const logoLowercase =
     [
@@ -5129,36 +4847,23 @@ const logoLowercase =
         "k"
     ];
 
-
 const logoUppercase =
     [
         "A",
         "Y",
         "B",
         "A",
-        "Y"
+        "K"
     ];
-
-
-/*
-    Correct final letter.
-*/
-
-logoUppercase[4] =
-    "K";
-
 
 let logoState =
     0;
 
-
 let logoTarget =
     0;
 
-
 let logoTimer =
     null;
-
 
 let logoReturnTimer =
     null;
@@ -5177,13 +4882,11 @@ function setLogoState(
             )
         );
 
-
     logoName.textContent =
         logoState ===
         0
             ? "Denizalp"
             : "denizalp";
-
 
     logoLetters.forEach(
         (
@@ -5216,7 +4919,6 @@ function animateLogoTo(
     logoTarget =
         target;
 
-
     if (
         logoTimer !==
         null
@@ -5226,12 +4928,10 @@ function animateLogoTo(
             logoTimer
         );
 
-
         logoTimer =
             null;
 
     }
-
 
     function step() {
 
@@ -5243,7 +4943,6 @@ function animateLogoTo(
             logoTimer =
                 null;
 
-
             if (
                 typeof callback ===
                 "function"
@@ -5253,11 +4952,9 @@ function animateLogoTo(
 
             }
 
-
             return;
 
         }
-
 
         setLogoState(
             logoState <
@@ -5265,7 +4962,6 @@ function animateLogoTo(
                 ? logoState + 1
                 : logoState - 1
         );
-
 
         logoTimer =
             setTimeout(
@@ -5275,11 +4971,14 @@ function animateLogoTo(
 
     }
 
-
     step();
 
 }
 
+
+/* =====================================================
+   LOGO DESKTOP HOVER
+   ===================================================== */
 
 logo.addEventListener(
     "mouseenter",
@@ -5293,7 +4992,6 @@ logo.addEventListener(
 
         }
 
-
         if (
             logoReturnTimer !==
             null
@@ -5303,12 +5001,10 @@ logo.addEventListener(
                 logoReturnTimer
             );
 
-
             logoReturnTimer =
                 null;
 
         }
-
 
         animateLogoTo(
             5
@@ -5330,7 +5026,6 @@ logo.addEventListener(
 
         }
 
-
         animateLogoTo(
             0
         );
@@ -5339,12 +5034,19 @@ logo.addEventListener(
 );
 
 
+/* =====================================================
+   LOGO MOBILE TAP
+   ===================================================== */
+
 logo.addEventListener(
     "click",
     event => {
 
         event.preventDefault();
 
+        /*
+            Clicking the logo does NOT reload the site.
+        */
 
         if (
             canHover()
@@ -5353,7 +5055,6 @@ logo.addEventListener(
             return;
 
         }
-
 
         if (
             logoReturnTimer !==
@@ -5364,12 +5065,10 @@ logo.addEventListener(
                 logoReturnTimer
             );
 
-
             logoReturnTimer =
                 null;
 
         }
-
 
         animateLogoTo(
             5,
@@ -5382,7 +5081,6 @@ logo.addEventListener(
                             animateLogoTo(
                                 0
                             );
-
 
                             logoReturnTimer =
                                 null;
@@ -5399,7 +5097,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   RESIZE
+   RESIZE / ORIENTATION
    ===================================================== */
 
 let resizeTimer =
@@ -5421,10 +5119,18 @@ window.addEventListener(
 
         }
 
-
         resizeTimer =
             setTimeout(
                 () => {
+
+                    /*
+                        Critical:
+                        move photography layer back to the
+                        correct parent after orientation /
+                        breakpoint change.
+                    */
+
+                    mountPhotographyField();
 
                     if (
                         !photographyInitialReady
@@ -5434,11 +5140,9 @@ window.addEventListener(
 
                     }
 
-
                     const modeChanged =
                         renderedMobileMode !==
                         isMobileLayout();
-
 
                     if (
                         modeChanged
@@ -5448,15 +5152,11 @@ window.addEventListener(
                             activeMode ===
                             "photography";
 
-
                         updateActiveVisualGroups();
-
 
                         buildPhotographyDOM();
 
-
                         randomizePhotographyLayout();
-
 
                         if (
                             wasVisible
@@ -5476,6 +5176,31 @@ window.addEventListener(
                     ) {
 
                         randomizePhotographyLayout();
+
+                    }
+
+                    /*
+                        Switching into desktop:
+                        immediately stop any automatic
+                        mobile cycle.
+                    */
+
+                    if (
+                        !isMobileLayout() &&
+                        !canHover()
+                    ) {
+
+                        return;
+
+                    }
+
+                    if (
+                        !isMobileLayout() &&
+                        hoverMode ===
+                        null
+                    ) {
+
+                        enterIdle();
 
                     }
 
@@ -5505,11 +5230,9 @@ document.addEventListener(
 
             filmVideo.pause();
 
-
             return;
 
         }
-
 
         if (
             hoverMode ===
@@ -5520,11 +5243,9 @@ document.addEventListener(
                 false
             );
 
-
             return;
 
         }
-
 
         if (
             hoverMode ===
@@ -5535,24 +5256,53 @@ document.addEventListener(
                 false
             );
 
+            return;
+
+        }
+
+        /*
+            Desktop always returns to quiet default.
+        */
+
+        if (
+            !isMobileLayout()
+        ) {
+
+            enterIdle();
 
             return;
 
         }
 
+        /*
+            Mobile resumes its automatic cycle.
+        */
 
         if (
             activeMode ===
             "photography"
         ) {
 
-            startPhotography();
+            startPhotography(
+                true
+            );
+
+        }
+
+        else if (
+            activeMode ===
+            "film"
+        ) {
+
+            startFilm(
+                true
+            );
 
         }
 
         else {
 
-            startFilm();
+            scheduleMobilePhotography();
 
         }
 
@@ -5566,22 +5316,25 @@ document.addEventListener(
 
 function init() {
 
+    mountPhotographyField();
+
     setLogoState(
         0
     );
-
 
     setWordCount(
         navItems.photography,
         0
     );
 
-
     setWordCount(
         navItems.film,
         0
     );
 
+    /*
+        Prepare photos quietly in background.
+    */
 
     loadInitialPhotography()
         .catch(
@@ -5595,28 +5348,60 @@ function init() {
             }
         );
 
+    /*
+        DESKTOP
+        ---------------------------------------------
+        No automatic content at all.
+
+        Default:
+            photography
+            film
+
+        Hover photography:
+            PHOTOGRAPHY + photos
+
+        Leave:
+            photography + empty white space
+
+        Hover film:
+            FILM + video
+
+        Leave:
+            film + empty white space
+    */
 
     if (
-        INITIAL_FILM_DELAY >
-        0
+        !isMobileLayout()
     ) {
 
-        setTimeout(
-            () => {
+        enterIdle();
 
-                startFilm();
-
-            },
-            INITIAL_FILM_DELAY
-        );
+        return;
 
     }
 
-    else {
+    /*
+        MOBILE
+        ---------------------------------------------
+        Start with FILM.
 
-        startFilm();
+        This also gives photography assets time
+        to prepare quietly in the background.
 
-    }
+        FILM
+        ↓
+        blank 800ms
+        ↓
+        PHOTOGRAPHY
+        ↓
+        blank 800ms
+        ↓
+        FILM
+    */
+
+    startFilm(
+        true
+    );
 
 }
 
