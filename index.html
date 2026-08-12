@@ -71,6 +71,8 @@ body {
    ===================================================== */
 
 .page {
+    position: relative;
+
     width: 100%;
 
     height: 100vh;
@@ -87,7 +89,7 @@ body {
 
 
 /* =====================================================
-   MAIN DESKTOP GRID
+   NORMAL LANDING
    ===================================================== */
 
 .landing-grid {
@@ -191,7 +193,7 @@ body {
     font-weight: 400;
     line-height: var(--line-height);
 
-    text-wrap: balance;
+    text-wrap: pretty;
 }
 
 
@@ -256,7 +258,7 @@ body {
 
 
 /* =====================================================
-   BIO
+   BIOGRAPHY
    ===================================================== */
 
 .biography {
@@ -289,7 +291,7 @@ body {
     font-weight: inherit;
     line-height: inherit;
 
-    text-wrap: balance;
+    text-wrap: pretty;
 }
 
 .biography p:last-child {
@@ -308,23 +310,10 @@ body {
 
 
 /* =====================================================
-   MEDIA SLOT
-
-   The media field itself may be any shape,
-   but the actual visual is ALWAYS a 16:9 frame.
-
-   Photography:
-       1080 + 40 + 1440
-       = 2560 × 1440
-
-   Film:
-       2560 × 1440
-
-   Therefore both modes occupy precisely
-   the same visible rectangle.
+   FILM FIELD
    ===================================================== */
 
-.media-slot {
+.film-field {
     position: relative;
 
     grid-column: 2;
@@ -342,18 +331,21 @@ body {
     min-height: 0;
 
     overflow: hidden;
+
+    visibility: hidden;
+}
+
+.film-field.active {
+    visibility: visible;
 }
 
 
 /* =====================================================
-   COMMON 16:9 VISUAL FRAME
-
-   Width/height become as large as possible
-   without leaving the media slot.
+   FILM LINK
    ===================================================== */
 
-.visual-frame {
-    position: relative;
+.film-link {
+    display: block;
 
     width: 100%;
 
@@ -369,385 +361,12 @@ body {
 
     aspect-ratio: 16 / 9;
 
-    overflow: hidden;
-}
-
-
-/* =====================================================
-   MEDIA LINKS
-   ===================================================== */
-
-.media-layer {
-    position: absolute;
-
-    inset: 0;
-
-    display: none;
-
-    width: 100%;
-    height: 100%;
-
     color: inherit;
     text-decoration: none;
-
-    pointer-events: none;
 
     -webkit-tap-highlight-color: transparent;
 }
 
-.media-layer.active {
-    display: block;
-
-    pointer-events: auto;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY SPREAD
-
-   Exact 2560 structure:
-
-   1080 / 40 / 1440
-
-   As percentages:
-
-   1080 ÷ 2560 = 42.1875%
-   40   ÷ 2560 = 1.5625%
-   1440 ÷ 2560 = 56.25%
-
-   Dark portrait:
-       LEFT edge aligns with film.
-
-   White square:
-       RIGHT edge aligns with film.
-   ===================================================== */
-
-.photography-spread {
-    position: absolute;
-
-    inset: 0;
-
-    display: grid;
-
-    grid-template-columns:
-        42.1875%
-        56.25%;
-
-    column-gap:
-        1.5625%;
-
-    width: 100%;
-    height: 100%;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY PANELS
-   ===================================================== */
-
-.photo-panel {
-    position: relative;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    will-change:
-        clip-path,
-        transform;
-}
-
-.photo-panel img {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    pointer-events: none;
-}
-
-
-/* =====================================================
-   EXACT IMAGE RATIOS
-
-   Left:
-       1080 × 1440 = 3:4
-
-   Right:
-       1440 × 1440 = 1:1
-
-   Their grid cells already have those exact ratios,
-   therefore no visible crop is required.
-   ===================================================== */
-
-.photo-left img {
-    object-position: center center;
-}
-
-.photo-right img {
-    object-position: center center;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY ANIMATION STATES
-
-   No opacity fade.
-
-   Dark image reveals left -> right.
-
-   Light image reveals right -> left.
-
-   Closing reverses them.
-
-   This keeps the movement graphic rather than
-   slideshow-like.
-   ===================================================== */
-
-.photo-left {
-    clip-path:
-        inset(
-            0
-            100%
-            0
-            0
-        );
-}
-
-.photo-right {
-    clip-path:
-        inset(
-            0
-            0
-            0
-            100%
-        );
-}
-
-
-/* OPEN LEFT */
-
-.photography-spread.state-open-left
-.photo-left {
-
-    animation:
-        reveal-left
-        300ms
-        cubic-bezier(.65, 0, .35, 1)
-        forwards;
-
-}
-
-
-/* OPEN RIGHT */
-
-.photography-spread.state-open-right
-.photo-left {
-
-    clip-path:
-        inset(
-            0
-            0
-            0
-            0
-        );
-
-}
-
-.photography-spread.state-open-right
-.photo-right {
-
-    animation:
-        reveal-right
-        300ms
-        cubic-bezier(.65, 0, .35, 1)
-        forwards;
-
-}
-
-
-/* BOTH OPEN */
-
-.photography-spread.state-hold
-.photo-left,
-.photography-spread.state-hold
-.photo-right {
-
-    clip-path:
-        inset(
-            0
-            0
-            0
-            0
-        );
-
-}
-
-
-/* CLOSE LEFT */
-
-.photography-spread.state-close-left
-.photo-left {
-
-    animation:
-        hide-left
-        280ms
-        cubic-bezier(.65, 0, .35, 1)
-        forwards;
-
-}
-
-.photography-spread.state-close-left
-.photo-right {
-
-    clip-path:
-        inset(
-            0
-            0
-            0
-            0
-        );
-
-}
-
-
-/* CLOSE RIGHT */
-
-.photography-spread.state-close-right
-.photo-left {
-
-    clip-path:
-        inset(
-            0
-            100%
-            0
-            0
-        );
-
-}
-
-.photography-spread.state-close-right
-.photo-right {
-
-    animation:
-        hide-right
-        280ms
-        cubic-bezier(.65, 0, .35, 1)
-        forwards;
-
-}
-
-
-/* =====================================================
-   KEYFRAMES
-   ===================================================== */
-
-@keyframes reveal-left {
-
-    from {
-        clip-path:
-            inset(
-                0
-                100%
-                0
-                0
-            );
-    }
-
-    to {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                0
-            );
-    }
-
-}
-
-
-@keyframes reveal-right {
-
-    from {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                100%
-            );
-    }
-
-    to {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                0
-            );
-    }
-
-}
-
-
-@keyframes hide-left {
-
-    from {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                0
-            );
-    }
-
-    to {
-        clip-path:
-            inset(
-                0
-                100%
-                0
-                0
-            );
-    }
-
-}
-
-
-@keyframes hide-right {
-
-    from {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                0
-            );
-    }
-
-    to {
-        clip-path:
-            inset(
-                0
-                0
-                0
-                100%
-            );
-    }
-
-}
-
-
-/* =====================================================
-   FILM
-   ===================================================== */
 
 #film-video {
     display: block;
@@ -757,15 +376,155 @@ body {
 
     object-fit: cover;
     object-position: center center;
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY TAKEOVER
+
+   During photography:
+   - normal landing disappears
+   - PHOTOGRAPHY remains
+   - complete photography archive takes over
+   ===================================================== */
+
+.photography-takeover {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 20;
+
+    display: none;
+
+    background: #fff;
+
+    overflow: hidden;
+}
+
+.photography-takeover.active {
+    display: block;
+}
+
+
+/* =====================================================
+   TAKEOVER TITLE
+   ===================================================== */
+
+.takeover-title {
+    position: absolute;
+
+    z-index: 5;
+
+    margin: 0;
+    padding: 0;
+
+    font-family: inherit;
+    font-size: var(--font-size);
+    font-weight: 400;
+    line-height: var(--line-height);
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =====================================================
+   CONTACT SHEET AREA
+   ===================================================== */
+
+.contact-sheet {
+    position: absolute;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =====================================================
+   GRID
+   ===================================================== */
+
+.contact-sheet-grid {
+    display: grid;
+
+    width: 100%;
+    height: 100%;
+
+    align-items: stretch;
+    justify-items: stretch;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   GRID CELL
+   ===================================================== */
+
+.sheet-cell {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   IMAGE
+
+   No crop.
+   Original ratio preserved.
+
+   Hidden until reveal sequence.
+   ===================================================== */
+
+.sheet-cell img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    opacity: 0;
 
     pointer-events: none;
+}
+
+.sheet-cell.visible img {
+    opacity: 1;
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY MODE
+   ===================================================== */
+
+body.photography-mode
+.landing-grid {
+    visibility: hidden;
 }
 
 
 /* =====================================================
    MOBILE PORTRAIT
-
-   Keep the established inline layout.
    ===================================================== */
 
 @media
@@ -787,7 +546,6 @@ body {
 
 
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 1fr);
 
@@ -803,17 +561,14 @@ body {
 
         row-gap:
             var(--major-gap);
-
     }
 
 
     .logo {
-
         grid-column: 1;
         grid-row: 1;
 
         height: 30px;
-
     }
 
 
@@ -823,55 +578,39 @@ body {
 
 
     .opening {
-
         grid-column: 1;
         grid-row: 2;
-
     }
 
 
     .navigation {
-
         grid-column: 1;
         grid-row: 3;
-
     }
 
 
-    .media-slot {
-
+    .film-field {
         grid-column: 1;
         grid-row: 4;
-
     }
 
 
     .contact {
-
         grid-column: 1;
         grid-row: 5;
-
     }
 
 
     .biography {
-
         grid-column: 1;
         grid-row: 6;
 
         max-width: none;
-
     }
 
 
-    .visual-frame {
-
-        width: 100%;
-
+    .film-link {
         max-width: 100%;
-
-        aspect-ratio: 16 / 9;
-
     }
 
 }
@@ -880,20 +619,10 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   IMPORTANT CHANGE:
+   Font does NOT shrink.
 
-   Text is now 2/3.
-   Media is 1/3.
-
-   Font remains 13px.
-   Line-height remains 1.15.
-   Normal breathing room remains.
-
-   We no longer scale typography down to make
-   the old 40/60 layout fit.
-
-   The much wider text column naturally removes
-   line wraps and therefore reduces vertical height.
+   2/3 text
+   1/3 film
    ===================================================== */
 
 @media
@@ -904,31 +633,22 @@ body {
     :root {
 
         --page-x: 24px;
-        --page-top: 16px;
-        --page-bottom: 16px;
+        --page-top: 14px;
+        --page-bottom: 14px;
 
         --font-size: 13px;
         --line-height: 1.15;
 
-        --major-gap: 11px;
+        --major-gap: 8px;
         --column-gap: 24px;
 
     }
 
 
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 2fr)
             minmax(0, 1fr);
-
-        grid-template-rows:
-            auto
-            auto
-            auto
-            auto
-            minmax(0, 1fr);
-
     }
 
 
@@ -942,81 +662,26 @@ body {
     }
 
 
-    /*
-        Give the text region its new full
-        2/3-column width rather than preserving
-        the old 530px desktop cap.
-    */
-
+    .opening,
     .biography {
         max-width: none;
     }
 
 
-    .opening {
-        text-wrap: initial;
+    .opening,
+    .biography p {
+        text-wrap: pretty;
     }
 
 
     .biography p {
         margin-bottom:
             var(--major-gap);
-
-        text-wrap: initial;
     }
 
 
-    .opening,
-    .navigation,
-    .navigation a,
-    .nav-text,
-    .contact,
-    .contact a,
-    .biography,
-    .biography p,
-    .biography span,
-    .item {
-
-        font-size: 13px !important;
-        line-height: 1.15 !important;
-
-    }
-
-
-    /*
-        16:9 visual remains centered
-        inside the smaller right third.
-    */
-
-    .visual-frame {
-        width: 100%;
+    .film-link {
         max-width: 100%;
-    }
-
-}
-
-
-/* =====================================================
-   SHORTER LANDSCAPE
-
-   Still DO NOT change typography size.
-
-   Only trim page margin / section spacing slightly.
-   ===================================================== */
-
-@media
-    (orientation: landscape)
-    and (max-height: 500px)
-    and (max-width: 1000px) {
-
-    :root {
-
-        --page-top: 10px;
-        --page-bottom: 10px;
-
-        --major-gap: 7px;
-        --column-gap: 18px;
-
     }
 
 }
@@ -1038,6 +703,7 @@ body {
         --page-bottom: 20px;
 
         --font-size: 13px;
+        --line-height: 1.15;
 
         --major-gap: 9px;
         --column-gap: 32px;
@@ -1046,11 +712,9 @@ body {
 
 
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 470px)
             minmax(0, 1fr);
-
     }
 
 
@@ -1074,15 +738,17 @@ body {
 
 <div class="page">
 
+    <!-- =================================================
+         NORMAL LANDING
+         ================================================= -->
+
     <main
         class="landing-grid"
         id="landing-grid"
     >
 
 
-        <!-- =================================================
-             LOGO
-             ================================================= -->
+        <!-- LOGO -->
 
         <button
             class="logo"
@@ -1107,18 +773,14 @@ body {
         </button>
 
 
-        <!-- =================================================
-             OPENING
-             ================================================= -->
+        <!-- OPENING -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
@@ -1126,10 +788,7 @@ body {
                 href="https://photography.denizalpaybak.com/"
                 id="photography-link"
             >
-                <span
-                    class="nav-text"
-                    id="photography-text"
-                >
+                <span id="photography-text">
                     photography
                 </span>
             </a>
@@ -1139,10 +798,7 @@ body {
                 href="https://film.denizalpaybak.com/"
                 id="film-link"
             >
-                <span
-                    class="nav-text"
-                    id="film-text"
-                >
+                <span id="film-text">
                     film
                 </span>
             </a>
@@ -1150,95 +806,33 @@ body {
         </nav>
 
 
-        <!-- =================================================
-             MEDIA
-             ================================================= -->
+        <!-- FILM -->
 
         <div
-            class="media-slot"
-            id="media-slot"
+            class="film-field"
+            id="film-field"
         >
 
-            <div class="visual-frame">
+            <a
+                class="film-link"
+                href="https://film.denizalpaybak.com/"
+                aria-label="Film"
+            >
 
+                <video
+                    id="film-video"
+                    src="./film.mp4"
+                    muted
+                    playsinline
+                    preload="auto"
+                ></video>
 
-                <!-- =========================================
-                     PHOTOGRAPHY
-                     ========================================= -->
-
-                <a
-                    class="media-layer"
-                    id="photography-media"
-                    href="https://photography.denizalpaybak.com/"
-                    aria-label="Photography"
-                >
-
-                    <div
-                        class="photography-spread"
-                        id="photography-spread"
-                    >
-
-                        <!-- DARK / LEFT -->
-
-                        <div
-                            class="photo-panel photo-left"
-                        >
-
-                            <img
-                                src="./photography_01.jpg"
-                                alt=""
-                            >
-
-                        </div>
-
-
-                        <!-- LIGHT / RIGHT -->
-
-                        <div
-                            class="photo-panel photo-right"
-                        >
-
-                            <img
-                                src="./photography_02.jpg"
-                                alt=""
-                            >
-
-                        </div>
-
-                    </div>
-
-                </a>
-
-
-                <!-- =========================================
-                     FILM
-                     ========================================= -->
-
-                <a
-                    class="media-layer"
-                    id="film-media"
-                    href="https://film.denizalpaybak.com/"
-                    aria-label="Film"
-                >
-
-                    <video
-                        id="film-video"
-                        src="./film.mp4"
-                        muted
-                        playsinline
-                        preload="auto"
-                    ></video>
-
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
 
-        <!-- =================================================
-             CONTACT
-             ================================================= -->
+        <!-- CONTACT -->
 
         <div class="contact">
 
@@ -1269,13 +863,9 @@ body {
         </div>
 
 
-        <!-- =================================================
-             BIO
-             ================================================= -->
+        <!-- BIO -->
 
-        <section
-            class="biography"
-        >
+        <section class="biography">
 
             <p>
                 having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
@@ -1299,62 +889,97 @@ body {
 
     </main>
 
+
+    <!-- =================================================
+         PHOTOGRAPHY TAKEOVER
+         ================================================= -->
+
+    <section
+        class="photography-takeover"
+        id="photography-takeover"
+    >
+
+        <div
+            class="takeover-title"
+            id="takeover-title"
+        >
+            photography
+        </div>
+
+
+        <div
+            class="contact-sheet"
+            id="contact-sheet"
+        >
+
+            <div
+                class="contact-sheet-grid"
+                id="contact-sheet-grid"
+            ></div>
+
+        </div>
+
+    </section>
+
 </div>
 
 
 <script>
 
 /* =====================================================
-   GLOBAL TIMING
+   DATA SOURCE
+
+   THIS is now the single source of truth.
+
+   Change projects.json ->
+   photography site + landing archive update together.
+   ===================================================== */
+
+const PROJECTS_JSON_URL =
+    "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
+
+
+/*
+    Used only when projects.json contains
+    filenames / relative paths rather than
+    complete R2 URLs.
+*/
+
+const R2_PHOTOS_BASE =
+    "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
+
+
+/* =====================================================
+   TIMING
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
     400;
 
 
-/*
-    Photography should feel like a short visual hit,
-    not a static 3-second image.
+const SHEET_BUILD_DURATION =
+    420;
 
-    Entire photography phase:
-    2200ms
-*/
+
+const SHEET_HOLD_DURATION =
+    1200;
+
+
+const SHEET_REMOVE_DURATION =
+    380;
+
 
 const PHOTOGRAPHY_DURATION =
-    2200;
+    SHEET_BUILD_DURATION +
+    SHEET_HOLD_DURATION +
+    SHEET_REMOVE_DURATION;
 
 
 /*
-    Two-photo choreography inside the
-    photography phase.
-*/
+    Film source:
+    77 frames / 23.976 fps.
 
-const PHOTO_TIMING = {
-
-    leftOpen:
-        0,
-
-    rightOpen:
-        220,
-
-    hold:
-        520,
-
-    leftClose:
-        1560,
-
-    rightClose:
-        1780
-
-};
-
-
-/*
-    Video:
-    77 frames / 23.976fps.
-
-    The JS does NOT cut it with a timer.
-    We use the actual ended event.
+    Actual transition still uses video.ended.
 */
 
 const VIDEO_FRAME_COUNT =
@@ -1373,7 +998,7 @@ const VIDEO_DURATION_MS =
     1000;
 
 
-const INITIAL_MEDIA_DELAY =
+const INITIAL_DELAY =
     700;
 
 
@@ -1392,6 +1017,12 @@ const LOGO_MOBILE_HOLD =
 /* =====================================================
    ELEMENTS
    ===================================================== */
+
+const page =
+    document.querySelector(
+        ".page"
+    );
+
 
 const photographyLink =
     document.getElementById(
@@ -1417,21 +1048,9 @@ const filmText =
     );
 
 
-const photographyMedia =
+const filmField =
     document.getElementById(
-        "photography-media"
-    );
-
-
-const filmMedia =
-    document.getElementById(
-        "film-media"
-    );
-
-
-const photographySpread =
-    document.getElementById(
-        "photography-spread"
+        "film-field"
     );
 
 
@@ -1441,40 +1060,955 @@ const filmVideo =
     );
 
 
+const photographyTakeover =
+    document.getElementById(
+        "photography-takeover"
+    );
+
+
+const takeoverTitle =
+    document.getElementById(
+        "takeover-title"
+    );
+
+
+const contactSheet =
+    document.getElementById(
+        "contact-sheet"
+    );
+
+
+const contactSheetGrid =
+    document.getElementById(
+        "contact-sheet-grid"
+    );
+
+
 /* =====================================================
-   NAV WORD STATE
+   PROJECT PHOTO DATA
    ===================================================== */
 
-const navItems = {
-
-    photography: {
-
-        word:
-            "photography",
-
-        element:
-            photographyText,
-
-        count:
-            0
-
-    },
+let archivePhotos =
+    [];
 
 
-    film: {
+let sheetCells =
+    [];
 
-        word:
-            "film",
 
-        element:
-            filmText,
+/* =====================================================
+   IMAGE STRING DETECTION
+   ===================================================== */
 
-        count:
-            0
+function looksLikeImage(
+    value
+) {
+
+    if (
+        typeof value !==
+        "string"
+    ) {
+
+        return false;
 
     }
 
-};
+
+    const clean =
+        value
+            .split("?")[0]
+            .split("#")[0];
+
+
+    return /\.(jpe?g|png|webp|avif)$/i
+        .test(
+            clean
+        );
+
+}
+
+
+/* =====================================================
+   RESOLVE PHOTO URL
+
+   Supports:
+
+   full URL:
+   https://...jpg
+
+   filename:
+   vogue_01.jpg
+
+   R2-relative:
+   vogue/vogue_01.jpg
+
+   photos/...:
+   photos/vogue_01.jpg
+   ===================================================== */
+
+function resolvePhotoUrl(
+    value
+) {
+
+    if (
+        typeof value !==
+        "string"
+    ) {
+
+        return null;
+
+    }
+
+
+    const trimmed =
+        value.trim();
+
+
+    if (
+        !trimmed
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+        Already complete URL.
+    */
+
+    if (
+        /^https?:\/\//i
+            .test(
+                trimmed
+            )
+    ) {
+
+        return trimmed;
+
+    }
+
+
+    let path =
+        trimmed
+            .replace(
+                /^\/+/,
+                ""
+            );
+
+
+    /*
+        Prevent:
+        .../photos/photos/...
+    */
+
+    path =
+        path.replace(
+            /^photos\//i,
+            ""
+        );
+
+
+    return (
+        R2_PHOTOS_BASE +
+        path
+            .split("/")
+            .map(
+                encodeURIComponent
+            )
+            .join("/")
+    );
+
+}
+
+
+/* =====================================================
+   RECURSIVELY COLLECT IMAGE REFERENCES
+
+   Does NOT depend on a particular JSON structure.
+
+   Examples it supports:
+
+   {
+       images: [...]
+   }
+
+   {
+       slides: [...]
+   }
+
+   {
+       image: "..."
+   }
+
+   {
+       project: {
+           gallery: [...]
+       }
+   }
+
+   etc.
+   ===================================================== */
+
+function collectImageReferences(
+    value,
+    output
+) {
+
+    if (
+        value ===
+        null ||
+        value ===
+        undefined
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        IMAGE STRING
+    */
+
+    if (
+        typeof value ===
+        "string"
+    ) {
+
+        if (
+            looksLikeImage(
+                value
+            )
+        ) {
+
+            const resolved =
+                resolvePhotoUrl(
+                    value
+                );
+
+
+            if (
+                resolved
+            ) {
+
+                output.push(
+                    resolved
+                );
+
+            }
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+        ARRAY
+    */
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+
+        value.forEach(
+            item => {
+
+                collectImageReferences(
+                    item,
+                    output
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+        OBJECT
+    */
+
+    if (
+        typeof value ===
+        "object"
+    ) {
+
+        Object.values(
+            value
+        ).forEach(
+            child => {
+
+                collectImageReferences(
+                    child,
+                    output
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   NORMALIZE URL FOR DEDUPLICATION
+   ===================================================== */
+
+function normalizeImageUrl(
+    url
+) {
+
+    try {
+
+        const parsed =
+            new URL(
+                url
+            );
+
+
+        /*
+            Ignore query strings when identifying
+            the same image used in multiple places.
+        */
+
+        return (
+            parsed.origin +
+            parsed.pathname
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        return url
+            .split("?")[0]
+            .split("#")[0];
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD PROJECTS.JSON
+
+   projects.json determines EXACTLY which images
+   are available to the landing contact sheet.
+   ===================================================== */
+
+async function loadPhotographyArchive() {
+
+    try {
+
+        const response =
+            await fetch(
+                PROJECTS_JSON_URL,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                `projects.json could not be loaded: ${response.status}`
+            );
+
+        }
+
+
+        const projects =
+            await response.json();
+
+
+        const collected =
+            [];
+
+
+        collectImageReferences(
+            projects,
+            collected
+        );
+
+
+        /*
+            Remove duplicates while maintaining
+            projects.json order.
+        */
+
+        const seen =
+            new Set();
+
+
+        archivePhotos =
+            collected.filter(
+                url => {
+
+                    const normalized =
+                        normalizeImageUrl(
+                            url
+                        );
+
+
+                    if (
+                        seen.has(
+                            normalized
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    seen.add(
+                        normalized
+                    );
+
+
+                    return true;
+
+                }
+            );
+
+
+        if (
+            archivePhotos.length ===
+            0
+        ) {
+
+            console.warn(
+                "No photography image URLs were found inside projects.json."
+            );
+
+
+            return;
+
+        }
+
+
+        buildContactSheet();
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Photography archive could not be created:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   BUILD CONTACT SHEET
+   ===================================================== */
+
+function buildContactSheet() {
+
+    contactSheetGrid
+        .innerHTML =
+        "";
+
+
+    sheetCells =
+        [];
+
+
+    archivePhotos.forEach(
+        (
+            url,
+            index
+        ) => {
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+
+            cell.className =
+                "sheet-cell";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                url;
+
+
+            image.alt =
+                "";
+
+
+            image.decoding =
+                "async";
+
+
+            /*
+                The contact sheet deliberately loads
+                all current portfolio frames because
+                every one may appear simultaneously.
+            */
+
+            image.loading =
+                "eager";
+
+
+            cell.appendChild(
+                image
+            );
+
+
+            contactSheetGrid
+                .appendChild(
+                    cell
+                );
+
+
+            sheetCells.push(
+                cell
+            );
+
+        }
+    );
+
+
+    layoutTakeover();
+
+}
+
+
+/* =====================================================
+   CONTACT SHEET GRID
+
+   Choose columns from:
+   image count + available aspect ratio.
+
+   Goal:
+   fill viewport efficiently without scroll.
+   ===================================================== */
+
+function calculateGrid(
+    count,
+    width,
+    height
+) {
+
+    if (
+        count <= 0
+    ) {
+
+        return {
+            columns: 1,
+            rows: 1,
+            gap: 0
+        };
+
+    }
+
+
+    const areaRatio =
+        Math.max(
+            0.1,
+            width /
+            Math.max(
+                1,
+                height
+            )
+        );
+
+
+    /*
+        Starting estimate.
+    */
+
+    const estimatedColumns =
+        Math.max(
+            1,
+            Math.round(
+                Math.sqrt(
+                    count *
+                    areaRatio
+                )
+            )
+        );
+
+
+    let best =
+        null;
+
+
+    const minColumns =
+        Math.max(
+            1,
+            estimatedColumns -
+            4
+        );
+
+
+    const maxColumns =
+        Math.min(
+            count,
+            estimatedColumns +
+            4
+        );
+
+
+    const gap =
+        count >= 80
+            ? 1
+            : count >= 50
+                ? 2
+                : count >= 30
+                    ? 3
+                    : count >= 16
+                        ? 4
+                        : 6;
+
+
+    for (
+        let columns =
+            minColumns;
+        columns <=
+            maxColumns;
+        columns++
+    ) {
+
+        const rows =
+            Math.ceil(
+                count /
+                columns
+            );
+
+
+        const cellWidth =
+            (
+                width -
+                gap *
+                (
+                    columns -
+                    1
+                )
+            ) /
+            columns;
+
+
+        const cellHeight =
+            (
+                height -
+                gap *
+                (
+                    rows -
+                    1
+                )
+            ) /
+            rows;
+
+
+        if (
+            cellWidth <= 0 ||
+            cellHeight <= 0
+        ) {
+
+            continue;
+
+        }
+
+
+        /*
+            Main priority:
+            make cells as large as possible.
+
+            Small secondary penalty for
+            extremely unusual cell ratios.
+        */
+
+        const ratio =
+            cellWidth /
+            cellHeight;
+
+
+        const penalty =
+            1 +
+            Math.abs(
+                Math.log(
+                    ratio
+                )
+            ) *
+            0.18;
+
+
+        const score =
+            (
+                cellWidth *
+                cellHeight
+            ) /
+            penalty;
+
+
+        if (
+            !best ||
+            score >
+            best.score
+        ) {
+
+            best =
+                {
+                    columns,
+                    rows,
+                    gap,
+                    score
+                };
+
+        }
+
+    }
+
+
+    return (
+        best ||
+        {
+            columns:
+                estimatedColumns,
+
+            rows:
+                Math.ceil(
+                    count /
+                    estimatedColumns
+                ),
+
+            gap
+        }
+    );
+
+}
+
+
+/* =====================================================
+   TAKEOVER GEOMETRY
+
+   PHOTOGRAPHY sits at exactly the same coordinate
+   as normal photography.
+
+   Contact sheet occupies the rest of viewport.
+   ===================================================== */
+
+function layoutTakeover() {
+
+    const rootStyle =
+        getComputedStyle(
+            document.documentElement
+        );
+
+
+    const pageX =
+        parseFloat(
+            rootStyle.getPropertyValue(
+                "--page-x"
+            )
+        ) || 48;
+
+
+    const pageBottom =
+        parseFloat(
+            rootStyle.getPropertyValue(
+                "--page-bottom"
+            )
+        ) || 48;
+
+
+    const photographyRect =
+        photographyText
+            .getBoundingClientRect();
+
+
+    /*
+        Same exact title coordinate.
+    */
+
+    takeoverTitle.style.left =
+        `${photographyRect.left}px`;
+
+
+    takeoverTitle.style.top =
+        `${photographyRect.top}px`;
+
+
+    /*
+        Sheet starts below PHOTOGRAPHY.
+    */
+
+    const sheetTop =
+        photographyRect.bottom +
+        Math.max(
+            10,
+            parseFloat(
+                rootStyle.getPropertyValue(
+                    "--major-gap"
+                )
+            ) || 10
+        );
+
+
+    const sheetLeft =
+        pageX;
+
+
+    const sheetRight =
+        window.innerWidth -
+        pageX;
+
+
+    const sheetBottom =
+        window.innerHeight -
+        pageBottom;
+
+
+    contactSheet.style.left =
+        `${sheetLeft}px`;
+
+
+    contactSheet.style.top =
+        `${sheetTop}px`;
+
+
+    contactSheet.style.width =
+        `${Math.max(
+            0,
+            sheetRight -
+            sheetLeft
+        )}px`;
+
+
+    contactSheet.style.height =
+        `${Math.max(
+            0,
+            sheetBottom -
+            sheetTop
+        )}px`;
+
+
+    layoutContactSheetGrid();
+
+}
+
+
+/* =====================================================
+   APPLY GRID
+   ===================================================== */
+
+function layoutContactSheetGrid() {
+
+    if (
+        sheetCells.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const rect =
+        contactSheet
+            .getBoundingClientRect();
+
+
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const grid =
+        calculateGrid(
+            sheetCells.length,
+            rect.width,
+            rect.height
+        );
+
+
+    contactSheetGrid.style
+        .gridTemplateColumns =
+        `repeat(${grid.columns}, minmax(0, 1fr))`;
+
+
+    contactSheetGrid.style
+        .gridTemplateRows =
+        `repeat(${grid.rows}, minmax(0, 1fr))`;
+
+
+    contactSheetGrid.style.gap =
+        `${grid.gap}px`;
+
+}
+
+
+/* =====================================================
+   NAVIGATION WORD STATE
+   ===================================================== */
+
+const navItems =
+    {
+
+        photography: {
+
+            word:
+                "photography",
+
+            element:
+                photographyText,
+
+            count:
+                0
+
+        },
+
+
+        film: {
+
+            word:
+                "film",
+
+            element:
+                filmText,
+
+            count:
+                0
+
+        }
+
+    };
 
 
 /* =====================================================
@@ -1483,20 +2017,20 @@ const navItems = {
 
 function renderCaseWord(
     word,
-    upperCount
+    count
 ) {
 
     let result =
         "";
 
 
-    const count =
+    const normalized =
         Math.max(
             0,
             Math.min(
                 word.length,
                 Math.round(
-                    upperCount
+                    count
                 )
             )
         );
@@ -1509,9 +2043,14 @@ function renderCaseWord(
     ) {
 
         result +=
-            i < count
-                ? word[i].toUpperCase()
-                : word[i].toLowerCase();
+            i <
+            normalized
+                ? word[
+                    i
+                ].toUpperCase()
+                : word[
+                    i
+                ].toLowerCase();
 
     }
 
@@ -1555,36 +2094,36 @@ function setWordCount(
    TITLE MORPH
    ===================================================== */
 
-let titleAnimationFrame =
+let titleFrame =
     null;
 
 
-let titleAnimationToken =
+let titleToken =
     0;
 
 
 function animateTitlesTo(
-    targetMode
+    mode
 ) {
 
-    titleAnimationToken++;
+    titleToken++;
 
 
     const token =
-        titleAnimationToken;
+        titleToken;
 
 
     if (
-        titleAnimationFrame !==
+        titleFrame !==
         null
     ) {
 
         cancelAnimationFrame(
-            titleAnimationFrame
+            titleFrame
         );
 
 
-        titleAnimationFrame =
+        titleFrame =
             null;
 
     }
@@ -1607,20 +2146,24 @@ function animateTitlesTo(
 
 
     const photoTarget =
-        targetMode ===
+        mode ===
         "photography"
-            ? photography.word.length
+            ? photography
+                .word
+                .length
             : 0;
 
 
     const filmTarget =
-        targetMode ===
+        mode ===
         "film"
-            ? film.word.length
+            ? film
+                .word
+                .length
             : 0;
 
 
-    const start =
+    const started =
         performance.now();
 
 
@@ -1630,7 +2173,7 @@ function animateTitlesTo(
 
         if (
             token !==
-            titleAnimationToken
+            titleToken
         ) {
 
             return;
@@ -1643,7 +2186,7 @@ function animateTitlesTo(
                 1,
                 (
                     now -
-                    start
+                    started
                 ) /
                 WORD_TRANSITION_DURATION
             );
@@ -1667,9 +2210,7 @@ function animateTitlesTo(
             progress;
 
 
-        setWordCount(
-            photography,
-
+        const photoCount =
             photoTarget >=
             photoStart
                 ? Math.floor(
@@ -1679,13 +2220,10 @@ function animateTitlesTo(
                 : Math.ceil(
                     photoRaw -
                     0.0001
-                )
-        );
+                );
 
 
-        setWordCount(
-            film,
-
+        const filmCount =
             filmTarget >=
             filmStart
                 ? Math.floor(
@@ -1695,8 +2233,31 @@ function animateTitlesTo(
                 : Math.ceil(
                     filmRaw -
                     0.0001
-                )
+                );
+
+
+        setWordCount(
+            photography,
+            photoCount
         );
+
+
+        setWordCount(
+            film,
+            filmCount
+        );
+
+
+        /*
+            During photography takeover,
+            title mirrors hidden navigation word.
+        */
+
+        takeoverTitle.textContent =
+            renderCaseWord(
+                "photography",
+                photography.count
+            );
 
 
         if (
@@ -1704,7 +2265,7 @@ function animateTitlesTo(
             1
         ) {
 
-            titleAnimationFrame =
+            titleFrame =
                 requestAnimationFrame(
                     frame
                 );
@@ -1725,7 +2286,14 @@ function animateTitlesTo(
             );
 
 
-            titleAnimationFrame =
+            takeoverTitle.textContent =
+                renderCaseWord(
+                    "photography",
+                    photoTarget
+                );
+
+
+            titleFrame =
                 null;
 
         }
@@ -1733,7 +2301,7 @@ function animateTitlesTo(
     }
 
 
-    titleAnimationFrame =
+    titleFrame =
         requestAnimationFrame(
             frame
         );
@@ -1742,20 +2310,20 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   PHOTO ANIMATION
+   CONTACT SHEET ANIMATION
    ===================================================== */
 
-let photoTimers =
+let sheetTimers =
     [];
 
 
 /* =====================================================
-   CLEAR PHOTO TIMERS
+   CLEAR TIMERS
    ===================================================== */
 
-function clearPhotoTimers() {
+function clearSheetTimers() {
 
-    photoTimers.forEach(
+    sheetTimers.forEach(
         timer => {
 
             clearTimeout(
@@ -1766,33 +2334,196 @@ function clearPhotoTimers() {
     );
 
 
-    photoTimers =
+    sheetTimers =
         [];
 
 }
 
 
 /* =====================================================
-   SET PHOTO STATE
+   RESET SHEET
    ===================================================== */
 
-function setPhotoState(
-    state
-) {
+function resetSheet() {
 
-    photographySpread.className =
-        "photography-spread";
+    sheetCells.forEach(
+        cell => {
+
+            cell.classList
+                .remove(
+                    "visible"
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REVEAL
+
+   left -> right
+   top -> bottom
+
+   Hard pop.
+   ===================================================== */
+
+function revealSheet() {
+
+    clearSheetTimers();
+
+
+    resetSheet();
+
+
+    const count =
+        sheetCells.length;
 
 
     if (
-        state
+        count ===
+        0
     ) {
 
-        photographySpread
-            .classList
-            .add(
-                state
+        return;
+
+    }
+
+
+    const interval =
+        SHEET_BUILD_DURATION /
+        Math.max(
+            1,
+            count
+        );
+
+
+    sheetCells.forEach(
+        (
+            cell,
+            index
+        ) => {
+
+            const timer =
+                setTimeout(
+                    () => {
+
+                        cell.classList
+                            .add(
+                                "visible"
+                            );
+
+                    },
+                    interval *
+                    index
+                );
+
+
+            sheetTimers.push(
+                timer
             );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REMOVE
+
+   reverse order.
+   ===================================================== */
+
+function removeSheet() {
+
+    const reversed =
+        sheetCells
+            .slice()
+            .reverse();
+
+
+    if (
+        reversed.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const interval =
+        SHEET_REMOVE_DURATION /
+        reversed.length;
+
+
+    reversed.forEach(
+        (
+            cell,
+            index
+        ) => {
+
+            const timer =
+                setTimeout(
+                    () => {
+
+                        cell.classList
+                            .remove(
+                                "visible"
+                            );
+
+                    },
+                    interval *
+                    index
+                );
+
+
+            sheetTimers.push(
+                timer
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   MODE
+   ===================================================== */
+
+let activeMode =
+    null;
+
+
+let hoverMode =
+    null;
+
+
+let photographyTimer =
+    null;
+
+
+/* =====================================================
+   CLEAR MODE TIMER
+   ===================================================== */
+
+function clearModeTimer() {
+
+    if (
+        photographyTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            photographyTimer
+        );
+
+
+        photographyTimer =
+            null;
 
     }
 
@@ -1800,163 +2531,187 @@ function setPhotoState(
 
 
 /* =====================================================
-   START PHOTO CHOREOGRAPHY
+   START PHOTOGRAPHY
    ===================================================== */
 
-function startPhotographyAnimation() {
+function startPhotography(
+    automatic =
+        true
+) {
 
-    clearPhotoTimers();
-
-
-    setPhotoState(
-        ""
-    );
-
-
-    /*
-        Force reflow so animation reliably
-        restarts every photography phase.
-    */
-
-    void photographySpread.offsetWidth;
+    activeMode =
+        "photography";
 
 
-    photoTimers.push(
-
-        setTimeout(
-            () => {
-
-                setPhotoState(
-                    "state-open-left"
-                );
-
-            },
-            PHOTO_TIMING.leftOpen
-        )
-
-    );
+    clearModeTimer();
 
 
-    photoTimers.push(
+    clearSheetTimers();
 
-        setTimeout(
-            () => {
-
-                setPhotoState(
-                    "state-open-right"
-                );
-
-            },
-            PHOTO_TIMING.rightOpen
-        )
-
-    );
-
-
-    photoTimers.push(
-
-        setTimeout(
-            () => {
-
-                setPhotoState(
-                    "state-hold"
-                );
-
-            },
-            PHOTO_TIMING.hold
-        )
-
-    );
-
-
-    photoTimers.push(
-
-        setTimeout(
-            () => {
-
-                setPhotoState(
-                    "state-close-left"
-                );
-
-            },
-            PHOTO_TIMING.leftClose
-        )
-
-    );
-
-
-    photoTimers.push(
-
-        setTimeout(
-            () => {
-
-                setPhotoState(
-                    "state-close-right"
-                );
-
-            },
-            PHOTO_TIMING.rightClose
-        )
-
-    );
-
-}
-
-
-/* =====================================================
-   SHOW PHOTOGRAPHY
-   ===================================================== */
-
-function showPhotographyMedia() {
 
     filmVideo.pause();
 
 
-    filmMedia
+    filmField
         .classList
         .remove(
             "active"
         );
 
 
-    photographyMedia
+    /*
+        Need normal photography coordinate
+        BEFORE hiding normal landing.
+    */
+
+    layoutTakeover();
+
+
+    photographyTakeover
         .classList
         .add(
             "active"
         );
 
 
-    startPhotographyAnimation();
+    document.body
+        .classList
+        .add(
+            "photography-mode"
+        );
+
+
+    animateTitlesTo(
+        "photography"
+    );
+
+
+    revealSheet();
+
+
+    /*
+        Hover-selected photography remains
+        indefinitely until pointer leaves.
+    */
+
+    if (
+        !automatic ||
+        hoverMode !==
+        null
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        Start contact-sheet removal.
+    */
+
+    const removeStart =
+        SHEET_BUILD_DURATION +
+        SHEET_HOLD_DURATION;
+
+
+    sheetTimers.push(
+
+        setTimeout(
+            () => {
+
+                removeSheet();
+
+
+                /*
+                    PHOTOGRAPHY ->
+                    photography
+
+                    film ->
+                    FILM
+
+                    happen while archive disappears.
+                */
+
+                animateTitlesTo(
+                    "film"
+                );
+
+            },
+            removeStart
+        )
+
+    );
+
+
+    photographyTimer =
+        setTimeout(
+            () => {
+
+                if (
+                    hoverMode !==
+                    null
+                ) {
+
+                    return;
+
+                }
+
+
+                startFilm();
+
+            },
+            PHOTOGRAPHY_DURATION
+        );
 
 }
 
 
 /* =====================================================
-   SHOW FILM
+   START FILM
    ===================================================== */
 
-async function showFilmMedia() {
+async function startFilm(
+    automatic =
+        true
+) {
 
-    clearPhotoTimers();
+    activeMode =
+        "film";
 
 
-    setPhotoState(
-        ""
-    );
+    clearModeTimer();
 
 
-    photographyMedia
+    clearSheetTimers();
+
+
+    photographyTakeover
         .classList
         .remove(
             "active"
         );
 
 
-    filmMedia
+    document.body
+        .classList
+        .remove(
+            "photography-mode"
+        );
+
+
+    resetSheet();
+
+
+    filmField
         .classList
         .add(
             "active"
         );
+
+
+    animateTitlesTo(
+        "film"
+    );
 
 
     filmVideo.pause();
@@ -1988,153 +2743,19 @@ async function showFilmMedia() {
         error
     ) {}
 
-}
-
-
-/* =====================================================
-   MODE STATE
-   ===================================================== */
-
-let activeMode =
-    null;
-
-
-let hoverMode =
-    null;
-
-
-let photographyTimer =
-    null;
-
-
-let modeToken =
-    0;
-
-
-/* =====================================================
-   CLEAR PHASE TIMER
-   ===================================================== */
-
-function clearAutomaticTimers() {
-
-    if (
-        photographyTimer !==
-        null
-    ) {
-
-        clearTimeout(
-            photographyTimer
-        );
-
-
-        photographyTimer =
-            null;
-
-    }
-
-}
-
-
-/* =====================================================
-   ACTIVATE MODE
-   ===================================================== */
-
-async function activateMode(
-    mode,
-    {
-        automatic =
-            true
-    } = {}
-) {
-
-    modeToken++;
-
-
-    const token =
-        modeToken;
-
-
-    clearAutomaticTimers();
-
-
-    activeMode =
-        mode;
-
-
-    if (
-        mode ===
-        "photography"
-    ) {
-
-        showPhotographyMedia();
-
-    }
-
-    else {
-
-        await showFilmMedia();
-
-    }
-
-
-    animateTitlesTo(
-        mode
-    );
-
 
     /*
-        Hover keeps selected state active.
+        No timeout.
+
+        All 77 encoded frames finish before
+        video.ended triggers photography.
     */
-
-    if (
-        !automatic ||
-        hoverMode !==
-        null
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        mode ===
-        "photography"
-    ) {
-
-        photographyTimer =
-            setTimeout(
-                () => {
-
-                    if (
-                        token !==
-                        modeToken ||
-                        hoverMode !==
-                        null
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    activateMode(
-                        "film"
-                    );
-
-                },
-                PHOTOGRAPHY_DURATION
-            );
-
-    }
 
 }
 
 
 /* =====================================================
    FILM ENDED
-
-   The encoded 77 frames decide the duration.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -2161,16 +2782,14 @@ filmVideo.addEventListener(
         }
 
 
-        activateMode(
-            "photography"
-        );
+        startPhotography();
 
     }
 );
 
 
 /* =====================================================
-   DESKTOP HOVER
+   HOVER CAPABILITY
    ===================================================== */
 
 function canHover() {
@@ -2185,12 +2804,10 @@ function canHover() {
 
 
 /* =====================================================
-   TITLE HOVER ENTER
+   PHOTOGRAPHY HOVER
    ===================================================== */
 
-function titleHoverEnter(
-    mode
-) {
+function enterPhotographyHover() {
 
     if (
         !canHover()
@@ -2201,14 +2818,11 @@ function titleHoverEnter(
     }
 
 
-    /*
-        If already hovering exactly this active mode,
-        don't unnecessarily restart its visual.
-    */
-
     if (
         hoverMode ===
-        mode
+        "photography" &&
+        activeMode ===
+        "photography"
     ) {
 
         return;
@@ -2217,27 +2831,45 @@ function titleHoverEnter(
 
 
     hoverMode =
-        mode;
+        "photography";
 
 
-    activateMode(
-        mode,
-        {
-            automatic:
-                false
-        }
+    startPhotography(
+        false
     );
 
 }
 
 
+/*
+    Normal photography title.
+*/
+
+photographyLink.addEventListener(
+    "mouseenter",
+    enterPhotographyHover
+);
+
+
+/*
+    Once takeover appears, this title occupies
+    the same coordinate as the original one.
+
+    It therefore becomes the continuation of
+    the hover target.
+*/
+
+takeoverTitle.addEventListener(
+    "mouseenter",
+    enterPhotographyHover
+);
+
+
 /* =====================================================
-   TITLE HOVER LEAVE
+   LEAVE PHOTOGRAPHY HOVER
    ===================================================== */
 
-function titleHoverLeave(
-    leavingMode
-) {
+function leavePhotographyHover() {
 
     if (
         !canHover()
@@ -2251,8 +2883,14 @@ function titleHoverLeave(
     setTimeout(
         () => {
 
-            const photographyHovered =
+            const originalHovered =
                 photographyLink.matches(
+                    ":hover"
+                );
+
+
+            const takeoverHovered =
+                takeoverTitle.matches(
                     ":hover"
                 );
 
@@ -2264,7 +2902,8 @@ function titleHoverLeave(
 
 
             if (
-                photographyHovered ||
+                originalHovered ||
+                takeoverHovered ||
                 filmHovered
             ) {
 
@@ -2275,7 +2914,7 @@ function titleHoverLeave(
 
             if (
                 hoverMode !==
-                leavingMode
+                "photography"
             ) {
 
                 return;
@@ -2287,18 +2926,7 @@ function titleHoverLeave(
                 null;
 
 
-            /*
-                As discussed:
-                leaving the hovered category immediately
-                starts the opposite category.
-            */
-
-            activateMode(
-                leavingMode ===
-                "photography"
-                    ? "film"
-                    : "photography"
-            );
+            startFilm();
 
         },
         0
@@ -2307,55 +2935,140 @@ function titleHoverLeave(
 }
 
 
+photographyLink.addEventListener(
+    "mouseleave",
+    leavePhotographyHover
+);
+
+
+takeoverTitle.addEventListener(
+    "mouseleave",
+    leavePhotographyHover
+);
+
+
 /* =====================================================
-   TITLE EVENTS
+   FILM HOVER
    ===================================================== */
 
-photographyLink.addEventListener(
-    "mouseenter",
-    () => {
-
-        titleHoverEnter(
-            "photography"
-        );
-
-    }
-);
-
-
-photographyLink.addEventListener(
-    "mouseleave",
-    () => {
-
-        titleHoverLeave(
-            "photography"
-        );
-
-    }
-);
-
-
 filmLink.addEventListener(
     "mouseenter",
     () => {
 
-        titleHoverEnter(
+        if (
+            !canHover()
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            hoverMode ===
+            "film" &&
+            activeMode ===
             "film"
+        ) {
+
+            return;
+
+        }
+
+
+        hoverMode =
+            "film";
+
+
+        startFilm(
+            false
         );
 
     }
 );
 
 
+/* =====================================================
+   FILM LEAVE
+   ===================================================== */
+
 filmLink.addEventListener(
     "mouseleave",
     () => {
 
-        titleHoverLeave(
-            "film"
+        if (
+            !canHover()
+        ) {
+
+            return;
+
+        }
+
+
+        setTimeout(
+            () => {
+
+                if (
+                    filmLink.matches(
+                        ":hover"
+                    ) ||
+                    photographyLink.matches(
+                        ":hover"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    hoverMode !==
+                    "film"
+                ) {
+
+                    return;
+
+                }
+
+
+                hoverMode =
+                    null;
+
+
+                startPhotography();
+
+            },
+            0
         );
 
     }
+);
+
+
+/* =====================================================
+   PHOTOGRAPHY TAKEOVER CLICK
+
+   Entire archive = one photography link.
+   ===================================================== */
+
+function openPhotography() {
+
+    window.location.href =
+        "https://photography.denizalpaybak.com/";
+
+}
+
+
+contactSheet.addEventListener(
+    "click",
+    openPhotography
+);
+
+
+takeoverTitle.addEventListener(
+    "click",
+    openPhotography
 );
 
 
@@ -2375,47 +3088,50 @@ const logoName =
     );
 
 
-const logoLetters = [
+const logoLetters =
+    [
 
-    document.getElementById(
-        "letter-a"
-    ),
+        document.getElementById(
+            "letter-a"
+        ),
 
-    document.getElementById(
-        "letter-y"
-    ),
+        document.getElementById(
+            "letter-y"
+        ),
 
-    document.getElementById(
-        "letter-b"
-    ),
+        document.getElementById(
+            "letter-b"
+        ),
 
-    document.getElementById(
-        "letter-a2"
-    ),
+        document.getElementById(
+            "letter-a2"
+        ),
 
-    document.getElementById(
-        "letter-k"
-    )
+        document.getElementById(
+            "letter-k"
+        )
 
-];
-
-
-const logoLowercase = [
-    "a",
-    "y",
-    "b",
-    "a",
-    "k"
-];
+    ];
 
 
-const logoUppercase = [
-    "A",
-    "Y",
-    "B",
-    "A",
-    "K"
-];
+const logoLowercase =
+    [
+        "a",
+        "y",
+        "b",
+        "a",
+        "k"
+    ];
+
+
+const logoUppercase =
+    [
+        "A",
+        "Y",
+        "B",
+        "A",
+        "K"
+    ];
 
 
 let logoState =
@@ -2426,7 +3142,7 @@ let logoTarget =
     0;
 
 
-let logoStepTimer =
+let logoTimer =
     null;
 
 
@@ -2459,56 +3175,35 @@ function setLogoState(
             : "denizalp";
 
 
-    for (
-        let i = 0;
-        i < logoLetters.length;
-        i++
-    ) {
+    logoLetters.forEach(
+        (
+            letter,
+            index
+        ) => {
 
-        logoLetters[
-            i
-        ].textContent =
-            i <
-            logoState
-                ? logoUppercase[
-                    i
-                ]
-                : logoLowercase[
-                    i
-                ];
+            letter.textContent =
+                index <
+                logoState
+                    ? logoUppercase[
+                        index
+                    ]
+                    : logoLowercase[
+                        index
+                    ];
 
-    }
+        }
+    );
 
 }
 
 
 /* =====================================================
-   LOGO MORPH
+   ANIMATE LOGO
    ===================================================== */
-
-function stopLogoStep() {
-
-    if (
-        logoStepTimer !==
-        null
-    ) {
-
-        clearTimeout(
-            logoStepTimer
-        );
-
-
-        logoStepTimer =
-            null;
-
-    }
-
-}
-
 
 function animateLogoTo(
     target,
-    onComplete =
+    callback =
         null
 ) {
 
@@ -2516,7 +3211,20 @@ function animateLogoTo(
         target;
 
 
-    stopLogoStep();
+    if (
+        logoTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            logoTimer
+        );
+
+
+        logoTimer =
+            null;
+
+    }
 
 
     function step() {
@@ -2526,16 +3234,16 @@ function animateLogoTo(
             logoTarget
         ) {
 
-            logoStepTimer =
+            logoTimer =
                 null;
 
 
             if (
-                typeof onComplete ===
+                typeof callback ===
                 "function"
             ) {
 
-                onComplete();
+                callback();
 
             }
 
@@ -2553,7 +3261,7 @@ function animateLogoTo(
         );
 
 
-        logoStepTimer =
+        logoTimer =
             setTimeout(
                 step,
                 LOGO_STEP_DURATION
@@ -2576,33 +3284,30 @@ logo.addEventListener(
     () => {
 
         if (
-            !canHover()
+            canHover()
         ) {
 
-            return;
+            if (
+                logoMobileReturnTimer !==
+                null
+            ) {
 
-        }
+                clearTimeout(
+                    logoMobileReturnTimer
+                );
 
 
-        if (
-            logoMobileReturnTimer !==
-            null
-        ) {
+                logoMobileReturnTimer =
+                    null;
 
-            clearTimeout(
-                logoMobileReturnTimer
+            }
+
+
+            animateLogoTo(
+                5
             );
 
-
-            logoMobileReturnTimer =
-                null;
-
         }
-
-
-        animateLogoTo(
-            5
-        );
 
     }
 );
@@ -2613,17 +3318,14 @@ logo.addEventListener(
     () => {
 
         if (
-            !canHover()
+            canHover()
         ) {
 
-            return;
+            animateLogoTo(
+                0
+            );
 
         }
-
-
-        animateLogoTo(
-            0
-        );
 
     }
 );
@@ -2632,12 +3334,15 @@ logo.addEventListener(
 /* =====================================================
    MOBILE LOGO TAP
 
-   One tap only.
-
+   Tap once:
    Denizalp / aybak
-       ↓
+
+   ->
    denizalp / AYBAK
-       ↓ 2 sec hold
+
+   hold
+
+   ->
    Denizalp / aybak
    ===================================================== */
 
@@ -2701,7 +3406,93 @@ logo.addEventListener(
 
 
 /* =====================================================
-   TAB VISIBILITY
+   RESIZE / ROTATION
+   ===================================================== */
+
+function handleGeometryChange() {
+
+    if (
+        photographyTakeover
+            .classList
+            .contains(
+                "active"
+            )
+    ) {
+
+        /*
+            Temporarily reveal normal grid invisibly
+            so photography's source coordinate remains
+            measurable after orientation changes.
+        */
+
+        const hadMode =
+            document.body
+                .classList
+                .contains(
+                    "photography-mode"
+                );
+
+
+        if (
+            hadMode
+        ) {
+
+            document.body
+                .classList
+                .remove(
+                    "photography-mode"
+                );
+
+        }
+
+
+        layoutTakeover();
+
+
+        if (
+            hadMode
+        ) {
+
+            document.body
+                .classList
+                .add(
+                    "photography-mode"
+                );
+
+        }
+
+    }
+
+}
+
+
+window.addEventListener(
+    "resize",
+    handleGeometryChange
+);
+
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+
+        setTimeout(
+            handleGeometryChange,
+            100
+        );
+
+
+        setTimeout(
+            handleGeometryChange,
+            350
+        );
+
+    }
+);
+
+
+/* =====================================================
+   VISIBILITY
    ===================================================== */
 
 document.addEventListener(
@@ -2712,11 +3503,12 @@ document.addEventListener(
             document.hidden
         ) {
 
-            clearAutomaticTimers();
+            clearModeTimer();
 
-            clearPhotoTimers();
+            clearSheetTimers();
 
             filmVideo.pause();
+
 
             return;
 
@@ -2724,16 +3516,27 @@ document.addEventListener(
 
 
         if (
-            hoverMode !==
-            null
+            hoverMode ===
+            "photography"
         ) {
 
-            activateMode(
-                hoverMode,
-                {
-                    automatic:
-                        false
-                }
+            startPhotography(
+                false
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            hoverMode ===
+            "film"
+        ) {
+
+            startFilm(
+                false
             );
 
 
@@ -2747,17 +3550,13 @@ document.addEventListener(
             "film"
         ) {
 
-            activateMode(
-                "film"
-            );
+            startFilm();
 
         }
 
         else {
 
-            activateMode(
-                "photography"
-            );
+            startPhotography();
 
         }
 
@@ -2766,43 +3565,61 @@ document.addEventListener(
 
 
 /* =====================================================
-   INITIAL
+   INITIALIZE
    ===================================================== */
 
-setLogoState(
-    0
-);
+async function init() {
+
+    setLogoState(
+        0
+    );
 
 
-setWordCount(
-    navItems.photography,
-    0
-);
+    setWordCount(
+        navItems.photography,
+        0
+    );
 
 
-setWordCount(
-    navItems.film,
-    0
-);
+    setWordCount(
+        navItems.film,
+        0
+    );
 
 
-setTimeout(
-    () => {
+    /*
+        Wait only for projects.json itself.
 
-        if (
-            activeMode ===
-            null
-        ) {
+        Once we know which photographs exist,
+        build the sheet.
 
-            activateMode(
-                "photography"
-            );
+        Therefore the first PHOTOGRAPHY phase
+        is never an intentionally empty grid.
+    */
 
-        }
+    await loadPhotographyArchive();
 
-    },
-    INITIAL_MEDIA_DELAY
-);
+
+    setTimeout(
+        () => {
+
+            if (
+                activeMode ===
+                null
+            ) {
+
+                startPhotography();
+
+            }
+
+        },
+        INITIAL_DELAY
+    );
+
+}
+
+
+init();
 
 </script>
 
