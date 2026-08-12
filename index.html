@@ -1035,6 +1035,17 @@ const LOGO_MOBILE_HOLD =
     2000;
 
 
+/*
+    Mobile navigation hold:
+
+    Photography / film is allowed to reach its full
+    uppercase state, then remain there briefly before
+    leaving the landing page.
+*/
+const MOBILE_SECTION_NAV_HOLD =
+    520;
+
+
 /* =====================================================
    FILM TIMING
    ===================================================== */
@@ -4429,6 +4440,14 @@ let hoverMode =
     null;
 
 
+/*
+    Prevent a second mobile navigation gesture from
+    starting while the first one is already resolving.
+*/
+let mobileSectionNavigationInProgress =
+    false;
+
+
 /* =====================================================
    PLAY FILM
    ===================================================== */
@@ -5347,6 +5366,278 @@ filmLink.addEventListener(
 
             },
             0
+        );
+
+    }
+);
+
+
+/* =====================================================
+   MOBILE SECTION NAVIGATION
+
+   Mobile only.
+
+   Tapping "photography" or "film":
+
+   1. cancels the automatic intro / hover state
+   2. closes any visible or opening photography mosaic
+   3. hides / pauses any visible film
+   4. returns the Denizalp Aybak logo to its normal state
+   5. morphs ONLY the tapped navigation word to uppercase
+   6. holds that clean state briefly
+   7. opens the corresponding section site
+
+   No photography mosaic or film is opened as part of
+   this tap gesture.
+   ===================================================== */
+
+function waitForMobileSectionNavigation(
+    duration
+) {
+
+    return new Promise(
+        resolve => {
+
+            setTimeout(
+                resolve,
+                duration
+            );
+
+        }
+    );
+
+}
+
+
+function animateTitlesToPromise(
+    mode
+) {
+
+    return new Promise(
+        resolve => {
+
+            animateTitlesTo(
+                mode,
+                resolve
+            );
+
+        }
+    );
+
+}
+
+
+function animateLogoToPromise(
+    target
+) {
+
+    return new Promise(
+        resolve => {
+
+            animateLogoTo(
+                target,
+                resolve
+            );
+
+        }
+    );
+
+}
+
+
+function closePhotographyForMobileNavigation() {
+
+    return new Promise(
+        resolve => {
+
+            cancelPhotoSequence();
+
+            if (
+                photographyField
+                    .classList
+                    .contains(
+                        "active"
+                    )
+            ) {
+
+                animatePhotoGroups(
+                    0,
+                    () => {
+
+                        photographyField
+                            .classList
+                            .remove(
+                                "active"
+                            );
+
+                        setVisiblePhotoGroupCount(
+                            0
+                        );
+
+                        resolve();
+
+                    }
+                );
+
+                return;
+
+            }
+
+            setVisiblePhotoGroupCount(
+                0
+            );
+
+            photographyField
+                .classList
+                .remove(
+                    "active"
+                );
+
+            resolve();
+
+        }
+    );
+
+}
+
+
+async function navigateFromMobileSection(
+    targetMode,
+    destination
+) {
+
+    if (
+        canHover() ||
+        mobileSectionNavigationInProgress
+    ) {
+
+        return;
+
+    }
+
+    mobileSectionNavigationInProgress =
+        true;
+
+    /*
+        Stop every automatic / interactive state first.
+    */
+
+    cancelAutomaticIntroForInteraction();
+
+    clearIntroTimer();
+
+    cancelFilmAutoClose();
+
+    cancelPhotoSequence();
+
+    hoverMode =
+        null;
+
+    filmPlaybackMode =
+        "auto";
+
+    /*
+        The film must never remain visible during the
+        navigation gesture, even when the user taps while
+        it is opening or already playing.
+    */
+
+    filmVideo.pause();
+
+    filmField
+        .classList
+        .remove(
+            "active"
+        );
+
+    /*
+        Resolve the visual states simultaneously:
+
+        - mosaic closes
+        - logo returns to normal
+        - tapped word becomes uppercase
+        - the other word returns to lowercase
+    */
+
+    const photographyClosing =
+        closePhotographyForMobileNavigation();
+
+    const logoReset =
+        animateLogoToPromise(
+            0
+        );
+
+    const titleTransition =
+        animateTitlesToPromise(
+            targetMode
+        );
+
+    await Promise.all(
+        [
+            photographyClosing,
+            logoReset,
+            titleTransition
+        ]
+    );
+
+    activeMode =
+        null;
+
+    /*
+        Give the user enough time to register the final
+        uppercase state before navigation.
+    */
+
+    await waitForMobileSectionNavigation(
+        MOBILE_SECTION_NAV_HOLD
+    );
+
+    window.location.href =
+        destination;
+
+}
+
+
+photographyLink.addEventListener(
+    "click",
+    event => {
+
+        if (
+            canHover()
+        ) {
+
+            return;
+
+        }
+
+        event.preventDefault();
+
+        navigateFromMobileSection(
+            "photography",
+            photographyLink.href
+        );
+
+    }
+);
+
+
+filmLink.addEventListener(
+    "click",
+    event => {
+
+        if (
+            canHover()
+        ) {
+
+            return;
+
+        }
+
+        event.preventDefault();
+
+        navigateFromMobileSection(
+            "film",
+            filmLink.href
         );
 
     }
