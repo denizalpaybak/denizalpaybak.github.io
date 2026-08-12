@@ -309,6 +309,10 @@ body {
 
 /* =====================================================
    MEDIA FIELD
+
+   Photography uses ALL of this area.
+
+   Film uses a centered 16:9 frame inside it.
    ===================================================== */
 
 .media-field {
@@ -316,11 +320,6 @@ body {
 
     grid-column: 2;
     grid-row: 1 / -1;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
 
     width: 100%;
     height: 100%;
@@ -333,11 +332,163 @@ body {
 
 
 /* =====================================================
-   16:9 FRAME
+   PHOTOGRAPHY FIELD
+
+   Full available media field.
    ===================================================== */
 
-.visual-frame {
-    position: relative;
+.photography-field {
+    position: absolute;
+
+    inset: 0;
+
+    visibility: hidden;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    contain:
+        layout
+        paint
+        size;
+}
+
+.photography-field.active {
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY LINK
+
+   Whole scattered composition is clickable.
+   ===================================================== */
+
+.photography-stage-link {
+    position: absolute;
+
+    inset: 0;
+
+    display: block;
+
+    color: inherit;
+    text-decoration: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =====================================================
+   PROJECT GROUP
+
+   One or two photos.
+
+   If two:
+   same project
+   always next to each other.
+
+   Group position is randomized by JS.
+   ===================================================== */
+
+.photo-group {
+    position: absolute;
+
+    display: flex;
+    flex-direction: row;
+
+    align-items: flex-start;
+
+    gap: var(--photo-pair-gap, 10px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    backface-visibility: hidden;
+
+    will-change:
+        transform,
+        opacity;
+
+    transform:
+        translate3d(
+            var(--group-x, 0px),
+            var(--group-y, 0px),
+            0
+        );
+}
+
+.photo-group.visible {
+    opacity: 1;
+}
+
+
+/* =====================================================
+   PHOTOS
+
+   ALL photography images receive exactly
+   the same height.
+
+   Width derives from original aspect ratio.
+   No crop.
+   ===================================================== */
+
+.photo-group img {
+    display: block;
+
+    flex: 0 0 auto;
+
+    width: auto;
+
+    height:
+        var(
+            --scattered-photo-height,
+            100px
+        );
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   FILM FIELD
+   ===================================================== */
+
+.film-field {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+.film-field.active {
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/* =====================================================
+   FILM LINK
+
+   Film remains 16:9.
+   ===================================================== */
+
+.film-link {
+    display: block;
 
     width: 100%;
 
@@ -353,102 +504,14 @@ body {
 
     aspect-ratio: 16 / 9;
 
-    overflow: hidden;
-
-    contain:
-        layout
-        paint;
-}
-
-
-/* =====================================================
-   MEDIA LAYERS
-
-   Both always exist.
-
-   Switching visibility is much cheaper than
-   rebuilding/display:none during transitions.
-   ===================================================== */
-
-.media-layer {
-    position: absolute;
-
-    inset: 0;
-
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
     color: inherit;
     text-decoration: none;
 
     overflow: hidden;
 
-    visibility: hidden;
-
-    pointer-events: none;
-
     -webkit-tap-highlight-color: transparent;
 }
 
-.media-layer.active {
-    visibility: visible;
-
-    pointer-events: auto;
-}
-
-
-/* =====================================================
-   MOSAIC
-   ===================================================== */
-
-.mosaic-grid {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    contain:
-        layout
-        paint
-        size;
-}
-
-
-/* =====================================================
-   MOSAIC IMAGE
-   ===================================================== */
-
-.mosaic-item {
-    position: absolute;
-
-    display: block;
-
-    margin: 0;
-    padding: 0;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    backface-visibility: hidden;
-
-    transform: translateZ(0);
-}
-
-.mosaic-item.visible {
-    opacity: 1;
-}
-
-
-/* =====================================================
-   FILM
-   ===================================================== */
 
 #film-video {
     display: block;
@@ -555,8 +618,7 @@ body {
     }
 
 
-    .visual-frame {
-        width: 100%;
+    .film-link {
         max-width: 100%;
     }
 
@@ -566,7 +628,7 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   Font does not shrink.
+   Font stays 13px.
 
    Text = 2/3
    Media = 1/3
@@ -627,8 +689,7 @@ body {
     }
 
 
-    .visual-frame {
-        width: 100%;
+    .film-link {
         max-width: 100%;
     }
 
@@ -692,7 +753,9 @@ body {
     >
 
 
-        <!-- LOGO -->
+        <!-- =================================================
+             LOGO
+             ================================================= -->
 
         <button
             class="logo"
@@ -717,14 +780,18 @@ body {
         </button>
 
 
-        <!-- OPENING -->
+        <!-- =================================================
+             OPENING
+             ================================================= -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- NAVIGATION -->
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
 
         <nav class="navigation">
 
@@ -750,41 +817,47 @@ body {
         </nav>
 
 
-        <!-- MEDIA -->
+        <!-- =================================================
+             MEDIA
+             ================================================= -->
 
         <div
             class="media-field"
             id="media-field"
         >
 
+
+            <!-- PHOTOGRAPHY -->
+
             <div
-                class="visual-frame"
-                id="visual-frame"
+                class="photography-field"
+                id="photography-field"
             >
 
-
-                <!-- PHOTOGRAPHY -->
-
                 <a
-                    class="media-layer"
-                    id="photography-media"
+                    class="photography-stage-link"
                     href="https://photography.denizalpaybak.com/"
                     aria-label="Photography"
                 >
 
                     <div
-                        class="mosaic-grid"
-                        id="mosaic-grid"
+                        id="scattered-stage"
                     ></div>
 
                 </a>
 
+            </div>
 
-                <!-- FILM -->
+
+            <!-- FILM -->
+
+            <div
+                class="film-field"
+                id="film-field"
+            >
 
                 <a
-                    class="media-layer"
-                    id="film-media"
+                    class="film-link"
                     href="https://film.denizalpaybak.com/"
                     aria-label="Film"
                 >
@@ -804,7 +877,9 @@ body {
         </div>
 
 
-        <!-- CONTACT -->
+        <!-- =================================================
+             CONTACT
+             ================================================= -->
 
         <div class="contact">
 
@@ -835,7 +910,9 @@ body {
         </div>
 
 
-        <!-- BIO -->
+        <!-- =================================================
+             BIOGRAPHY
+             ================================================= -->
 
         <section class="biography">
 
@@ -886,24 +963,22 @@ const WORD_TRANSITION_DURATION =
     400;
 
 
-const MOSAIC_BUILD_DURATION =
-    360;
+/*
+    Photos appear one project-group
+    after another.
+*/
+
+const PHOTO_BUILD_DURATION =
+    420;
 
 
 /*
-    After mosaic is complete, let it breathe.
+    Completed scattered state.
 */
 
-const MOSAIC_HOLD_DURATION =
-    950;
+const PHOTO_HOLD_DURATION =
+    1150;
 
-
-/*
-    No reverse per-tile removal anymore.
-
-    Title morph happens while finished mosaic
-    remains completely static.
-*/
 
 const INITIAL_DELAY =
     700;
@@ -922,8 +997,66 @@ const LOGO_MOBILE_HOLD =
 
 
 /* =====================================================
+   SCATTERED LAYOUT
+   ===================================================== */
+
+
+/*
+    Minimum empty space between
+    separate project groups.
+*/
+
+const GROUP_GAP_MIN =
+    14;
+
+
+/*
+    Gap between two images belonging
+    to the SAME project.
+*/
+
+const PAIR_GAP_MIN =
+    8;
+
+
+/*
+    How many randomized arrangements
+    we try before choosing the best one.
+
+    Layout changes every photography cycle.
+*/
+
+const RANDOM_LAYOUT_TRIALS =
+    35;
+
+
+/* =====================================================
    ELEMENTS
    ===================================================== */
+
+const mediaField =
+    document.getElementById(
+        "media-field"
+    );
+
+
+const photographyField =
+    document.getElementById(
+        "photography-field"
+    );
+
+
+const filmField =
+    document.getElementById(
+        "film-field"
+    );
+
+
+const scatteredStage =
+    document.getElementById(
+        "scattered-stage"
+    );
+
 
 const photographyLink =
     document.getElementById(
@@ -949,30 +1082,6 @@ const filmText =
     );
 
 
-const photographyMedia =
-    document.getElementById(
-        "photography-media"
-    );
-
-
-const filmMedia =
-    document.getElementById(
-        "film-media"
-    );
-
-
-const visualFrame =
-    document.getElementById(
-        "visual-frame"
-    );
-
-
-const mosaicGrid =
-    document.getElementById(
-        "mosaic-grid"
-    );
-
-
 const filmVideo =
     document.getElementById(
         "film-video"
@@ -980,25 +1089,14 @@ const filmVideo =
 
 
 /* =====================================================
-   DATA STATE
+   PHOTO DATA
    ===================================================== */
 
-let projectGroups =
+let projectVisualGroups =
     [];
 
 
-/*
-    Selection order:
-
-    all covers first,
-    then round-robin supplemental images.
-*/
-
-let selectionPool =
-    [];
-
-
-let mosaicItems =
+let groupElements =
     [];
 
 
@@ -1252,7 +1350,7 @@ function findFirstImage(
 
 
 /* =====================================================
-   COLLECT ALL IMAGES
+   COLLECT ALL PROJECT IMAGES
    ===================================================== */
 
 function collectImages(
@@ -1528,11 +1626,7 @@ function getProjectsArray(
    ===================================================== */
 
 function loadImageMetadata(
-    url,
-    projectIndex,
-    originalOrder,
-    isCover =
-        false
+    url
 ) {
 
     return new Promise(
@@ -1577,18 +1671,7 @@ function loadImageMetadata(
 
                             ratio:
                                 image.naturalWidth /
-                                image.naturalHeight,
-
-                            projectIndex,
-
-                            originalOrder,
-
-                            isCover,
-
-                            supplementalRank:
-                                isCover
-                                    ? -1
-                                    : 0
+                                image.naturalHeight
 
                         }
                     );
@@ -1616,187 +1699,18 @@ function loadImageMetadata(
 
 
 /* =====================================================
-   SECOND IMAGE PRIORITY
+   BUILD PROJECT VISUAL GROUPS
 
-   For each project:
+   Each project:
 
-   1. cover
-   2. if any landscape supplemental exists:
-      widest landscape supplemental
-   3. remaining images in original order
+   1. thumbnail / index cover
+   2. IF another landscape image exists:
+      most horizontal landscape image
 
-   Rule applies ONLY to the second image.
+   Maximum = 2 images per project.
    ===================================================== */
 
-function prioritizeProjectSupplementals(
-    photos
-) {
-
-    if (
-        photos.length <= 1
-    ) {
-
-        return photos.slice();
-
-    }
-
-
-    const landscapes =
-        photos.filter(
-            photo =>
-                photo.ratio >
-                1.05
-        );
-
-
-    if (
-        landscapes.length ===
-        0
-    ) {
-
-        return photos.slice();
-
-    }
-
-
-    /*
-        Most horizontal image receives
-        second-position priority.
-    */
-
-    const preferred =
-        landscapes
-            .slice()
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    b.ratio -
-                    a.ratio
-            )[0];
-
-
-    const remaining =
-        photos.filter(
-            photo =>
-                photo !==
-                preferred
-        );
-
-
-    /*
-        After the chosen second image,
-        original project order is restored.
-    */
-
-    remaining.sort(
-        (
-            a,
-            b
-        ) =>
-            a.originalOrder -
-            b.originalOrder
-    );
-
-
-    return [
-        preferred,
-        ...remaining
-    ];
-
-}
-
-
-/* =====================================================
-   ROUND ROBIN SELECTION
-
-   This determines WHICH extras are selected.
-
-   It does NOT determine final visual order.
-
-   Example:
-
-   project 1: second
-   project 2: second
-   project 3: second
-
-   then:
-
-   project 1: third
-   project 2: third
-   project 3: third
-   ===================================================== */
-
-function buildRoundRobinSelection(
-    groups
-) {
-
-    const result =
-        [];
-
-
-    let round =
-        0;
-
-
-    while (
-        true
-    ) {
-
-        let added =
-            false;
-
-
-        groups.forEach(
-            group => {
-
-                if (
-                    round <
-                    group.supplementals.length
-                ) {
-
-                    result.push(
-                        group
-                            .supplementals[
-                                round
-                            ]
-                    );
-
-
-                    added =
-                        true;
-
-                }
-
-            }
-        );
-
-
-        if (
-            !added
-        ) {
-
-            break;
-
-        }
-
-
-        round++;
-
-    }
-
-
-    return result;
-
-}
-
-
-/* =====================================================
-   LOAD PHOTOGRAPHY DATA
-   ===================================================== */
-
-async function loadPhotographyPool() {
+async function loadPhotographyProjects() {
 
     try {
 
@@ -1831,227 +1745,161 @@ async function loadPhotographyPool() {
             );
 
 
-        const groupPromises =
-            projects.map(
-                async (
-                    project,
-                    projectIndex
-                ) => {
+        const groups =
+            await Promise.all(
 
-                    const coverUrl =
-                        getProjectCover(
-                            project
-                        );
-
-
-                    const allUrls =
-                        [];
-
-
-                    collectImages(
+                projects.map(
+                    async (
                         project,
-                        allUrls
-                    );
+                        projectIndex
+                    ) => {
+
+                        const coverUrl =
+                            getProjectCover(
+                                project
+                            );
 
 
-                    const uniqueProjectUrls =
-                        uniqueUrls(
+                        if (
+                            !coverUrl
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const allUrls =
+                            [];
+
+
+                        collectImages(
+                            project,
                             allUrls
                         );
 
 
-                    const coverKey =
-                        coverUrl
-                            ? normalizeUrl(
+                        const uniqueProjectUrls =
+                            uniqueUrls(
+                                allUrls
+                            );
+
+
+                        /*
+                            Cover metadata.
+                        */
+
+                        const cover =
+                            await loadImageMetadata(
                                 coverUrl
-                            )
-                            : null;
+                            );
 
 
-                    /*
-                        Make sure cover exists
-                        at position zero.
-                    */
+                        if (
+                            !cover
+                        ) {
 
-                    const orderedUrls =
-                        [];
-
-
-                    if (
-                        coverUrl
-                    ) {
-
-                        orderedUrls.push(
-                            coverUrl
-                        );
-
-                    }
-
-
-                    uniqueProjectUrls.forEach(
-                        url => {
-
-                            if (
-                                normalizeUrl(
-                                    url
-                                ) !==
-                                coverKey
-                            ) {
-
-                                orderedUrls.push(
-                                    url
-                                );
-
-                            }
+                            return null;
 
                         }
-                    );
 
 
-                    /*
-                        Metadata is needed so we can
-                        identify landscape images.
-                    */
+                        /*
+                            All non-cover images.
+                        */
 
-                    const metadata =
-                        await Promise.all(
-                            orderedUrls.map(
-                                (
-                                    url,
-                                    index
-                                ) =>
-                                    loadImageMetadata(
-                                        url,
-                                        projectIndex,
-                                        index,
-                                        index === 0
+                        const otherUrls =
+                            uniqueProjectUrls.filter(
+                                url =>
+                                    normalizeUrl(
+                                        url
+                                    ) !==
+                                    normalizeUrl(
+                                        coverUrl
                                     )
-                            )
+                            );
+
+
+                        const otherMetadata =
+                            await Promise.all(
+                                otherUrls.map(
+                                    loadImageMetadata
+                                )
+                            );
+
+
+                        const validOthers =
+                            otherMetadata.filter(
+                                Boolean
+                            );
+
+
+                        /*
+                            Landscape means distinctly wider
+                            than square.
+
+                            Pick the WIDEST ratio.
+
+                            This is the only possible
+                            second image for this project.
+                        */
+
+                        const landscapeCandidates =
+                            validOthers.filter(
+                                image =>
+                                    image.ratio >
+                                    1.05
+                            );
+
+
+                        landscapeCandidates.sort(
+                            (
+                                a,
+                                b
+                            ) =>
+                                b.ratio -
+                                a.ratio
                         );
 
 
-                    const valid =
-                        metadata.filter(
-                            Boolean
-                        );
+                        const landscape =
+                            landscapeCandidates.length
+                                ? landscapeCandidates[0]
+                                : null;
 
 
-                    if (
-                        valid.length ===
-                        0
-                    ) {
+                        return {
 
-                        return null;
+                            projectIndex,
+
+                            photos:
+                                landscape
+                                    ? [
+                                        cover,
+                                        landscape
+                                    ]
+                                    : [
+                                        cover
+                                    ]
+
+                        };
 
                     }
+                )
 
-
-                    const cover =
-                        valid.find(
-                            image =>
-                                image.isCover
-                        ) ||
-                        valid[0];
-
-
-                    cover.isCover =
-                        true;
-
-
-                    const supplements =
-                        valid.filter(
-                            image =>
-                                image !==
-                                cover
-                        );
-
-
-                    const prioritized =
-                        prioritizeProjectSupplementals(
-                            supplements
-                        );
-
-
-                    prioritized.forEach(
-                        (
-                            photo,
-                            rank
-                        ) => {
-
-                            photo.supplementalRank =
-                                rank;
-
-                        }
-                    );
-
-
-                    return {
-
-                        projectIndex,
-
-                        cover,
-
-                        supplementals:
-                            prioritized
-
-                    };
-
-                }
             );
 
 
-        const loadedGroups =
-            await Promise.all(
-                groupPromises
-            );
-
-
-        projectGroups =
-            loadedGroups.filter(
+        projectVisualGroups =
+            groups.filter(
                 Boolean
             );
 
 
-        /* ---------------------------------------------
-           Covers are mandatory
-           --------------------------------------------- */
-
-        const covers =
-            projectGroups.map(
-                group =>
-                    group.cover
-            );
+        buildPhotographyDOM();
 
 
-        /* ---------------------------------------------
-           Extras selected fairly across projects
-           --------------------------------------------- */
-
-        const roundRobin =
-            buildRoundRobinSelection(
-                projectGroups
-            );
-
-
-        selectionPool =
-            [
-                ...covers,
-                ...roundRobin
-            ];
-
-
-        /*
-            Build mosaic ONCE.
-
-            It will not be rebuilt during
-            photography -> film transitions.
-        */
-
-        await waitForLayout();
-
-
-        buildMosaic();
-
+        randomizePhotographyLayout();
 
     }
 
@@ -2060,7 +1908,7 @@ async function loadPhotographyPool() {
     ) {
 
         console.error(
-            "Photography mosaic could not be loaded:",
+            "Photography layout could not be loaded:",
             error
         );
 
@@ -2070,643 +1918,55 @@ async function loadPhotographyPool() {
 
 
 /* =====================================================
-   SELECTED IMAGES ->
-   VISUAL PROJECT GROUPING
+   BUILD STATIC DOM
 
-   Round-robin controls selection.
+   DOM is created once.
 
-   Here we put selected images back together
-   by project so same-project photographs
-   appear next to one another.
+   Every photography cycle only changes
+   coordinates — no image rebuilding.
    ===================================================== */
 
-function groupSelectedPhotos(
-    photos
-) {
+function buildPhotographyDOM() {
 
-    return photos
-        .slice()
-        .sort(
-            (
-                a,
-                b
-            ) => {
-
-                if (
-                    a.projectIndex !==
-                    b.projectIndex
-                ) {
-
-                    return (
-                        a.projectIndex -
-                        b.projectIndex
-                    );
-
-                }
-
-
-                /*
-                    Cover first.
-                */
-
-                if (
-                    a.isCover !==
-                    b.isCover
-                ) {
-
-                    return a.isCover
-                        ? -1
-                        : 1;
-
-                }
-
-
-                /*
-                    Then prioritized supplemental
-                    sequence.
-
-                    Meaning:
-                    landscape-preferred second
-                    image stays immediately after cover.
-                */
-
-                return (
-                    a.supplementalRank -
-                    b.supplementalRank
-                );
-
-            }
-        );
-
-}
-
-
-/* =====================================================
-   ROW CREATION
-
-   Same-project adjacency receives a penalty
-   if a potential row break would split
-   that project's sequence.
-
-   This makes the solver strongly prefer
-   keeping a project's images together.
-   ===================================================== */
-
-function makeRowsGrouped(
-    photos,
-    rowCount,
-    frameRatio
-) {
-
-    const rows =
-        [];
-
-
-    let cursor =
-        0;
-
-
-    for (
-        let rowIndex = 0;
-        rowIndex < rowCount;
-        rowIndex++
-    ) {
-
-        const rowsRemaining =
-            rowCount -
-            rowIndex;
-
-
-        const photosRemaining =
-            photos.length -
-            cursor;
-
-
-        const maxTake =
-            photosRemaining -
-            (
-                rowsRemaining -
-                1
-            );
-
-
-        const targetRatioSum =
-            rowCount *
-            frameRatio;
-
-
-        let ratioSum =
-            0;
-
-
-        let bestTake =
-            1;
-
-
-        let bestScore =
-            Infinity;
-
-
-        for (
-            let take = 1;
-            take <= maxTake;
-            take++
-        ) {
-
-            ratioSum +=
-                photos[
-                    cursor +
-                    take -
-                    1
-                ].ratio;
-
-
-            const ratioError =
-                Math.abs(
-                    ratioSum -
-                    targetRatioSum
-                );
-
-
-            /*
-                Would this row break split
-                two photographs from
-                the SAME project?
-            */
-
-            const lastCurrent =
-                photos[
-                    cursor +
-                    take -
-                    1
-                ];
-
-
-            const firstNext =
-                photos[
-                    cursor +
-                    take
-                ];
-
-
-            const splitsProject =
-                firstNext &&
-                lastCurrent.projectIndex ===
-                firstNext.projectIndex;
-
-
-            /*
-                Strong preference not to split
-                a project across rows.
-
-                Geometry can still override this
-                if absolutely necessary.
-            */
-
-            const groupPenalty =
-                splitsProject
-                    ? targetRatioSum *
-                      0.45
-                    : 0;
-
-
-            const score =
-                ratioError +
-                groupPenalty;
-
-
-            if (
-                score <
-                bestScore
-            ) {
-
-                bestScore =
-                    score;
-
-
-                bestTake =
-                    take;
-
-            }
-
-        }
-
-
-        rows.push(
-            photos.slice(
-                cursor,
-                cursor +
-                bestTake
-            )
-        );
-
-
-        cursor +=
-            bestTake;
-
-    }
-
-
-    if (
-        cursor <
-        photos.length
-    ) {
-
-        rows[
-            rows.length - 1
-        ].push(
-            ...photos.slice(
-                cursor
-            )
-        );
-
-    }
-
-
-    return rows;
-
-}
-
-
-/* =====================================================
-   MEASURE ROWS
-   ===================================================== */
-
-function measureRows(
-    rows,
-    frameWidth
-) {
-
-    let totalHeight =
-        0;
-
-
-    const measured =
-        rows.map(
-            photos => {
-
-                const ratioSum =
-                    photos.reduce(
-                        (
-                            sum,
-                            photo
-                        ) =>
-                            sum +
-                            photo.ratio,
-                        0
-                    );
-
-
-                const height =
-                    frameWidth /
-                    ratioSum;
-
-
-                totalHeight +=
-                    height;
-
-
-                return {
-
-                    photos,
-
-                    height
-
-                };
-
-            }
-        );
-
-
-    return {
-
-        rows:
-            measured,
-
-        totalHeight
-
-    };
-
-}
-
-
-/* =====================================================
-   MOSAIC SOLVER
-
-   Every project cover is mandatory.
-
-   Extra images are introduced in the
-   round-robin selection order.
-
-   For each candidate count the images
-   are then grouped by project visually.
-   ===================================================== */
-
-function findBestMosaic(
-    pool,
-    requiredCoverCount,
-    frameWidth,
-    frameHeight
-) {
-
-    if (
-        pool.length ===
-        0
-    ) {
-
-        return null;
-
-    }
-
-
-    const frameRatio =
-        frameWidth /
-        frameHeight;
-
-
-    const minimumCount =
-        Math.min(
-            requiredCoverCount,
-            pool.length
-        );
-
-
-    const maximumCount =
-        Math.min(
-            pool.length,
-            minimumCount + 45
-        );
-
-
-    let best =
-        null;
-
-
-    for (
-        let count =
-            minimumCount;
-        count <=
-            maximumCount;
-        count++
-    ) {
-
-        /*
-            Selection respects round-robin.
-        */
-
-        const selected =
-            pool.slice(
-                0,
-                count
-            );
-
-
-        /*
-            Visual arrangement groups projects.
-        */
-
-        const arranged =
-            groupSelectedPhotos(
-                selected
-            );
-
-
-        const maxRows =
-            Math.min(
-                9,
-                arranged.length
-            );
-
-
-        for (
-            let rowCount = 1;
-            rowCount <= maxRows;
-            rowCount++
-        ) {
-
-            const rawRows =
-                makeRowsGrouped(
-                    arranged,
-                    rowCount,
-                    frameRatio
-                );
-
-
-            const measured =
-                measureRows(
-                    rawRows,
-                    frameWidth
-                );
-
-
-            const heightError =
-                Math.abs(
-                    measured.totalHeight -
-                    frameHeight
-                );
-
-
-            const extras =
-                count -
-                minimumCount;
-
-
-            const score =
-                heightError +
-                extras *
-                0.01;
-
-
-            if (
-                !best ||
-                score <
-                best.score
-            ) {
-
-                best =
-                    {
-
-                        rows:
-                            measured.rows,
-
-                        totalHeight:
-                            measured.totalHeight,
-
-                        score,
-
-                        heightError,
-
-                        count
-
-                    };
-
-            }
-
-
-            if (
-                heightError <
-                0.25
-            ) {
-
-                return best;
-
-            }
-
-        }
-
-    }
-
-
-    return best;
-
-}
-
-
-/* =====================================================
-   WAIT FOR FRAME GEOMETRY
-   ===================================================== */
-
-function waitForLayout() {
-
-    return new Promise(
-        resolve => {
-
-            requestAnimationFrame(
-                () => {
-
-                    requestAnimationFrame(
-                        resolve
-                    );
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   BUILD MOSAIC
-
-   Built once and retained in DOM.
-   ===================================================== */
-
-function buildMosaic() {
-
-    mosaicGrid.innerHTML =
+    scatteredStage.innerHTML =
         "";
 
 
-    mosaicItems =
+    groupElements =
         [];
-
-
-    if (
-        selectionPool.length ===
-        0
-    ) {
-
-        return;
-
-    }
-
-
-    const rect =
-        visualFrame
-            .getBoundingClientRect();
-
-
-    if (
-        rect.width <= 0 ||
-        rect.height <= 0
-    ) {
-
-        return;
-
-    }
-
-
-    const coverCount =
-        projectGroups.length;
-
-
-    const best =
-        findBestMosaic(
-            selectionPool,
-            coverCount,
-            rect.width,
-            rect.height
-        );
-
-
-    if (
-        !best
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-        Global vertical correction so outside
-        boundary is exactly the film rectangle.
-    */
-
-    const verticalScale =
-        rect.height /
-        best.totalHeight;
-
-
-    let naturalY =
-        0;
 
 
     const fragment =
         document.createDocumentFragment();
 
 
-    best.rows.forEach(
-        row => {
+    projectVisualGroups.forEach(
+        (
+            group,
+            index
+        ) => {
 
-            let x =
-                0;
-
-
-            row.photos.forEach(
-                (
-                    photo,
-                    index
-                ) => {
-
-                    let naturalWidth =
-                        row.height *
-                        photo.ratio;
+            const element =
+                document.createElement(
+                    "div"
+                );
 
 
-                    if (
-                        index ===
-                        row.photos.length -
-                        1
-                    ) {
+            element.className =
+                "photo-group";
 
-                        naturalWidth =
-                            rect.width -
-                            x;
 
-                    }
+            element.dataset.groupIndex =
+                index;
 
+
+            group.photos.forEach(
+                photo => {
 
                     const image =
                         document.createElement(
                             "img"
                         );
-
-
-                    image.className =
-                        "mosaic-item";
 
 
                     image.src =
@@ -2721,53 +1981,28 @@ function buildMosaic() {
                         "async";
 
 
-                    image.style.left =
-                        `${x}px`;
-
-
-                    image.style.top =
-                        `${
-                            naturalY *
-                            verticalScale
-                        }px`;
-
-
-                    image.style.width =
-                        `${naturalWidth}px`;
-
-
-                    image.style.height =
-                        `${
-                            row.height *
-                            verticalScale
-                        }px`;
-
-
-                    fragment.appendChild(
+                    element.appendChild(
                         image
                     );
-
-
-                    mosaicItems.push(
-                        image
-                    );
-
-
-                    x +=
-                        naturalWidth;
 
                 }
             );
 
 
-            naturalY +=
-                row.height;
+            fragment.appendChild(
+                element
+            );
+
+
+            groupElements.push(
+                element
+            );
 
         }
     );
 
 
-    mosaicGrid.appendChild(
+    scatteredStage.appendChild(
         fragment
     );
 
@@ -2775,21 +2010,1000 @@ function buildMosaic() {
 
 
 /* =====================================================
-   MOSAIC REVEAL
-
-   Only entrance is sequential.
-
-   Exit is one atomic layer change,
-   removing the previous jank.
+   RANDOM UTILITY
    ===================================================== */
 
-let revealTimers =
+function randomBetween(
+    min,
+    max
+) {
+
+    return (
+        min +
+        Math.random() *
+        (
+            max -
+            min
+        )
+    );
+
+}
+
+
+/* =====================================================
+   SHUFFLE
+   ===================================================== */
+
+function shuffle(
+    array
+) {
+
+    const copy =
+        array.slice();
+
+
+    for (
+        let i =
+            copy.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (
+                    i + 1
+                )
+            );
+
+
+        [
+            copy[i],
+            copy[j]
+        ] =
+        [
+            copy[j],
+            copy[i]
+        ];
+
+    }
+
+
+    return copy;
+
+}
+
+
+/* =====================================================
+   RECTANGLE COLLISION
+   ===================================================== */
+
+function rectanglesOverlap(
+    a,
+    b,
+    gap
+) {
+
+    return !(
+        a.x +
+        a.width +
+        gap <=
+        b.x ||
+
+        b.x +
+        b.width +
+        gap <=
+        a.x ||
+
+        a.y +
+        a.height +
+        gap <=
+        b.y ||
+
+        b.y +
+        b.height +
+        gap <=
+        a.y
+    );
+
+}
+
+
+/* =====================================================
+   GROUP WIDTH AT A GIVEN IMAGE HEIGHT
+   ===================================================== */
+
+function getGroupWidth(
+    group,
+    photoHeight,
+    pairGap
+) {
+
+    const photosWidth =
+        group.photos.reduce(
+            (
+                total,
+                photo
+            ) =>
+                total +
+                photo.ratio *
+                photoHeight,
+            0
+        );
+
+
+    const gaps =
+        Math.max(
+            0,
+            group.photos.length -
+            1
+        ) *
+        pairGap;
+
+
+    return (
+        photosWidth +
+        gaps
+    );
+
+}
+
+
+/* =====================================================
+   TRY RANDOM PACK
+
+   Every group:
+   - same image height
+   - random X
+   - random Y
+   - no overlap
+   - no touching
+
+   Groups containing two project images
+   remain one rectangle.
+   ===================================================== */
+
+function tryRandomPacking(
+    groups,
+    fieldWidth,
+    fieldHeight,
+    photoHeight,
+    pairGap,
+    outerGap
+) {
+
+    const prepared =
+        groups.map(
+            (
+                group,
+                originalIndex
+            ) => {
+
+                return {
+
+                    group,
+
+                    originalIndex,
+
+                    width:
+                        getGroupWidth(
+                            group,
+                            photoHeight,
+                            pairGap
+                        ),
+
+                    height:
+                        photoHeight
+
+                };
+
+            }
+        );
+
+
+    /*
+        Large groups first makes successful
+        packing considerably easier.
+
+        Final visual order is irrelevant because
+        positions are random.
+    */
+
+    const placementOrder =
+        prepared
+            .slice()
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    b.width -
+                    a.width
+            );
+
+
+    const placed =
+        [];
+
+
+    for (
+        const item of placementOrder
+    ) {
+
+        if (
+            item.width >
+            fieldWidth ||
+            item.height >
+            fieldHeight
+        ) {
+
+            return null;
+
+        }
+
+
+        let bestCandidate =
+            null;
+
+
+        let bestCandidateScore =
+            -Infinity;
+
+
+        /*
+            Random candidate search.
+
+            Rather than accepting first legal point,
+            test many positions and favor positions
+            far away from existing centers.
+
+            This makes the result genuinely scattered.
+        */
+
+        const attempts =
+            300;
+
+
+        for (
+            let attempt = 0;
+            attempt < attempts;
+            attempt++
+        ) {
+
+            const candidate =
+                {
+
+                    x:
+                        randomBetween(
+                            0,
+                            fieldWidth -
+                            item.width
+                        ),
+
+                    y:
+                        randomBetween(
+                            0,
+                            fieldHeight -
+                            item.height
+                        ),
+
+                    width:
+                        item.width,
+
+                    height:
+                        item.height,
+
+                    originalIndex:
+                        item.originalIndex
+
+                };
+
+
+            const collides =
+                placed.some(
+                    existing =>
+                        rectanglesOverlap(
+                            candidate,
+                            existing,
+                            outerGap
+                        )
+                );
+
+
+            if (
+                collides
+            ) {
+
+                continue;
+
+            }
+
+
+            /*
+                Spread score.
+
+                Favor distance from existing groups
+                and avoid everything clustering
+                around centre.
+            */
+
+            const cx =
+                candidate.x +
+                candidate.width /
+                2;
+
+
+            const cy =
+                candidate.y +
+                candidate.height /
+                2;
+
+
+            let minDistance =
+                Infinity;
+
+
+            placed.forEach(
+                existing => {
+
+                    const ex =
+                        existing.x +
+                        existing.width /
+                        2;
+
+
+                    const ey =
+                        existing.y +
+                        existing.height /
+                        2;
+
+
+                    const distance =
+                        Math.hypot(
+                            cx - ex,
+                            cy - ey
+                        );
+
+
+                    minDistance =
+                        Math.min(
+                            minDistance,
+                            distance
+                        );
+
+                }
+            );
+
+
+            if (
+                placed.length ===
+                0
+            ) {
+
+                minDistance =
+                    fieldWidth +
+                    fieldHeight;
+
+            }
+
+
+            /*
+                Very small random factor ensures
+                repeated cycles don't settle into
+                the same optimum.
+            */
+
+            const score =
+                minDistance +
+                Math.random() *
+                60;
+
+
+            if (
+                score >
+                bestCandidateScore
+            ) {
+
+                bestCandidateScore =
+                    score;
+
+
+                bestCandidate =
+                    candidate;
+
+            }
+
+        }
+
+
+        if (
+            !bestCandidate
+        ) {
+
+            return null;
+
+        }
+
+
+        placed.push(
+            bestCandidate
+        );
+
+    }
+
+
+    return placed;
+
+}
+
+
+/* =====================================================
+   LAYOUT SCORE
+
+   We want photographs to use the entire field,
+   not merely fit inside one corner.
+
+   Score based on:
+   - bounding box width
+   - bounding box height
+   - edge usage
+   ===================================================== */
+
+function scorePacking(
+    placements,
+    fieldWidth,
+    fieldHeight
+) {
+
+    if (
+        !placements ||
+        placements.length ===
+        0
+    ) {
+
+        return -Infinity;
+
+    }
+
+
+    const left =
+        Math.min(
+            ...placements.map(
+                p =>
+                    p.x
+            )
+        );
+
+
+    const top =
+        Math.min(
+            ...placements.map(
+                p =>
+                    p.y
+            )
+        );
+
+
+    const right =
+        Math.max(
+            ...placements.map(
+                p =>
+                    p.x +
+                    p.width
+            )
+        );
+
+
+    const bottom =
+        Math.max(
+            ...placements.map(
+                p =>
+                    p.y +
+                    p.height
+            )
+        );
+
+
+    const coverageWidth =
+        (
+            right -
+            left
+        ) /
+        fieldWidth;
+
+
+    const coverageHeight =
+        (
+            bottom -
+            top
+        ) /
+        fieldHeight;
+
+
+    /*
+        Reward reaching multiple edges
+        of the available white field.
+    */
+
+    const edgeThreshold =
+        0.08;
+
+
+    let edgeScore =
+        0;
+
+
+    if (
+        left <
+        fieldWidth *
+        edgeThreshold
+    ) {
+
+        edgeScore++;
+
+    }
+
+
+    if (
+        right >
+        fieldWidth *
+        (
+            1 -
+            edgeThreshold
+        )
+    ) {
+
+        edgeScore++;
+
+    }
+
+
+    if (
+        top <
+        fieldHeight *
+        edgeThreshold
+    ) {
+
+        edgeScore++;
+
+    }
+
+
+    if (
+        bottom >
+        fieldHeight *
+        (
+            1 -
+            edgeThreshold
+        )
+    ) {
+
+        edgeScore++;
+
+    }
+
+
+    return (
+        coverageWidth *
+        4 +
+
+        coverageHeight *
+        4 +
+
+        edgeScore *
+        0.7 +
+
+        Math.random() *
+        0.15
+    );
+
+}
+
+
+/* =====================================================
+   FIND PHOTO HEIGHT
+
+   Every photo must have identical height.
+
+   Binary-search largest height that still allows
+   random non-overlapping placement.
+   ===================================================== */
+
+function findScatteredLayout(
+    fieldWidth,
+    fieldHeight
+) {
+
+    if (
+        projectVisualGroups.length ===
+        0
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+        Pair/outer gaps respond mildly to device size.
+    */
+
+    const pairGap =
+        Math.max(
+            PAIR_GAP_MIN,
+            Math.min(
+                14,
+                fieldWidth *
+                0.012
+            )
+        );
+
+
+    const outerGap =
+        Math.max(
+            GROUP_GAP_MIN,
+            Math.min(
+                24,
+                fieldWidth *
+                0.018
+            )
+        );
+
+
+    /*
+        Maximum reasonable height.
+
+        Photos should remain editorial fragments,
+        not giant hero images.
+    */
+
+    let low =
+        Math.max(
+            28,
+            fieldHeight *
+            0.07
+        );
+
+
+    let high =
+        Math.min(
+            fieldHeight *
+            0.26,
+            fieldWidth *
+            0.20
+        );
+
+
+    let bestHeight =
+        low;
+
+
+    let bestPacking =
+        null;
+
+
+    /*
+        Binary search largest viable common height.
+    */
+
+    for (
+        let iteration = 0;
+        iteration < 9;
+        iteration++
+    ) {
+
+        const mid =
+            (
+                low +
+                high
+            ) /
+            2;
+
+
+        let successful =
+            null;
+
+
+        /*
+            Several random attempts at this height.
+        */
+
+        for (
+            let attempt = 0;
+            attempt < 8;
+            attempt++
+        ) {
+
+            const test =
+                tryRandomPacking(
+                    projectVisualGroups,
+                    fieldWidth,
+                    fieldHeight,
+                    mid,
+                    pairGap,
+                    outerGap
+                );
+
+
+            if (
+                test
+            ) {
+
+                successful =
+                    test;
+
+
+                break;
+
+            }
+
+        }
+
+
+        if (
+            successful
+        ) {
+
+            bestHeight =
+                mid;
+
+
+            bestPacking =
+                successful;
+
+
+            low =
+                mid;
+
+        }
+
+        else {
+
+            high =
+                mid;
+
+        }
+
+    }
+
+
+    /*
+        At the chosen height, generate many valid
+        random compositions and select one that
+        uses the available white field most widely.
+    */
+
+    let finalPacking =
+        bestPacking;
+
+
+    let finalScore =
+        finalPacking
+            ? scorePacking(
+                finalPacking,
+                fieldWidth,
+                fieldHeight
+            )
+            : -Infinity;
+
+
+    for (
+        let trial = 0;
+        trial < RANDOM_LAYOUT_TRIALS;
+        trial++
+    ) {
+
+        const candidate =
+            tryRandomPacking(
+                projectVisualGroups,
+                fieldWidth,
+                fieldHeight,
+                bestHeight,
+                pairGap,
+                outerGap
+            );
+
+
+        if (
+            !candidate
+        ) {
+
+            continue;
+
+        }
+
+
+        const score =
+            scorePacking(
+                candidate,
+                fieldWidth,
+                fieldHeight
+            );
+
+
+        if (
+            score >
+            finalScore
+        ) {
+
+            finalScore =
+                score;
+
+
+            finalPacking =
+                candidate;
+
+        }
+
+    }
+
+
+    if (
+        !finalPacking
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        photoHeight:
+            bestHeight,
+
+        pairGap,
+
+        placements:
+            finalPacking
+
+    };
+
+}
+
+
+/* =====================================================
+   RANDOMIZE PHOTOGRAPHY LAYOUT
+
+   Called EVERY photography cycle.
+
+   Same images,
+   different positions.
+
+   No layout animation — composition appears
+   immediately in its new state.
+   ===================================================== */
+
+function randomizePhotographyLayout() {
+
+    if (
+        groupElements.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const rect =
+        mediaField
+            .getBoundingClientRect();
+
+
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const layout =
+        findScatteredLayout(
+            rect.width,
+            rect.height
+        );
+
+
+    if (
+        !layout
+    ) {
+
+        return;
+
+    }
+
+
+    photographyField.style
+        .setProperty(
+            "--scattered-photo-height",
+            `${layout.photoHeight}px`
+        );
+
+
+    photographyField.style
+        .setProperty(
+            "--photo-pair-gap",
+            `${layout.pairGap}px`
+        );
+
+
+    /*
+        Placement array was generated in width-order,
+        so map it back to original project index.
+    */
+
+    const placementByIndex =
+        new Map();
+
+
+    layout.placements.forEach(
+        placement => {
+
+            placementByIndex.set(
+                placement.originalIndex,
+                placement
+            );
+
+        }
+    );
+
+
+    groupElements.forEach(
+        (
+            element,
+            index
+        ) => {
+
+            const placement =
+                placementByIndex.get(
+                    index
+                );
+
+
+            if (
+                !placement
+            ) {
+
+                return;
+
+            }
+
+
+            element.style
+                .setProperty(
+                    "--group-x",
+                    `${placement.x}px`
+                );
+
+
+            element.style
+                .setProperty(
+                    "--group-y",
+                    `${placement.y}px`
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PHOTO REVEAL
+   ===================================================== */
+
+let photoRevealTimers =
     [];
 
 
-function clearRevealTimers() {
+function clearPhotoRevealTimers() {
 
-    revealTimers.forEach(
+    photoRevealTimers.forEach(
         timer => {
 
             clearTimeout(
@@ -2800,18 +3014,18 @@ function clearRevealTimers() {
     );
 
 
-    revealTimers =
+    photoRevealTimers =
         [];
 
 }
 
 
-function resetMosaicVisibility() {
+function resetPhotoGroups() {
 
-    mosaicItems.forEach(
-        item => {
+    groupElements.forEach(
+        group => {
 
-            item.classList
+            group.classList
                 .remove(
                     "visible"
                 );
@@ -2822,32 +3036,26 @@ function resetMosaicVisibility() {
 }
 
 
-function showCompleteMosaic() {
+/* =====================================================
+   REVEAL RANDOM ORDER
 
-    mosaicItems.forEach(
-        item => {
+   Because spatial arrangement is already chaotic,
+   using the same project order every cycle would
+   feel too structured.
 
-            item.classList
-                .add(
-                    "visible"
-                );
+   Group pairs still appear simultaneously.
+   ===================================================== */
 
-        }
-    );
+function revealPhotographyGroups() {
 
-}
-
-
-function revealMosaic() {
-
-    clearRevealTimers();
+    clearPhotoRevealTimers();
 
 
-    resetMosaicVisibility();
+    resetPhotoGroups();
 
 
     if (
-        mosaicItems.length ===
+        groupElements.length ===
         0
     ) {
 
@@ -2856,30 +3064,36 @@ function revealMosaic() {
     }
 
 
+    const revealOrder =
+        shuffle(
+            groupElements
+        );
+
+
     const interval =
-        MOSAIC_BUILD_DURATION /
-        mosaicItems.length;
+        PHOTO_BUILD_DURATION /
+        revealOrder.length;
 
 
-    mosaicItems.forEach(
+    revealOrder.forEach(
         (
-            item,
+            group,
             index
         ) => {
 
-            revealTimers.push(
+            photoRevealTimers.push(
 
                 setTimeout(
                     () => {
 
-                        item.classList
+                        group.classList
                             .add(
                                 "visible"
                             );
 
                     },
-                    index *
-                    interval
+                    interval *
+                    index
                 )
 
             );
@@ -2961,12 +3175,10 @@ function renderCaseWord(
         result +=
             i <
             normalized
-                ? word[
-                    i
-                ].toUpperCase()
-                : word[
-                    i
-                ].toLowerCase();
+                ? word[i]
+                    .toUpperCase()
+                : word[i]
+                    .toLowerCase();
 
     }
 
@@ -3004,12 +3216,6 @@ function setWordCount(
 
 /* =====================================================
    TITLE MORPH
-
-   Callback allows film switch to occur
-   AFTER typography has completed.
-
-   Therefore no heavy visual operation
-   competes with the letter animation.
    ===================================================== */
 
 let titleFrame =
@@ -3213,7 +3419,7 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   MODE STATE
+   MODE
    ===================================================== */
 
 let activeMode =
@@ -3251,10 +3457,8 @@ function clearPhaseTimer() {
 /* =====================================================
    PRIME VIDEO
 
-   Seeking happens WHILE photography is visible,
-   not during the transition.
-
-   This is important for smoothness.
+   Seek happens while photography is visible,
+   not during transition.
    ===================================================== */
 
 function primeFilm() {
@@ -3262,7 +3466,7 @@ function primeFilm() {
     filmVideo.pause();
 
 
-    const seekToBeginning =
+    const seek =
         () => {
 
             try {
@@ -3292,7 +3496,7 @@ function primeFilm() {
         filmVideo.readyState >= 1
     ) {
 
-        seekToBeginning();
+        seek();
 
     }
 
@@ -3300,7 +3504,7 @@ function primeFilm() {
 
         filmVideo.addEventListener(
             "loadedmetadata",
-            seekToBeginning,
+            seek,
             {
                 once:
                     true
@@ -3313,25 +3517,19 @@ function primeFilm() {
 
 
 /* =====================================================
-   ATOMIC FILM SWITCH
-
-   One visibility change only.
-
-   No mosaic DOM mutations.
-   No seek.
-   No rebuild.
+   SHOW FILM LAYER
    ===================================================== */
 
-async function switchLayersToFilm() {
+async function switchToFilmLayer() {
 
-    photographyMedia
+    photographyField
         .classList
         .remove(
             "active"
         );
 
 
-    filmMedia
+    filmField
         .classList
         .add(
             "active"
@@ -3367,30 +3565,33 @@ function startPhotography(
     clearPhaseTimer();
 
 
-    clearRevealTimers();
+    clearPhotoRevealTimers();
 
 
     filmVideo.pause();
 
 
-    filmMedia
+    filmField
         .classList
         .remove(
             "active"
         );
 
 
-    photographyMedia
+    /*
+        NEW RANDOM COMPOSITION
+        every single photography cycle.
+    */
+
+    randomizePhotographyLayout();
+
+
+    photographyField
         .classList
         .add(
             "active"
         );
 
-
-    /*
-        Video prepares while viewer
-        is looking at photography.
-    */
 
     primeFilm();
 
@@ -3400,7 +3601,7 @@ function startPhotography(
     );
 
 
-    revealMosaic();
+    revealPhotographyGroups();
 
 
     if (
@@ -3415,14 +3616,13 @@ function startPhotography(
 
 
     /*
-        Wait until:
-        mosaic build complete
-        +
-        hold complete.
+        Photography stays:
+        entrance + short complete hold.
 
-        THEN start only the typography morph.
+        Then ONLY typography changes.
 
-        Mosaic remains completely static.
+        Photos remain static while title morphs,
+        which keeps transition light.
     */
 
     phaseTimer =
@@ -3430,10 +3630,10 @@ function startPhotography(
             () => {
 
                 if (
-                    hoverMode !==
-                    null ||
                     activeMode !==
-                    "photography"
+                    "photography" ||
+                    hoverMode !==
+                    null
                 ) {
 
                     return;
@@ -3446,10 +3646,10 @@ function startPhotography(
                     () => {
 
                         if (
-                            hoverMode !==
-                            null ||
                             activeMode !==
-                            "photography"
+                            "photography" ||
+                            hoverMode !==
+                            null
                         ) {
 
                             return;
@@ -3457,25 +3657,18 @@ function startPhotography(
                         }
 
 
-                        /*
-                            Title morph is fully finished.
-
-                            Only now do the single
-                            photography -> video switch.
-                        */
-
                         activeMode =
                             "film";
 
 
-                        switchLayersToFilm();
+                        switchToFilmLayer();
 
                     }
                 );
 
             },
-            MOSAIC_BUILD_DURATION +
-            MOSAIC_HOLD_DURATION
+            PHOTO_BUILD_DURATION +
+            PHOTO_HOLD_DURATION
         );
 
 }
@@ -3483,13 +3676,6 @@ function startPhotography(
 
 /* =====================================================
    START FILM MANUALLY
-
-   Used by hover.
-
-   Here the requested category switch
-   should feel immediate, so typography
-   and media change without waiting
-   through photography's automatic hold.
    ===================================================== */
 
 function startFilm(
@@ -3504,12 +3690,8 @@ function startFilm(
     clearPhaseTimer();
 
 
-    clearRevealTimers();
+    clearPhotoRevealTimers();
 
-
-    /*
-        Make sure video is ready at frame zero.
-    */
 
     primeFilm();
 
@@ -3528,7 +3710,7 @@ function startFilm(
             }
 
 
-            switchLayersToFilm();
+            switchToFilmLayer();
 
         }
     );
@@ -3537,7 +3719,7 @@ function startFilm(
 
 
 /* =====================================================
-   FILM END
+   VIDEO ENDED
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -4017,7 +4199,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   MOBILE LOGO
+   MOBILE LOGO TAP
    ===================================================== */
 
 logo.addEventListener(
@@ -4082,8 +4264,8 @@ logo.addEventListener(
 /* =====================================================
    RESIZE
 
-   Mosaic rebuilds ONLY when geometry actually
-   changes, never during normal transitions.
+   Recalculate geometry without changing
+   current category.
    ===================================================== */
 
 let resizeTimer =
@@ -4110,22 +4292,24 @@ window.addEventListener(
             setTimeout(
                 () => {
 
-                    buildMosaic();
-
-
-                    /*
-                        If photography is currently
-                        visible, don't replay reveal
-                        because resize should not cause
-                        a new visual event.
-                    */
-
                     if (
                         activeMode ===
                         "photography"
                     ) {
 
-                        showCompleteMosaic();
+                        randomizePhotographyLayout();
+
+
+                        groupElements.forEach(
+                            group => {
+
+                                group.classList
+                                    .add(
+                                        "visible"
+                                    );
+
+                            }
+                        );
 
                     }
 
@@ -4151,7 +4335,7 @@ document.addEventListener(
 
             clearPhaseTimer();
 
-            clearRevealTimers();
+            clearPhotoRevealTimers();
 
             filmVideo.pause();
 
@@ -4234,7 +4418,7 @@ async function init() {
 
 
     /*
-        Start film download/decode early.
+        Begin video buffering immediately.
     */
 
     try {
@@ -4249,12 +4433,16 @@ async function init() {
 
 
     /*
-        Load photography archive,
-        determine landscape-second priorities,
-        round-robin selections and build mosaic.
+        Load:
+
+        thumbnail
+        +
+        optional widest landscape
+
+        for every project.
     */
 
-    await loadPhotographyPool();
+    await loadPhotographyProjects();
 
 
     setTimeout(
