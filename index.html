@@ -71,8 +71,6 @@ body {
    ===================================================== */
 
 .page {
-    position: relative;
-
     width: 100%;
 
     height: 100vh;
@@ -89,7 +87,7 @@ body {
 
 
 /* =====================================================
-   NORMAL LANDING
+   GRID
    ===================================================== */
 
 .landing-grid {
@@ -310,10 +308,13 @@ body {
 
 
 /* =====================================================
-   FILM FIELD
+   MEDIA FIELD
+
+   Photography and film use EXACTLY
+   the same area.
    ===================================================== */
 
-.film-field {
+.media-field {
     position: relative;
 
     grid-column: 2;
@@ -331,21 +332,20 @@ body {
     min-height: 0;
 
     overflow: hidden;
-
-    visibility: hidden;
-}
-
-.film-field.active {
-    visibility: visible;
 }
 
 
 /* =====================================================
-   FILM LINK
+   VISUAL FRAME
+
+   Exact film ratio.
+
+   Photography contact sheet lives inside
+   this exact same rectangle.
    ===================================================== */
 
-.film-link {
-    display: block;
+.visual-frame {
+    position: relative;
 
     width: 100%;
 
@@ -361,114 +361,65 @@ body {
 
     aspect-ratio: 16 / 9;
 
-    color: inherit;
-    text-decoration: none;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-#film-video {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-    object-position: center center;
+    overflow: hidden;
 }
 
 
 /* =====================================================
-   PHOTOGRAPHY TAKEOVER
-
-   During photography:
-   - normal landing disappears
-   - PHOTOGRAPHY remains
-   - complete photography archive takes over
+   MEDIA LAYERS
    ===================================================== */
 
-.photography-takeover {
+.media-layer {
     position: absolute;
 
     inset: 0;
 
-    z-index: 20;
-
     display: none;
 
-    background: #fff;
+    width: 100%;
+    height: 100%;
+
+    color: inherit;
+    text-decoration: none;
 
     overflow: hidden;
+
+    pointer-events: none;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
-.photography-takeover.active {
+.media-layer.active {
     display: block;
+
+    pointer-events: auto;
 }
 
 
 /* =====================================================
-   TAKEOVER TITLE
+   PHOTOGRAPHY CONTACT SHEET
+
+   Only project covers.
    ===================================================== */
 
-.takeover-title {
-    position: absolute;
-
-    z-index: 5;
-
-    margin: 0;
-    padding: 0;
-
-    font-family: inherit;
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-
-    cursor: pointer;
-
-    white-space: nowrap;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-/* =====================================================
-   CONTACT SHEET AREA
-   ===================================================== */
-
-.contact-sheet {
-    position: absolute;
-
-    overflow: hidden;
-
-    cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-/* =====================================================
-   GRID
-   ===================================================== */
-
-.contact-sheet-grid {
+.cover-grid {
     display: grid;
 
     width: 100%;
     height: 100%;
 
+    overflow: hidden;
+
     align-items: stretch;
     justify-items: stretch;
-
-    overflow: hidden;
 }
 
 
 /* =====================================================
-   GRID CELL
+   COVER CELL
    ===================================================== */
 
-.sheet-cell {
+.cover-cell {
     position: relative;
 
     display: flex;
@@ -487,15 +438,15 @@ body {
 
 
 /* =====================================================
-   IMAGE
+   COVER IMAGE
 
    No crop.
-   Original ratio preserved.
+   Preserve the index cover's ratio.
 
-   Hidden until reveal sequence.
+   Hidden until the sequential reveal.
    ===================================================== */
 
-.sheet-cell img {
+.cover-cell img {
     display: block;
 
     width: 100%;
@@ -508,18 +459,25 @@ body {
     pointer-events: none;
 }
 
-.sheet-cell.visible img {
+.cover-cell.visible img {
     opacity: 1;
 }
 
 
 /* =====================================================
-   PHOTOGRAPHY MODE
+   FILM
    ===================================================== */
 
-body.photography-mode
-.landing-grid {
-    visibility: hidden;
+#film-video {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center center;
+
+    pointer-events: none;
 }
 
 
@@ -546,6 +504,7 @@ body.photography-mode
 
 
     .landing-grid {
+
         grid-template-columns:
             minmax(0, 1fr);
 
@@ -561,14 +520,17 @@ body.photography-mode
 
         row-gap:
             var(--major-gap);
+
     }
 
 
     .logo {
+
         grid-column: 1;
         grid-row: 1;
 
         height: 30px;
+
     }
 
 
@@ -578,39 +540,52 @@ body.photography-mode
 
 
     .opening {
+
         grid-column: 1;
         grid-row: 2;
+
     }
 
 
     .navigation {
+
         grid-column: 1;
         grid-row: 3;
+
     }
 
 
-    .film-field {
+    .media-field {
+
         grid-column: 1;
         grid-row: 4;
+
     }
 
 
     .contact {
+
         grid-column: 1;
         grid-row: 5;
+
     }
 
 
     .biography {
+
         grid-column: 1;
         grid-row: 6;
 
         max-width: none;
+
     }
 
 
-    .film-link {
+    .visual-frame {
+
+        width: 100%;
         max-width: 100%;
+
     }
 
 }
@@ -619,10 +594,10 @@ body.photography-mode
 /* =====================================================
    MOBILE LANDSCAPE
 
-   Font does NOT shrink.
+   Do NOT shrink typography.
 
-   2/3 text
-   1/3 film
+   Left = 2/3
+   Media = 1/3
    ===================================================== */
 
 @media
@@ -646,9 +621,11 @@ body.photography-mode
 
 
     .landing-grid {
+
         grid-template-columns:
             minmax(0, 2fr)
             minmax(0, 1fr);
+
     }
 
 
@@ -680,8 +657,11 @@ body.photography-mode
     }
 
 
-    .film-link {
+    .visual-frame {
+
+        width: 100%;
         max-width: 100%;
+
     }
 
 }
@@ -712,9 +692,11 @@ body.photography-mode
 
 
     .landing-grid {
+
         grid-template-columns:
             minmax(0, 470px)
             minmax(0, 1fr);
+
     }
 
 
@@ -738,17 +720,15 @@ body.photography-mode
 
 <div class="page">
 
-    <!-- =================================================
-         NORMAL LANDING
-         ================================================= -->
-
     <main
         class="landing-grid"
         id="landing-grid"
     >
 
 
-        <!-- LOGO -->
+        <!-- =================================================
+             LOGO
+             ================================================= -->
 
         <button
             class="logo"
@@ -773,14 +753,18 @@ body.photography-mode
         </button>
 
 
-        <!-- OPENING -->
+        <!-- =================================================
+             OPENING
+             ================================================= -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- NAVIGATION -->
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
 
         <nav class="navigation">
 
@@ -806,33 +790,65 @@ body.photography-mode
         </nav>
 
 
-        <!-- FILM -->
+        <!-- =================================================
+             MEDIA
+
+             Photography covers + film occupy
+             the exact same visual-frame.
+             ================================================= -->
 
         <div
-            class="film-field"
-            id="film-field"
+            class="media-field"
+            id="media-field"
         >
 
-            <a
-                class="film-link"
-                href="https://film.denizalpaybak.com/"
-                aria-label="Film"
-            >
+            <div class="visual-frame">
 
-                <video
-                    id="film-video"
-                    src="./film.mp4"
-                    muted
-                    playsinline
-                    preload="auto"
-                ></video>
 
-            </a>
+                <!-- PHOTOGRAPHY -->
+
+                <a
+                    class="media-layer"
+                    id="photography-media"
+                    href="https://photography.denizalpaybak.com/"
+                    aria-label="Photography"
+                >
+
+                    <div
+                        class="cover-grid"
+                        id="cover-grid"
+                    ></div>
+
+                </a>
+
+
+                <!-- FILM -->
+
+                <a
+                    class="media-layer"
+                    id="film-media"
+                    href="https://film.denizalpaybak.com/"
+                    aria-label="Film"
+                >
+
+                    <video
+                        id="film-video"
+                        src="./film.mp4"
+                        muted
+                        playsinline
+                        preload="auto"
+                    ></video>
+
+                </a>
+
+            </div>
 
         </div>
 
 
-        <!-- CONTACT -->
+        <!-- =================================================
+             CONTACT
+             ================================================= -->
 
         <div class="contact">
 
@@ -863,7 +879,9 @@ body.photography-mode
         </div>
 
 
-        <!-- BIO -->
+        <!-- =================================================
+             BIO
+             ================================================= -->
 
         <section class="biography">
 
@@ -889,60 +907,28 @@ body.photography-mode
 
     </main>
 
-
-    <!-- =================================================
-         PHOTOGRAPHY TAKEOVER
-         ================================================= -->
-
-    <section
-        class="photography-takeover"
-        id="photography-takeover"
-    >
-
-        <div
-            class="takeover-title"
-            id="takeover-title"
-        >
-            photography
-        </div>
-
-
-        <div
-            class="contact-sheet"
-            id="contact-sheet"
-        >
-
-            <div
-                class="contact-sheet-grid"
-                id="contact-sheet-grid"
-            ></div>
-
-        </div>
-
-    </section>
-
 </div>
 
 
 <script>
 
 /* =====================================================
-   DATA SOURCE
-
-   THIS is now the single source of truth.
-
-   Change projects.json ->
-   photography site + landing archive update together.
+   DATA
    ===================================================== */
+
+
+/*
+    Same projects.json that controls
+    photography.denizalpaybak.com.
+*/
 
 const PROJECTS_JSON_URL =
     "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
 
 
 /*
-    Used only when projects.json contains
-    filenames / relative paths rather than
-    complete R2 URLs.
+    Used when projects.json contains filenames
+    rather than complete URLs.
 */
 
 const R2_PHOTOS_BASE =
@@ -957,29 +943,48 @@ const WORD_TRANSITION_DURATION =
     400;
 
 
-const SHEET_BUILD_DURATION =
-    420;
+/*
+    Covers appear sequentially.
 
+    Whole grid is constructed in 400ms.
+*/
 
-const SHEET_HOLD_DURATION =
-    1200;
-
-
-const SHEET_REMOVE_DURATION =
-    380;
-
-
-const PHOTOGRAPHY_DURATION =
-    SHEET_BUILD_DURATION +
-    SHEET_HOLD_DURATION +
-    SHEET_REMOVE_DURATION;
+const COVER_BUILD_DURATION =
+    400;
 
 
 /*
-    Film source:
+    Once complete, keep full cover grid
+    visible briefly.
+
+    Photography therefore remains shorter
+    than the film phase.
+*/
+
+const COVER_HOLD_DURATION =
+    1000;
+
+
+/*
+    Reverse disappearance.
+*/
+
+const COVER_REMOVE_DURATION =
+    320;
+
+
+const PHOTOGRAPHY_DURATION =
+    COVER_BUILD_DURATION +
+    COVER_HOLD_DURATION +
+    COVER_REMOVE_DURATION;
+
+
+/*
+    Film:
     77 frames / 23.976 fps.
 
-    Actual transition still uses video.ended.
+    Actual duration still comes from
+    video "ended", not JS timer.
 */
 
 const VIDEO_FRAME_COUNT =
@@ -1018,12 +1023,6 @@ const LOGO_MOBILE_HOLD =
    ELEMENTS
    ===================================================== */
 
-const page =
-    document.querySelector(
-        ".page"
-    );
-
-
 const photographyLink =
     document.getElementById(
         "photography-link"
@@ -1048,9 +1047,21 @@ const filmText =
     );
 
 
-const filmField =
+const photographyMedia =
     document.getElementById(
-        "film-field"
+        "photography-media"
+    );
+
+
+const filmMedia =
+    document.getElementById(
+        "film-media"
+    );
+
+
+const coverGrid =
+    document.getElementById(
+        "cover-grid"
     );
 
 
@@ -1060,44 +1071,20 @@ const filmVideo =
     );
 
 
-const photographyTakeover =
-    document.getElementById(
-        "photography-takeover"
-    );
-
-
-const takeoverTitle =
-    document.getElementById(
-        "takeover-title"
-    );
-
-
-const contactSheet =
-    document.getElementById(
-        "contact-sheet"
-    );
-
-
-const contactSheetGrid =
-    document.getElementById(
-        "contact-sheet-grid"
-    );
-
-
 /* =====================================================
-   PROJECT PHOTO DATA
+   COVER DATA
    ===================================================== */
 
-let archivePhotos =
+let projectCovers =
     [];
 
 
-let sheetCells =
+let coverCells =
     [];
 
 
 /* =====================================================
-   IMAGE STRING DETECTION
+   IMAGE DETECTION
    ===================================================== */
 
 function looksLikeImage(
@@ -1129,21 +1116,7 @@ function looksLikeImage(
 
 
 /* =====================================================
-   RESOLVE PHOTO URL
-
-   Supports:
-
-   full URL:
-   https://...jpg
-
-   filename:
-   vogue_01.jpg
-
-   R2-relative:
-   vogue/vogue_01.jpg
-
-   photos/...:
-   photos/vogue_01.jpg
+   RESOLVE IMAGE URL
    ===================================================== */
 
 function resolvePhotoUrl(
@@ -1173,15 +1146,10 @@ function resolvePhotoUrl(
     }
 
 
-    /*
-        Already complete URL.
-    */
-
     if (
-        /^https?:\/\//i
-            .test(
-                trimmed
-            )
+        /^https?:\/\//i.test(
+            trimmed
+        )
     ) {
 
         return trimmed;
@@ -1196,11 +1164,6 @@ function resolvePhotoUrl(
                 ""
             );
 
-
-    /*
-        Prevent:
-        .../photos/photos/...
-    */
 
     path =
         path.replace(
@@ -1223,92 +1186,38 @@ function resolvePhotoUrl(
 
 
 /* =====================================================
-   RECURSIVELY COLLECT IMAGE REFERENCES
+   FIND FIRST IMAGE INSIDE A VALUE
 
-   Does NOT depend on a particular JSON structure.
-
-   Examples it supports:
-
-   {
-       images: [...]
-   }
-
-   {
-       slides: [...]
-   }
-
-   {
-       image: "..."
-   }
-
-   {
-       project: {
-           gallery: [...]
-       }
-   }
-
-   etc.
+   Used only as fallback.
    ===================================================== */
 
-function collectImageReferences(
-    value,
-    output
+function findFirstImage(
+    value
 ) {
 
     if (
-        value ===
-        null ||
-        value ===
-        undefined
+        value === null ||
+        value === undefined
     ) {
 
-        return;
+        return null;
 
     }
 
-
-    /*
-        IMAGE STRING
-    */
 
     if (
         typeof value ===
         "string"
     ) {
 
-        if (
-            looksLikeImage(
-                value
-            )
-        ) {
-
-            const resolved =
-                resolvePhotoUrl(
-                    value
-                );
-
-
-            if (
-                resolved
-            ) {
-
-                output.push(
-                    resolved
-                );
-
-            }
-
-        }
-
-
-        return;
+        return looksLikeImage(
+            value
+        )
+            ? value
+            : null;
 
     }
 
-
-    /*
-        ARRAY
-    */
 
     if (
         Array.isArray(
@@ -1316,99 +1225,294 @@ function collectImageReferences(
         )
     ) {
 
-        value.forEach(
-            item => {
+        for (
+            const item of value
+        ) {
 
-                collectImageReferences(
-                    item,
-                    output
+            const found =
+                findFirstImage(
+                    item
                 );
 
+
+            if (
+                found
+            ) {
+
+                return found;
+
             }
-        );
+
+        }
 
 
-        return;
+        return null;
 
     }
 
-
-    /*
-        OBJECT
-    */
 
     if (
         typeof value ===
         "object"
     ) {
 
-        Object.values(
-            value
-        ).forEach(
-            child => {
+        for (
+            const child of
+            Object.values(
+                value
+            )
+        ) {
 
-                collectImageReferences(
-                    child,
-                    output
+            const found =
+                findFirstImage(
+                    child
+                );
+
+
+            if (
+                found
+            ) {
+
+                return found;
+
+            }
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   GET PROJECT COVER
+
+   Priority is specifically index / cover fields.
+
+   This means we do NOT collect all project slides.
+
+   Only one image per project.
+   ===================================================== */
+
+function getProjectCover(
+    project
+) {
+
+    if (
+        !project ||
+        typeof project !==
+        "object"
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+        Most likely explicit cover fields.
+
+        If your projects.json uses one of these,
+        that exact image is used.
+    */
+
+    const candidateKeys =
+        [
+            "indexImage",
+            "index_image",
+            "indexCover",
+            "index_cover",
+
+            "cover",
+            "coverImage",
+            "cover_image",
+
+            "thumbnail",
+            "thumbnailImage",
+            "thumbnail_image",
+
+            "thumb",
+            "preview",
+            "previewImage",
+            "preview_image"
+        ];
+
+
+    for (
+        const key of candidateKeys
+    ) {
+
+        if (
+            project[key] !==
+            undefined
+        ) {
+
+            const candidate =
+                findFirstImage(
+                    project[key]
+                );
+
+
+            if (
+                candidate
+            ) {
+
+                return resolvePhotoUrl(
+                    candidate
                 );
 
             }
-        );
+
+        }
 
     }
 
-}
 
+    /*
+        Some JSON structures keep index data
+        inside a nested index object.
+    */
 
-/* =====================================================
-   NORMALIZE URL FOR DEDUPLICATION
-   ===================================================== */
+    if (
+        project.index &&
+        typeof project.index ===
+        "object"
+    ) {
 
-function normalizeImageUrl(
-    url
-) {
-
-    try {
-
-        const parsed =
-            new URL(
-                url
+        const indexCandidate =
+            findFirstImage(
+                project.index
             );
 
 
-        /*
-            Ignore query strings when identifying
-            the same image used in multiple places.
-        */
+        if (
+            indexCandidate
+        ) {
 
-        return (
-            parsed.origin +
-            parsed.pathname
+            return resolvePhotoUrl(
+                indexCandidate
+            );
+
+        }
+
+    }
+
+
+    /*
+        Last fallback only:
+
+        If no explicit cover information exists,
+        use the first image belonging to the project.
+
+        This prevents a completely empty grid.
+    */
+
+    const fallback =
+        findFirstImage(
+            project
         );
 
-    }
 
-    catch (
-        error
-    ) {
-
-        return url
-            .split("?")[0]
-            .split("#")[0];
-
-    }
+    return fallback
+        ? resolvePhotoUrl(
+            fallback
+        )
+        : null;
 
 }
 
 
 /* =====================================================
-   LOAD PROJECTS.JSON
+   FIND PROJECT ARRAY
 
-   projects.json determines EXACTLY which images
-   are available to the landing contact sheet.
+   Supports:
+
+   [
+      {...},
+      {...}
+   ]
+
+   or:
+
+   {
+      "projects": [...]
+   }
    ===================================================== */
 
-async function loadPhotographyArchive() {
+function getProjectsArray(
+    data
+) {
+
+    if (
+        Array.isArray(
+            data
+        )
+    ) {
+
+        return data;
+
+    }
+
+
+    if (
+        data &&
+        Array.isArray(
+            data.projects
+        )
+    ) {
+
+        return data.projects;
+
+    }
+
+
+    /*
+        Defensive fallback:
+        object whose values are projects.
+    */
+
+    if (
+        data &&
+        typeof data ===
+        "object"
+    ) {
+
+        const values =
+            Object.values(
+                data
+            );
+
+
+        if (
+            values.length > 0 &&
+            values.every(
+                value =>
+                    value &&
+                    typeof value ===
+                    "object"
+            )
+        ) {
+
+            return values;
+
+        }
+
+    }
+
+
+    return [];
+
+}
+
+
+/* =====================================================
+   LOAD PROJECT COVERS
+   ===================================================== */
+
+async function loadProjectCovers() {
 
     try {
 
@@ -1433,37 +1537,42 @@ async function loadPhotographyArchive() {
         }
 
 
-        const projects =
+        const data =
             await response.json();
 
 
-        const collected =
-            [];
+        const projects =
+            getProjectsArray(
+                data
+            );
 
 
-        collectImageReferences(
-            projects,
-            collected
-        );
+        const covers =
+            projects
+                .map(
+                    getProjectCover
+                )
+                .filter(
+                    Boolean
+                );
 
 
         /*
-            Remove duplicates while maintaining
-            projects.json order.
+            Prevent accidental duplicate covers.
         */
 
         const seen =
             new Set();
 
 
-        archivePhotos =
-            collected.filter(
+        projectCovers =
+            covers.filter(
                 url => {
 
                     const normalized =
-                        normalizeImageUrl(
-                            url
-                        );
+                        url
+                            .split("?")[0]
+                            .split("#")[0];
 
 
                     if (
@@ -1488,22 +1597,7 @@ async function loadPhotographyArchive() {
             );
 
 
-        if (
-            archivePhotos.length ===
-            0
-        ) {
-
-            console.warn(
-                "No photography image URLs were found inside projects.json."
-            );
-
-
-            return;
-
-        }
-
-
-        buildContactSheet();
+        buildCoverGrid();
 
     }
 
@@ -1512,7 +1606,7 @@ async function loadPhotographyArchive() {
     ) {
 
         console.error(
-            "Photography archive could not be created:",
+            "Project covers could not be loaded:",
             error
         );
 
@@ -1522,25 +1616,21 @@ async function loadPhotographyArchive() {
 
 
 /* =====================================================
-   BUILD CONTACT SHEET
+   BUILD COVER GRID
    ===================================================== */
 
-function buildContactSheet() {
+function buildCoverGrid() {
 
-    contactSheetGrid
-        .innerHTML =
+    coverGrid.innerHTML =
         "";
 
 
-    sheetCells =
+    coverCells =
         [];
 
 
-    archivePhotos.forEach(
-        (
-            url,
-            index
-        ) => {
+    projectCovers.forEach(
+        url => {
 
             const cell =
                 document.createElement(
@@ -1549,7 +1639,7 @@ function buildContactSheet() {
 
 
             cell.className =
-                "sheet-cell";
+                "cover-cell";
 
 
             const image =
@@ -1570,12 +1660,6 @@ function buildContactSheet() {
                 "async";
 
 
-            /*
-                The contact sheet deliberately loads
-                all current portfolio frames because
-                every one may appear simultaneously.
-            */
-
             image.loading =
                 "eager";
 
@@ -1585,13 +1669,12 @@ function buildContactSheet() {
             );
 
 
-            contactSheetGrid
-                .appendChild(
-                    cell
-                );
+            coverGrid.appendChild(
+                cell
+            );
 
 
-            sheetCells.push(
+            coverCells.push(
                 cell
             );
 
@@ -1599,22 +1682,21 @@ function buildContactSheet() {
     );
 
 
-    layoutTakeover();
+    layoutCoverGrid();
 
 }
 
 
 /* =====================================================
-   CONTACT SHEET GRID
+   GRID GEOMETRY
 
-   Choose columns from:
-   image count + available aspect ratio.
+   All project covers must fit inside
+   the exact 16:9 film rectangle.
 
-   Goal:
-   fill viewport efficiently without scroll.
+   No scroll.
    ===================================================== */
 
-function calculateGrid(
+function calculateBestGrid(
     count,
     width,
     height
@@ -1633,70 +1715,55 @@ function calculateGrid(
     }
 
 
-    const areaRatio =
+    const aspect =
+        width /
         Math.max(
-            0.1,
-            width /
-            Math.max(
-                1,
-                height
-            )
+            1,
+            height
         );
 
 
-    /*
-        Starting estimate.
-    */
-
-    const estimatedColumns =
+    const estimate =
         Math.max(
             1,
             Math.round(
                 Math.sqrt(
                     count *
-                    areaRatio
+                    aspect
                 )
             )
         );
+
+
+    const gap =
+        count >= 20
+            ? 2
+            : count >= 12
+                ? 3
+                : 4;
 
 
     let best =
         null;
 
 
-    const minColumns =
+    const start =
         Math.max(
             1,
-            estimatedColumns -
-            4
+            estimate - 4
         );
 
 
-    const maxColumns =
+    const end =
         Math.min(
             count,
-            estimatedColumns +
-            4
+            estimate + 4
         );
-
-
-    const gap =
-        count >= 80
-            ? 1
-            : count >= 50
-                ? 2
-                : count >= 30
-                    ? 3
-                    : count >= 16
-                        ? 4
-                        : 6;
 
 
     for (
-        let columns =
-            minColumns;
-        columns <=
-            maxColumns;
+        let columns = start;
+        columns <= end;
         columns++
     ) {
 
@@ -1742,11 +1809,8 @@ function calculateGrid(
 
 
         /*
-            Main priority:
-            make cells as large as possible.
-
-            Small secondary penalty for
-            extremely unusual cell ratios.
+            Favor largest cells,
+            with mild penalty for extreme ratios.
         */
 
         const ratio =
@@ -1795,12 +1859,12 @@ function calculateGrid(
         best ||
         {
             columns:
-                estimatedColumns,
+                estimate,
 
             rows:
                 Math.ceil(
                     count /
-                    estimatedColumns
+                    estimate
                 ),
 
             gap
@@ -1811,122 +1875,13 @@ function calculateGrid(
 
 
 /* =====================================================
-   TAKEOVER GEOMETRY
-
-   PHOTOGRAPHY sits at exactly the same coordinate
-   as normal photography.
-
-   Contact sheet occupies the rest of viewport.
+   LAYOUT GRID
    ===================================================== */
 
-function layoutTakeover() {
-
-    const rootStyle =
-        getComputedStyle(
-            document.documentElement
-        );
-
-
-    const pageX =
-        parseFloat(
-            rootStyle.getPropertyValue(
-                "--page-x"
-            )
-        ) || 48;
-
-
-    const pageBottom =
-        parseFloat(
-            rootStyle.getPropertyValue(
-                "--page-bottom"
-            )
-        ) || 48;
-
-
-    const photographyRect =
-        photographyText
-            .getBoundingClientRect();
-
-
-    /*
-        Same exact title coordinate.
-    */
-
-    takeoverTitle.style.left =
-        `${photographyRect.left}px`;
-
-
-    takeoverTitle.style.top =
-        `${photographyRect.top}px`;
-
-
-    /*
-        Sheet starts below PHOTOGRAPHY.
-    */
-
-    const sheetTop =
-        photographyRect.bottom +
-        Math.max(
-            10,
-            parseFloat(
-                rootStyle.getPropertyValue(
-                    "--major-gap"
-                )
-            ) || 10
-        );
-
-
-    const sheetLeft =
-        pageX;
-
-
-    const sheetRight =
-        window.innerWidth -
-        pageX;
-
-
-    const sheetBottom =
-        window.innerHeight -
-        pageBottom;
-
-
-    contactSheet.style.left =
-        `${sheetLeft}px`;
-
-
-    contactSheet.style.top =
-        `${sheetTop}px`;
-
-
-    contactSheet.style.width =
-        `${Math.max(
-            0,
-            sheetRight -
-            sheetLeft
-        )}px`;
-
-
-    contactSheet.style.height =
-        `${Math.max(
-            0,
-            sheetBottom -
-            sheetTop
-        )}px`;
-
-
-    layoutContactSheetGrid();
-
-}
-
-
-/* =====================================================
-   APPLY GRID
-   ===================================================== */
-
-function layoutContactSheetGrid() {
+function layoutCoverGrid() {
 
     if (
-        sheetCells.length ===
+        coverCells.length ===
         0
     ) {
 
@@ -1936,7 +1891,7 @@ function layoutContactSheetGrid() {
 
 
     const rect =
-        contactSheet
+        coverGrid
             .getBoundingClientRect();
 
 
@@ -1951,31 +1906,31 @@ function layoutContactSheetGrid() {
 
 
     const grid =
-        calculateGrid(
-            sheetCells.length,
+        calculateBestGrid(
+            coverCells.length,
             rect.width,
             rect.height
         );
 
 
-    contactSheetGrid.style
+    coverGrid.style
         .gridTemplateColumns =
         `repeat(${grid.columns}, minmax(0, 1fr))`;
 
 
-    contactSheetGrid.style
+    coverGrid.style
         .gridTemplateRows =
         `repeat(${grid.rows}, minmax(0, 1fr))`;
 
 
-    contactSheetGrid.style.gap =
+    coverGrid.style.gap =
         `${grid.gap}px`;
 
 }
 
 
 /* =====================================================
-   NAVIGATION WORD STATE
+   NAV WORDS
    ===================================================== */
 
 const navItems =
@@ -2012,7 +1967,7 @@ const navItems =
 
 
 /* =====================================================
-   CASE RENDER
+   RENDER CASE
    ===================================================== */
 
 function renderCaseWord(
@@ -2045,12 +2000,10 @@ function renderCaseWord(
         result +=
             i <
             normalized
-                ? word[
-                    i
-                ].toUpperCase()
-                : word[
-                    i
-                ].toLowerCase();
+                ? word[i]
+                    .toUpperCase()
+                : word[i]
+                    .toLowerCase();
 
     }
 
@@ -2163,7 +2116,7 @@ function animateTitlesTo(
             : 0;
 
 
-    const started =
+    const start =
         performance.now();
 
 
@@ -2186,7 +2139,7 @@ function animateTitlesTo(
                 1,
                 (
                     now -
-                    started
+                    start
                 ) /
                 WORD_TRANSITION_DURATION
             );
@@ -2210,7 +2163,9 @@ function animateTitlesTo(
             progress;
 
 
-        const photoCount =
+        setWordCount(
+            photography,
+
             photoTarget >=
             photoStart
                 ? Math.floor(
@@ -2220,10 +2175,13 @@ function animateTitlesTo(
                 : Math.ceil(
                     photoRaw -
                     0.0001
-                );
+                )
+        );
 
 
-        const filmCount =
+        setWordCount(
+            film,
+
             filmTarget >=
             filmStart
                 ? Math.floor(
@@ -2233,31 +2191,8 @@ function animateTitlesTo(
                 : Math.ceil(
                     filmRaw -
                     0.0001
-                );
-
-
-        setWordCount(
-            photography,
-            photoCount
+                )
         );
-
-
-        setWordCount(
-            film,
-            filmCount
-        );
-
-
-        /*
-            During photography takeover,
-            title mirrors hidden navigation word.
-        */
-
-        takeoverTitle.textContent =
-            renderCaseWord(
-                "photography",
-                photography.count
-            );
 
 
         if (
@@ -2286,13 +2221,6 @@ function animateTitlesTo(
             );
 
 
-            takeoverTitle.textContent =
-                renderCaseWord(
-                    "photography",
-                    photoTarget
-                );
-
-
             titleFrame =
                 null;
 
@@ -2310,20 +2238,20 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   CONTACT SHEET ANIMATION
+   COVER ANIMATION
    ===================================================== */
 
-let sheetTimers =
+let coverTimers =
     [];
 
 
 /* =====================================================
-   CLEAR TIMERS
+   CLEAR COVER TIMERS
    ===================================================== */
 
-function clearSheetTimers() {
+function clearCoverTimers() {
 
-    sheetTimers.forEach(
+    coverTimers.forEach(
         timer => {
 
             clearTimeout(
@@ -2334,19 +2262,19 @@ function clearSheetTimers() {
     );
 
 
-    sheetTimers =
+    coverTimers =
         [];
 
 }
 
 
 /* =====================================================
-   RESET SHEET
+   RESET COVER GRID
    ===================================================== */
 
-function resetSheet() {
+function resetCoverGrid() {
 
-    sheetCells.forEach(
+    coverCells.forEach(
         cell => {
 
             cell.classList
@@ -2361,28 +2289,23 @@ function resetSheet() {
 
 
 /* =====================================================
-   REVEAL
+   REVEAL COVERS
 
-   left -> right
-   top -> bottom
-
-   Hard pop.
+   Hard-pop sequentially.
+   No fade.
+   No scale.
    ===================================================== */
 
-function revealSheet() {
+function revealCovers() {
 
-    clearSheetTimers();
-
-
-    resetSheet();
+    clearCoverTimers();
 
 
-    const count =
-        sheetCells.length;
+    resetCoverGrid();
 
 
     if (
-        count ===
+        coverCells.length ===
         0
     ) {
 
@@ -2392,20 +2315,18 @@ function revealSheet() {
 
 
     const interval =
-        SHEET_BUILD_DURATION /
-        Math.max(
-            1,
-            count
-        );
+        COVER_BUILD_DURATION /
+        coverCells.length;
 
 
-    sheetCells.forEach(
+    coverCells.forEach(
         (
             cell,
             index
         ) => {
 
-            const timer =
+            coverTimers.push(
+
                 setTimeout(
                     () => {
 
@@ -2415,13 +2336,10 @@ function revealSheet() {
                             );
 
                     },
-                    interval *
-                    index
-                );
+                    index *
+                    interval
+                )
 
-
-            sheetTimers.push(
-                timer
             );
 
         }
@@ -2431,21 +2349,15 @@ function revealSheet() {
 
 
 /* =====================================================
-   REMOVE
+   REMOVE COVERS
 
-   reverse order.
+   Reverse sequence.
    ===================================================== */
 
-function removeSheet() {
-
-    const reversed =
-        sheetCells
-            .slice()
-            .reverse();
-
+function removeCovers() {
 
     if (
-        reversed.length ===
+        coverCells.length ===
         0
     ) {
 
@@ -2454,8 +2366,14 @@ function removeSheet() {
     }
 
 
+    const reversed =
+        coverCells
+            .slice()
+            .reverse();
+
+
     const interval =
-        SHEET_REMOVE_DURATION /
+        COVER_REMOVE_DURATION /
         reversed.length;
 
 
@@ -2465,7 +2383,8 @@ function removeSheet() {
             index
         ) => {
 
-            const timer =
+            coverTimers.push(
+
                 setTimeout(
                     () => {
 
@@ -2475,13 +2394,10 @@ function removeSheet() {
                             );
 
                     },
-                    interval *
-                    index
-                );
+                    index *
+                    interval
+                )
 
-
-            sheetTimers.push(
-                timer
             );
 
         }
@@ -2491,7 +2407,7 @@ function removeSheet() {
 
 
 /* =====================================================
-   MODE
+   MODE STATE
    ===================================================== */
 
 let activeMode =
@@ -2531,7 +2447,7 @@ function clearModeTimer() {
 
 
 /* =====================================================
-   START PHOTOGRAPHY
+   SHOW PHOTOGRAPHY
    ===================================================== */
 
 function startPhotography(
@@ -2546,39 +2462,34 @@ function startPhotography(
     clearModeTimer();
 
 
-    clearSheetTimers();
+    clearCoverTimers();
 
 
     filmVideo.pause();
 
 
-    filmField
+    filmMedia
         .classList
         .remove(
             "active"
         );
 
 
-    /*
-        Need normal photography coordinate
-        BEFORE hiding normal landing.
-    */
-
-    layoutTakeover();
-
-
-    photographyTakeover
+    photographyMedia
         .classList
         .add(
             "active"
         );
 
 
-    document.body
-        .classList
-        .add(
-            "photography-mode"
-        );
+    /*
+        Grid may have been created while hidden.
+        Recalculate once visible.
+    */
+
+    requestAnimationFrame(
+        layoutCoverGrid
+    );
 
 
     animateTitlesTo(
@@ -2586,13 +2497,8 @@ function startPhotography(
     );
 
 
-    revealSheet();
+    revealCovers();
 
-
-    /*
-        Hover-selected photography remains
-        indefinitely until pointer leaves.
-    */
 
     if (
         !automatic ||
@@ -2605,31 +2511,22 @@ function startPhotography(
     }
 
 
-    /*
-        Start contact-sheet removal.
-    */
-
-    const removeStart =
-        SHEET_BUILD_DURATION +
-        SHEET_HOLD_DURATION;
+    const removeAt =
+        COVER_BUILD_DURATION +
+        COVER_HOLD_DURATION;
 
 
-    sheetTimers.push(
+    coverTimers.push(
 
         setTimeout(
             () => {
 
-                removeSheet();
+                removeCovers();
 
 
                 /*
-                    PHOTOGRAPHY ->
-                    photography
-
-                    film ->
-                    FILM
-
-                    happen while archive disappears.
+                    Begin typography transition
+                    while covers disappear.
                 */
 
                 animateTitlesTo(
@@ -2637,7 +2534,7 @@ function startPhotography(
                 );
 
             },
-            removeStart
+            removeAt
         )
 
     );
@@ -2667,7 +2564,7 @@ function startPhotography(
 
 
 /* =====================================================
-   START FILM
+   SHOW FILM
    ===================================================== */
 
 async function startFilm(
@@ -2682,27 +2579,20 @@ async function startFilm(
     clearModeTimer();
 
 
-    clearSheetTimers();
+    clearCoverTimers();
 
 
-    photographyTakeover
+    resetCoverGrid();
+
+
+    photographyMedia
         .classList
         .remove(
             "active"
         );
 
 
-    document.body
-        .classList
-        .remove(
-            "photography-mode"
-        );
-
-
-    resetSheet();
-
-
-    filmField
+    filmMedia
         .classList
         .add(
             "active"
@@ -2743,19 +2633,11 @@ async function startFilm(
         error
     ) {}
 
-
-    /*
-        No timeout.
-
-        All 77 encoded frames finish before
-        video.ended triggers photography.
-    */
-
 }
 
 
 /* =====================================================
-   FILM ENDED
+   VIDEO END
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -2807,143 +2689,82 @@ function canHover() {
    PHOTOGRAPHY HOVER
    ===================================================== */
 
-function enterPhotographyHover() {
-
-    if (
-        !canHover()
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        hoverMode ===
-        "photography" &&
-        activeMode ===
-        "photography"
-    ) {
-
-        return;
-
-    }
-
-
-    hoverMode =
-        "photography";
-
-
-    startPhotography(
-        false
-    );
-
-}
-
-
-/*
-    Normal photography title.
-*/
-
 photographyLink.addEventListener(
     "mouseenter",
-    enterPhotographyHover
-);
+    () => {
+
+        if (
+            !canHover()
+        ) {
+
+            return;
+
+        }
 
 
-/*
-    Once takeover appears, this title occupies
-    the same coordinate as the original one.
-
-    It therefore becomes the continuation of
-    the hover target.
-*/
-
-takeoverTitle.addEventListener(
-    "mouseenter",
-    enterPhotographyHover
-);
+        hoverMode =
+            "photography";
 
 
-/* =====================================================
-   LEAVE PHOTOGRAPHY HOVER
-   ===================================================== */
-
-function leavePhotographyHover() {
-
-    if (
-        !canHover()
-    ) {
-
-        return;
+        startPhotography(
+            false
+        );
 
     }
-
-
-    setTimeout(
-        () => {
-
-            const originalHovered =
-                photographyLink.matches(
-                    ":hover"
-                );
-
-
-            const takeoverHovered =
-                takeoverTitle.matches(
-                    ":hover"
-                );
-
-
-            const filmHovered =
-                filmLink.matches(
-                    ":hover"
-                );
-
-
-            if (
-                originalHovered ||
-                takeoverHovered ||
-                filmHovered
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                hoverMode !==
-                "photography"
-            ) {
-
-                return;
-
-            }
-
-
-            hoverMode =
-                null;
-
-
-            startFilm();
-
-        },
-        0
-    );
-
-}
+);
 
 
 photographyLink.addEventListener(
     "mouseleave",
-    leavePhotographyHover
-);
+    () => {
+
+        if (
+            !canHover()
+        ) {
+
+            return;
+
+        }
 
 
-takeoverTitle.addEventListener(
-    "mouseleave",
-    leavePhotographyHover
+        setTimeout(
+            () => {
+
+                if (
+                    photographyLink.matches(
+                        ":hover"
+                    ) ||
+                    filmLink.matches(
+                        ":hover"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    hoverMode !==
+                    "photography"
+                ) {
+
+                    return;
+
+                }
+
+
+                hoverMode =
+                    null;
+
+
+                startFilm();
+
+            },
+            0
+        );
+
+    }
 );
 
 
@@ -2964,18 +2785,6 @@ filmLink.addEventListener(
         }
 
 
-        if (
-            hoverMode ===
-            "film" &&
-            activeMode ===
-            "film"
-        ) {
-
-            return;
-
-        }
-
-
         hoverMode =
             "film";
 
@@ -2987,10 +2796,6 @@ filmLink.addEventListener(
     }
 );
 
-
-/* =====================================================
-   FILM LEAVE
-   ===================================================== */
 
 filmLink.addEventListener(
     "mouseleave",
@@ -3043,32 +2848,6 @@ filmLink.addEventListener(
         );
 
     }
-);
-
-
-/* =====================================================
-   PHOTOGRAPHY TAKEOVER CLICK
-
-   Entire archive = one photography link.
-   ===================================================== */
-
-function openPhotography() {
-
-    window.location.href =
-        "https://photography.denizalpaybak.com/";
-
-}
-
-
-contactSheet.addEventListener(
-    "click",
-    openPhotography
-);
-
-
-takeoverTitle.addEventListener(
-    "click",
-    openPhotography
 );
 
 
@@ -3146,12 +2925,12 @@ let logoTimer =
     null;
 
 
-let logoMobileReturnTimer =
+let logoReturnTimer =
     null;
 
 
 /* =====================================================
-   SET LOGO
+   SET LOGO STATE
    ===================================================== */
 
 function setLogoState(
@@ -3198,7 +2977,7 @@ function setLogoState(
 
 
 /* =====================================================
-   ANIMATE LOGO
+   LOGO MORPH
    ===================================================== */
 
 function animateLogoTo(
@@ -3284,30 +3063,33 @@ logo.addEventListener(
     () => {
 
         if (
-            canHover()
+            !canHover()
         ) {
 
-            if (
-                logoMobileReturnTimer !==
-                null
-            ) {
-
-                clearTimeout(
-                    logoMobileReturnTimer
-                );
-
-
-                logoMobileReturnTimer =
-                    null;
-
-            }
-
-
-            animateLogoTo(
-                5
-            );
+            return;
 
         }
+
+
+        if (
+            logoReturnTimer !==
+            null
+        ) {
+
+            clearTimeout(
+                logoReturnTimer
+            );
+
+
+            logoReturnTimer =
+                null;
+
+        }
+
+
+        animateLogoTo(
+            5
+        );
 
     }
 );
@@ -3318,14 +3100,17 @@ logo.addEventListener(
     () => {
 
         if (
-            canHover()
+            !canHover()
         ) {
 
-            animateLogoTo(
-                0
-            );
+            return;
 
         }
+
+
+        animateLogoTo(
+            0
+        );
 
     }
 );
@@ -3333,17 +3118,6 @@ logo.addEventListener(
 
 /* =====================================================
    MOBILE LOGO TAP
-
-   Tap once:
-   Denizalp / aybak
-
-   ->
-   denizalp / AYBAK
-
-   hold
-
-   ->
-   Denizalp / aybak
    ===================================================== */
 
 logo.addEventListener(
@@ -3363,16 +3137,16 @@ logo.addEventListener(
 
 
         if (
-            logoMobileReturnTimer !==
+            logoReturnTimer !==
             null
         ) {
 
             clearTimeout(
-                logoMobileReturnTimer
+                logoReturnTimer
             );
 
 
-            logoMobileReturnTimer =
+            logoReturnTimer =
                 null;
 
         }
@@ -3382,7 +3156,7 @@ logo.addEventListener(
             5,
             () => {
 
-                logoMobileReturnTimer =
+                logoReturnTimer =
                     setTimeout(
                         () => {
 
@@ -3391,7 +3165,7 @@ logo.addEventListener(
                             );
 
 
-                            logoMobileReturnTimer =
+                            logoReturnTimer =
                                 null;
 
                         },
@@ -3406,69 +3180,18 @@ logo.addEventListener(
 
 
 /* =====================================================
-   RESIZE / ROTATION
+   RESIZE
    ===================================================== */
-
-function handleGeometryChange() {
-
-    if (
-        photographyTakeover
-            .classList
-            .contains(
-                "active"
-            )
-    ) {
-
-        /*
-            Temporarily reveal normal grid invisibly
-            so photography's source coordinate remains
-            measurable after orientation changes.
-        */
-
-        const hadMode =
-            document.body
-                .classList
-                .contains(
-                    "photography-mode"
-                );
-
-
-        if (
-            hadMode
-        ) {
-
-            document.body
-                .classList
-                .remove(
-                    "photography-mode"
-                );
-
-        }
-
-
-        layoutTakeover();
-
-
-        if (
-            hadMode
-        ) {
-
-            document.body
-                .classList
-                .add(
-                    "photography-mode"
-                );
-
-        }
-
-    }
-
-}
-
 
 window.addEventListener(
     "resize",
-    handleGeometryChange
+    () => {
+
+        requestAnimationFrame(
+            layoutCoverGrid
+        );
+
+    }
 );
 
 
@@ -3477,13 +3200,13 @@ window.addEventListener(
     () => {
 
         setTimeout(
-            handleGeometryChange,
+            layoutCoverGrid,
             100
         );
 
 
         setTimeout(
-            handleGeometryChange,
+            layoutCoverGrid,
             350
         );
 
@@ -3505,7 +3228,7 @@ document.addEventListener(
 
             clearModeTimer();
 
-            clearSheetTimers();
+            clearCoverTimers();
 
             filmVideo.pause();
 
@@ -3565,7 +3288,7 @@ document.addEventListener(
 
 
 /* =====================================================
-   INITIALIZE
+   INIT
    ===================================================== */
 
 async function init() {
@@ -3588,16 +3311,11 @@ async function init() {
 
 
     /*
-        Wait only for projects.json itself.
-
-        Once we know which photographs exist,
-        build the sheet.
-
-        Therefore the first PHOTOGRAPHY phase
-        is never an intentionally empty grid.
+        Get one cover per project from
+        the same projects.json photography uses.
     */
 
-    await loadPhotographyArchive();
+    await loadProjectCovers();
 
 
     setTimeout(
