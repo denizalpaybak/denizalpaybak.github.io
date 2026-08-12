@@ -974,18 +974,6 @@ const R2_PHOTOS_BASE =
    TIMING
    ===================================================== */
 
-/*
-    ONE-TIME AUTOMATIC INTRO
-
-    1. 4 seconds complete stillness
-    2. Denizalp Aybak gesture
-    3. Photography — approx. 2 seconds
-    4. Film — exactly one full 77-frame playback
-
-    Hover film behaviour:
-    normal hard-cut loop while hover remains active.
-*/
-
 const INTRO_INITIAL_DELAY =
     4000;
 
@@ -993,19 +981,18 @@ const INTRO_AFTER_LOGO_DELAY =
     650;
 
 /*
-    Photography:
+    Photography now gets a substantially longer clean hold.
 
-    PHOTO_SEQUENCE_DURATION = 400 ms reveal
-    +
-    INTRO_PHOTO_HOLD = 1200 ms
-    +
-    WORD_TRANSITION_DURATION = 400 ms retract
+    Reveal: 400 ms
+    Fully visible hold: 3200 ms
+    Retract: 400 ms
 
-    ≈ 2 seconds total perceived event.
+    This intentionally makes the photographic state
+    perceptually comparable to the 3.21 s moving-image state.
 */
 
 const INTRO_PHOTO_HOLD =
-    1200;
+    3200;
 
 const INTRO_BETWEEN_PHOTO_FILM =
     650;
@@ -1030,21 +1017,6 @@ const LOGO_MOBILE_HOLD =
    FILM TIMING
    ===================================================== */
 
-/*
-    Source clip:
-
-    77 frames
-    23.976 fps
-
-    Exact intended automatic duration:
-    77 / 23.976 = 3.211545... seconds
-
-    The actual video "ended" event is still used to avoid
-    fighting the browser's media clock.
-
-    This value documents the intended source duration.
-*/
-
 const FILM_FRAME_COUNT =
     77;
 
@@ -1054,6 +1026,30 @@ const FILM_FPS =
 const FILM_EXACT_DURATION =
     FILM_FRAME_COUNT /
     FILM_FPS;
+
+/*
+    One source frame:
+
+    1 / 23.976 = ~41.708 ms
+
+    During the automatic intro we begin the FILM -> film
+    closing transition one frame before the nominal end.
+
+    The video therefore remains in motion when the closing
+    gesture begins instead of reaching "ended" first and
+    briefly displaying a frozen final frame.
+*/
+
+const FILM_FRAME_DURATION =
+    1 /
+    FILM_FPS;
+
+const FILM_AUTO_CLOSE_TIME =
+    Math.max(
+        0,
+        FILM_EXACT_DURATION -
+        FILM_FRAME_DURATION
+    );
 
 
 /* =====================================================
@@ -1261,17 +1257,14 @@ let introTimer =
    FILM STATE
    ===================================================== */
 
-/*
-    auto:
-        one playback only
-
-    hover:
-        hard-cut restart at the end,
-        continuing for as long as FILM is hovered
-*/
-
 let filmPlaybackMode =
     "auto";
+
+let filmAutoCloseFrame =
+    null;
+
+let filmAutoCloseStarted =
+    false;
 
 
 /* =====================================================
@@ -1457,6 +1450,154 @@ function introWait(
 
             },
             duration
+        );
+
+}
+
+
+/* =====================================================
+   FILM AUTO-CLOSE HELPERS
+   ===================================================== */
+
+function cancelFilmAutoClose() {
+
+    filmAutoCloseStarted =
+        false;
+
+    if (
+        filmAutoCloseFrame !==
+        null
+    ) {
+
+        cancelAnimationFrame(
+            filmAutoCloseFrame
+        );
+
+        filmAutoCloseFrame =
+            null;
+
+    }
+
+}
+
+
+function scheduleAutomaticFilmClose() {
+
+    cancelFilmAutoClose();
+
+    function checkFilmPosition() {
+
+        if (
+            activeMode !==
+            "film" ||
+            filmPlaybackMode !==
+            "auto" ||
+            introCancelled
+        ) {
+
+            filmAutoCloseFrame =
+                null;
+
+            return;
+
+        }
+
+        /*
+            Use the source-frame calculation when possible.
+
+            If the actual encoded duration differs slightly,
+            never schedule later than one frame before the
+            browser-reported duration.
+        */
+
+        let closeAt =
+            FILM_AUTO_CLOSE_TIME;
+
+        if (
+            Number.isFinite(
+                filmVideo.duration
+            ) &&
+            filmVideo.duration >
+            0
+        ) {
+
+            closeAt =
+                Math.min(
+                    closeAt,
+
+                    Math.max(
+                        0,
+                        filmVideo.duration -
+                        FILM_FRAME_DURATION
+                    )
+                );
+
+        }
+
+        if (
+            filmVideo.currentTime >=
+            closeAt
+        ) {
+
+            filmAutoCloseFrame =
+                null;
+
+            filmAutoCloseStarted =
+                true;
+
+            /*
+                IMPORTANT:
+
+                Do not pause the video here.
+
+                FILM -> film starts while the final part
+                of the clip is still moving.
+            */
+
+            animateTitlesTo(
+                null,
+                () => {
+
+                    filmVideo.pause();
+
+                    filmField
+                        .classList
+                        .remove(
+                            "active"
+                        );
+
+                    activeMode =
+                        null;
+
+                    filmAutoCloseStarted =
+                        false;
+
+                    if (
+                        !introCancelled
+                    ) {
+
+                        introFinished =
+                            true;
+
+                    }
+
+                }
+            );
+
+            return;
+
+        }
+
+        filmAutoCloseFrame =
+            requestAnimationFrame(
+                checkFilmPosition
+            );
+
+    }
+
+    filmAutoCloseFrame =
+        requestAnimationFrame(
+            checkFilmPosition
         );
 
 }
@@ -4294,15 +4435,7 @@ function hideFilmWithTitle(
         null
 ) {
 
-    /*
-        Freeze the current/final frame.
-
-        FILM -> film happens while the image remains
-        visible.
-
-        Only after the title has returned to lowercase
-        does the video disappear.
-    */
+    cancelFilmAutoClose();
 
     filmVideo.pause();
 
@@ -4409,6 +4542,8 @@ function enterIdle(
 
     cancelPhotoSequence();
 
+    cancelFilmAutoClose();
+
     filmPlaybackMode =
         "auto";
 
@@ -4419,11 +4554,6 @@ function enterIdle(
                 "active"
             )
     ) {
-
-        /*
-            Photography image disappearance and
-            PHOTOGRAPHY -> photography begin together.
-        */
 
         animatePhotoGroups(
             0
@@ -4537,6 +4667,8 @@ function startPhotography(
     filmPlaybackMode =
         "auto";
 
+    cancelFilmAutoClose();
+
     cancelPhotoSequence();
 
     filmVideo.pause();
@@ -4560,10 +4692,6 @@ function startPhotography(
         .add(
             "active"
         );
-
-    /*
-        PHOTOGRAPHY and photographs reveal together.
-    */
 
     animateTitlesTo(
         "photography"
@@ -4589,6 +4717,8 @@ function startFilm(
 ) {
 
     cancelPhotoSequence();
+
+    cancelFilmAutoClose();
 
     activeMode =
         "film";
@@ -4624,6 +4754,25 @@ function startFilm(
             switchToFilmLayer()
                 .then(
                     () => {
+
+                        /*
+                            Automatic intro:
+                            start watching the media clock
+                            only once playback has actually
+                            been requested.
+
+                            Hover mode never uses this early
+                            close logic.
+                        */
+
+                        if (
+                            playbackMode ===
+                            "auto"
+                        ) {
+
+                            scheduleAutomaticFilmClose();
+
+                        }
 
                         if (
                             typeof onReady ===
@@ -4762,7 +4911,7 @@ function introPhotography() {
 
                     /*
                         Photos and PHOTOGRAPHY retract
-                        at exactly the same time.
+                        simultaneously.
                     */
 
                     animatePhotoGroups(
@@ -4813,13 +4962,6 @@ function introFilm() {
 
     }
 
-    /*
-        Automatic film = ONE playback only.
-
-        The browser's media clock / ended event determines
-        the exact end of the 77-frame file.
-    */
-
     startFilm(
         null,
         "auto"
@@ -4849,10 +4991,6 @@ function startAutomaticIntro() {
     introCancelled =
         false;
 
-    /*
-        4 seconds of absolute calm.
-    */
-
     introWait(
         INTRO_INITIAL_DELAY,
         introLogo
@@ -4862,7 +5000,7 @@ function startAutomaticIntro() {
 
 
 /* =====================================================
-   CANCEL INTRO ON DESKTOP INTERACTION
+   CANCEL INTRO ON INTERACTION
    ===================================================== */
 
 function cancelAutomaticIntroForInteraction() {
@@ -4882,6 +5020,8 @@ function cancelAutomaticIntroForInteraction() {
         true;
 
     clearIntroTimer();
+
+    cancelFilmAutoClose();
 
 }
 
@@ -4904,16 +5044,14 @@ filmVideo.addEventListener(
         }
 
         /*
-            DESKTOP HOVER
+            HOVER MODE
 
-            Hard-cut directly back to frame 1 and play
-            again.
+            The video is allowed to reach its actual end.
+            It then hard-cuts directly back to frame 1.
 
             No fade.
-            No crossfade.
             No boomerang.
-
-            Continue for as long as FILM remains hovered.
+            No crossfade.
         */
 
         if (
@@ -4931,24 +5069,35 @@ filmVideo.addEventListener(
         }
 
         /*
-            AUTOMATIC INTRO
+            AUTOMATIC MODE FALLBACK
 
-            Exactly one complete playback.
+            Normally automatic playback is already closing
+            before "ended" can fire.
 
-            Keep the final frame visible while
-            FILM -> film happens.
-
-            Then return permanently to the quiet
-            landing state.
+            This is only a safety fallback for browsers that
+            failed to run the requestAnimationFrame watcher.
         */
 
         if (
             filmPlaybackMode ===
-            "auto"
+            "auto" &&
+            !filmAutoCloseStarted
         ) {
 
-            hideFilmWithTitle(
+            cancelFilmAutoClose();
+
+            animateTitlesTo(
+                null,
                 () => {
+
+                    filmField
+                        .classList
+                        .remove(
+                            "active"
+                        );
+
+                    activeMode =
+                        null;
 
                     if (
                         !introCancelled
@@ -5081,13 +5230,6 @@ filmLink.addEventListener(
         hoverMode =
             "film";
 
-        /*
-            Hover mode is explicitly passed here.
-
-            This is what enables the hard-cut loop
-            in the video's ended event.
-        */
-
         startFilm(
             null,
             "hover"
@@ -5138,13 +5280,15 @@ filmLink.addEventListener(
                     null;
 
                 /*
-                    This immediately prevents another
-                    loop restart if the ended event lands
-                    at almost exactly the same moment.
+                    Disable looping before closing so an
+                    ended event cannot restart the video
+                    during the FILM -> film transition.
                 */
 
                 filmPlaybackMode =
                     "auto";
+
+                cancelFilmAutoClose();
 
                 enterIdle();
 
@@ -5620,10 +5764,6 @@ function init() {
 
     mountPhotographyField();
 
-    /*
-        Initial visual state is completely quiet.
-    */
-
     setLogoState(
         0
     );
@@ -5655,8 +5795,8 @@ function init() {
         );
 
     /*
-        Photography assets prepare invisibly during
-        the initial four-second still period.
+        Photography prepares invisibly during the initial
+        four-second still period.
     */
 
     loadInitialPhotography()
@@ -5674,15 +5814,19 @@ function init() {
     /*
         ONE-TIME CHOREOGRAPHY
 
-        1. 4 s stillness
-        2. Denizalp Aybak
-        3. Photography ≈ 2 s
-        4. Film = one complete 77-frame playback
-        5. permanent idle
+        1. 4 s complete stillness
+        2. Denizalp Aybak gesture
+        3. Photography:
+           reveal + 3.2 s clean hold + retract
+        4. short quiet interval
+        5. Film:
+           77-frame clip, with closing gesture beginning
+           approximately one frame before playback ends
+        6. permanent idle
 
-        Desktop afterwards:
+        Desktop after intro:
         Photography hover = photography interaction
-        Film hover        = continuous hard-cut video loop
+        Film hover        = hard-cut continuous loop
     */
 
     startAutomaticIntro();
