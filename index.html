@@ -3,11 +3,19 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
 <title>Denizalp Aybak</title>
 
 <style>
+
+/* =====================================================
+   RESET
+   ===================================================== */
 
 * {
     box-sizing: border-box;
@@ -19,7 +27,9 @@ body {
     padding: 0;
 
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+
+    overflow: hidden;
 
     background: #fff;
 
@@ -29,13 +39,17 @@ body {
 
 body {
     color: #000;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 
-/* =========================
+/* =====================================================
    VARIABLES
-   ========================= */
+   ===================================================== */
 
 :root {
 
@@ -43,22 +57,32 @@ body {
     --page-top: 32px;
     --page-bottom: 48px;
 
-    --preview-left: 620px;
-    --preview-top: 32px;
-    --preview-height: 500px;
+    --font-size: 15px;
+    --line-height: 1.15;
+
+    --block-gap: 17px;
+    --media-gap: 16px;
 
 }
 
 
-/* =========================
+/* =====================================================
    PAGE
-   ========================= */
+
+   Entire landing is locked to the viewport.
+
+   Therefore:
+   - no scroll
+   - lc waikiki always remains visible
+   - media gets whatever height is genuinely left
+   ===================================================== */
 
 .page {
     position: relative;
 
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
 
     padding:
         var(--page-top)
@@ -66,44 +90,57 @@ body {
         var(--page-bottom)
         var(--page-x);
 
-    z-index: 20;
+    overflow: hidden;
 }
 
 
-/* =========================
+/* =====================================================
    COLUMN
-   ========================= */
+
+   Text retains its 530px editorial column.
+
+   Media is allowed to extend horizontally beyond
+   that column while staying aligned to its left edge.
+   ===================================================== */
 
 .column {
+    display: flex;
+    flex-direction: column;
+
     width: 100%;
     max-width: 530px;
+    height: 100%;
 
     margin: 0;
     padding: 0;
+
+    min-height: 0;
 }
 
 
-/* =========================
+/* =====================================================
    LOGO
-   ========================= */
+   ===================================================== */
 
 .logo {
     position: relative;
+
     display: block;
+    flex: 0 0 auto;
 
     width: max-content;
     height: 34px;
 
-    margin: 0 0 17px 0;
+    margin: 0 0 var(--block-gap) 0;
 
     color: #000;
     text-decoration: none;
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: var(--font-size);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: var(--line-height);
 }
 
 .logo-name {
@@ -114,9 +151,9 @@ body {
 
     white-space: nowrap;
 
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.15;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
 }
 
 .logo-aybak {
@@ -127,38 +164,48 @@ body {
 
     white-space: nowrap;
 
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.15;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
 
     letter-spacing: normal;
 }
 
 
-/* =========================
+/* =====================================================
    OPENING
-   ========================= */
+   ===================================================== */
 
 .opening {
-    margin: 0 0 17px 0;
+    flex: 0 0 auto;
 
-    font-size: 15px;
+    margin:
+        0
+        0
+        var(--block-gap)
+        0;
+
+    padding: 0;
+
+    font-size: var(--font-size);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: var(--line-height);
 
     text-wrap: balance;
 }
 
 
-/* =========================
+/* =====================================================
    NAVIGATION
-   ========================= */
+   ===================================================== */
 
 .navigation {
     display: flex;
     flex-direction: column;
 
-    margin: 0 0 16px 0;
+    flex: 0 0 auto;
+
+    margin: 0;
     padding: 0;
 }
 
@@ -170,21 +217,134 @@ body {
     color: #000;
     text-decoration: none;
 
-    font-size: 15px;
+    font-size: var(--font-size);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: var(--line-height);
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 
-/* =========================
+/* =====================================================
+   MEDIA SLOT
+
+   This space ALWAYS exists.
+
+   Therefore switching:
+   photography -> film
+   never moves any copy.
+
+   Height = whatever the viewport has left after
+   all typography has taken its required space.
+
+   Width = entire usable viewport width.
+
+   This means large screens give the image more room
+   while short screens automatically make it smaller.
+   ===================================================== */
+
+.media-slot {
+    position: relative;
+
+    flex:
+        1
+        1
+        auto;
+
+    min-height: 0;
+
+    /*
+        Column starts at --page-x.
+
+        This makes the media extend all the way
+        to the matching right margin.
+    */
+
+    width:
+        calc(
+            100vw -
+            var(--page-x) * 2
+        );
+
+    margin:
+        var(--media-gap)
+        0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   MEDIA LAYERS
+
+   Photography + film occupy the exact same frame.
+
+   Hard switch only:
+   - no fade
+   - no scale
+   - no movement
+   ===================================================== */
+
+.media-layer {
+    position: absolute;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: flex-start;
+
+    pointer-events: none;
+}
+
+.media-layer.active {
+    display: flex;
+}
+
+
+/* =====================================================
+   MEDIA
+
+   Left-aligned because it belongs visually to
+   the typography column.
+
+   It uses the slot as aggressively as its
+   aspect ratio allows.
+   ===================================================== */
+
+.media-layer img,
+.media-layer video {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: left center;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
    CONTACT
-   ========================= */
+   ===================================================== */
 
 .contact {
     display: flex;
     flex-direction: column;
 
-    margin: 0 0 17px 0;
+    flex: 0 0 auto;
+
+    margin:
+        0
+        0
+        var(--block-gap)
+        0;
+
     padding: 0;
 }
 
@@ -192,9 +352,9 @@ body {
     color: #000;
     text-decoration: none;
 
-    font-size: 15px;
+    font-size: var(--font-size);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: var(--line-height);
 }
 
 .contact a:hover {
@@ -202,24 +362,31 @@ body {
 }
 
 
-/* =========================
+/* =====================================================
    BIOGRAPHY
-   ========================= */
+   ===================================================== */
 
 .biography {
+    flex: 0 0 auto;
+
     width: 100%;
     max-width: 530px;
 
     margin: 0;
     padding: 0;
 
-    font-size: 15px;
+    font-size: var(--font-size);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: var(--line-height);
 }
 
 .biography p {
-    margin: 0 0 17px 0;
+    margin:
+        0
+        0
+        var(--block-gap)
+        0;
+
     padding: 0;
 
     font-size: inherit;
@@ -244,75 +411,9 @@ body {
 }
 
 
-/* =========================
-   PREVIEW
-
-   Safe frame:
-   - entirely right of text
-   - same vertical territory as text
-   - never taller than text column
-
-   Actual media:
-   centered horizontally
-   centered vertically
-   ========================= */
-
-.preview {
-    position: fixed;
-
-    top: var(--preview-top);
-
-    left: var(--preview-left);
-    right: var(--page-x);
-
-    height: var(--preview-height);
-
-    display: none;
-
-    z-index: 10;
-
-    pointer-events: none;
-
-    overflow: hidden;
-}
-
-
-@media (min-width: 601px) {
-
-    .preview.active {
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-    }
-
-}
-
-
-/* =========================
-   PREVIEW MEDIA
-
-   Fully centered inside the
-   available right-side frame.
-   ========================= */
-
-.preview img,
-.preview video {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-    object-position: center center;
-
-    pointer-events: none;
-}
-
-
-/* =========================
+/* =====================================================
    MOBILE
-   ========================= */
+   ===================================================== */
 
 @media (max-width: 600px) {
 
@@ -322,110 +423,29 @@ body {
         --page-top: 20px;
         --page-bottom: 32px;
 
+        --font-size: 13px;
+
+        --block-gap: 15px;
+        --media-gap: 14px;
+
     }
 
-    .page {
-        padding:
-            var(--page-top)
-            var(--page-x)
-            var(--page-bottom)
-            var(--page-x);
-    }
 
     .column {
         max-width: none;
     }
 
+
     .logo {
         height: 30px;
-        margin-bottom: 15px;
-
-        font-size: 13px;
     }
 
-    .logo-name,
-    .logo-aybak {
-        font-size: 13px;
-    }
 
     .logo-aybak {
         top: 15px;
     }
 
-    .opening,
-    .navigation,
-    .navigation a,
-    .nav-text,
-    .contact,
-    .contact a,
-    .biography,
-    .biography p,
-    .biography span,
-    .item {
-        font-size: 13px !important;
-        line-height: 1.15;
 
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-    }
-
-    .opening,
-    .biography p {
-        margin-bottom: 15px;
-    }
-
-    .navigation {
-        margin-bottom: 15px;
-    }
-
-    .contact {
-        margin-bottom: 15px;
-    }
-
-    .preview {
-        display: none !important;
-    }
-
-}
-
-
-/* =========================
-   SHORT LANDSCAPE
-   ========================= */
-
-@media
-    (orientation: landscape)
-    and (max-height: 700px) {
-
-    :root {
-
-        --page-x: 24px;
-        --page-top: 20px;
-        --page-bottom: 24px;
-
-    }
-
-    .page {
-        padding:
-            var(--page-top)
-            var(--page-x)
-            var(--page-bottom)
-            var(--page-x);
-    }
-
-    .column {
-        max-width: 470px;
-    }
-
-    .logo {
-        height: 30px;
-        margin-bottom: 14px;
-
-        font-size: 13px !important;
-    }
-
-    .logo-name,
-    .logo-aybak,
     .opening,
     .navigation,
     .navigation a,
@@ -438,23 +458,90 @@ body {
     .item {
         font-size: 13px !important;
         line-height: 1.15 !important;
-
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
     }
+
+}
+
+
+/* =====================================================
+   SHORT LANDSCAPE
+
+   Reduces type and rhythm so even short displays
+   preserve the full one-screen composition.
+
+   Media simply receives a smaller flex allocation.
+   ===================================================== */
+
+@media
+    (orientation: landscape)
+    and (max-height: 700px) {
+
+    :root {
+
+        --page-x: 24px;
+        --page-top: 20px;
+        --page-bottom: 24px;
+
+        --font-size: 13px;
+
+        --block-gap: 14px;
+        --media-gap: 10px;
+
+    }
+
+
+    .column {
+        max-width: 470px;
+    }
+
+
+    .logo {
+        height: 30px;
+    }
+
 
     .logo-aybak {
         top: 15px;
     }
 
+
     .opening,
-    .biography p {
-        margin-bottom: 14px;
+    .navigation,
+    .navigation a,
+    .nav-text,
+    .contact,
+    .contact a,
+    .biography,
+    .biography p,
+    .biography span,
+    .item {
+        font-size: 13px !important;
+        line-height: 1.15 !important;
     }
 
-    .navigation,
-    .contact {
-        margin-bottom: 14px;
+}
+
+
+/* =====================================================
+   EXTREMELY SHORT VIEWPORT
+
+   Last defensive layer.
+
+   We only compress spacing, never typography
+   below 13px.
+   ===================================================== */
+
+@media
+    (max-height: 620px) {
+
+    :root {
+
+        --block-gap: 10px;
+        --media-gap: 7px;
+
+        --page-top: 16px;
+        --page-bottom: 16px;
+
     }
 
 }
@@ -472,6 +559,11 @@ body {
         class="column"
         id="landing-column"
     >
+
+
+        <!-- =================================================
+             LOGO
+             ================================================= -->
 
         <a
             class="logo"
@@ -493,18 +585,27 @@ body {
         </a>
 
 
+        <!-- =================================================
+             OPENING
+             ================================================= -->
+
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
+
+        <!-- =================================================
+             NAVIGATION
+             ================================================= -->
 
         <nav class="navigation">
 
             <a
                 href="https://photography.denizalpaybak.com/"
                 class="animated-link"
+                id="photography-link"
                 data-word="photography"
-                data-preview="photography"
+                data-mode="photography"
             >
                 <span class="nav-text">
                     photography
@@ -515,8 +616,9 @@ body {
             <a
                 href="https://film.denizalpaybak.com/"
                 class="animated-link"
+                id="film-link"
                 data-word="film"
-                data-preview="film"
+                data-mode="film"
             >
                 <span class="nav-text">
                     film
@@ -525,6 +627,54 @@ body {
 
         </nav>
 
+
+        <!-- =================================================
+             MEDIA
+
+             Permanently reserved between navigation
+             and contact.
+             ================================================= -->
+
+        <div
+            class="media-slot"
+            id="media-slot"
+            aria-hidden="true"
+        >
+
+            <div
+                class="media-layer"
+                id="photography-media"
+            >
+
+                <img
+                    src="./photo.jpg"
+                    alt=""
+                >
+
+            </div>
+
+
+            <div
+                class="media-layer"
+                id="film-media"
+            >
+
+                <video
+                    id="film-video"
+                    src="./film.mp4"
+                    muted
+                    playsinline
+                    preload="auto"
+                ></video>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTACT
+             ================================================= -->
 
         <div class="contact">
 
@@ -555,6 +705,10 @@ body {
         </div>
 
 
+        <!-- =================================================
+             BIO
+             ================================================= -->
+
         <section class="biography">
 
             <p>
@@ -582,53 +736,155 @@ body {
 </div>
 
 
-<div
-    class="preview"
-    id="photography-preview"
->
-    <img
-        src="./photo.jpg"
-        alt=""
-    >
-</div>
-
-
-<div
-    class="preview"
-    id="film-preview"
->
-    <video
-        src="./film.mp4"
-        muted
-        loop
-        playsinline
-        preload="auto"
-    ></video>
-</div>
-
-
 <script>
-
 
 /* =====================================================
    TIMING
    ===================================================== */
 
+
+/*
+    Same capitalization speed as the photography page.
+*/
+
 const WORD_TRANSITION_DURATION =
     400;
 
-const WORD_HOLD_DURATION =
-    2000;
 
-const WORD_CYCLE_DURATION =
-    WORD_HOLD_DURATION +
-    WORD_TRANSITION_DURATION +
-    WORD_HOLD_DURATION +
-    WORD_TRANSITION_DURATION;
+/*
+    Video:
+
+    77 frames / 23.976 fps
+
+    = 3.211544878211545 seconds
+    = 3211.544878211545 ms
+*/
+
+const VIDEO_FRAME_COUNT =
+    77;
+
+
+const VIDEO_FPS =
+    23.976;
+
+
+const VIDEO_DURATION_MS =
+    (
+        VIDEO_FRAME_COUNT /
+        VIDEO_FPS
+    ) *
+    1000;
+
+
+/*
+    Photography is given exactly the same total
+    screen time as the film clip.
+
+    This gives the loop a perfectly even rhythm.
+*/
+
+const PHOTOGRAPHY_DURATION_MS =
+    VIDEO_DURATION_MS;
+
+
+/*
+    Enough time to see the original lowercase
+    landing before the first image enters.
+
+    No visual animation on the image itself.
+*/
+
+const INITIAL_DELAY_MS =
+    700;
 
 
 /* =====================================================
-   WORD HELPERS
+   ELEMENTS
+   ===================================================== */
+
+const photographyLink =
+    document.getElementById(
+        "photography-link"
+    );
+
+
+const filmLink =
+    document.getElementById(
+        "film-link"
+    );
+
+
+const photographyText =
+    photographyLink.querySelector(
+        ".nav-text"
+    );
+
+
+const filmText =
+    filmLink.querySelector(
+        ".nav-text"
+    );
+
+
+const photographyMedia =
+    document.getElementById(
+        "photography-media"
+    );
+
+
+const filmMedia =
+    document.getElementById(
+        "film-media"
+    );
+
+
+const filmVideo =
+    document.getElementById(
+        "film-video"
+    );
+
+
+/* =====================================================
+   WORD STATE
+   ===================================================== */
+
+const navItems =
+    [
+
+        {
+            element:
+                photographyText,
+
+            link:
+                photographyLink,
+
+            word:
+                "photography",
+
+            count:
+                0
+        },
+
+
+        {
+            element:
+                filmText,
+
+            link:
+                filmLink,
+
+            word:
+                "film",
+
+            count:
+                0
+        }
+
+    ];
+
+
+/* =====================================================
+   RENDER CASE
    ===================================================== */
 
 function renderCaseWord(
@@ -640,6 +896,18 @@ function renderCaseWord(
         "";
 
 
+    const count =
+        Math.max(
+            0,
+            Math.min(
+                word.length,
+                Math.round(
+                    upperCount
+                )
+            )
+        );
+
+
     for (
         let i = 0;
         i < word.length;
@@ -647,9 +915,13 @@ function renderCaseWord(
     ) {
 
         result +=
-            i < upperCount
-                ? word[i].toUpperCase()
-                : word[i].toLowerCase();
+            i < count
+                ? word[
+                    i
+                ].toUpperCase()
+                : word[
+                    i
+                ].toLowerCase();
 
     }
 
@@ -660,7 +932,851 @@ function renderCaseWord(
 
 
 /* =====================================================
-   LOGO
+   SET WORD STATE
+   ===================================================== */
+
+function setWordCount(
+    item,
+    count
+) {
+
+    item.count =
+        Math.max(
+            0,
+            Math.min(
+                item.word.length,
+                Math.round(
+                    count
+                )
+            )
+        );
+
+
+    item.element.textContent =
+        renderCaseWord(
+            item.word,
+            item.count
+        );
+
+}
+
+
+/* =====================================================
+   TITLE MORPH
+
+   ONE shared animation drives BOTH words.
+
+   So:
+
+   PHOtography -> PHOTOGRAPHY
+   FILm        -> film
+
+   start together
+   finish together.
+
+   If direction changes halfway through,
+   animation simply starts from the exact
+   current states.
+   ===================================================== */
+
+let titleAnimationFrame =
+    null;
+
+
+let titleAnimationToken =
+    0;
+
+
+function animateTitlesTo(
+    mode
+) {
+
+    titleAnimationToken++;
+
+
+    const token =
+        titleAnimationToken;
+
+
+    if (
+        titleAnimationFrame !==
+        null
+    ) {
+
+        cancelAnimationFrame(
+            titleAnimationFrame
+        );
+
+
+        titleAnimationFrame =
+            null;
+
+    }
+
+
+    const photography =
+        navItems[
+            0
+        ];
+
+
+    const film =
+        navItems[
+            1
+        ];
+
+
+    const photoStart =
+        photography.count;
+
+
+    const filmStart =
+        film.count;
+
+
+    const photoTarget =
+        mode ===
+        "photography"
+            ? photography.word.length
+            : 0;
+
+
+    const filmTarget =
+        mode ===
+        "film"
+            ? film.word.length
+            : 0;
+
+
+    const start =
+        performance.now();
+
+
+    function frame(
+        now
+    ) {
+
+        if (
+            token !==
+            titleAnimationToken
+        ) {
+
+            return;
+
+        }
+
+
+        const progress =
+            Math.min(
+                1,
+                (
+                    now -
+                    start
+                ) /
+                WORD_TRANSITION_DURATION
+            );
+
+
+        /*
+            Stepwise capitalization.
+
+            Photography has more letters than film,
+            but both use normalized 0 -> 1 progress,
+            therefore both finish at exactly 400ms.
+        */
+
+        const photoValue =
+            photoStart +
+            (
+                photoTarget -
+                photoStart
+            ) *
+            progress;
+
+
+        const filmValue =
+            filmStart +
+            (
+                filmTarget -
+                filmStart
+            ) *
+            progress;
+
+
+        if (
+            photoTarget >=
+            photoStart
+        ) {
+
+            setWordCount(
+                photography,
+                Math.floor(
+                    photoValue +
+                    0.0001
+                )
+            );
+
+        }
+
+        else {
+
+            setWordCount(
+                photography,
+                Math.ceil(
+                    photoValue -
+                    0.0001
+                )
+            );
+
+        }
+
+
+        if (
+            filmTarget >=
+            filmStart
+        ) {
+
+            setWordCount(
+                film,
+                Math.floor(
+                    filmValue +
+                    0.0001
+                )
+            );
+
+        }
+
+        else {
+
+            setWordCount(
+                film,
+                Math.ceil(
+                    filmValue -
+                    0.0001
+                )
+            );
+
+        }
+
+
+        if (
+            progress <
+            1
+        ) {
+
+            titleAnimationFrame =
+                requestAnimationFrame(
+                    frame
+                );
+
+        }
+
+        else {
+
+            setWordCount(
+                photography,
+                photoTarget
+            );
+
+
+            setWordCount(
+                film,
+                filmTarget
+            );
+
+
+            titleAnimationFrame =
+                null;
+
+        }
+
+    }
+
+
+    titleAnimationFrame =
+        requestAnimationFrame(
+            frame
+        );
+
+}
+
+
+/* =====================================================
+   MEDIA SWITCH
+
+   Deliberately hard.
+
+   The capitalization IS the transition effect.
+   ===================================================== */
+
+function showPhotography() {
+
+    filmMedia
+        .classList
+        .remove(
+            "active"
+        );
+
+
+    photographyMedia
+        .classList
+        .add(
+            "active"
+        );
+
+
+    /*
+        Stop film immediately if user interrupts it.
+    */
+
+    filmVideo.pause();
+
+}
+
+
+function showFilm() {
+
+    photographyMedia
+        .classList
+        .remove(
+            "active"
+        );
+
+
+    filmMedia
+        .classList
+        .add(
+            "active"
+        );
+
+
+    /*
+        Always begin at the beginning of frame 1.
+    */
+
+    filmVideo.pause();
+
+
+    try {
+
+        filmVideo.currentTime =
+            0;
+
+    }
+
+    catch (error) {}
+
+
+    filmVideo.playbackRate =
+        1;
+
+
+    filmVideo
+        .play()
+        .catch(
+            () => {}
+        );
+
+}
+
+
+/* =====================================================
+   LOOP STATE
+   ===================================================== */
+
+let activeMode =
+    null;
+
+
+let hoverMode =
+    null;
+
+
+let phaseTimer =
+    null;
+
+
+let videoFallbackTimer =
+    null;
+
+
+let modeToken =
+    0;
+
+
+/* =====================================================
+   CLEAR PHASE TIMERS
+   ===================================================== */
+
+function clearPhaseTimers() {
+
+    if (
+        phaseTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            phaseTimer
+        );
+
+
+        phaseTimer =
+            null;
+
+    }
+
+
+    if (
+        videoFallbackTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            videoFallbackTimer
+        );
+
+
+        videoFallbackTimer =
+            null;
+
+    }
+
+}
+
+
+/* =====================================================
+   GO TO MODE
+
+   Media changes immediately.
+
+   Titles then morph over 400ms.
+
+   Media DOES NOT fade.
+   ===================================================== */
+
+function goToMode(
+    mode,
+    {
+        automatic =
+            true
+    } = {}
+) {
+
+    modeToken++;
+
+
+    const token =
+        modeToken;
+
+
+    clearPhaseTimers();
+
+
+    activeMode =
+        mode;
+
+
+    /* ---------------------------------------------
+       HARD MEDIA SWITCH
+       --------------------------------------------- */
+
+    if (
+        mode ===
+        "photography"
+    ) {
+
+        showPhotography();
+
+    }
+
+    else {
+
+        showFilm();
+
+    }
+
+
+    /* ---------------------------------------------
+       TITLE TRANSITION
+       --------------------------------------------- */
+
+    animateTitlesTo(
+        mode
+    );
+
+
+    /*
+        Hover controls the state indefinitely.
+
+        No automatic phase change until pointer leaves.
+    */
+
+    if (
+        !automatic ||
+        hoverMode !==
+        null
+    ) {
+
+        return;
+
+    }
+
+
+    /* ---------------------------------------------
+       PHOTOGRAPHY PHASE
+
+       Total visible duration:
+       exactly 77 / 23.976 seconds.
+       --------------------------------------------- */
+
+    if (
+        mode ===
+        "photography"
+    ) {
+
+        phaseTimer =
+            setTimeout(
+                () => {
+
+                    if (
+                        token !==
+                        modeToken ||
+                        hoverMode !==
+                        null
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    goToMode(
+                        "film"
+                    );
+
+                },
+                PHOTOGRAPHY_DURATION_MS
+            );
+
+    }
+
+
+    /*
+        Film's primary clock is NOT a timeout.
+
+        The actual HTML video 'ended' event is used.
+
+        Therefore the encoded clip itself determines
+        exactly when all 77 frames have finished.
+    */
+
+    else {
+
+        /*
+            Fallback only in case a browser fails to fire
+            'ended' due to an unusual media condition.
+
+            It is intentionally slightly later than the
+            mathematical clip duration and is normally
+            never reached.
+        */
+
+        videoFallbackTimer =
+            setTimeout(
+                () => {
+
+                    if (
+                        token !==
+                        modeToken ||
+                        hoverMode !==
+                        null
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        filmVideo.ended
+                    ) {
+
+                        goToMode(
+                            "photography"
+                        );
+
+                    }
+
+                },
+                VIDEO_DURATION_MS +
+                100
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   VIDEO FINISHED
+
+   This is the exact automatic film -> photo trigger.
+   ===================================================== */
+
+filmVideo.addEventListener(
+    "ended",
+    () => {
+
+        /*
+            If film is being explicitly hovered,
+            remain on its final frame until hover ends.
+
+            We do NOT loop or replay frames.
+        */
+
+        if (
+            hoverMode ===
+            "film"
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            activeMode !==
+            "film"
+        ) {
+
+            return;
+
+        }
+
+
+        goToMode(
+            "photography"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   DESKTOP HOVER AVAILABILITY
+   ===================================================== */
+
+function canHover() {
+
+    return window
+        .matchMedia(
+            "(hover: hover) and (pointer: fine)"
+        )
+        .matches;
+
+}
+
+
+/* =====================================================
+   HOVER ENTER
+
+   Example:
+
+   current:
+       photography
+       FILm
+
+   user hovers photography:
+
+       photography -> PHOTOGRAPHY
+       FILm        -> film
+
+   while media hard-switches immediately to photo.
+   ===================================================== */
+
+function handleHoverEnter(
+    mode
+) {
+
+    if (
+        !canHover()
+    ) {
+
+        return;
+
+    }
+
+
+    hoverMode =
+        mode;
+
+
+    goToMode(
+        mode,
+        {
+            automatic:
+                false
+        }
+    );
+
+}
+
+
+/* =====================================================
+   HOVER LEAVE
+
+   When hover leaves, immediately move to the
+   OTHER category as requested.
+
+   photography leave:
+       -> film / FILM + video
+
+   film leave:
+       -> PHOTOGRAPHY / film + photo
+   ===================================================== */
+
+function handleHoverLeave(
+    mode
+) {
+
+    if (
+        !canHover()
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        Give the browser one task to detect whether
+        pointer moved directly onto the other title.
+    */
+
+    setTimeout(
+        () => {
+
+            const photographyHovered =
+                photographyLink.matches(
+                    ":hover"
+                );
+
+
+            const filmHovered =
+                filmLink.matches(
+                    ":hover"
+                );
+
+
+            /*
+                Pointer moved directly to another title.
+
+                Its mouseenter handler owns the transition.
+            */
+
+            if (
+                photographyHovered ||
+                filmHovered
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+                Ignore an obsolete leave event.
+            */
+
+            if (
+                hoverMode !==
+                mode
+            ) {
+
+                return;
+
+            }
+
+
+            hoverMode =
+                null;
+
+
+            const nextMode =
+                mode ===
+                "photography"
+                    ? "film"
+                    : "photography";
+
+
+            goToMode(
+                nextMode
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =====================================================
+   HOVER EVENTS
+   ===================================================== */
+
+photographyLink.addEventListener(
+    "mouseenter",
+    () => {
+
+        handleHoverEnter(
+            "photography"
+        );
+
+    }
+);
+
+
+photographyLink.addEventListener(
+    "mouseleave",
+    () => {
+
+        handleHoverLeave(
+            "photography"
+        );
+
+    }
+);
+
+
+filmLink.addEventListener(
+    "mouseenter",
+    () => {
+
+        handleHoverEnter(
+            "film"
+        );
+
+    }
+);
+
+
+filmLink.addEventListener(
+    "mouseleave",
+    () => {
+
+        handleHoverLeave(
+            "film"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   LOGO ANIMATION
+
+   Photography-page rhythm:
+   5 steps × 80ms = 400ms.
    ===================================================== */
 
 const logo =
@@ -668,56 +1784,66 @@ const logo =
         ".logo"
     );
 
+
 const logoName =
     document.getElementById(
         "logo-name"
     );
 
-const logoLetters = [
 
-    document.getElementById(
-        "letter-a"
-    ),
+const logoLetters =
+    [
 
-    document.getElementById(
-        "letter-y"
-    ),
+        document.getElementById(
+            "letter-a"
+        ),
 
-    document.getElementById(
-        "letter-b"
-    ),
+        document.getElementById(
+            "letter-y"
+        ),
 
-    document.getElementById(
-        "letter-a2"
-    ),
+        document.getElementById(
+            "letter-b"
+        ),
 
-    document.getElementById(
-        "letter-k"
-    )
+        document.getElementById(
+            "letter-a2"
+        ),
 
-];
+        document.getElementById(
+            "letter-k"
+        )
 
-const lowercase = [
-    "a",
-    "y",
-    "b",
-    "a",
-    "k"
-];
+    ];
 
-const uppercase = [
-    "A",
-    "Y",
-    "B",
-    "A",
-    "K"
-];
+
+const lowercase =
+    [
+        "a",
+        "y",
+        "b",
+        "a",
+        "k"
+    ];
+
+
+const uppercase =
+    [
+        "A",
+        "Y",
+        "B",
+        "A",
+        "K"
+    ];
+
 
 let logoState =
     0;
 
+
 let logoTarget =
     0;
+
 
 let logoTimer =
     null;
@@ -732,7 +1858,8 @@ function setLogoState(
 
 
     logoName.textContent =
-        state === 0
+        state ===
+        0
             ? "Denizalp"
             : "denizalp";
 
@@ -746,9 +1873,14 @@ function setLogoState(
         logoLetters[
             i
         ].textContent =
-            i < state
-                ? uppercase[i]
-                : lowercase[i];
+            i <
+            state
+                ? uppercase[
+                    i
+                ]
+                : lowercase[
+                    i
+                ];
 
     }
 
@@ -818,9 +1950,7 @@ logo.addEventListener(
     () => {
 
         if (
-            window.matchMedia(
-                "(hover: hover) and (min-width: 601px)"
-            ).matches
+            canHover()
         ) {
 
             animateLogoTo(
@@ -838,9 +1968,7 @@ logo.addEventListener(
     () => {
 
         if (
-            window.matchMedia(
-                "(hover: hover) and (min-width: 601px)"
-            ).matches
+            canHover()
         ) {
 
             animateLogoTo(
@@ -853,1039 +1981,131 @@ logo.addEventListener(
 );
 
 
+/* =====================================================
+   INITIAL STATE
+   ===================================================== */
+
 setLogoState(
     0
 );
 
 
-/* =====================================================
-   NAVIGATION ELEMENTS
-   ===================================================== */
-
-const animatedLinks =
-    Array.from(
-        document.querySelectorAll(
-            ".animated-link"
-        )
-    );
-
-
-/* =====================================================
-   NAV STATES
-   ===================================================== */
-
-const navStates =
-    new Map();
-
-
-animatedLinks.forEach(
-    link => {
-
-        navStates.set(
-            link,
-            {
-                currentCount: 0,
-                baseCount: 0,
-                frame: null
-            }
-        );
-
-    }
+setWordCount(
+    navItems[
+        0
+    ],
+    0
 );
 
 
-/* =====================================================
-   RENDER NAV STATE
-   ===================================================== */
-
-function renderNavCount(
-    link,
-    count
-) {
-
-    const word =
-        link.dataset.word;
-
-
-    const state =
-        navStates.get(
-            link
-        );
-
-
-    const normalized =
-        Math.max(
-            0,
-            Math.min(
-                word.length,
-                Math.round(
-                    count
-                )
-            )
-        );
-
-
-    state.currentCount =
-        normalized;
-
-
-    link
-        .querySelector(
-            ".nav-text"
-        )
-        .textContent =
-            renderCaseWord(
-                word,
-                normalized
-            );
-
-}
-
-
-/* =====================================================
-   ANIMATE NAV STATE
-   ===================================================== */
-
-function animateNavCount(
-    link,
-    target,
-    duration =
-        WORD_TRANSITION_DURATION
-) {
-
-    const state =
-        navStates.get(
-            link
-        );
-
-
-    if (
-        state.frame !==
-        null
-    ) {
-
-        cancelAnimationFrame(
-            state.frame
-        );
-
-
-        state.frame =
-            null;
-
-    }
-
-
-    const startCount =
-        state.currentCount;
-
-
-    const targetCount =
-        Math.max(
-            0,
-            Math.min(
-                link.dataset.word.length,
-                target
-            )
-        );
-
-
-    if (
-        startCount ===
-        targetCount
-    ) {
-
-        renderNavCount(
-            link,
-            targetCount
-        );
-
-
-        return Promise.resolve();
-
-    }
-
-
-    const start =
-        performance.now();
-
-
-    return new Promise(
-        resolve => {
-
-            function frame(
-                now
-            ) {
-
-                const progress =
-                    Math.min(
-                        1,
-                        (
-                            now -
-                            start
-                        ) /
-                        duration
-                    );
-
-
-                const value =
-                    startCount +
-                    (
-                        targetCount -
-                        startCount
-                    ) *
-                    progress;
-
-
-                const rendered =
-                    targetCount >
-                    startCount
-                        ? Math.floor(
-                            value +
-                            0.0001
-                        )
-                        : Math.ceil(
-                            value -
-                            0.0001
-                        );
-
-
-                renderNavCount(
-                    link,
-                    rendered
-                );
-
-
-                if (
-                    progress <
-                    1
-                ) {
-
-                    state.frame =
-                        requestAnimationFrame(
-                            frame
-                        );
-
-                }
-
-                else {
-
-                    state.frame =
-                        null;
-
-
-                    renderNavCount(
-                        link,
-                        targetCount
-                    );
-
-
-                    resolve();
-
-                }
-
-            }
-
-
-            state.frame =
-                requestAnimationFrame(
-                    frame
-                );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SHARED AUTOMATIC CLOCK
-   ===================================================== */
-
-const navAnimationStart =
-    performance.now();
-
-
-let navHoverMode =
-    null;
-
-
-let navReturning =
-    false;
-
-
-function getBaseUpperCount(
-    word,
-    now
-) {
-
-    const elapsed =
-        (
-            now -
-            navAnimationStart
-        ) %
-        WORD_CYCLE_DURATION;
-
-
-    let phase;
-    let progress;
-
-
-    if (
-        elapsed <
-        WORD_HOLD_DURATION
-    ) {
-
-        phase =
-            "lower";
-
-        progress =
-            0;
-
-    }
-
-
-    else if (
-        elapsed <
-        WORD_HOLD_DURATION +
-        WORD_TRANSITION_DURATION
-    ) {
-
-        phase =
-            "up";
-
-        progress =
-            (
-                elapsed -
-                WORD_HOLD_DURATION
-            ) /
-            WORD_TRANSITION_DURATION;
-
-    }
-
-
-    else if (
-        elapsed <
-        WORD_HOLD_DURATION +
-        WORD_TRANSITION_DURATION +
-        WORD_HOLD_DURATION
-    ) {
-
-        phase =
-            "upper";
-
-        progress =
-            1;
-
-    }
-
-
-    else {
-
-        phase =
-            "down";
-
-        progress =
-            (
-                elapsed -
-                (
-                    WORD_HOLD_DURATION +
-                    WORD_TRANSITION_DURATION +
-                    WORD_HOLD_DURATION
-                )
-            ) /
-            WORD_TRANSITION_DURATION;
-
-    }
-
-
-    if (
-        phase ===
-        "lower"
-    ) {
-
-        return 0;
-
-    }
-
-
-    if (
-        phase ===
-        "upper"
-    ) {
-
-        return word.length;
-
-    }
-
-
-    if (
-        phase ===
-        "up"
-    ) {
-
-        return Math.min(
-            word.length,
-            Math.floor(
-                progress *
-                word.length
-            ) + 1
-        );
-
-    }
-
-
-    return Math.max(
-        0,
-        word.length -
-        Math.floor(
-            progress *
-            word.length
-        ) -
+setWordCount(
+    navItems[
         1
-    );
-
-}
-
-
-function updateNavigationWords(
-    now
-) {
-
-    animatedLinks.forEach(
-        link => {
-
-            const state =
-                navStates.get(
-                    link
-                );
-
-
-            const baseCount =
-                getBaseUpperCount(
-                    link.dataset.word,
-                    now
-                );
-
-
-            state.baseCount =
-                baseCount;
-
-
-            if (
-                navHoverMode ===
-                null &&
-                !navReturning
-            ) {
-
-                renderNavCount(
-                    link,
-                    baseCount
-                );
-
-            }
-
-        }
-    );
-
-
-    requestAnimationFrame(
-        updateNavigationWords
-    );
-
-}
-
-
-requestAnimationFrame(
-    updateNavigationWords
+    ],
+    0
 );
 
 
-/* =====================================================
-   PREVIEW ELEMENTS
-   ===================================================== */
-
-const landingColumn =
-    document.getElementById(
-        "landing-column"
-    );
-
-
-const photographyPreview =
-    document.getElementById(
-        "photography-preview"
-    );
-
-
-const filmPreview =
-    document.getElementById(
-        "film-preview"
-    );
-
-
-const previewVideo =
-    filmPreview.querySelector(
-        "video"
-    );
-
-
-/* =====================================================
-   DESKTOP PREVIEW AVAILABILITY
-   ===================================================== */
-
-function canUsePreview() {
-
-    return window
-        .matchMedia(
-            "(hover: hover) and (min-width: 601px)"
-        )
-        .matches;
-
-}
-
-
-/* =====================================================
-   PREVIEW GEOMETRY
-
-   Right-side safe frame:
-
-   horizontal:
-   text edge -> gap -> preview -> outer margin
-
-   vertical:
-   same height territory as the text column
-
-   media:
-   fully centered inside that frame
-   ===================================================== */
-
-function updatePreviewGeometry() {
-
-    if (
-        !canUsePreview()
-    ) {
-
-        return;
-
-    }
-
-
-    const columnRect =
-        landingColumn
-            .getBoundingClientRect();
-
-
-    const root =
-        document.documentElement;
-
-
-    const rootStyle =
-        getComputedStyle(
-            root
-        );
-
-
-    const pageX =
-        parseFloat(
-            rootStyle.getPropertyValue(
-                "--page-x"
-            )
-        ) || 48;
-
-
-    const pageBottom =
-        parseFloat(
-            rootStyle.getPropertyValue(
-                "--page-bottom"
-            )
-        ) || 48;
-
-
-    /* =========================
-       HORIZONTAL
-       ========================= */
-
-
-    const rightLimit =
-        window.innerWidth -
-        pageX;
-
-
-    let previewLeft =
-        columnRect.right +
-        pageX;
-
-
-    let availableWidth =
-        rightLimit -
-        previewLeft;
-
-
-    const minimumPreviewWidth =
-        180;
-
-
-    if (
-        availableWidth <
-        minimumPreviewWidth
-    ) {
-
-        const reducedGap =
-            Math.max(
-                16,
-                rightLimit -
-                minimumPreviewWidth -
-                columnRect.right
-            );
-
-
-        previewLeft =
-            columnRect.right +
-            reducedGap;
-
-    }
-
-
-    previewLeft =
-        Math.max(
-            columnRect.right + 16,
-            previewLeft
-        );
-
-
-    /* =========================
-       VERTICAL
-       ========================= */
-
-
-    const columnTop =
-        columnRect.top;
-
-
-    const textHeight =
-        columnRect.height;
-
-
-    const maximumViewportHeight =
-        window.innerHeight -
-        columnTop -
-        pageBottom;
-
-
-    const previewHeight =
-        Math.max(
-            0,
-            Math.min(
-                textHeight,
-                maximumViewportHeight
-            )
-        );
-
-
-    const previewTop =
-        columnTop;
-
-
-    /* =========================
-       APPLY
-       ========================= */
-
-
-    root.style.setProperty(
-        "--preview-left",
-        `${Math.ceil(
-            previewLeft
-        )}px`
-    );
-
-
-    root.style.setProperty(
-        "--preview-top",
-        `${Math.ceil(
-            previewTop
-        )}px`
-    );
-
-
-    root.style.setProperty(
-        "--preview-height",
-        `${Math.floor(
-            previewHeight
-        )}px`
-    );
-
-}
-
-
-/* =====================================================
-   PREVIEW VISIBILITY
-   ===================================================== */
-
-function hideAllPreviews() {
-
-    photographyPreview
-        .classList
-        .remove(
-            "active"
-        );
-
-
-    filmPreview
-        .classList
-        .remove(
-            "active"
-        );
-
-
-    previewVideo.pause();
-
-}
-
-
-function showPreviewFor(
-    link
-) {
-
-    if (
-        !canUsePreview()
-    ) {
-
-        return;
-
-    }
-
-
-    updatePreviewGeometry();
-
-
-    hideAllPreviews();
-
-
-    if (
-        link.dataset.preview ===
-        "photography"
-    ) {
-
-        photographyPreview
-            .classList
-            .add(
-                "active"
-            );
-
-    }
-
-
-    else {
-
-        filmPreview
-            .classList
-            .add(
-                "active"
-            );
-
-
-        try {
-
-            previewVideo.currentTime =
-                0;
-
-        }
-
-        catch (error) {}
-
-
-        previewVideo
-            .play()
-            .catch(
-                () => {}
-            );
-
-    }
-
-}
-
-
-/* =====================================================
-   HOVER OVERRIDE
-
-   photography hover:
-   PHOTOGRAPHY
-   film
-
-   film hover:
-   photography
-   FILM
-   ===================================================== */
-
-async function activateNavigationHover(
-    activeLink
-) {
-
-    if (
-        !canUsePreview()
-    ) {
-
-        return;
-
-    }
-
-
-    navHoverMode =
-        activeLink;
-
-
-    navReturning =
-        false;
-
-
-    animatedLinks.forEach(
-        link => {
-
-            const state =
-                navStates.get(
-                    link
-                );
-
-
-            if (
-                state.frame !==
-                null
-            ) {
-
-                cancelAnimationFrame(
-                    state.frame
-                );
-
-
-                state.frame =
-                    null;
-
-            }
-
-        }
-    );
-
-
-    showPreviewFor(
-        activeLink
-    );
-
-
-    await Promise.all(
-        animatedLinks.map(
-            link => {
-
-                const target =
-                    link ===
-                    activeLink
-                        ? link.dataset.word.length
-                        : 0;
-
-
-                return animateNavCount(
-                    link,
-                    target,
-                    WORD_TRANSITION_DURATION
-                );
-
-            }
-        )
-    );
-
-}
-
-
-/* =====================================================
-   RETURN TO AUTOMATIC CLOCK
-   ===================================================== */
-
-async function restoreNavigationClock() {
-
-    if (
-        navHoverMode !==
-        null
-    ) {
-
-        return;
-
-    }
-
-
-    navReturning =
-        true;
-
-
-    const now =
-        performance.now();
-
-
-    const targets =
-        animatedLinks.map(
-            link => {
-
-                const target =
-                    getBaseUpperCount(
-                        link.dataset.word,
-                        now
-                    );
-
-
-                navStates.get(
-                    link
-                ).baseCount =
-                    target;
-
-
-                return {
-                    link,
-                    target
-                };
-
-            }
-        );
-
-
-    await Promise.all(
-        targets.map(
-            item =>
-                animateNavCount(
-                    item.link,
-                    item.target,
-                    WORD_TRANSITION_DURATION
-                )
-        )
-    );
-
-
-    if (
-        navHoverMode ===
-        null
-    ) {
-
-        navReturning =
-            false;
-
-    }
-
-}
-
-
-/* =====================================================
-   NAV HOVER EVENTS
-   ===================================================== */
-
-animatedLinks.forEach(
-    link => {
-
-        link.addEventListener(
-            "mouseenter",
-            () => {
-
-                activateNavigationHover(
-                    link
-                );
-
-            }
-        );
-
-
-        link.addEventListener(
-            "mouseleave",
-            () => {
-
-                setTimeout(
-                    () => {
-
-                        const hovered =
-                            document.querySelector(
-                                ".animated-link:hover"
-                            );
-
-
-                        if (
-                            hovered
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        navHoverMode =
-                            null;
-
-
-                        hideAllPreviews();
-
-
-                        restoreNavigationClock();
-
-                    },
-                    0
-                );
-
-            }
-        );
-
-    }
-);
-
-
-/* =====================================================
-   GEOMETRY CHANGES
-   ===================================================== */
-
-function handleGeometryChange() {
-
-    if (
-        !canUsePreview()
-    ) {
-
-        hideAllPreviews();
-
-
-        return;
-
-    }
-
-
-    updatePreviewGeometry();
-
-}
-
-
-window.addEventListener(
-    "resize",
-    handleGeometryChange
-);
-
-
-window.addEventListener(
-    "orientationchange",
+/*
+    Leave the media slot visually empty very briefly
+    so the landing's typographic state is registered.
+
+    Then:
+        photography -> PHOTOGRAPHY
+        photo appears simultaneously.
+*/
+
+setTimeout(
     () => {
 
-        setTimeout(
-            handleGeometryChange,
-            100
-        );
+        if (
+            activeMode ===
+            null
+        ) {
+
+            goToMode(
+                "photography"
+            );
+
+        }
+
+    },
+    INITIAL_DELAY_MS
+);
 
 
-        setTimeout(
-            handleGeometryChange,
-            350
-        );
+/* =====================================================
+   VISIBILITY
+
+   Avoid the hidden tab consuming part of the
+   77-frame film phase.
+
+   If the user returns while film should be active,
+   restart the film cleanly from frame 1.
+   ===================================================== */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.hidden
+        ) {
+
+            clearPhaseTimers();
+
+
+            filmVideo.pause();
+
+
+            return;
+
+        }
+
+
+        if (
+            hoverMode !==
+            null
+        ) {
+
+            goToMode(
+                hoverMode,
+                {
+                    automatic:
+                        false
+                }
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            activeMode ===
+            "film"
+        ) {
+
+            goToMode(
+                "film"
+            );
+
+        }
+
+
+        else if (
+            activeMode ===
+            "photography"
+        ) {
+
+            goToMode(
+                "photography"
+            );
+
+        }
 
     }
-);
-
-
-requestAnimationFrame(
-    updatePreviewGeometry
-);
-
-
-window.addEventListener(
-    "load",
-    updatePreviewGeometry
 );
 
 </script>
