@@ -557,19 +557,6 @@ body {
 
 /* =====================================================
    MOBILE PORTRAIT
-
-   Portrait hierarchy is now:
-
-   logo
-   opening
-   navigation
-   contact
-   biography
-   media
-
-   The media field therefore sits beneath ALL text.
-
-   When media disappears, no text needs to move.
    ===================================================== */
 
 @media
@@ -651,11 +638,6 @@ body {
 
         min-height: 0;
     }
-
-    /*
-        Photography stays entirely inside
-        the bottom media field.
-    */
 
     .photography-field {
         position: absolute;
@@ -803,8 +785,6 @@ body {
     class="page"
     id="page"
 >
-
-    <!-- DESKTOP PHOTOGRAPHY FIELD -->
 
     <div
         class="photography-field"
@@ -994,46 +974,86 @@ const R2_PHOTOS_BASE =
    TIMING
    ===================================================== */
 
+/*
+    ONE-TIME AUTOMATIC INTRO
+
+    1. 4 seconds complete stillness
+    2. Denizalp Aybak gesture
+    3. Photography — approx. 2 seconds
+    4. Film — exactly one full 77-frame playback
+
+    Hover film behaviour:
+    normal hard-cut loop while hover remains active.
+*/
+
+const INTRO_INITIAL_DELAY =
+    4000;
+
+const INTRO_AFTER_LOGO_DELAY =
+    650;
+
+/*
+    Photography:
+
+    PHOTO_SEQUENCE_DURATION = 400 ms reveal
+    +
+    INTRO_PHOTO_HOLD = 1200 ms
+    +
+    WORD_TRANSITION_DURATION = 400 ms retract
+
+    ≈ 2 seconds total perceived event.
+*/
+
+const INTRO_PHOTO_HOLD =
+    1200;
+
+const INTRO_BETWEEN_PHOTO_FILM =
+    650;
+
 const WORD_TRANSITION_DURATION =
     400;
 
 const PHOTO_SEQUENCE_DURATION =
     400;
 
-const PHOTO_HOLD_DURATION =
-    1150;
-
-
-/*
-    Mobile is intentionally NOT a permanent loop anymore.
-
-    Sequence:
-
-    FILM once
-    ↓
-    short clean transition
-    ↓
-    PHOTOGRAPHY once
-    ↓
-    permanent typographic idle state
-
-    This makes the landing page feel less like a slideshow
-    and more like an introduction.
-*/
-
-const MOBILE_BETWEEN_MEDIA_DURATION =
-    1200;
-
-
-/* =====================================================
-   LOGO
-   ===================================================== */
-
 const LOGO_STEP_DURATION =
     80;
 
+const LOGO_INTRO_HOLD =
+    800;
+
 const LOGO_MOBILE_HOLD =
     2000;
+
+
+/* =====================================================
+   FILM TIMING
+   ===================================================== */
+
+/*
+    Source clip:
+
+    77 frames
+    23.976 fps
+
+    Exact intended automatic duration:
+    77 / 23.976 = 3.211545... seconds
+
+    The actual video "ended" event is still used to avoid
+    fighting the browser's media clock.
+
+    This value documents the intended source duration.
+*/
+
+const FILM_FRAME_COUNT =
+    77;
+
+const FILM_FPS =
+    23.976;
+
+const FILM_EXACT_DURATION =
+    FILM_FRAME_COUNT /
+    FILM_FPS;
 
 
 /* =====================================================
@@ -1160,14 +1180,6 @@ function mountPhotographyField() {
         isMobileLayout()
     ) {
 
-        /*
-            Mobile:
-            photography belongs to media-field.
-
-            In portrait, media-field itself is underneath
-            every text block.
-        */
-
         if (
             photographyField.parentElement !==
             mediaField
@@ -1182,12 +1194,6 @@ function mountPhotographyField() {
     }
 
     else {
-
-        /*
-            Desktop:
-            photography returns to the page level
-            so the large L-shaped composition remains.
-        */
 
         if (
             photographyField.parentElement !==
@@ -1234,23 +1240,38 @@ let renderedMobileMode =
     null;
 
 
+/* =====================================================
+   INTRO STATE
+   ===================================================== */
+
+let introStarted =
+    false;
+
+let introFinished =
+    false;
+
+let introCancelled =
+    false;
+
+let introTimer =
+    null;
+
+
+/* =====================================================
+   FILM STATE
+   ===================================================== */
+
 /*
-    Mobile intro state.
+    auto:
+        one playback only
 
-    Once film and photography have each appeared,
-    the page remains quiet.
-
-    No 10-second recurring cycle.
+    hover:
+        hard-cut restart at the end,
+        continuing for as long as FILM is hovered
 */
 
-let mobileFilmHasPlayed =
-    false;
-
-let mobilePhotographyHasPlayed =
-    false;
-
-let mobileIntroFinished =
-    false;
+let filmPlaybackMode =
+    "auto";
 
 
 /* =====================================================
@@ -1383,6 +1404,60 @@ function uniqueUrls(
 
         }
     );
+
+}
+
+
+/* =====================================================
+   TIMER HELPERS
+   ===================================================== */
+
+function clearIntroTimer() {
+
+    if (
+        introTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            introTimer
+        );
+
+        introTimer =
+            null;
+
+    }
+
+}
+
+
+function introWait(
+    duration,
+    callback
+) {
+
+    clearIntroTimer();
+
+    introTimer =
+        setTimeout(
+            () => {
+
+                introTimer =
+                    null;
+
+                if (
+                    introCancelled
+                ) {
+
+                    return;
+
+                }
+
+                callback();
+
+            },
+            duration
+        );
 
 }
 
@@ -1801,11 +1876,6 @@ function updateActiveVisualGroups() {
         mobile
     ) {
 
-        /*
-            Mobile:
-            one cover / thumbnail per project.
-        */
-
         projectVisualGroups =
             desktopProjectVisualGroups
                 .map(
@@ -1833,11 +1903,6 @@ function updateActiveVisualGroups() {
     }
 
     else {
-
-        /*
-            Desktop:
-            cover + optional landscape image.
-        */
 
         projectVisualGroups =
             desktopProjectVisualGroups.map(
@@ -4172,25 +4237,27 @@ let activeMode =
 let hoverMode =
     null;
 
-let phaseTimer =
-    null;
 
+/* =====================================================
+   PLAY FILM FROM BEGINNING
+   ===================================================== */
 
-function clearPhaseTimer() {
+async function playFilmFromBeginning() {
 
-    if (
-        phaseTimer !==
-        null
-    ) {
+    try {
 
-        clearTimeout(
-            phaseTimer
-        );
+        filmVideo.pause();
 
-        phaseTimer =
-            null;
+        filmVideo.currentTime =
+            0;
+
+        await filmVideo.play();
 
     }
+
+    catch (
+        error
+    ) {}
 
 }
 
@@ -4213,40 +4280,29 @@ async function switchToFilmLayer() {
             "active"
         );
 
-    try {
-
-        filmVideo.currentTime =
-            0;
-
-        await filmVideo.play();
-
-    }
-
-    catch (
-        error
-    ) {}
+    await playFilmFromBeginning();
 
 }
 
 
 /* =====================================================
    HIDE FILM WITH TITLE
-
-   Important:
-
-   Video stays visible while FILM transforms back
-   into film.
-
-   Only when the word has fully returned to lowercase
-   does the video disappear.
-
-   Opening and closing are therefore symmetrical.
    ===================================================== */
 
 function hideFilmWithTitle(
     onComplete =
         null
 ) {
+
+    /*
+        Freeze the current/final frame.
+
+        FILM -> film happens while the image remains
+        visible.
+
+        Only after the title has returned to lowercase
+        does the video disappear.
+    */
 
     filmVideo.pause();
 
@@ -4259,6 +4315,9 @@ function hideFilmWithTitle(
                 .remove(
                     "active"
                 );
+
+            activeMode =
+                null;
 
             if (
                 typeof onComplete ===
@@ -4340,21 +4399,18 @@ function refreshPhotographyDOMIfNeeded() {
 
 
 /* =====================================================
-   QUIET IDLE
+   IDLE
    ===================================================== */
 
-function enterIdle() {
-
-    clearPhaseTimer();
+function enterIdle(
+    onComplete =
+        null
+) {
 
     cancelPhotoSequence();
 
-    activeMode =
-        null;
-
-    /*
-        Photography retracts together with its title.
-    */
+    filmPlaybackMode =
+        "auto";
 
     if (
         photographyField
@@ -4363,6 +4419,11 @@ function enterIdle() {
                 "active"
             )
     ) {
+
+        /*
+            Photography image disappearance and
+            PHOTOGRAPHY -> photography begin together.
+        */
 
         animatePhotoGroups(
             0
@@ -4378,16 +4439,24 @@ function enterIdle() {
                         "active"
                     );
 
+                activeMode =
+                    null;
+
+                if (
+                    typeof onComplete ===
+                    "function"
+                ) {
+
+                    onComplete();
+
+                }
+
             }
         );
 
         return;
 
     }
-
-    /*
-        Film retracts together with FILM -> film.
-    */
 
     if (
         filmField
@@ -4397,7 +4466,9 @@ function enterIdle() {
             )
     ) {
 
-        hideFilmWithTitle();
+        hideFilmWithTitle(
+            onComplete
+        );
 
         return;
 
@@ -4420,98 +4491,14 @@ function enterIdle() {
         .remove(
             "active"
         );
-
-    animateTitlesTo(
-        null
-    );
-
-}
-
-
-/* =====================================================
-   MOBILE INTRO FINISH
-   ===================================================== */
-
-function finishMobileIntro() {
-
-    clearPhaseTimer();
-
-    cancelPhotoSequence();
-
-    mobileIntroFinished =
-        true;
 
     activeMode =
         null;
 
-    filmVideo.pause();
-
-    filmField
-        .classList
-        .remove(
-            "active"
-        );
-
-    photographyField
-        .classList
-        .remove(
-            "active"
-        );
-
-    setVisiblePhotoGroupCount(
-        0
+    animateTitlesTo(
+        null,
+        onComplete
     );
-
-    setWordCount(
-        navItems.photography,
-        0
-    );
-
-    setWordCount(
-        navItems.film,
-        0
-    );
-
-}
-
-
-/* =====================================================
-   MOBILE — FILM TO PHOTOGRAPHY
-   ===================================================== */
-
-function scheduleMobilePhotography() {
-
-    if (
-        !isMobileLayout() ||
-        mobileIntroFinished
-    ) {
-
-        return;
-
-    }
-
-    clearPhaseTimer();
-
-    phaseTimer =
-        setTimeout(
-            () => {
-
-                if (
-                    !isMobileLayout() ||
-                    mobileIntroFinished
-                ) {
-
-                    return;
-
-                }
-
-                startPhotography(
-                    true
-                );
-
-            },
-            MOBILE_BETWEEN_MEDIA_DURATION
-        );
 
 }
 
@@ -4521,36 +4508,24 @@ function scheduleMobilePhotography() {
    ===================================================== */
 
 function startPhotography(
-    automatic =
-        true
+    onReady =
+        null
 ) {
-
-    clearPhaseTimer();
 
     if (
         !photographyInitialReady
     ) {
 
-        phaseTimer =
-            setTimeout(
-                () => {
+        setTimeout(
+            () => {
 
-                    if (
-                        hoverMode ===
-                        "film"
-                    ) {
+                startPhotography(
+                    onReady
+                );
 
-                        return;
-
-                    }
-
-                    startPhotography(
-                        automatic
-                    );
-
-                },
-                100
-            );
+            },
+            100
+        );
 
         return;
 
@@ -4559,12 +4534,10 @@ function startPhotography(
     activeMode =
         "photography";
 
-    cancelPhotoSequence();
+    filmPlaybackMode =
+        "auto";
 
-    /*
-        If film is still around for any reason,
-        remove it before photography begins.
-    */
+    cancelPhotoSequence();
 
     filmVideo.pause();
 
@@ -4589,7 +4562,7 @@ function startPhotography(
         );
 
     /*
-        PHOTOGRAPHY and images enter together.
+        PHOTOGRAPHY and photographs reveal together.
     */
 
     animateTitlesTo(
@@ -4597,88 +4570,9 @@ function startPhotography(
     );
 
     animatePhotoGroups(
-        groupElements.length
+        groupElements.length,
+        onReady
     );
-
-    /*
-        Desktop remains interaction-only.
-    */
-
-    if (
-        !isMobileLayout() ||
-        !automatic
-    ) {
-
-        return;
-
-    }
-
-    mobilePhotographyHasPlayed =
-        true;
-
-    /*
-        Mobile:
-        photography appears once,
-        stays briefly,
-        then disappears permanently.
-    */
-
-    phaseTimer =
-        setTimeout(
-            () => {
-
-                if (
-                    !isMobileLayout() ||
-                    activeMode !==
-                    "photography"
-                ) {
-
-                    return;
-
-                }
-
-                /*
-                    Images and PHOTOGRAPHY retract
-                    at the same time.
-                */
-
-                animatePhotoGroups(
-                    0
-                );
-
-                animateTitlesTo(
-                    null,
-                    () => {
-
-                        if (
-                            !isMobileLayout() ||
-                            activeMode !==
-                            "photography"
-                        ) {
-
-                            return;
-
-                        }
-
-                        photographyField
-                            .classList
-                            .remove(
-                                "active"
-                            );
-
-                        activeMode =
-                            null;
-
-                        finishMobileIntro();
-
-                    }
-                );
-
-            },
-
-            PHOTO_SEQUENCE_DURATION +
-            PHOTO_HOLD_DURATION
-        );
 
 }
 
@@ -4688,13 +4582,19 @@ function startPhotography(
    ===================================================== */
 
 function startFilm(
-    automatic =
-        true
+    onReady =
+        null,
+    playbackMode =
+        "auto"
 ) {
 
-    clearPhaseTimer();
-
     cancelPhotoSequence();
+
+    activeMode =
+        "film";
+
+    filmPlaybackMode =
+        playbackMode;
 
     const photographyVisible =
         photographyField
@@ -4702,9 +4602,6 @@ function startFilm(
             .contains(
                 "active"
             );
-
-    activeMode =
-        "film";
 
     const revealFilm =
         () => {
@@ -4724,7 +4621,21 @@ function startFilm(
                     "active"
                 );
 
-            switchToFilmLayer();
+            switchToFilmLayer()
+                .then(
+                    () => {
+
+                        if (
+                            typeof onReady ===
+                            "function"
+                        ) {
+
+                            onReady();
+
+                        }
+
+                    }
+                );
 
         };
 
@@ -4745,15 +4656,232 @@ function startFilm(
 
     }
 
-    /*
-        Video appears only once the title has
-        completely reached FILM.
-    */
-
     animateTitlesTo(
         "film",
         revealFilm
     );
+
+}
+
+
+/* =====================================================
+   INTRO — STEP 1: LOGO
+   ===================================================== */
+
+function introLogo() {
+
+    if (
+        introCancelled
+    ) {
+
+        return;
+
+    }
+
+    animateLogoTo(
+        5,
+        () => {
+
+            if (
+                introCancelled
+            ) {
+
+                return;
+
+            }
+
+            introWait(
+                LOGO_INTRO_HOLD,
+                () => {
+
+                    animateLogoTo(
+                        0,
+                        () => {
+
+                            if (
+                                introCancelled
+                            ) {
+
+                                return;
+
+                            }
+
+                            introWait(
+                                INTRO_AFTER_LOGO_DELAY,
+                                introPhotography
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   INTRO — STEP 2: PHOTOGRAPHY
+   ===================================================== */
+
+function introPhotography() {
+
+    if (
+        introCancelled
+    ) {
+
+        return;
+
+    }
+
+    startPhotography(
+        () => {
+
+            if (
+                introCancelled
+            ) {
+
+                return;
+
+            }
+
+            introWait(
+                INTRO_PHOTO_HOLD,
+                () => {
+
+                    if (
+                        introCancelled
+                    ) {
+
+                        return;
+
+                    }
+
+                    /*
+                        Photos and PHOTOGRAPHY retract
+                        at exactly the same time.
+                    */
+
+                    animatePhotoGroups(
+                        0
+                    );
+
+                    animateTitlesTo(
+                        null,
+                        () => {
+
+                            photographyField
+                                .classList
+                                .remove(
+                                    "active"
+                                );
+
+                            activeMode =
+                                null;
+
+                            introWait(
+                                INTRO_BETWEEN_PHOTO_FILM,
+                                introFilm
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   INTRO — STEP 3: FILM
+   ===================================================== */
+
+function introFilm() {
+
+    if (
+        introCancelled
+    ) {
+
+        return;
+
+    }
+
+    /*
+        Automatic film = ONE playback only.
+
+        The browser's media clock / ended event determines
+        the exact end of the 77-frame file.
+    */
+
+    startFilm(
+        null,
+        "auto"
+    );
+
+}
+
+
+/* =====================================================
+   INTRO START
+   ===================================================== */
+
+function startAutomaticIntro() {
+
+    if (
+        introStarted ||
+        introFinished
+    ) {
+
+        return;
+
+    }
+
+    introStarted =
+        true;
+
+    introCancelled =
+        false;
+
+    /*
+        4 seconds of absolute calm.
+    */
+
+    introWait(
+        INTRO_INITIAL_DELAY,
+        introLogo
+    );
+
+}
+
+
+/* =====================================================
+   CANCEL INTRO ON DESKTOP INTERACTION
+   ===================================================== */
+
+function cancelAutomaticIntroForInteraction() {
+
+    if (
+        introFinished
+    ) {
+
+        return;
+
+    }
+
+    introCancelled =
+        true;
+
+    introFinished =
+        true;
+
+    clearIntroTimer();
 
 }
 
@@ -4764,7 +4892,7 @@ function startFilm(
 
 filmVideo.addEventListener(
     "ended",
-    () => {
+    async () => {
 
         if (
             activeMode !==
@@ -4776,69 +4904,65 @@ filmVideo.addEventListener(
         }
 
         /*
-            Desktop:
-            if the pointer is still on FILM,
-            keep the final frame visible.
+            DESKTOP HOVER
+
+            Hard-cut directly back to frame 1 and play
+            again.
+
+            No fade.
+            No crossfade.
+            No boomerang.
+
+            Continue for as long as FILM remains hovered.
         */
 
         if (
-            !isMobileLayout()
+            filmPlaybackMode ===
+            "hover" &&
+            canHover() &&
+            hoverMode ===
+            "film"
         ) {
 
-            if (
-                hoverMode ===
-                "film"
-            ) {
-
-                return;
-
-            }
-
-            enterIdle();
+            await playFilmFromBeginning();
 
             return;
 
         }
 
         /*
-            Mobile:
-            film has now completed its one appearance.
+            AUTOMATIC INTRO
 
-            KEY CHANGE:
+            Exactly one complete playback.
 
-            FILM -> film starts WHILE the video is
-            still visible.
+            Keep the final frame visible while
+            FILM -> film happens.
 
-            The video disappears only when lowercase
-            "film" has been reached.
+            Then return permanently to the quiet
+            landing state.
         */
 
-        mobileFilmHasPlayed =
-            true;
+        if (
+            filmPlaybackMode ===
+            "auto"
+        ) {
 
-        hideFilmWithTitle(
-            () => {
+            hideFilmWithTitle(
+                () => {
 
-                if (
-                    !isMobileLayout()
-                ) {
+                    if (
+                        !introCancelled
+                    ) {
 
-                    return;
+                        introFinished =
+                            true;
+
+                    }
 
                 }
+            );
 
-                activeMode =
-                    null;
-
-                /*
-                    After a short clean pause,
-                    photography gets its one appearance.
-                */
-
-                scheduleMobilePhotography();
-
-            }
-        );
+        }
 
     }
 );
@@ -4875,12 +4999,12 @@ photographyLink.addEventListener(
 
         }
 
+        cancelAutomaticIntroForInteraction();
+
         hoverMode =
             "photography";
 
-        startPhotography(
-            false
-        );
+        startPhotography();
 
     }
 );
@@ -4952,11 +5076,21 @@ filmLink.addEventListener(
 
         }
 
+        cancelAutomaticIntroForInteraction();
+
         hoverMode =
             "film";
 
+        /*
+            Hover mode is explicitly passed here.
+
+            This is what enables the hard-cut loop
+            in the video's ended event.
+        */
+
         startFilm(
-            false
+            null,
+            "hover"
         );
 
     }
@@ -5004,11 +5138,13 @@ filmLink.addEventListener(
                     null;
 
                 /*
-                    Same symmetrical film exit applies
-                    on desktop hover leave:
-                    video stays visible until FILM has
-                    returned to film.
+                    This immediately prevents another
+                    loop restart if the ended event lands
+                    at almost exactly the same moment.
                 */
+
+                filmPlaybackMode =
+                    "auto";
 
                 enterIdle();
 
@@ -5090,6 +5226,10 @@ let logoReturnTimer =
     null;
 
 
+/* =====================================================
+   LOGO STATE
+   ===================================================== */
+
 function setLogoState(
     state
 ) {
@@ -5130,6 +5270,10 @@ function setLogoState(
 
 }
 
+
+/* =====================================================
+   LOGO ANIMATION
+   ===================================================== */
 
 function animateLogoTo(
     target,
@@ -5213,6 +5357,8 @@ logo.addEventListener(
 
         }
 
+        cancelAutomaticIntroForInteraction();
+
         if (
             logoReturnTimer !==
             null
@@ -5272,6 +5418,8 @@ logo.addEventListener(
             return;
 
         }
+
+        cancelAutomaticIntroForInteraction();
 
         if (
             logoReturnTimer !==
@@ -5389,22 +5537,6 @@ window.addEventListener(
 
                     }
 
-                    /*
-                        If user crosses back to desktop
-                        without hovering anything,
-                        desktop returns to its quiet state.
-                    */
-
-                    if (
-                        !isMobileLayout() &&
-                        hoverMode ===
-                        null
-                    ) {
-
-                        enterIdle();
-
-                    }
-
                 },
                 120
             );
@@ -5425,10 +5557,6 @@ document.addEventListener(
             document.hidden
         ) {
 
-            clearPhaseTimer();
-
-            cancelPhotoSequence();
-
             filmVideo.pause();
 
             return;
@@ -5440,9 +5568,7 @@ document.addEventListener(
             "photography"
         ) {
 
-            startPhotography(
-                false
-            );
+            startPhotography();
 
             return;
 
@@ -5454,7 +5580,8 @@ document.addEventListener(
         ) {
 
             startFilm(
-                false
+                null,
+                "hover"
             );
 
             return;
@@ -5462,41 +5589,11 @@ document.addEventListener(
         }
 
         if (
-            !isMobileLayout()
-        ) {
-
-            enterIdle();
-
-            return;
-
-        }
-
-        /*
-            Once the mobile intro has finished,
-            returning to the tab does NOT restart it.
-        */
-
-        if (
-            mobileIntroFinished
-        ) {
-
-            finishMobileIntro();
-
-            return;
-
-        }
-
-        /*
-            If film was interrupted by leaving the tab,
-            resume film.
-
-            If photography was interrupted,
-            resume photography.
-        */
-
-        if (
             activeMode ===
-            "film"
+            "film" &&
+            filmField.classList.contains(
+                "active"
+            )
         ) {
 
             try {
@@ -5509,46 +5606,7 @@ document.addEventListener(
                 error
             ) {}
 
-            return;
-
         }
-
-        if (
-            activeMode ===
-            "photography"
-        ) {
-
-            startPhotography(
-                true
-            );
-
-            return;
-
-        }
-
-        /*
-            If film already completed but photography
-            has not yet appeared, continue to photography.
-        */
-
-        if (
-            mobileFilmHasPlayed &&
-            !mobilePhotographyHasPlayed
-        ) {
-
-            scheduleMobilePhotography();
-
-            return;
-
-        }
-
-        /*
-            Otherwise start the intro from film.
-        */
-
-        startFilm(
-            true
-        );
 
     }
 );
@@ -5560,12 +5618,11 @@ document.addEventListener(
 
 function init() {
 
-    /*
-        Put photography in the correct parent
-        before measuring anything.
-    */
-
     mountPhotographyField();
+
+    /*
+        Initial visual state is completely quiet.
+    */
 
     setLogoState(
         0
@@ -5581,8 +5638,25 @@ function init() {
         0
     );
 
+    setVisiblePhotoGroupCount(
+        0
+    );
+
+    photographyField
+        .classList
+        .remove(
+            "active"
+        );
+
+    filmField
+        .classList
+        .remove(
+            "active"
+        );
+
     /*
-        Photography assets prepare quietly.
+        Photography assets prepare invisibly during
+        the initial four-second still period.
     */
 
     loadInitialPhotography()
@@ -5598,65 +5672,20 @@ function init() {
         );
 
     /*
-        DESKTOP
+        ONE-TIME CHOREOGRAPHY
 
-        Default:
-            photography
-            film
-            no media
+        1. 4 s stillness
+        2. Denizalp Aybak
+        3. Photography ≈ 2 s
+        4. Film = one complete 77-frame playback
+        5. permanent idle
 
-        Hover photography:
-            PHOTOGRAPHY + photos
-
-        Leave:
-            photography + no media
-
-        Hover film:
-            FILM + video
-
-        Leave:
-            FILM -> film while video remains visible,
-            then video disappears.
+        Desktop afterwards:
+        Photography hover = photography interaction
+        Film hover        = continuous hard-cut video loop
     */
 
-    if (
-        !isMobileLayout()
-    ) {
-
-        enterIdle();
-
-        return;
-
-    }
-
-    /*
-        MOBILE
-
-        Film is shown once.
-
-        When it ends:
-            FILM -> film
-            while video remains visible.
-
-        Then:
-            short empty pause.
-
-        Then:
-            photography is shown once.
-
-        Finally:
-            PHOTOGRAPHY -> photography
-            while photos retract.
-
-        After that:
-            permanent quiet typographic state.
-
-        No repeating slideshow.
-    */
-
-    startFilm(
-        true
-    );
+    startAutomaticIntro();
 
 }
 
