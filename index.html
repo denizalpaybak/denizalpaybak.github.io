@@ -13,10 +13,6 @@
 
 <style>
 
-/* =====================================================
-   RESET
-   ===================================================== */
-
 * {
     box-sizing: border-box;
 }
@@ -86,16 +82,7 @@ body {
 
 
 /* =====================================================
-   MAIN GRID — DESKTOP
-
-   LEFT:
-   typography
-
-   RIGHT:
-   image / film field
-
-   Media spans the complete vertical territory
-   available inside the page margins.
+   DESKTOP GRID
    ===================================================== */
 
 .landing-grid {
@@ -144,14 +131,24 @@ body {
     margin: 0;
     padding: 0;
 
+    border: 0;
+    border-radius: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: transparent;
+
     color: #000;
-    text-decoration: none;
 
     cursor: pointer;
 
+    font-family: inherit;
     font-size: var(--font-size);
     font-weight: 400;
     line-height: var(--line-height);
+
+    text-align: left;
 
     -webkit-tap-highlight-color: transparent;
 }
@@ -307,15 +304,7 @@ body {
 
 
 /* =====================================================
-   MEDIA SLOT — DESKTOP
-
-   Complete right-hand image field.
-
-   It spans from the top page margin to
-   the bottom page margin.
-
-   The actual image/video is centered
-   inside this available field.
+   MEDIA FIELD
    ===================================================== */
 
 .media-slot {
@@ -324,20 +313,18 @@ body {
     grid-column: 2;
     grid-row: 1 / -1;
 
-    min-width: 0;
-    min-height: 0;
-
     width: 100%;
     height: 100%;
+
+    min-width: 0;
+    min-height: 0;
 
     overflow: hidden;
 }
 
 
 /* =====================================================
-   MEDIA LINK
-
-   Only the active media is clickable.
+   MEDIA LINKS
    ===================================================== */
 
 .media-layer {
@@ -362,25 +349,39 @@ body {
 
 .media-layer.active {
     display: flex;
-
     pointer-events: auto;
 }
 
 
 /* =====================================================
-   IMAGE / VIDEO
-
-   Same geometry for both.
-
-   No crop.
-   No animation.
-   Hard switch.
-
-   The capitalization animation itself
-   acts as the transition.
+   PHOTOGRAPHY SEQUENCE
    ===================================================== */
 
-.media-layer img,
+.photo-frame {
+    position: absolute;
+
+    inset: 0;
+
+    display: none;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center center;
+
+    pointer-events: none;
+}
+
+.photo-frame.active {
+    display: block;
+}
+
+
+/* =====================================================
+   VIDEO
+   ===================================================== */
+
 .media-layer video {
     display: block;
 
@@ -396,17 +397,6 @@ body {
 
 /* =====================================================
    MOBILE PORTRAIT
-
-   Single-column editorial layout:
-
-   logo
-   opening
-   photography / film
-   MEDIA
-   contact
-   biography
-
-   Media receives the flexible leftover height.
    ===================================================== */
 
 @media
@@ -520,8 +510,8 @@ body {
     .biography span,
     .item {
 
-        font-size: 13px !important;
-        line-height: 1.15 !important;
+        font-size: var(--font-size) !important;
+        line-height: var(--line-height) !important;
 
     }
 
@@ -530,27 +520,22 @@ body {
 
 /* =====================================================
    MOBILE LANDSCAPE
-
-   Don't squeeze the portrait composition.
-
-   Instead use the desktop editorial spread:
-   type on the left, visual on the right.
    ===================================================== */
 
 @media
     (orientation: landscape)
-    and (max-height: 600px)
+    and (max-height: 650px)
     and (max-width: 1000px) {
 
     :root {
 
         --page-x: 24px;
-        --page-top: 18px;
-        --page-bottom: 18px;
+        --page-top: 16px;
+        --page-bottom: 16px;
 
         --font-size: 13px;
 
-        --major-gap: 8px;
+        --major-gap: 7px;
         --column-gap: 24px;
 
     }
@@ -559,7 +544,7 @@ body {
     .landing-grid {
 
         grid-template-columns:
-            minmax(285px, 42%)
+            minmax(260px, 42%)
             minmax(0, 1fr);
 
         grid-template-rows:
@@ -583,7 +568,8 @@ body {
 
 
     .biography p {
-        margin-bottom: 8px;
+        margin-bottom:
+            var(--major-gap);
     }
 
 
@@ -598,8 +584,8 @@ body {
     .biography span,
     .item {
 
-        font-size: 13px !important;
-        line-height: 1.15 !important;
+        font-size: var(--font-size) !important;
+        line-height: var(--line-height) !important;
 
     }
 
@@ -607,10 +593,7 @@ body {
 
 
 /* =====================================================
-   SHORT DESKTOP / TABLET LANDSCAPE
-
-   Same two-column system.
-   Compact only the rhythm.
+   SHORT DESKTOP
    ===================================================== */
 
 @media
@@ -626,7 +609,7 @@ body {
 
         --font-size: 13px;
 
-        --major-gap: 10px;
+        --major-gap: 9px;
         --column-gap: 32px;
 
     }
@@ -652,24 +635,8 @@ body {
 
 
     .biography p {
-        margin-bottom: 10px;
-    }
-
-
-    .opening,
-    .navigation,
-    .navigation a,
-    .nav-text,
-    .contact,
-    .contact a,
-    .biography,
-    .biography p,
-    .biography span,
-    .item {
-
-        font-size: 13px !important;
-        line-height: 1.15 !important;
-
+        margin-bottom:
+            var(--major-gap);
     }
 
 }
@@ -677,9 +644,6 @@ body {
 
 /* =====================================================
    VERY SHORT LANDSCAPE
-
-   Defensive compression so the complete copy,
-   including lc waikiki, remains inside viewport.
    ===================================================== */
 
 @media
@@ -688,34 +652,11 @@ body {
 
     :root {
 
-        --page-top: 12px;
-        --page-bottom: 12px;
+        --page-top: 10px;
+        --page-bottom: 10px;
 
-        --major-gap: 5px;
+        --major-gap: 4px;
         --column-gap: 20px;
-
-    }
-
-
-    .landing-grid {
-
-        grid-template-columns:
-            minmax(270px, 43%)
-            minmax(0, 1fr);
-
-    }
-
-
-    .logo {
-
-        height: 29px;
-
-    }
-
-
-    .biography p {
-
-        margin-bottom: 5px;
 
     }
 
@@ -736,14 +677,12 @@ body {
     >
 
 
-        <!-- =================================================
-             LOGO
-             ================================================= -->
+        <!-- LOGO -->
 
-        <a
+        <button
             class="logo"
             id="logo"
-            href="https://denizalpaybak.com/"
+            type="button"
             aria-label="Denizalp Aybak"
         >
 
@@ -760,29 +699,23 @@ body {
 
             </span>
 
-        </a>
+        </button>
 
 
-        <!-- =================================================
-             OPENING
-             ================================================= -->
+        <!-- OPENING -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
             <a
                 href="https://photography.denizalpaybak.com/"
-                class="animated-link"
                 id="photography-link"
-                data-mode="photography"
             >
                 <span
                     class="nav-text"
@@ -795,9 +728,7 @@ body {
 
             <a
                 href="https://film.denizalpaybak.com/"
-                class="animated-link"
                 id="film-link"
-                data-mode="film"
             >
                 <span
                     class="nav-text"
@@ -810,15 +741,7 @@ body {
         </nav>
 
 
-        <!-- =================================================
-             MEDIA
-
-             Desktop / landscape:
-             right column.
-
-             Portrait:
-             between nav and contact.
-             ================================================= -->
+        <!-- MEDIA -->
 
         <div
             class="media-slot"
@@ -826,7 +749,7 @@ body {
         >
 
 
-            <!-- PHOTO IS ALSO THE PHOTOGRAPHY LINK -->
+            <!-- PHOTOGRAPHY -->
 
             <a
                 class="media-layer"
@@ -836,14 +759,30 @@ body {
             >
 
                 <img
-                    src="./photo.jpg"
+                    class="photo-frame"
+                    id="photo-01"
+                    src="./photo_01.jpg"
+                    alt=""
+                >
+
+                <img
+                    class="photo-frame"
+                    id="photo-02"
+                    src="./photo_02.jpg"
+                    alt=""
+                >
+
+                <img
+                    class="photo-frame"
+                    id="photo-03"
+                    src="./photo_03.jpg"
                     alt=""
                 >
 
             </a>
 
 
-            <!-- VIDEO IS ALSO THE FILM LINK -->
+            <!-- FILM -->
 
             <a
                 class="media-layer"
@@ -865,9 +804,7 @@ body {
         </div>
 
 
-        <!-- =================================================
-             CONTACT
-             ================================================= -->
+        <!-- CONTACT -->
 
         <div class="contact">
 
@@ -898,11 +835,12 @@ body {
         </div>
 
 
-        <!-- =================================================
-             BIO
-             ================================================= -->
+        <!-- BIO -->
 
-        <section class="biography">
+        <section
+            class="biography"
+            id="biography"
+        >
 
             <p>
                 having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
@@ -932,29 +870,15 @@ body {
 <script>
 
 /* =====================================================
-   CONSTANTS
+   TIMING
    ===================================================== */
-
-
-/*
-    Typography morph duration.
-
-    Same overall feeling as photography interface.
-*/
 
 const WORD_TRANSITION_DURATION =
     400;
 
 
 /*
-    Film clip:
-
-    77 frames
-    ÷
-    23.976 fps
-
-    =
-    3.211544878211545 seconds
+    77 frames / 23.976 fps
 */
 
 const VIDEO_FRAME_COUNT =
@@ -965,7 +889,7 @@ const VIDEO_FPS =
     23.976;
 
 
-const VIDEO_DURATION_MS =
+const PHASE_DURATION =
     (
         VIDEO_FRAME_COUNT /
         VIDEO_FPS
@@ -974,24 +898,84 @@ const VIDEO_DURATION_MS =
 
 
 /*
-    Keep photography on screen for the exact
-    same duration as the 77-frame film.
+    = approx 3211.545 ms
 */
 
-const PHOTOGRAPHY_DURATION_MS =
-    VIDEO_DURATION_MS;
-
-
-/*
-    Initial landing pause before first media appears.
-*/
 
 const INITIAL_MEDIA_DELAY =
     700;
 
 
+/*
+    Mobile logo interaction:
+
+    expand
+    hold
+    return
+*/
+
+const LOGO_STEP_DURATION =
+    80;
+
+
+const LOGO_MOBILE_HOLD =
+    2000;
+
+
 /* =====================================================
-   NAV ELEMENTS
+   PHOTOGRAPHY MOTION SEQUENCE
+
+   Total MUST equal PHASE_DURATION.
+
+   01   900ms
+   02   180ms
+   03   1050ms
+   02   180ms
+   01   remaining time
+
+   The blurred / transitional image therefore
+   appears briefly rather than behaving like
+   another equal slideshow image.
+   ===================================================== */
+
+const PHOTO_SEQUENCE =
+    [
+
+        {
+            index: 0,
+            duration: 900
+        },
+
+        {
+            index: 1,
+            duration: 180
+        },
+
+        {
+            index: 2,
+            duration: 1050
+        },
+
+        {
+            index: 1,
+            duration: 180
+        },
+
+        {
+            index: 0,
+            duration:
+                PHASE_DURATION -
+                900 -
+                180 -
+                1050 -
+                180
+        }
+
+    ];
+
+
+/* =====================================================
+   ELEMENTS
    ===================================================== */
 
 const photographyLink =
@@ -1036,8 +1020,26 @@ const filmVideo =
     );
 
 
+const photoFrames =
+    [
+
+        document.getElementById(
+            "photo-01"
+        ),
+
+        document.getElementById(
+            "photo-02"
+        ),
+
+        document.getElementById(
+            "photo-03"
+        )
+
+    ];
+
+
 /* =====================================================
-   NAV WORD STATE
+   NAV STATE
    ===================================================== */
 
 const navItems =
@@ -1073,10 +1075,6 @@ const navItems =
     };
 
 
-/* =====================================================
-   CASE RENDER
-   ===================================================== */
-
 function renderCaseWord(
     word,
     upperCount
@@ -1107,12 +1105,8 @@ function renderCaseWord(
         result +=
             i <
             count
-                ? word[
-                    i
-                ].toUpperCase()
-                : word[
-                    i
-                ].toLowerCase();
+                ? word[i].toUpperCase()
+                : word[i].toLowerCase();
 
     }
 
@@ -1121,10 +1115,6 @@ function renderCaseWord(
 
 }
 
-
-/* =====================================================
-   SET WORD COUNT
-   ===================================================== */
 
 function setWordCount(
     item,
@@ -1154,15 +1144,6 @@ function setWordCount(
 
 /* =====================================================
    TITLE MORPH
-
-   Both titles use the SAME normalized clock.
-
-   Therefore even though photography is longer
-   than film, both animations begin and end at
-   exactly the same time.
-
-   Reversal also starts from the exact current
-   capitalization state.
    ===================================================== */
 
 let titleAnimationFrame =
@@ -1192,10 +1173,6 @@ function animateTitlesTo(
         cancelAnimationFrame(
             titleAnimationFrame
         );
-
-
-        titleAnimationFrame =
-            null;
 
     }
 
@@ -1277,7 +1254,9 @@ function animateTitlesTo(
             progress;
 
 
-        const photoRendered =
+        setWordCount(
+            photography,
+
             photoTarget >=
             photoStart
                 ? Math.floor(
@@ -1287,10 +1266,13 @@ function animateTitlesTo(
                 : Math.ceil(
                     photoRaw -
                     0.0001
-                );
+                )
+        );
 
 
-        const filmRendered =
+        setWordCount(
+            film,
+
             filmTarget >=
             filmStart
                 ? Math.floor(
@@ -1300,18 +1282,7 @@ function animateTitlesTo(
                 : Math.ceil(
                     filmRaw -
                     0.0001
-                );
-
-
-        setWordCount(
-            photography,
-            photoRendered
-        );
-
-
-        setWordCount(
-            film,
-            filmRendered
+                )
         );
 
 
@@ -1358,6 +1329,110 @@ function animateTitlesTo(
 
 
 /* =====================================================
+   PHOTOGRAPHY SEQUENCE
+   ===================================================== */
+
+let photoSequenceTimers =
+    [];
+
+
+function clearPhotoSequence() {
+
+    photoSequenceTimers.forEach(
+        timer => {
+
+            clearTimeout(
+                timer
+            );
+
+        }
+    );
+
+
+    photoSequenceTimers =
+        [];
+
+}
+
+
+function showPhotoFrame(
+    index
+) {
+
+    photoFrames.forEach(
+        (
+            frame,
+            frameIndex
+        ) => {
+
+            frame.classList.toggle(
+                "active",
+                frameIndex ===
+                index
+            );
+
+        }
+    );
+
+}
+
+
+function startPhotoSequence() {
+
+    clearPhotoSequence();
+
+
+    let elapsed =
+        0;
+
+
+    PHOTO_SEQUENCE.forEach(
+        (
+            item,
+            sequenceIndex
+        ) => {
+
+            if (
+                sequenceIndex ===
+                0
+            ) {
+
+                showPhotoFrame(
+                    item.index
+                );
+
+            }
+
+            else {
+
+                photoSequenceTimers.push(
+
+                    setTimeout(
+                        () => {
+
+                            showPhotoFrame(
+                                item.index
+                            );
+
+                        },
+                        elapsed
+                    )
+
+                );
+
+            }
+
+
+            elapsed +=
+                item.duration;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
    MEDIA
    ===================================================== */
 
@@ -1379,10 +1454,16 @@ function showPhotographyMedia() {
 
     filmVideo.pause();
 
+
+    startPhotoSequence();
+
 }
 
 
 async function showFilmMedia() {
+
+    clearPhotoSequence();
+
 
     photographyMedia
         .classList
@@ -1427,7 +1508,7 @@ async function showFilmMedia() {
 
 
 /* =====================================================
-   MODE STATE
+   MODE
    ===================================================== */
 
 let activeMode =
@@ -1445,10 +1526,6 @@ let photographyTimer =
 let modeToken =
     0;
 
-
-/* =====================================================
-   CLEAR AUTOMATIC TIMERS
-   ===================================================== */
 
 function clearAutomaticTimers() {
 
@@ -1469,10 +1546,6 @@ function clearAutomaticTimers() {
 
 }
 
-
-/* =====================================================
-   ACTIVATE MODE
-   ===================================================== */
 
 async function activateMode(
     mode,
@@ -1496,10 +1569,6 @@ async function activateMode(
         mode;
 
 
-    /*
-        HARD SWITCH MEDIA
-    */
-
     if (
         mode ===
         "photography"
@@ -1516,19 +1585,10 @@ async function activateMode(
     }
 
 
-    /*
-        Capitalization changes simultaneously
-        with the media switch.
-    */
-
     animateTitlesTo(
         mode
     );
 
-
-    /*
-        Hover freezes this mode.
-    */
 
     if (
         !automatic ||
@@ -1540,11 +1600,6 @@ async function activateMode(
 
     }
 
-
-    /*
-        PHOTOGRAPHY:
-        exactly same duration as film.
-    */
 
     if (
         mode ===
@@ -1572,29 +1627,16 @@ async function activateMode(
                     );
 
                 },
-                PHOTOGRAPHY_DURATION_MS
+                PHASE_DURATION
             );
 
     }
-
-
-    /*
-        FILM DOES NOT USE A TIMER.
-
-        The actual media 'ended' event
-        controls the switch.
-
-        This guarantees that the encoded
-        77-frame clip gets to finish.
-    */
 
 }
 
 
 /* =====================================================
    VIDEO END
-
-   77 frames have now completed.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -1610,13 +1652,6 @@ filmVideo.addEventListener(
 
         }
 
-
-        /*
-            Hover on film:
-            hold the final frame.
-
-            Do not loop.
-        */
 
         if (
             hoverMode ===
@@ -1637,7 +1672,7 @@ filmVideo.addEventListener(
 
 
 /* =====================================================
-   HOVER CAPABILITY
+   DESKTOP HOVER
    ===================================================== */
 
 function canHover() {
@@ -1650,13 +1685,6 @@ function canHover() {
 
 }
 
-
-/* =====================================================
-   TITLE HOVER ENTER
-
-   Whatever intermediate states exist,
-   reverse / continue from those exact states.
-   ===================================================== */
 
 function titleHoverEnter(
     mode
@@ -1686,17 +1714,6 @@ function titleHoverEnter(
 }
 
 
-/* =====================================================
-   TITLE HOVER LEAVE
-
-   Once pointer leaves a title,
-   immediately begin switching to
-   the opposite category.
-
-   Moving directly title → title
-   is detected and handled cleanly.
-   ===================================================== */
-
 function titleHoverLeave(
     leavingMode
 ) {
@@ -1724,11 +1741,6 @@ function titleHoverLeave(
                     ":hover"
                 );
 
-
-            /*
-                Direct move onto another nav title.
-                Its mouseenter handler takes control.
-            */
 
             if (
                 photographyHovered ||
@@ -1767,10 +1779,6 @@ function titleHoverLeave(
 
 }
 
-
-/* =====================================================
-   TITLE HOVER EVENTS
-   ===================================================== */
 
 photographyLink.addEventListener(
     "mouseenter",
@@ -1882,42 +1890,6 @@ const logoUppercase =
     ];
 
 
-/*
-    Same rhythm as photography page.
-*/
-
-const LOGO_STEP_DURATION =
-    80;
-
-
-/*
-    Automatic logo rhythm.
-
-    Lower:
-    ~1.7 sec
-
-    Upper:
-    ~2 sec
-
-    Then return and repeat.
-*/
-
-const LOGO_LOWER_HOLD =
-    1700;
-
-
-const LOGO_UPPER_HOLD =
-    2000;
-
-
-const LOGO_AFTER_RETURN_HOLD =
-    2200;
-
-
-/* =====================================================
-   LOGO STATE
-   ===================================================== */
-
 let logoState =
     0;
 
@@ -1930,21 +1902,9 @@ let logoStepTimer =
     null;
 
 
-let logoCycleTimer =
+let logoMobileReturnTimer =
     null;
 
-
-let logoHovered =
-    false;
-
-
-let logoCycleToken =
-    0;
-
-
-/* =====================================================
-   RENDER LOGO
-   ===================================================== */
 
 function setLogoState(
     state
@@ -1960,16 +1920,6 @@ function setLogoState(
         );
 
 
-    /*
-        Normal:
-        Denizalp
-        aybak
-
-        As soon as uppercase morph begins:
-        denizalp
-        Aybak → AYbak → AYBak...
-    */
-
     logoName.textContent =
         logoState ===
         0
@@ -1983,26 +1933,17 @@ function setLogoState(
         i++
     ) {
 
-        logoLetters[
-            i
-        ].textContent =
+        logoLetters[i]
+            .textContent =
             i <
             logoState
-                ? logoUppercase[
-                    i
-                ]
-                : logoLowercase[
-                    i
-                ];
+                ? logoUppercase[i]
+                : logoLowercase[i];
 
     }
 
 }
 
-
-/* =====================================================
-   STOP LOGO STEP
-   ===================================================== */
 
 function stopLogoStep() {
 
@@ -2023,34 +1964,6 @@ function stopLogoStep() {
 
 }
 
-
-/* =====================================================
-   STOP LOGO CYCLE TIMER
-   ===================================================== */
-
-function stopLogoCycleTimer() {
-
-    if (
-        logoCycleTimer !==
-        null
-    ) {
-
-        clearTimeout(
-            logoCycleTimer
-        );
-
-
-        logoCycleTimer =
-            null;
-
-    }
-
-}
-
-
-/* =====================================================
-   ANIMATE LOGO TO TARGET
-   ===================================================== */
 
 function animateLogoTo(
     target,
@@ -2114,140 +2027,7 @@ function animateLogoTo(
 
 
 /* =====================================================
-   AUTOMATIC LOGO CYCLE
-   ===================================================== */
-
-function scheduleLogoCycle() {
-
-    logoCycleToken++;
-
-
-    const token =
-        logoCycleToken;
-
-
-    stopLogoCycleTimer();
-
-
-    if (
-        logoHovered
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-        Wait in normal logo state.
-    */
-
-    logoCycleTimer =
-        setTimeout(
-            () => {
-
-                if (
-                    logoHovered ||
-                    token !==
-                    logoCycleToken
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                    Denizalp / aybak
-                    →
-                    denizalp / AYBAK
-                */
-
-                animateLogoTo(
-                    5,
-                    () => {
-
-                        if (
-                            logoHovered ||
-                            token !==
-                            logoCycleToken
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        logoCycleTimer =
-                            setTimeout(
-                                () => {
-
-                                    if (
-                                        logoHovered ||
-                                        token !==
-                                        logoCycleToken
-                                    ) {
-
-                                        return;
-
-                                    }
-
-
-                                    /*
-                                        denizalp / AYBAK
-                                        →
-                                        Denizalp / aybak
-                                    */
-
-                                    animateLogoTo(
-                                        0,
-                                        () => {
-
-                                            if (
-                                                logoHovered ||
-                                                token !==
-                                                logoCycleToken
-                                            ) {
-
-                                                return;
-
-                                            }
-
-
-                                            logoCycleTimer =
-                                                setTimeout(
-                                                    scheduleLogoCycle,
-                                                    LOGO_AFTER_RETURN_HOLD
-                                                );
-
-                                        }
-                                    );
-
-                                },
-                                LOGO_UPPER_HOLD
-                            );
-
-                    }
-                );
-
-            },
-            LOGO_LOWER_HOLD
-        );
-
-}
-
-
-/* =====================================================
-   LOGO HOVER
-
-   Hover overrides automatic cycle.
-
-   ENTER:
-       current state → denizalp / AYBAK
-
-   LEAVE:
-       current state → Denizalp / aybak
-       then restart automatic cycle
+   DESKTOP LOGO HOVER
    ===================================================== */
 
 logo.addEventListener(
@@ -2263,14 +2043,16 @@ logo.addEventListener(
         }
 
 
-        logoHovered =
-            true;
+        if (
+            logoMobileReturnTimer !==
+            null
+        ) {
 
+            clearTimeout(
+                logoMobileReturnTimer
+            );
 
-        logoCycleToken++;
-
-
-        stopLogoCycleTimer();
+        }
 
 
         animateLogoTo(
@@ -2294,21 +2076,69 @@ logo.addEventListener(
         }
 
 
-        logoHovered =
-            false;
+        animateLogoTo(
+            0
+        );
+
+    }
+);
 
 
-        logoCycleToken++;
+/* =====================================================
+   MOBILE LOGO TAP
+
+   one tap:
+   lowercase -> uppercase
+   HOLD
+   automatically return
+
+   No navigation.
+   No double tap.
+   ===================================================== */
+
+logo.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
 
 
-        stopLogoCycleTimer();
+        if (
+            canHover()
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            logoMobileReturnTimer !==
+            null
+        ) {
+
+            clearTimeout(
+                logoMobileReturnTimer
+            );
+
+        }
 
 
         animateLogoTo(
-            0,
+            5,
             () => {
 
-                scheduleLogoCycle();
+                logoMobileReturnTimer =
+                    setTimeout(
+                        () => {
+
+                            animateLogoTo(
+                                0
+                            );
+
+                        },
+                        LOGO_MOBILE_HOLD
+                    );
 
             }
         );
@@ -2318,14 +2148,255 @@ logo.addEventListener(
 
 
 /* =====================================================
+   LANDSCAPE FIT
+
+   On short landscape devices we measure the
+   actual LEFT typography height.
+
+   If it does not fit:
+   first reduce gap,
+   then reduce type only as much as necessary.
+
+   This prevents selected clients / lc waikiki
+   from being clipped.
+   ===================================================== */
+
+const landingGrid =
+    document.getElementById(
+        "landing-grid"
+    );
+
+
+const biography =
+    document.getElementById(
+        "biography"
+    );
+
+
+function isCompactLandscape() {
+
+    return window
+        .matchMedia(
+            "(orientation: landscape) and (max-height: 650px)"
+        )
+        .matches;
+
+}
+
+
+function getLeftContentBottom() {
+
+    const elements =
+        [
+
+            logo,
+
+            document.querySelector(
+                ".opening"
+            ),
+
+            document.querySelector(
+                ".navigation"
+            ),
+
+            document.querySelector(
+                ".contact"
+            ),
+
+            biography
+
+        ];
+
+
+    return Math.max(
+        ...elements.map(
+            element =>
+                element
+                    .getBoundingClientRect()
+                    .bottom
+        )
+    );
+
+}
+
+
+function fitLandscapeTypography() {
+
+    const root =
+        document.documentElement;
+
+
+    /*
+        Remove JS override first.
+    */
+
+    root.style.removeProperty(
+        "--font-size"
+    );
+
+
+    root.style.removeProperty(
+        "--major-gap"
+    );
+
+
+    if (
+        !isCompactLandscape()
+    ) {
+
+        return;
+
+    }
+
+
+    const page =
+        document.querySelector(
+            ".page"
+        );
+
+
+    const pageRect =
+        page.getBoundingClientRect();
+
+
+    /*
+        Keep a small safety gap above
+        the bottom page boundary.
+    */
+
+    const safeBottom =
+        pageRect.bottom -
+        2;
+
+
+    if (
+        getLeftContentBottom() <=
+        safeBottom
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        First compress vertical rhythm.
+    */
+
+    root.style.setProperty(
+        "--major-gap",
+        "3px"
+    );
+
+
+    if (
+        getLeftContentBottom() <=
+        safeBottom
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        Then binary-search the largest font size
+        that still fits.
+
+        This affects landscape only.
+    */
+
+    let low =
+        10;
+
+
+    let high =
+        13;
+
+
+    let best =
+        10;
+
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        const mid =
+            (
+                low +
+                high
+            ) /
+            2;
+
+
+        root.style.setProperty(
+            "--font-size",
+            `${mid}px`
+        );
+
+
+        /*
+            Maintain an appropriately compact
+            gap as typography shrinks.
+        */
+
+        root.style.setProperty(
+            "--major-gap",
+            `${Math.max(
+                2.5,
+                mid *
+                0.3
+            )}px`
+        );
+
+
+        if (
+            getLeftContentBottom() <=
+            safeBottom
+        ) {
+
+            best =
+                mid;
+
+
+            low =
+                mid;
+
+        }
+
+        else {
+
+            high =
+                mid;
+
+        }
+
+    }
+
+
+    root.style.setProperty(
+        "--font-size",
+        `${best}px`
+    );
+
+
+    root.style.setProperty(
+        "--major-gap",
+        `${Math.max(
+            2.5,
+            best *
+            0.3
+        )}px`
+    );
+
+}
+
+
+/* =====================================================
    VISIBILITY
-
-   Don't consume film frames while browser tab
-   is actually hidden.
-
-   On return:
-   restart active film from frame 1,
-   or restart the photography phase.
    ===================================================== */
 
 document.addEventListener(
@@ -2338,48 +2409,14 @@ document.addEventListener(
 
             clearAutomaticTimers();
 
+            clearPhotoSequence();
 
             filmVideo.pause();
-
-
-            stopLogoCycleTimer();
-
-
-            stopLogoStep();
-
 
             return;
 
         }
 
-
-        /*
-            Resume logo system.
-        */
-
-        if (
-            logoHovered
-        ) {
-
-            animateLogoTo(
-                5
-            );
-
-        }
-
-        else {
-
-            animateLogoTo(
-                0,
-                scheduleLogoCycle
-            );
-
-        }
-
-
-        /*
-            Resume media system.
-        */
 
         if (
             hoverMode !==
@@ -2424,6 +2461,41 @@ document.addEventListener(
 
 
 /* =====================================================
+   RESIZE
+   ===================================================== */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        requestAnimationFrame(
+            fitLandscapeTypography
+        );
+
+    }
+);
+
+
+window.addEventListener(
+    "orientationchange",
+    () => {
+
+        setTimeout(
+            fitLandscapeTypography,
+            100
+        );
+
+
+        setTimeout(
+            fitLandscapeTypography,
+            350
+        );
+
+    }
+);
+
+
+/* =====================================================
    INITIALIZE
    ===================================================== */
 
@@ -2444,17 +2516,16 @@ setWordCount(
 );
 
 
-/*
-    Start automatic logo independently.
-*/
-
-scheduleLogoCycle();
+requestAnimationFrame(
+    fitLandscapeTypography
+);
 
 
-/*
-    Begin with a very short purely typographic moment,
-    then photo appears and photography capitalizes.
-*/
+window.addEventListener(
+    "load",
+    fitLandscapeTypography
+);
+
 
 setTimeout(
     () => {
