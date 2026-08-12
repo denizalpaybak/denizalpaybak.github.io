@@ -391,10 +391,6 @@ body {
 
 /* =====================================================
    PROJECT GROUP
-
-   No fade.
-   No opacity transition.
-   No scale transition.
    ===================================================== */
 
 .photo-group {
@@ -965,14 +961,6 @@ const PHOTO_HOLD_DURATION =
     1150;
 
 
-/*
-    FILM is now the opening state.
-
-    No artificial film duration is used:
-    the complete video controls the duration
-    through its "ended" event.
-*/
-
 const INITIAL_FILM_DELAY =
     0;
 
@@ -1068,12 +1056,42 @@ const filmVideo =
 
 
 /* =====================================================
+   DEVICE MODE
+
+   Mobile = touch-oriented layouts up to 1000px.
+   On mobile only the project cover is used.
+   Desktop keeps cover + landscape secondary image.
+   ===================================================== */
+
+function isMobileLayout() {
+
+    return window.matchMedia(
+        "(max-width: 1000px)"
+    ).matches;
+
+}
+
+
+/* =====================================================
    STATE
    ===================================================== */
 
 let projectRecords =
     [];
 
+
+/*
+    Full desktop dataset:
+    cover + optional landscape.
+*/
+
+let desktopProjectVisualGroups =
+    [];
+
+
+/*
+    Active dataset currently rendered.
+*/
 
 let projectVisualGroups =
     [];
@@ -1092,6 +1110,10 @@ let supplementalAnalysisFinished =
 
 
 let photographyLoadPromise =
+    null;
+
+
+let renderedMobileMode =
     null;
 
 
@@ -1674,9 +1696,84 @@ function loadImageMetadata(
 
 
 /* =====================================================
-   PHOTOGRAPHY LOAD
+   ACTIVE VISUAL DATASET
 
-   This now runs WHILE the opening film is visible.
+   MOBILE:
+   one image per project = cover only.
+
+   DESKTOP:
+   cover + optional landscape second image.
+   ===================================================== */
+
+function updateActiveVisualGroups() {
+
+    const mobile =
+        isMobileLayout();
+
+
+    if (
+        mobile
+    ) {
+
+        projectVisualGroups =
+            desktopProjectVisualGroups.map(
+                group => {
+
+                    return {
+
+                        projectIndex:
+                            group.projectIndex,
+
+                        photos:
+                            group.photos.length
+                                ? [
+                                    group.photos[0]
+                                ]
+                                : []
+
+                    };
+
+                }
+            ).filter(
+                group =>
+                    group.photos.length
+            );
+
+    }
+
+    else {
+
+        projectVisualGroups =
+            desktopProjectVisualGroups.map(
+                group => {
+
+                    return {
+
+                        projectIndex:
+                            group.projectIndex,
+
+                        photos:
+                            group.photos.slice(
+                                0,
+                                2
+                            )
+
+                    };
+
+                }
+            );
+
+    }
+
+
+    renderedMobileMode =
+        mobile;
+
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY LOAD
    ===================================================== */
 
 async function loadInitialPhotography() {
@@ -1771,12 +1868,11 @@ async function loadInitialPhotography() {
 
 
                 /*
-                    Initial visual set:
-                    covers only.
+                    Initial dataset is cover-only
+                    on both desktop and mobile.
 
-                    This is enough to guarantee
-                    PHOTOGRAPHY can start without
-                    waiting for the whole archive.
+                    Desktop supplemental images are
+                    added later in the background.
                 */
 
                 const initialGroups =
@@ -1818,10 +1914,13 @@ async function loadInitialPhotography() {
                     );
 
 
-                projectVisualGroups =
+                desktopProjectVisualGroups =
                     initialGroups.filter(
                         Boolean
                     );
+
+
+                updateActiveVisualGroups();
 
 
                 buildPhotographyDOM();
@@ -1835,8 +1934,13 @@ async function loadInitialPhotography() {
 
 
                 /*
-                    Start deeper analysis immediately,
-                    but DO NOT await it.
+                    Desktop can use the optional
+                    landscape secondary frame.
+
+                    Analysis can still happen in
+                    the background on mobile, but
+                    mobile rendering will always
+                    discard that second image.
                 */
 
                 analyzeSupplementalImagesInBackground();
@@ -1852,13 +1956,6 @@ async function loadInitialPhotography() {
 
 /* =====================================================
    BACKGROUND LANDSCAPE ANALYSIS
-
-   Per project:
-   cover
-   +
-   widest landscape frame
-
-   maximum 2 images.
    ===================================================== */
 
 async function analyzeSupplementalImagesInBackground() {
@@ -1872,7 +1969,7 @@ async function analyzeSupplementalImagesInBackground() {
                     async record => {
 
                         const current =
-                            projectVisualGroups.find(
+                            desktopProjectVisualGroups.find(
                                 group =>
                                     group.projectIndex ===
                                     record.projectIndex
@@ -1961,7 +2058,7 @@ async function analyzeSupplementalImagesInBackground() {
             );
 
 
-        projectVisualGroups =
+        desktopProjectVisualGroups =
             completed.filter(
                 Boolean
             );
@@ -1972,11 +2069,11 @@ async function analyzeSupplementalImagesInBackground() {
 
 
         /*
-            Never rebuild underneath an
-            active PHOTOGRAPHY presentation.
+            If PHOTOGRAPHY is not currently active,
+            safely adopt the richer desktop dataset.
 
-            The richer set is adopted at
-            the next PHOTOGRAPHY cycle.
+            On mobile updateActiveVisualGroups()
+            strips every project back to cover-only.
         */
 
         if (
@@ -1984,7 +2081,11 @@ async function analyzeSupplementalImagesInBackground() {
             "photography"
         ) {
 
+            updateActiveVisualGroups();
+
+
             buildPhotographyDOM();
+
 
             randomizePhotographyLayout();
 
@@ -2174,6 +2275,11 @@ function createProjectGeometry(
         };
 
 
+    /*
+        Mobile reaches this point with
+        exactly one image per project.
+    */
+
     if (
         group.photos.length ===
         1
@@ -2196,6 +2302,11 @@ function createProjectGeometry(
 
     }
 
+
+    /*
+        Desktop only:
+        optional landscape second image.
+    */
 
     const secondPhoto =
         group.photos[1];
@@ -3611,6 +3722,33 @@ async function switchToFilmLayer() {
 
 function refreshPhotographyDOMIfNeeded() {
 
+    const currentMobileMode =
+        isMobileLayout();
+
+
+    /*
+        Orientation / breakpoint changed.
+        Rebuild because mobile must have
+        cover-only while desktop may have
+        two images per project.
+    */
+
+    if (
+        renderedMobileMode !==
+        currentMobileMode
+    ) {
+
+        updateActiveVisualGroups();
+
+
+        buildPhotographyDOM();
+
+
+        return;
+
+    }
+
+
     if (
         !supplementalAnalysisFinished
     ) {
@@ -3618,6 +3756,14 @@ function refreshPhotographyDOMIfNeeded() {
         return;
 
     }
+
+
+    /*
+        Ensure active data reflects the latest
+        desktop supplemental analysis.
+    */
+
+    updateActiveVisualGroups();
 
 
     const expectedImages =
@@ -3657,8 +3803,6 @@ function refreshPhotographyDOMIfNeeded() {
 
 /* =====================================================
    START PHOTOGRAPHY
-
-   FILM -> PHOTOGRAPHY
    ===================================================== */
 
 function startPhotography(
@@ -3668,14 +3812,6 @@ function startPhotography(
 
     clearPhaseTimer();
 
-
-    /*
-        If projects.json has not even produced
-        the cover set yet, do not freeze the UI.
-
-        Retry shortly while film / current state
-        remains usable.
-    */
 
     if (
         !photographyInitialReady
@@ -3745,10 +3881,8 @@ function startPhotography(
 
 
     /*
-        Typography and photo appearance begin
-        together.
-
-        No fade on photography.
+        PHOTOGRAPHY enters together with
+        the sequential image appearance.
     */
 
     animateTitlesTo(
@@ -3789,12 +3923,25 @@ function startPhotography(
 
 
                 /*
-                    PHOTOGRAPHY exits:
-                    images disappear sequentially.
+                    IMPORTANT CHANGE:
+
+                    The photo disappearance and the
+                    PHOTOGRAPHY -> photography /
+                    film -> FILM title transition
+                    now START AT THE SAME MOMENT.
+
+                    We no longer wait for all photos
+                    to disappear before shrinking
+                    the title.
                 */
 
                 animatePhotoGroups(
-                    0,
+                    0
+                );
+
+
+                animateTitlesTo(
+                    "film",
                     () => {
 
                         if (
@@ -3809,36 +3956,11 @@ function startPhotography(
                         }
 
 
-                        /*
-                            Then typography returns:
-                            PHOTOGRAPHY -> photography
-                            film -> FILM
-                        */
-
-                        animateTitlesTo(
-                            "film",
-                            () => {
-
-                                if (
-                                    activeMode !==
-                                    "photography" ||
-                                    hoverMode !==
-                                    null
-                                ) {
-
-                                    return;
-
-                                }
+                        activeMode =
+                            "film";
 
 
-                                activeMode =
-                                    "film";
-
-
-                                switchToFilmLayer();
-
-                            }
-                        );
+                        switchToFilmLayer();
 
                     }
                 );
@@ -3854,8 +3976,6 @@ function startPhotography(
 
 /* =====================================================
    START FILM
-
-   This is now also the INITIAL state.
    ===================================================== */
 
 function startFilm(
@@ -3882,8 +4002,9 @@ function startFilm(
 
 
     /*
-        If photography is currently on screen,
-        remove its images first.
+        If photography is currently visible,
+        photos and typography now exit
+        simultaneously here too.
     */
 
     if (
@@ -3891,7 +4012,12 @@ function startFilm(
     ) {
 
         animatePhotoGroups(
-            0,
+            0
+        );
+
+
+        animateTitlesTo(
+            "film",
             () => {
 
                 if (
@@ -3904,24 +4030,7 @@ function startFilm(
                 }
 
 
-                animateTitlesTo(
-                    "film",
-                    () => {
-
-                        if (
-                            activeMode !==
-                            "film"
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        switchToFilmLayer();
-
-                    }
-                );
+                switchToFilmLayer();
 
             }
         );
@@ -3933,18 +4042,8 @@ function startFilm(
 
 
     /*
-        INITIAL LOAD enters here.
-
-        photography
-        film
-
-        becomes:
-
-        photography
-        FILM
-
-        while projects.json + image analysis
-        are already running in background.
+        Initial load:
+        film -> FILM.
     */
 
     animateTitlesTo(
@@ -3971,12 +4070,6 @@ function startFilm(
 
 /* =====================================================
    VIDEO ENDED
-
-   Because video is exactly 77 frames at
-   23.976 fps, its natural ended event is the
-   cleanest timing source.
-
-   FILM stays visible for the complete video.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -4495,7 +4588,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   RESIZE
+   RESIZE / ORIENTATION CHANGE
    ===================================================== */
 
 let resizeTimer =
@@ -4523,9 +4616,63 @@ window.addEventListener(
                 () => {
 
                     if (
+                        !photographyInitialReady
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const modeChanged =
+                        renderedMobileMode !==
+                        isMobileLayout();
+
+
+                    /*
+                        Desktop <-> mobile breakpoint:
+                        rebuild the active photo set.
+
+                        Mobile:
+                        cover only.
+
+                        Desktop:
+                        cover + optional landscape.
+                    */
+
+                    if (
+                        modeChanged
+                    ) {
+
+                        const wasVisible =
+                            activeMode ===
+                            "photography";
+
+
+                        updateActiveVisualGroups();
+
+
+                        buildPhotographyDOM();
+
+
+                        randomizePhotographyLayout();
+
+
+                        if (
+                            wasVisible
+                        ) {
+
+                            setVisiblePhotoGroupCount(
+                                groupElements.length
+                            );
+
+                        }
+
+                    }
+
+                    else if (
                         activeMode ===
-                        "photography" &&
-                        photographyInitialReady
+                        "photography"
                     ) {
 
                         randomizePhotographyLayout();
@@ -4615,16 +4762,6 @@ document.addEventListener(
 
 /* =====================================================
    INIT
-
-   NEW STARTUP ORDER
-
-   1. page text renders immediately
-   2. FILM becomes the first animated state
-   3. video begins
-   4. photography JSON/covers load in parallel
-   5. horizontal-image analysis continues in background
-   6. video finishes
-   7. PHOTOGRAPHY begins
    ===================================================== */
 
 function init() {
@@ -4647,12 +4784,8 @@ function init() {
 
 
     /*
-        IMPORTANT:
-
-        Start photography preparation immediately,
-        but DO NOT await it.
-
-        The user sees FILM while this happens.
+        Prepare photography while FILM
+        is already being shown.
     */
 
     loadInitialPhotography()
@@ -4669,7 +4802,7 @@ function init() {
 
 
     /*
-        FILM is now the opening visual state.
+        FILM remains the opening state.
     */
 
     if (
