@@ -310,9 +310,11 @@ body {
 /* =====================================================
    MEDIA FIELD
 
-   Photography uses ALL of this area.
+   Photography:
+   entire available white field.
 
-   Film uses a centered 16:9 frame inside it.
+   Film:
+   centered 16:9.
    ===================================================== */
 
 .media-field {
@@ -333,8 +335,6 @@ body {
 
 /* =====================================================
    PHOTOGRAPHY FIELD
-
-   Full available media field.
    ===================================================== */
 
 .photography-field {
@@ -362,9 +362,7 @@ body {
 
 
 /* =====================================================
-   PHOTOGRAPHY LINK
-
-   Whole scattered composition is clickable.
+   WHOLE PHOTOGRAPHY AREA LINK
    ===================================================== */
 
 .photography-stage-link {
@@ -382,76 +380,159 @@ body {
 
 
 /* =====================================================
-   PROJECT GROUP
+   SCATTERED STAGE
+   ===================================================== */
 
-   One or two photos.
+#scattered-stage {
+    position: absolute;
 
-   If two:
-   same project
-   always next to each other.
+    inset: 0;
 
-   Group position is randomized by JS.
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   PROJECT CLUSTER
+
+   One project =
+   cover
+   +
+   optional landscape image.
+
+   The two photographs are close,
+   but NOT aligned.
+
+   Position and scale are compositor-friendly.
    ===================================================== */
 
 .photo-group {
     position: absolute;
 
-    display: flex;
-    flex-direction: row;
+    top: 0;
+    left: 0;
 
-    align-items: flex-start;
-
-    gap: var(--photo-pair-gap, 10px);
+    width: var(--group-width, 100px);
+    height: var(--group-height, 100px);
 
     opacity: 0;
 
     pointer-events: none;
-
-    backface-visibility: hidden;
-
-    will-change:
-        transform,
-        opacity;
 
     transform:
         translate3d(
             var(--group-x, 0px),
             var(--group-y, 0px),
             0
-        );
-}
+        )
+        scale(.975);
 
-.photo-group.visible {
-    opacity: 1;
+    transform-origin: center center;
+
+    transition-property:
+        opacity,
+        transform;
+
+    transition-duration:
+        220ms,
+        260ms;
+
+    transition-timing-function:
+        linear,
+        cubic-bezier(.65, 0, .35, 1);
+
+    transition-delay:
+        var(--group-delay, 0ms);
+
+    backface-visibility: hidden;
+
+    will-change:
+        transform,
+        opacity;
 }
 
 
 /* =====================================================
-   PHOTOS
-
-   ALL photography images receive exactly
-   the same height.
-
-   Width derives from original aspect ratio.
-   No crop.
+   VISIBLE
    ===================================================== */
 
-.photo-group img {
-    display: block;
+.photo-group.visible {
+    opacity: 1;
 
-    flex: 0 0 auto;
+    transform:
+        translate3d(
+            var(--group-x, 0px),
+            var(--group-y, 0px),
+            0
+        )
+        scale(1);
+}
+
+
+/* =====================================================
+   EXITING
+
+   GPU-friendly exit.
+
+   No DOM rebuild.
+   No per-image JS animation.
+   ===================================================== */
+
+.photo-group.exiting {
+    opacity: 0;
+
+    transform:
+        translate3d(
+            var(--group-x, 0px),
+            calc(
+                var(--group-y, 0px)
+                + var(--exit-y, 4px)
+            ),
+            0
+        )
+        scale(.985);
+
+    transition-duration:
+        180ms,
+        220ms;
+
+    transition-delay:
+        var(--exit-delay, 0ms);
+}
+
+
+/* =====================================================
+   INDIVIDUAL PHOTOS
+
+   Every photo can have a completely
+   different height.
+
+   Position inside its project group
+   is also independent.
+   ===================================================== */
+
+.project-photo {
+    position: absolute;
+
+    display: block;
 
     width: auto;
 
-    height:
-        var(
-            --scattered-photo-height,
-            100px
-        );
+    height: var(--photo-height, 100px);
+
+    top: var(--photo-y, 0px);
+    left: var(--photo-x, 0px);
 
     object-fit: contain;
 
     pointer-events: none;
+
+    backface-visibility: hidden;
+
+    transform: translateZ(0);
 }
 
 
@@ -483,8 +564,6 @@ body {
 
 /* =====================================================
    FILM LINK
-
-   Film remains 16:9.
    ===================================================== */
 
 .film-link {
@@ -628,10 +707,10 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   Font stays 13px.
+   No font shrinking.
 
-   Text = 2/3
-   Media = 1/3
+   Text 2/3
+   Media 1/3
    ===================================================== */
 
 @media
@@ -963,21 +1042,27 @@ const WORD_TRANSITION_DURATION =
     400;
 
 
-/*
-    Photos appear one project-group
-    after another.
-*/
-
 const PHOTO_BUILD_DURATION =
     420;
 
 
-/*
-    Completed scattered state.
-*/
-
 const PHOTO_HOLD_DURATION =
     1150;
+
+
+/*
+    Exit is deliberately short.
+
+    CSS handles the animation;
+    JS only waits for completion.
+*/
+
+const PHOTO_EXIT_BASE_DURATION =
+    220;
+
+
+const PHOTO_EXIT_STAGGER_TOTAL =
+    150;
 
 
 const INITIAL_DELAY =
@@ -997,37 +1082,40 @@ const LOGO_MOBILE_HOLD =
 
 
 /* =====================================================
-   SCATTERED LAYOUT
+   LAYOUT
    ===================================================== */
 
 
 /*
-    Minimum empty space between
-    separate project groups.
+    Minimum horizontal distance
+    between separate project clusters.
 */
 
-const GROUP_GAP_MIN =
-    14;
+const PROJECT_GAP_MIN =
+    18;
 
 
 /*
-    Gap between two images belonging
-    to the SAME project.
+    Maximum randomized gap.
 */
 
-const PAIR_GAP_MIN =
+const PROJECT_GAP_MAX =
+    46;
+
+
+/*
+    Distance between two photos
+    of the SAME project.
+
+    They stay close, but don't align.
+*/
+
+const PAIR_DISTANCE_MIN =
     8;
 
 
-/*
-    How many randomized arrangements
-    we try before choosing the best one.
-
-    Layout changes every photography cycle.
-*/
-
-const RANDOM_LAYOUT_TRIALS =
-    35;
+const PAIR_DISTANCE_MAX =
+    24;
 
 
 /* =====================================================
@@ -1089,7 +1177,7 @@ const filmVideo =
 
 
 /* =====================================================
-   PHOTO DATA
+   PROJECT DATA
    ===================================================== */
 
 let projectVisualGroups =
@@ -1350,7 +1438,7 @@ function findFirstImage(
 
 
 /* =====================================================
-   COLLECT ALL PROJECT IMAGES
+   COLLECT IMAGES
    ===================================================== */
 
 function collectImages(
@@ -1622,7 +1710,7 @@ function getProjectsArray(
 
 
 /* =====================================================
-   LOAD IMAGE METADATA
+   IMAGE METADATA
    ===================================================== */
 
 function loadImageMetadata(
@@ -1699,15 +1787,15 @@ function loadImageMetadata(
 
 
 /* =====================================================
-   BUILD PROJECT VISUAL GROUPS
+   LOAD PROJECTS
 
-   Each project:
+   For every project:
 
-   1. thumbnail / index cover
-   2. IF another landscape image exists:
-      most horizontal landscape image
+   1. thumbnail / cover
+   2. if available:
+      widest landscape image
 
-   Maximum = 2 images per project.
+   maximum 2.
    ===================================================== */
 
 async function loadPhotographyProjects() {
@@ -1769,26 +1857,6 @@ async function loadPhotographyProjects() {
                         }
 
 
-                        const allUrls =
-                            [];
-
-
-                        collectImages(
-                            project,
-                            allUrls
-                        );
-
-
-                        const uniqueProjectUrls =
-                            uniqueUrls(
-                                allUrls
-                            );
-
-
-                        /*
-                            Cover metadata.
-                        */
-
                         const cover =
                             await loadImageMetadata(
                                 coverUrl
@@ -1804,12 +1872,20 @@ async function loadPhotographyProjects() {
                         }
 
 
-                        /*
-                            All non-cover images.
-                        */
+                        const allUrls =
+                            [];
+
+
+                        collectImages(
+                            project,
+                            allUrls
+                        );
+
 
                         const otherUrls =
-                            uniqueProjectUrls.filter(
+                            uniqueUrls(
+                                allUrls
+                            ).filter(
                                 url =>
                                     normalizeUrl(
                                         url
@@ -1820,51 +1896,42 @@ async function loadPhotographyProjects() {
                             );
 
 
-                        const otherMetadata =
-                            await Promise.all(
-                                otherUrls.map(
-                                    loadImageMetadata
+                        const others =
+                            (
+                                await Promise.all(
+                                    otherUrls.map(
+                                        loadImageMetadata
+                                    )
                                 )
-                            );
-
-
-                        const validOthers =
-                            otherMetadata.filter(
+                            ).filter(
                                 Boolean
                             );
 
 
                         /*
-                            Landscape means distinctly wider
-                            than square.
-
-                            Pick the WIDEST ratio.
-
-                            This is the only possible
-                            second image for this project.
+                            Only distinctly landscape.
                         */
 
-                        const landscapeCandidates =
-                            validOthers.filter(
-                                image =>
-                                    image.ratio >
-                                    1.05
-                            );
+                        const landscapes =
+                            others
+                                .filter(
+                                    image =>
+                                        image.ratio >
+                                        1.05
+                                )
+                                .sort(
+                                    (
+                                        a,
+                                        b
+                                    ) =>
+                                        b.ratio -
+                                        a.ratio
+                                );
 
 
-                        landscapeCandidates.sort(
-                            (
-                                a,
-                                b
-                            ) =>
-                                b.ratio -
-                                a.ratio
-                        );
-
-
-                        const landscape =
-                            landscapeCandidates.length
-                                ? landscapeCandidates[0]
+                        const second =
+                            landscapes.length
+                                ? landscapes[0]
                                 : null;
 
 
@@ -1873,10 +1940,10 @@ async function loadPhotographyProjects() {
                             projectIndex,
 
                             photos:
-                                landscape
+                                second
                                     ? [
                                         cover,
-                                        landscape
+                                        second
                                     ]
                                     : [
                                         cover
@@ -1908,7 +1975,7 @@ async function loadPhotographyProjects() {
     ) {
 
         console.error(
-            "Photography layout could not be loaded:",
+            "Photography could not be loaded:",
             error
         );
 
@@ -1920,10 +1987,7 @@ async function loadPhotographyProjects() {
 /* =====================================================
    BUILD STATIC DOM
 
-   DOM is created once.
-
-   Every photography cycle only changes
-   coordinates — no image rebuilding.
+   Created only once.
    ===================================================== */
 
 function buildPhotographyDOM() {
@@ -1943,30 +2007,37 @@ function buildPhotographyDOM() {
     projectVisualGroups.forEach(
         (
             group,
-            index
+            groupIndex
         ) => {
 
-            const element =
+            const groupElement =
                 document.createElement(
                     "div"
                 );
 
 
-            element.className =
+            groupElement.className =
                 "photo-group";
 
 
-            element.dataset.groupIndex =
-                index;
+            groupElement.dataset.groupIndex =
+                groupIndex;
 
 
             group.photos.forEach(
-                photo => {
+                (
+                    photo,
+                    photoIndex
+                ) => {
 
                     const image =
                         document.createElement(
                             "img"
                         );
+
+
+                    image.className =
+                        "project-photo";
 
 
                     image.src =
@@ -1981,7 +2052,11 @@ function buildPhotographyDOM() {
                         "async";
 
 
-                    element.appendChild(
+                    image.dataset.photoIndex =
+                        photoIndex;
+
+
+                    groupElement.appendChild(
                         image
                     );
 
@@ -1990,12 +2065,12 @@ function buildPhotographyDOM() {
 
 
             fragment.appendChild(
-                element
+                groupElement
             );
 
 
             groupElements.push(
-                element
+                groupElement
             );
 
         }
@@ -2010,7 +2085,7 @@ function buildPhotographyDOM() {
 
 
 /* =====================================================
-   RANDOM UTILITY
+   RANDOM HELPERS
    ===================================================== */
 
 function randomBetween(
@@ -2030,587 +2105,537 @@ function randomBetween(
 }
 
 
-/* =====================================================
-   SHUFFLE
-   ===================================================== */
+function randomSign() {
 
-function shuffle(
-    array
-) {
-
-    const copy =
-        array.slice();
-
-
-    for (
-        let i =
-            copy.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const j =
-            Math.floor(
-                Math.random() *
-                (
-                    i + 1
-                )
-            );
-
-
-        [
-            copy[i],
-            copy[j]
-        ] =
-        [
-            copy[j],
-            copy[i]
-        ];
-
-    }
-
-
-    return copy;
+    return Math.random() <
+        0.5
+            ? -1
+            : 1;
 
 }
 
 
 /* =====================================================
-   RECTANGLE COLLISION
+   CREATE RANDOM PROJECT GEOMETRY
+
+   IMPORTANT:
+
+   Project order is NOT randomized.
+
+   Only:
+   - photo sizes
+   - second-photo position
+   - project gaps
+   - vertical offsets
+
+   change each cycle.
    ===================================================== */
 
-function rectanglesOverlap(
-    a,
-    b,
-    gap
-) {
-
-    return !(
-        a.x +
-        a.width +
-        gap <=
-        b.x ||
-
-        b.x +
-        b.width +
-        gap <=
-        a.x ||
-
-        a.y +
-        a.height +
-        gap <=
-        b.y ||
-
-        b.y +
-        b.height +
-        gap <=
-        a.y
-    );
-
-}
-
-
-/* =====================================================
-   GROUP WIDTH AT A GIVEN IMAGE HEIGHT
-   ===================================================== */
-
-function getGroupWidth(
+function createProjectGeometry(
     group,
-    photoHeight,
-    pairGap
+    baseHeight
 ) {
 
-    const photosWidth =
-        group.photos.reduce(
-            (
-                total,
-                photo
-            ) =>
-                total +
-                photo.ratio *
-                photoHeight,
-            0
+    /*
+        Cover has random height.
+    */
+
+    const firstHeight =
+        baseHeight *
+        randomBetween(
+            0.76,
+            1.18
         );
 
 
-    const gaps =
-        Math.max(
-            0,
-            group.photos.length -
-            1
-        ) *
-        pairGap;
+    const first =
+        {
 
+            photo:
+                group.photos[0],
 
-    return (
-        photosWidth +
-        gaps
-    );
+            height:
+                firstHeight,
 
-}
+            width:
+                firstHeight *
+                group.photos[0].ratio,
 
+            x:
+                0,
 
-/* =====================================================
-   TRY RANDOM PACK
+            y:
+                0
 
-   Every group:
-   - same image height
-   - random X
-   - random Y
-   - no overlap
-   - no touching
-
-   Groups containing two project images
-   remain one rectangle.
-   ===================================================== */
-
-function tryRandomPacking(
-    groups,
-    fieldWidth,
-    fieldHeight,
-    photoHeight,
-    pairGap,
-    outerGap
-) {
-
-    const prepared =
-        groups.map(
-            (
-                group,
-                originalIndex
-            ) => {
-
-                return {
-
-                    group,
-
-                    originalIndex,
-
-                    width:
-                        getGroupWidth(
-                            group,
-                            photoHeight,
-                            pairGap
-                        ),
-
-                    height:
-                        photoHeight
-
-                };
-
-            }
-        );
+        };
 
 
     /*
-        Large groups first makes successful
-        packing considerably easier.
-
-        Final visual order is irrelevant because
-        positions are random.
+        Single-photo project.
     */
 
-    const placementOrder =
-        prepared
-            .slice()
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    b.width -
-                    a.width
-            );
-
-
-    const placed =
-        [];
-
-
-    for (
-        const item of placementOrder
+    if (
+        group.photos.length ===
+        1
     ) {
 
-        if (
-            item.width >
-            fieldWidth ||
-            item.height >
-            fieldHeight
-        ) {
+        return {
 
-            return null;
+            photos:
+                [
+                    first
+                ],
 
-        }
+            width:
+                first.width,
 
+            height:
+                first.height
 
-        let bestCandidate =
-            null;
-
-
-        let bestCandidateScore =
-            -Infinity;
-
-
-        /*
-            Random candidate search.
-
-            Rather than accepting first legal point,
-            test many positions and favor positions
-            far away from existing centers.
-
-            This makes the result genuinely scattered.
-        */
-
-        const attempts =
-            300;
-
-
-        for (
-            let attempt = 0;
-            attempt < attempts;
-            attempt++
-        ) {
-
-            const candidate =
-                {
-
-                    x:
-                        randomBetween(
-                            0,
-                            fieldWidth -
-                            item.width
-                        ),
-
-                    y:
-                        randomBetween(
-                            0,
-                            fieldHeight -
-                            item.height
-                        ),
-
-                    width:
-                        item.width,
-
-                    height:
-                        item.height,
-
-                    originalIndex:
-                        item.originalIndex
-
-                };
-
-
-            const collides =
-                placed.some(
-                    existing =>
-                        rectanglesOverlap(
-                            candidate,
-                            existing,
-                            outerGap
-                        )
-                );
-
-
-            if (
-                collides
-            ) {
-
-                continue;
-
-            }
-
-
-            /*
-                Spread score.
-
-                Favor distance from existing groups
-                and avoid everything clustering
-                around centre.
-            */
-
-            const cx =
-                candidate.x +
-                candidate.width /
-                2;
-
-
-            const cy =
-                candidate.y +
-                candidate.height /
-                2;
-
-
-            let minDistance =
-                Infinity;
-
-
-            placed.forEach(
-                existing => {
-
-                    const ex =
-                        existing.x +
-                        existing.width /
-                        2;
-
-
-                    const ey =
-                        existing.y +
-                        existing.height /
-                        2;
-
-
-                    const distance =
-                        Math.hypot(
-                            cx - ex,
-                            cy - ey
-                        );
-
-
-                    minDistance =
-                        Math.min(
-                            minDistance,
-                            distance
-                        );
-
-                }
-            );
-
-
-            if (
-                placed.length ===
-                0
-            ) {
-
-                minDistance =
-                    fieldWidth +
-                    fieldHeight;
-
-            }
-
-
-            /*
-                Very small random factor ensures
-                repeated cycles don't settle into
-                the same optimum.
-            */
-
-            const score =
-                minDistance +
-                Math.random() *
-                60;
-
-
-            if (
-                score >
-                bestCandidateScore
-            ) {
-
-                bestCandidateScore =
-                    score;
-
-
-                bestCandidate =
-                    candidate;
-
-            }
-
-        }
-
-
-        if (
-            !bestCandidate
-        ) {
-
-            return null;
-
-        }
-
-
-        placed.push(
-            bestCandidate
-        );
+        };
 
     }
 
 
-    return placed;
+    /*
+        Second image has a DIFFERENT size.
+    */
+
+    const secondPhoto =
+        group.photos[1];
+
+
+    const secondHeight =
+        baseHeight *
+        randomBetween(
+            0.68,
+            1.12
+        );
+
+
+    const secondWidth =
+        secondHeight *
+        secondPhoto.ratio;
+
+
+    /*
+        Nearby horizontally,
+        but vertically deliberately offset.
+
+        Sometimes slightly above,
+        sometimes below.
+    */
+
+    const pairGap =
+        randomBetween(
+            PAIR_DISTANCE_MIN,
+            PAIR_DISTANCE_MAX
+        );
+
+
+    const secondX =
+        first.width +
+        pairGap;
+
+
+    const maxVerticalOffset =
+        baseHeight *
+        0.42;
+
+
+    const secondY =
+        randomBetween(
+            0,
+            maxVerticalOffset
+        ) *
+        randomSign();
+
+
+    /*
+        Normalize negative y so cluster
+        bounding box starts at 0.
+    */
+
+    const minY =
+        Math.min(
+            0,
+            secondY
+        );
+
+
+    const firstNormalizedY =
+        -minY;
+
+
+    const secondNormalizedY =
+        secondY -
+        minY;
+
+
+    first.y =
+        firstNormalizedY;
+
+
+    const second =
+        {
+
+            photo:
+                secondPhoto,
+
+            height:
+                secondHeight,
+
+            width:
+                secondWidth,
+
+            x:
+                secondX,
+
+            y:
+                secondNormalizedY
+
+        };
+
+
+    const totalHeight =
+        Math.max(
+            first.y +
+            first.height,
+
+            second.y +
+            second.height
+        );
+
+
+    const totalWidth =
+        second.x +
+        second.width;
+
+
+    return {
+
+        photos:
+            [
+                first,
+                second
+            ],
+
+        width:
+            totalWidth,
+
+        height:
+            totalHeight
+
+    };
 
 }
 
 
 /* =====================================================
-   LAYOUT SCORE
-
-   We want photographs to use the entire field,
-   not merely fit inside one corner.
-
-   Score based on:
-   - bounding box width
-   - bounding box height
-   - edge usage
+   CREATE ALL PROJECT GEOMETRIES
    ===================================================== */
 
-function scorePacking(
-    placements,
+function createAllProjectGeometries(
+    baseHeight
+) {
+
+    return projectVisualGroups.map(
+        (
+            group,
+            index
+        ) => {
+
+            return {
+
+                index,
+
+                ...createProjectGeometry(
+                    group,
+                    baseHeight
+                ),
+
+                /*
+                    Random gap AFTER this project.
+
+                    This is why white spacing changes
+                    each photography cycle even though
+                    project order remains stable.
+                */
+
+                gapAfter:
+                    randomBetween(
+                        PROJECT_GAP_MIN,
+                        PROJECT_GAP_MAX
+                    )
+
+            };
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PACK IN FIXED PROJECT ORDER
+
+   Projects always follow projects.json order.
+
+   But:
+   - row break point varies because sizes vary
+   - vertical positions vary
+   - gaps vary
+   - individual photo sizes vary
+
+   Therefore composition changes without
+   Vogue suddenly becoming the last project.
+   ===================================================== */
+
+function packOrderedProjects(
+    geometries,
     fieldWidth,
     fieldHeight
 ) {
 
-    if (
-        !placements ||
-        placements.length ===
-        0
-    ) {
-
-        return -Infinity;
-
-    }
+    const rows =
+        [];
 
 
-    const left =
-        Math.min(
-            ...placements.map(
-                p =>
-                    p.x
-            )
-        );
+    let currentRow =
+        [];
 
 
-    const top =
-        Math.min(
-            ...placements.map(
-                p =>
-                    p.y
-            )
-        );
-
-
-    const right =
-        Math.max(
-            ...placements.map(
-                p =>
-                    p.x +
-                    p.width
-            )
-        );
-
-
-    const bottom =
-        Math.max(
-            ...placements.map(
-                p =>
-                    p.y +
-                    p.height
-            )
-        );
-
-
-    const coverageWidth =
-        (
-            right -
-            left
-        ) /
-        fieldWidth;
-
-
-    const coverageHeight =
-        (
-            bottom -
-            top
-        ) /
-        fieldHeight;
-
-
-    /*
-        Reward reaching multiple edges
-        of the available white field.
-    */
-
-    const edgeThreshold =
-        0.08;
-
-
-    let edgeScore =
+    let currentWidth =
         0;
 
 
-    if (
-        left <
-        fieldWidth *
-        edgeThreshold
-    ) {
-
-        edgeScore++;
-
-    }
+    let rowHeight =
+        0;
 
 
-    if (
-        right >
-        fieldWidth *
-        (
-            1 -
-            edgeThreshold
-        )
-    ) {
+    geometries.forEach(
+        geometry => {
 
-        edgeScore++;
-
-    }
+            const needed =
+                geometry.width +
+                (
+                    currentRow.length
+                        ? geometry.gapAfter
+                        : 0
+                );
 
 
-    if (
-        top <
-        fieldHeight *
-        edgeThreshold
-    ) {
+            /*
+                Row breaking threshold itself has
+                a little randomness.
 
-        edgeScore++;
+                This gives different wrapping
+                without changing project sequence.
+            */
 
-    }
-
-
-    if (
-        bottom >
-        fieldHeight *
-        (
-            1 -
-            edgeThreshold
-        )
-    ) {
-
-        edgeScore++;
-
-    }
+            const rowLimit =
+                fieldWidth *
+                randomBetween(
+                    0.83,
+                    0.98
+                );
 
 
-    return (
-        coverageWidth *
-        4 +
+            if (
+                currentRow.length &&
+                currentWidth +
+                needed >
+                rowLimit
+            ) {
 
-        coverageHeight *
-        4 +
+                rows.push(
+                    {
 
-        edgeScore *
-        0.7 +
+                        items:
+                            currentRow,
 
-        Math.random() *
-        0.15
+                        width:
+                            currentWidth,
+
+                        height:
+                            rowHeight
+
+                    }
+                );
+
+
+                currentRow =
+                    [];
+
+
+                currentWidth =
+                    0;
+
+
+                rowHeight =
+                    0;
+
+            }
+
+
+            currentRow.push(
+                geometry
+            );
+
+
+            if (
+                currentRow.length ===
+                1
+            ) {
+
+                currentWidth =
+                    geometry.width;
+
+            }
+
+            else {
+
+                const previous =
+                    currentRow[
+                        currentRow.length -
+                        2
+                    ];
+
+
+                currentWidth +=
+                    previous.gapAfter +
+                    geometry.width;
+
+            }
+
+
+            rowHeight =
+                Math.max(
+                    rowHeight,
+                    geometry.height
+                );
+
+        }
     );
+
+
+    if (
+        currentRow.length
+    ) {
+
+        rows.push(
+            {
+
+                items:
+                    currentRow,
+
+                width:
+                    currentWidth,
+
+                height:
+                    rowHeight
+
+            }
+        );
+
+    }
+
+
+    /*
+        Random vertical gaps between rows.
+    */
+
+    const rowGaps =
+        [];
+
+
+    for (
+        let i = 0;
+        i < rows.length - 1;
+        i++
+    ) {
+
+        rowGaps.push(
+            randomBetween(
+                PROJECT_GAP_MIN,
+                PROJECT_GAP_MAX *
+                1.15
+            )
+        );
+
+    }
+
+
+    const totalHeight =
+        rows.reduce(
+            (
+                total,
+                row
+            ) =>
+                total +
+                row.height,
+            0
+        ) +
+        rowGaps.reduce(
+            (
+                total,
+                gap
+            ) =>
+                total +
+                gap,
+            0
+        );
+
+
+    if (
+        totalHeight >
+        fieldHeight
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+        Need all rows to fit width.
+    */
+
+    const tooWide =
+        rows.some(
+            row =>
+                row.width >
+                fieldWidth
+        );
+
+
+    if (
+        tooWide
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        rows,
+
+        rowGaps,
+
+        totalHeight
+
+    };
 
 }
 
 
 /* =====================================================
-   FIND PHOTO HEIGHT
-
-   Every photo must have identical height.
-
-   Binary-search largest height that still allows
-   random non-overlapping placement.
+   FIND LARGEST RANDOM BASE SIZE THAT FITS
    ===================================================== */
 
-function findScatteredLayout(
+function createPhotographyComposition(
     fieldWidth,
     fieldHeight
 ) {
@@ -2626,66 +2651,31 @@ function findScatteredLayout(
 
 
     /*
-        Pair/outer gaps respond mildly to device size.
-    */
-
-    const pairGap =
-        Math.max(
-            PAIR_GAP_MIN,
-            Math.min(
-                14,
-                fieldWidth *
-                0.012
-            )
-        );
-
-
-    const outerGap =
-        Math.max(
-            GROUP_GAP_MIN,
-            Math.min(
-                24,
-                fieldWidth *
-                0.018
-            )
-        );
-
-
-    /*
-        Maximum reasonable height.
-
-        Photos should remain editorial fragments,
-        not giant hero images.
+        Binary-search an overall base,
+        but EVERY actual image varies
+        around that base.
     */
 
     let low =
         Math.max(
-            28,
+            34,
             fieldHeight *
-            0.07
+            0.08
         );
 
 
     let high =
         Math.min(
             fieldHeight *
-            0.26,
+            0.32,
             fieldWidth *
-            0.20
+            0.22
         );
 
 
-    let bestHeight =
-        low;
-
-
-    let bestPacking =
+    let best =
         null;
 
-
-    /*
-        Binary search largest viable common height.
-    */
 
     for (
         let iteration = 0;
@@ -2701,37 +2691,51 @@ function findScatteredLayout(
             2;
 
 
-        let successful =
+        let candidate =
             null;
 
 
         /*
-            Several random attempts at this height.
+            Because geometry is random,
+            test several arrangements
+            for this base size.
         */
 
         for (
-            let attempt = 0;
-            attempt < 8;
-            attempt++
+            let test = 0;
+            test < 8;
+            test++
         ) {
 
-            const test =
-                tryRandomPacking(
-                    projectVisualGroups,
+            const geometries =
+                createAllProjectGeometries(
+                    mid
+                );
+
+
+            const packed =
+                packOrderedProjects(
+                    geometries,
                     fieldWidth,
-                    fieldHeight,
-                    mid,
-                    pairGap,
-                    outerGap
+                    fieldHeight
                 );
 
 
             if (
-                test
+                packed
             ) {
 
-                successful =
-                    test;
+                candidate =
+                    {
+
+                        baseHeight:
+                            mid,
+
+                        geometries,
+
+                        packed
+
+                    };
 
 
                 break;
@@ -2742,15 +2746,11 @@ function findScatteredLayout(
 
 
         if (
-            successful
+            candidate
         ) {
 
-            bestHeight =
-                mid;
-
-
-            bestPacking =
-                successful;
+            best =
+                candidate;
 
 
             low =
@@ -2768,200 +2768,233 @@ function findScatteredLayout(
     }
 
 
-    /*
-        At the chosen height, generate many valid
-        random compositions and select one that
-        uses the available white field most widely.
-    */
-
-    let finalPacking =
-        bestPacking;
-
-
-    let finalScore =
-        finalPacking
-            ? scorePacking(
-                finalPacking,
-                fieldWidth,
-                fieldHeight
-            )
-            : -Infinity;
-
-
-    for (
-        let trial = 0;
-        trial < RANDOM_LAYOUT_TRIALS;
-        trial++
-    ) {
-
-        const candidate =
-            tryRandomPacking(
-                projectVisualGroups,
-                fieldWidth,
-                fieldHeight,
-                bestHeight,
-                pairGap,
-                outerGap
-            );
-
-
-        if (
-            !candidate
-        ) {
-
-            continue;
-
-        }
-
-
-        const score =
-            scorePacking(
-                candidate,
-                fieldWidth,
-                fieldHeight
-            );
-
-
-        if (
-            score >
-            finalScore
-        ) {
-
-            finalScore =
-                score;
-
-
-            finalPacking =
-                candidate;
-
-        }
-
-    }
-
-
     if (
-        !finalPacking
+        !best
     ) {
 
-        return null;
+        /*
+            Emergency conservative layout.
+        */
+
+        const geometries =
+            createAllProjectGeometries(
+                low
+            );
+
+
+        const packed =
+            packOrderedProjects(
+                geometries,
+                fieldWidth,
+                fieldHeight
+            );
+
+
+        if (
+            !packed
+        ) {
+
+            return null;
+
+        }
+
+
+        best =
+            {
+
+                baseHeight:
+                    low,
+
+                geometries,
+
+                packed
+
+            };
 
     }
 
 
-    return {
-
-        photoHeight:
-            bestHeight,
-
-        pairGap,
-
-        placements:
-            finalPacking
-
-    };
+    return best;
 
 }
 
 
 /* =====================================================
-   RANDOMIZE PHOTOGRAPHY LAYOUT
+   APPLY COMPOSITION
 
-   Called EVERY photography cycle.
+   Projects retain their order.
 
-   Same images,
-   different positions.
-
-   No layout animation — composition appears
-   immediately in its new state.
+   Rows themselves get irregular:
+   - horizontal starting point
+   - vertical offset of each group
+   - random inter-project spacing
    ===================================================== */
 
-function randomizePhotographyLayout() {
+function applyPhotographyComposition(
+    composition,
+    fieldWidth,
+    fieldHeight
+) {
 
-    if (
-        groupElements.length ===
-        0
-    ) {
-
-        return;
-
-    }
-
-
-    const rect =
-        mediaField
-            .getBoundingClientRect();
-
-
-    if (
-        rect.width <= 0 ||
-        rect.height <= 0
-    ) {
-
-        return;
-
-    }
-
-
-    const layout =
-        findScatteredLayout(
-            rect.width,
-            rect.height
-        );
-
-
-    if (
-        !layout
-    ) {
-
-        return;
-
-    }
-
-
-    photographyField.style
-        .setProperty(
-            "--scattered-photo-height",
-            `${layout.photoHeight}px`
-        );
-
-
-    photographyField.style
-        .setProperty(
-            "--photo-pair-gap",
-            `${layout.pairGap}px`
-        );
+    const {
+        rows,
+        rowGaps,
+        totalHeight
+    } =
+        composition.packed;
 
 
     /*
-        Placement array was generated in width-order,
-        so map it back to original project index.
+        Use the whole vertical field,
+        but don't force exact centering.
+
+        Every cycle can sit slightly higher/lower.
     */
 
-    const placementByIndex =
+    const spareVertical =
+        Math.max(
+            0,
+            fieldHeight -
+            totalHeight
+        );
+
+
+    let y =
+        randomBetween(
+            spareVertical *
+            0.08,
+            spareVertical *
+            0.92
+        );
+
+
+    const placementMap =
         new Map();
 
 
-    layout.placements.forEach(
-        placement => {
+    rows.forEach(
+        (
+            row,
+            rowIndex
+        ) => {
 
-            placementByIndex.set(
-                placement.originalIndex,
-                placement
+            const spareHorizontal =
+                Math.max(
+                    0,
+                    fieldWidth -
+                    row.width
+                );
+
+
+            /*
+                Row starts at a different position
+                every cycle.
+
+                BUT project order inside row
+                does not change.
+            */
+
+            let x =
+                randomBetween(
+                    0,
+                    spareHorizontal
+                );
+
+
+            row.items.forEach(
+                (
+                    geometry,
+                    itemIndex
+                ) => {
+
+                    /*
+                        Independent vertical jitter
+                        prevents projects in a row
+                        from sharing a baseline.
+                    */
+
+                    const verticalFreedom =
+                        Math.max(
+                            0,
+                            row.height -
+                            geometry.height
+                        );
+
+
+                    const groupY =
+                        y +
+                        randomBetween(
+                            0,
+                            verticalFreedom
+                        );
+
+
+                    placementMap.set(
+                        geometry.index,
+                        {
+
+                            x,
+
+                            y:
+                                groupY,
+
+                            geometry
+
+                        }
+                    );
+
+
+                    x +=
+                        geometry.width;
+
+
+                    if (
+                        itemIndex <
+                        row.items.length - 1
+                    ) {
+
+                        x +=
+                            geometry.gapAfter;
+
+                    }
+
+                }
             );
+
+
+            y +=
+                row.height;
+
+
+            if (
+                rowIndex <
+                rowGaps.length
+            ) {
+
+                y +=
+                    rowGaps[
+                        rowIndex
+                    ];
+
+            }
 
         }
     );
 
 
+    /* ---------------------------------------------
+       Apply to DOM
+       --------------------------------------------- */
+
     groupElements.forEach(
         (
-            element,
-            index
+            groupElement,
+            groupIndex
         ) => {
 
             const placement =
-                placementByIndex.get(
-                    index
+                placementMap.get(
+                    groupIndex
                 );
 
 
@@ -2974,18 +3007,89 @@ function randomizePhotographyLayout() {
             }
 
 
-            element.style
+            const geometry =
+                placement.geometry;
+
+
+            groupElement.style
                 .setProperty(
                     "--group-x",
                     `${placement.x}px`
                 );
 
 
-            element.style
+            groupElement.style
                 .setProperty(
                     "--group-y",
                     `${placement.y}px`
                 );
+
+
+            groupElement.style
+                .setProperty(
+                    "--group-width",
+                    `${geometry.width}px`
+                );
+
+
+            groupElement.style
+                .setProperty(
+                    "--group-height",
+                    `${geometry.height}px`
+                );
+
+
+            const images =
+                Array.from(
+                    groupElement.querySelectorAll(
+                        ".project-photo"
+                    )
+                );
+
+
+            geometry.photos.forEach(
+                (
+                    photoGeometry,
+                    photoIndex
+                ) => {
+
+                    const image =
+                        images[
+                            photoIndex
+                        ];
+
+
+                    if (
+                        !image
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    image.style
+                        .setProperty(
+                            "--photo-height",
+                            `${photoGeometry.height}px`
+                        );
+
+
+                    image.style
+                        .setProperty(
+                            "--photo-x",
+                            `${photoGeometry.x}px`
+                        );
+
+
+                    image.style
+                        .setProperty(
+                            "--photo-y",
+                            `${photoGeometry.y}px`
+                        );
+
+                }
+            );
 
         }
     );
@@ -2994,39 +3098,157 @@ function randomizePhotographyLayout() {
 
 
 /* =====================================================
-   PHOTO REVEAL
+   RANDOMIZE PHOTOGRAPHY
+
+   New sizes + spacing each cycle.
+
+   Project order stays fixed.
    ===================================================== */
 
-let photoRevealTimers =
-    [];
+function randomizePhotographyLayout() {
+
+    const rect =
+        mediaField
+            .getBoundingClientRect();
 
 
-function clearPhotoRevealTimers() {
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0 ||
+        !groupElements.length
+    ) {
 
-    photoRevealTimers.forEach(
-        timer => {
+        return;
 
-            clearTimeout(
-                timer
-            );
+    }
+
+
+    const composition =
+        createPhotographyComposition(
+            rect.width,
+            rect.height
+        );
+
+
+    if (
+        !composition
+    ) {
+
+        return;
+
+    }
+
+
+    applyPhotographyComposition(
+        composition,
+        rect.width,
+        rect.height
+    );
+
+}
+
+
+/* =====================================================
+   PHOTO ENTRANCE / EXIT
+   ===================================================== */
+
+let photoPhaseTimer =
+    null;
+
+
+/* =====================================================
+   CLEAR PHOTO TIMER
+   ===================================================== */
+
+function clearPhotoPhaseTimer() {
+
+    if (
+        photoPhaseTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            photoPhaseTimer
+        );
+
+
+        photoPhaseTimer =
+            null;
+
+    }
+
+}
+
+
+/* =====================================================
+   PREPARE GROUPS
+
+   Set delays once, then browser handles
+   transitions on compositor.
+   ===================================================== */
+
+function preparePhotoEntrance() {
+
+    clearPhotoPhaseTimer();
+
+
+    groupElements.forEach(
+        (
+            group,
+            index
+        ) => {
+
+            group.classList
+                .remove(
+                    "visible",
+                    "exiting"
+                );
+
+
+            const delay =
+                groupElements.length >
+                1
+                    ? (
+                        index /
+                        (
+                            groupElements.length -
+                            1
+                        )
+                    ) *
+                    PHOTO_BUILD_DURATION
+                    : 0;
+
+
+            group.style
+                .setProperty(
+                    "--group-delay",
+                    `${delay}ms`
+                );
+
+
+            group.style
+                .setProperty(
+                    "--exit-delay",
+                    "0ms"
+                );
 
         }
     );
 
 
-    photoRevealTimers =
-        [];
+    /*
+        One forced style flush for ALL groups,
+        not one flush per image.
+    */
 
-}
+    void scatteredStage.offsetWidth;
 
-
-function resetPhotoGroups() {
 
     groupElements.forEach(
         group => {
 
             group.classList
-                .remove(
+                .add(
                     "visible"
                 );
 
@@ -3037,21 +3259,20 @@ function resetPhotoGroups() {
 
 
 /* =====================================================
-   REVEAL RANDOM ORDER
+   ANIMATED EXIT
 
-   Because spatial arrangement is already chaotic,
-   using the same project order every cycle would
-   feel too structured.
+   No JS animation loop.
+   No one-timeout-per-image.
 
-   Group pairs still appear simultaneously.
+   Just one class change per project group,
+   browser composites the transition.
    ===================================================== */
 
-function revealPhotographyGroups() {
+function animatePhotoExit(
+    onComplete
+) {
 
-    clearPhotoRevealTimers();
-
-
-    resetPhotoGroups();
+    clearPhotoPhaseTimer();
 
 
     if (
@@ -3059,44 +3280,124 @@ function revealPhotographyGroups() {
         0
     ) {
 
+        if (
+            typeof onComplete ===
+            "function"
+        ) {
+
+            onComplete();
+
+        }
+
+
         return;
 
     }
 
 
-    const revealOrder =
-        shuffle(
-            groupElements
-        );
+    /*
+        Slight stagger, but very short.
 
+        Reverse order gives a quiet collapse.
+    */
 
-    const interval =
-        PHOTO_BUILD_DURATION /
-        revealOrder.length;
-
-
-    revealOrder.forEach(
+    groupElements.forEach(
         (
             group,
             index
         ) => {
 
-            photoRevealTimers.push(
+            const reverseIndex =
+                groupElements.length -
+                1 -
+                index;
 
+
+            const delay =
+                groupElements.length >
+                1
+                    ? (
+                        reverseIndex /
+                        (
+                            groupElements.length -
+                            1
+                        )
+                    ) *
+                    PHOTO_EXIT_STAGGER_TOTAL
+                    : 0;
+
+
+            group.style
+                .setProperty(
+                    "--exit-delay",
+                    `${delay}ms`
+                );
+
+
+            group.style
+                .setProperty(
+                    "--exit-y",
+                    `${randomBetween(
+                        -6,
+                        6
+                    )}px`
+                );
+
+        }
+    );
+
+
+    /*
+        One frame, then all exit transitions begin.
+    */
+
+    requestAnimationFrame(
+        () => {
+
+            groupElements.forEach(
+                group => {
+
+                    group.classList
+                        .remove(
+                            "visible"
+                        );
+
+
+                    group.classList
+                        .add(
+                            "exiting"
+                        );
+
+                }
+            );
+
+
+            /*
+                SINGLE JS timer for complete exit.
+            */
+
+            photoPhaseTimer =
                 setTimeout(
                     () => {
 
-                        group.classList
-                            .add(
-                                "visible"
-                            );
+                        photoPhaseTimer =
+                            null;
+
+
+                        if (
+                            typeof onComplete ===
+                            "function"
+                        ) {
+
+                            onComplete();
+
+                        }
 
                     },
-                    interval *
-                    index
-                )
-
-            );
+                    PHOTO_EXIT_BASE_DURATION +
+                    PHOTO_EXIT_STAGGER_TOTAL +
+                    30
+                );
 
         }
     );
@@ -3456,9 +3757,6 @@ function clearPhaseTimer() {
 
 /* =====================================================
    PRIME VIDEO
-
-   Seek happens while photography is visible,
-   not during transition.
    ===================================================== */
 
 function primeFilm() {
@@ -3517,7 +3815,7 @@ function primeFilm() {
 
 
 /* =====================================================
-   SHOW FILM LAYER
+   SWITCH TO FILM
    ===================================================== */
 
 async function switchToFilmLayer() {
@@ -3565,7 +3863,7 @@ function startPhotography(
     clearPhaseTimer();
 
 
-    clearPhotoRevealTimers();
+    clearPhotoPhaseTimer();
 
 
     filmVideo.pause();
@@ -3579,8 +3877,9 @@ function startPhotography(
 
 
     /*
-        NEW RANDOM COMPOSITION
-        every single photography cycle.
+        NEW:
+        project order remains fixed,
+        but sizes and spaces change.
     */
 
     randomizePhotographyLayout();
@@ -3601,7 +3900,7 @@ function startPhotography(
     );
 
 
-    revealPhotographyGroups();
+    preparePhotoEntrance();
 
 
     if (
@@ -3616,13 +3915,7 @@ function startPhotography(
 
 
     /*
-        Photography stays:
-        entrance + short complete hold.
-
-        Then ONLY typography changes.
-
-        Photos remain static while title morphs,
-        which keeps transition light.
+        Full photography hold.
     */
 
     phaseTimer =
@@ -3641,8 +3934,14 @@ function startPhotography(
                 }
 
 
-                animateTitlesTo(
-                    "film",
+                /*
+                    First animate photographs out.
+
+                    Typography is NOT morphing
+                    at the same exact time.
+                */
+
+                animatePhotoExit(
                     () => {
 
                         if (
@@ -3657,11 +3956,35 @@ function startPhotography(
                         }
 
 
-                        activeMode =
-                            "film";
+                        /*
+                            Now title morph gets
+                            the main thread to itself.
+                        */
+
+                        animateTitlesTo(
+                            "film",
+                            () => {
+
+                                if (
+                                    activeMode !==
+                                    "photography" ||
+                                    hoverMode !==
+                                    null
+                                ) {
+
+                                    return;
+
+                                }
 
 
-                        switchToFilmLayer();
+                                activeMode =
+                                    "film";
+
+
+                                switchToFilmLayer();
+
+                            }
+                        );
 
                     }
                 );
@@ -3675,7 +3998,7 @@ function startPhotography(
 
 
 /* =====================================================
-   START FILM MANUALLY
+   MANUAL FILM START
    ===================================================== */
 
 function startFilm(
@@ -3690,10 +4013,64 @@ function startFilm(
     clearPhaseTimer();
 
 
-    clearPhotoRevealTimers();
+    clearPhotoPhaseTimer();
 
 
     primeFilm();
+
+
+    /*
+        If photography is visible,
+        animate it out first.
+    */
+
+    if (
+        photographyField
+            .classList
+            .contains(
+                "active"
+            )
+    ) {
+
+        animatePhotoExit(
+            () => {
+
+                if (
+                    activeMode !==
+                    "film"
+                ) {
+
+                    return;
+
+                }
+
+
+                animateTitlesTo(
+                    "film",
+                    () => {
+
+                        if (
+                            activeMode !==
+                            "film"
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        switchToFilmLayer();
+
+                    }
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
 
 
     animateTitlesTo(
@@ -3719,7 +4096,7 @@ function startFilm(
 
 
 /* =====================================================
-   VIDEO ENDED
+   VIDEO END
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -4263,9 +4640,6 @@ logo.addEventListener(
 
 /* =====================================================
    RESIZE
-
-   Recalculate geometry without changing
-   current category.
    ===================================================== */
 
 let resizeTimer =
@@ -4299,18 +4673,6 @@ window.addEventListener(
 
                         randomizePhotographyLayout();
 
-
-                        groupElements.forEach(
-                            group => {
-
-                                group.classList
-                                    .add(
-                                        "visible"
-                                    );
-
-                            }
-                        );
-
                     }
 
                 },
@@ -4335,7 +4697,7 @@ document.addEventListener(
 
             clearPhaseTimer();
 
-            clearPhotoRevealTimers();
+            clearPhotoPhaseTimer();
 
             filmVideo.pause();
 
@@ -4417,10 +4779,6 @@ async function init() {
     );
 
 
-    /*
-        Begin video buffering immediately.
-    */
-
     try {
 
         filmVideo.load();
@@ -4431,16 +4789,6 @@ async function init() {
         error
     ) {}
 
-
-    /*
-        Load:
-
-        thumbnail
-        +
-        optional widest landscape
-
-        for every project.
-    */
 
     await loadPhotographyProjects();
 
