@@ -87,7 +87,7 @@ body {
 
 
 /* =====================================================
-   DESKTOP GRID
+   MAIN DESKTOP GRID
    ===================================================== */
 
 .landing-grid {
@@ -256,7 +256,7 @@ body {
 
 
 /* =====================================================
-   BIOGRAPHY
+   BIO
    ===================================================== */
 
 .biography {
@@ -308,7 +308,20 @@ body {
 
 
 /* =====================================================
-   MEDIA FIELD
+   MEDIA SLOT
+
+   The media field itself may be any shape,
+   but the actual visual is ALWAYS a 16:9 frame.
+
+   Photography:
+       1080 + 40 + 1440
+       = 2560 × 1440
+
+   Film:
+       2560 × 1440
+
+   Therefore both modes occupy precisely
+   the same visible rectangle.
    ===================================================== */
 
 .media-slot {
@@ -316,6 +329,11 @@ body {
 
     grid-column: 2;
     grid-row: 1 / -1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
 
     width: 100%;
     height: 100%;
@@ -328,7 +346,35 @@ body {
 
 
 /* =====================================================
-   MEDIA LINK
+   COMMON 16:9 VISUAL FRAME
+
+   Width/height become as large as possible
+   without leaving the media slot.
+   ===================================================== */
+
+.visual-frame {
+    position: relative;
+
+    width: 100%;
+
+    max-width:
+        calc(
+            (
+                100vh -
+                var(--page-top) -
+                var(--page-bottom)
+            ) *
+            16 / 9
+        );
+
+    aspect-ratio: 16 / 9;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   MEDIA LINKS
    ===================================================== */
 
 .media-layer {
@@ -338,13 +384,11 @@ body {
 
     display: none;
 
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
 
     color: inherit;
     text-decoration: none;
-
-    overflow: hidden;
 
     pointer-events: none;
 
@@ -352,31 +396,357 @@ body {
 }
 
 .media-layer.active {
-    display: flex;
+    display: block;
 
     pointer-events: auto;
 }
 
 
 /* =====================================================
-   PHOTO
+   PHOTOGRAPHY SPREAD
+
+   Exact 2560 structure:
+
+   1080 / 40 / 1440
+
+   As percentages:
+
+   1080 ÷ 2560 = 42.1875%
+   40   ÷ 2560 = 1.5625%
+   1440 ÷ 2560 = 56.25%
+
+   Dark portrait:
+       LEFT edge aligns with film.
+
+   White square:
+       RIGHT edge aligns with film.
    ===================================================== */
 
-#landing-photo {
+.photography-spread {
+    position: absolute;
+
+    inset: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        42.1875%
+        56.25%;
+
+    column-gap:
+        1.5625%;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY PANELS
+   ===================================================== */
+
+.photo-panel {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    will-change:
+        clip-path,
+        transform;
+}
+
+.photo-panel img {
     display: block;
 
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
-    object-position: center center;
+    object-fit: cover;
 
     pointer-events: none;
 }
 
 
 /* =====================================================
-   VIDEO
+   EXACT IMAGE RATIOS
+
+   Left:
+       1080 × 1440 = 3:4
+
+   Right:
+       1440 × 1440 = 1:1
+
+   Their grid cells already have those exact ratios,
+   therefore no visible crop is required.
+   ===================================================== */
+
+.photo-left img {
+    object-position: center center;
+}
+
+.photo-right img {
+    object-position: center center;
+}
+
+
+/* =====================================================
+   PHOTOGRAPHY ANIMATION STATES
+
+   No opacity fade.
+
+   Dark image reveals left -> right.
+
+   Light image reveals right -> left.
+
+   Closing reverses them.
+
+   This keeps the movement graphic rather than
+   slideshow-like.
+   ===================================================== */
+
+.photo-left {
+    clip-path:
+        inset(
+            0
+            100%
+            0
+            0
+        );
+}
+
+.photo-right {
+    clip-path:
+        inset(
+            0
+            0
+            0
+            100%
+        );
+}
+
+
+/* OPEN LEFT */
+
+.photography-spread.state-open-left
+.photo-left {
+
+    animation:
+        reveal-left
+        300ms
+        cubic-bezier(.65, 0, .35, 1)
+        forwards;
+
+}
+
+
+/* OPEN RIGHT */
+
+.photography-spread.state-open-right
+.photo-left {
+
+    clip-path:
+        inset(
+            0
+            0
+            0
+            0
+        );
+
+}
+
+.photography-spread.state-open-right
+.photo-right {
+
+    animation:
+        reveal-right
+        300ms
+        cubic-bezier(.65, 0, .35, 1)
+        forwards;
+
+}
+
+
+/* BOTH OPEN */
+
+.photography-spread.state-hold
+.photo-left,
+.photography-spread.state-hold
+.photo-right {
+
+    clip-path:
+        inset(
+            0
+            0
+            0
+            0
+        );
+
+}
+
+
+/* CLOSE LEFT */
+
+.photography-spread.state-close-left
+.photo-left {
+
+    animation:
+        hide-left
+        280ms
+        cubic-bezier(.65, 0, .35, 1)
+        forwards;
+
+}
+
+.photography-spread.state-close-left
+.photo-right {
+
+    clip-path:
+        inset(
+            0
+            0
+            0
+            0
+        );
+
+}
+
+
+/* CLOSE RIGHT */
+
+.photography-spread.state-close-right
+.photo-left {
+
+    clip-path:
+        inset(
+            0
+            100%
+            0
+            0
+        );
+
+}
+
+.photography-spread.state-close-right
+.photo-right {
+
+    animation:
+        hide-right
+        280ms
+        cubic-bezier(.65, 0, .35, 1)
+        forwards;
+
+}
+
+
+/* =====================================================
+   KEYFRAMES
+   ===================================================== */
+
+@keyframes reveal-left {
+
+    from {
+        clip-path:
+            inset(
+                0
+                100%
+                0
+                0
+            );
+    }
+
+    to {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                0
+            );
+    }
+
+}
+
+
+@keyframes reveal-right {
+
+    from {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                100%
+            );
+    }
+
+    to {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                0
+            );
+    }
+
+}
+
+
+@keyframes hide-left {
+
+    from {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                0
+            );
+    }
+
+    to {
+        clip-path:
+            inset(
+                0
+                100%
+                0
+                0
+            );
+    }
+
+}
+
+
+@keyframes hide-right {
+
+    from {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                0
+            );
+    }
+
+    to {
+        clip-path:
+            inset(
+                0
+                0
+                0
+                100%
+            );
+    }
+
+}
+
+
+/* =====================================================
+   FILM
    ===================================================== */
 
 #film-video {
@@ -385,7 +755,7 @@ body {
     width: 100%;
     height: 100%;
 
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
 
     pointer-events: none;
@@ -394,6 +764,8 @@ body {
 
 /* =====================================================
    MOBILE PORTRAIT
+
+   Keep the established inline layout.
    ===================================================== */
 
 @media
@@ -407,6 +779,7 @@ body {
         --page-bottom: 32px;
 
         --font-size: 13px;
+        --line-height: 1.15;
 
         --major-gap: 15px;
 
@@ -470,11 +843,6 @@ body {
         grid-column: 1;
         grid-row: 4;
 
-        width: 100%;
-        height: 100%;
-
-        min-height: 0;
-
     }
 
 
@@ -496,19 +864,13 @@ body {
     }
 
 
-    .opening,
-    .navigation,
-    .navigation a,
-    .nav-text,
-    .contact,
-    .contact a,
-    .biography,
-    .biography p,
-    .biography span,
-    .item {
+    .visual-frame {
 
-        font-size: var(--font-size) !important;
-        line-height: var(--line-height) !important;
+        width: 100%;
+
+        max-width: 100%;
+
+        aspect-ratio: 16 / 9;
 
     }
 
@@ -518,10 +880,20 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   More aggressive typography compression.
+   IMPORTANT CHANGE:
 
-   The goal is explicit:
-   the final client line must always remain visible.
+   Text is now 2/3.
+   Media is 1/3.
+
+   Font remains 13px.
+   Line-height remains 1.15.
+   Normal breathing room remains.
+
+   We no longer scale typography down to make
+   the old 40/60 layout fit.
+
+   The much wider text column naturally removes
+   line wraps and therefore reduces vertical height.
    ===================================================== */
 
 @media
@@ -532,13 +904,13 @@ body {
     :root {
 
         --page-x: 24px;
-        --page-top: 12px;
-        --page-bottom: 12px;
+        --page-top: 16px;
+        --page-bottom: 16px;
 
-        --font-size: 11px;
-        --line-height: 1.08;
+        --font-size: 13px;
+        --line-height: 1.15;
 
-        --major-gap: 5px;
+        --major-gap: 11px;
         --column-gap: 24px;
 
     }
@@ -547,7 +919,7 @@ body {
     .landing-grid {
 
         grid-template-columns:
-            minmax(275px, 43%)
+            minmax(0, 2fr)
             minmax(0, 1fr);
 
         grid-template-rows:
@@ -561,30 +933,36 @@ body {
 
 
     .logo {
-
-        height:
-            calc(
-                var(--font-size) * 2.15
-            );
-
+        height: 30px;
     }
 
 
     .logo-aybak {
+        top: 15px;
+    }
 
-        top:
-            calc(
-                var(--font-size) * 1.08
-            );
 
+    /*
+        Give the text region its new full
+        2/3-column width rather than preserving
+        the old 530px desktop cap.
+    */
+
+    .biography {
+        max-width: none;
+    }
+
+
+    .opening {
+        text-wrap: initial;
     }
 
 
     .biography p {
-
         margin-bottom:
             var(--major-gap);
 
+        text-wrap: initial;
     }
 
 
@@ -599,43 +977,45 @@ body {
     .biography span,
     .item {
 
-        font-size: var(--font-size) !important;
-        line-height: var(--line-height) !important;
+        font-size: 13px !important;
+        line-height: 1.15 !important;
 
+    }
+
+
+    /*
+        16:9 visual remains centered
+        inside the smaller right third.
+    */
+
+    .visual-frame {
+        width: 100%;
+        max-width: 100%;
     }
 
 }
 
 
 /* =====================================================
-   VERY SHORT LANDSCAPE
+   SHORTER LANDSCAPE
+
+   Still DO NOT change typography size.
+
+   Only trim page margin / section spacing slightly.
    ===================================================== */
 
 @media
     (orientation: landscape)
-    and (max-height: 480px) {
+    and (max-height: 500px)
+    and (max-width: 1000px) {
 
     :root {
 
-        --page-x: 18px;
+        --page-top: 10px;
+        --page-bottom: 10px;
 
-        --page-top: 8px;
-        --page-bottom: 8px;
-
-        --font-size: 10px;
-        --line-height: 1.05;
-
-        --major-gap: 3px;
+        --major-gap: 7px;
         --column-gap: 18px;
-
-    }
-
-
-    .landing-grid {
-
-        grid-template-columns:
-            minmax(250px, 44%)
-            minmax(0, 1fr);
 
     }
 
@@ -681,12 +1061,6 @@ body {
 
     .logo-aybak {
         top: 15px;
-    }
-
-
-    .biography p {
-        margin-bottom:
-            var(--major-gap);
     }
 
 }
@@ -785,43 +1159,79 @@ body {
             id="media-slot"
         >
 
+            <div class="visual-frame">
 
-            <!-- PHOTOGRAPHY -->
 
-            <a
-                class="media-layer"
-                id="photography-media"
-                href="https://photography.denizalpaybak.com/"
-                aria-label="Photography"
-            >
+                <!-- =========================================
+                     PHOTOGRAPHY
+                     ========================================= -->
 
-                <img
-                    id="landing-photo"
-                    src=""
-                    alt=""
+                <a
+                    class="media-layer"
+                    id="photography-media"
+                    href="https://photography.denizalpaybak.com/"
+                    aria-label="Photography"
                 >
 
-            </a>
+                    <div
+                        class="photography-spread"
+                        id="photography-spread"
+                    >
+
+                        <!-- DARK / LEFT -->
+
+                        <div
+                            class="photo-panel photo-left"
+                        >
+
+                            <img
+                                src="./photography_01.jpg"
+                                alt=""
+                            >
+
+                        </div>
 
 
-            <!-- FILM -->
+                        <!-- LIGHT / RIGHT -->
 
-            <a
-                class="media-layer"
-                id="film-media"
-                href="https://film.denizalpaybak.com/"
-                aria-label="Film"
-            >
+                        <div
+                            class="photo-panel photo-right"
+                        >
 
-                <video
-                    id="film-video"
-                    src="./film.mp4"
-                    muted
-                    playsinline
-                    preload="auto"
-                ></video>
+                            <img
+                                src="./photography_02.jpg"
+                                alt=""
+                            >
 
-            </a>
+                        </div>
+
+                    </div>
+
+                </a>
+
+
+                <!-- =========================================
+                     FILM
+                     ========================================= -->
+
+                <a
+                    class="media-layer"
+                    id="film-media"
+                    href="https://film.denizalpaybak.com/"
+                    aria-label="Film"
+                >
+
+                    <video
+                        id="film-video"
+                        src="./film.mp4"
+                        muted
+                        playsinline
+                        preload="auto"
+                    ></video>
+
+                </a>
+
+            </div>
 
         </div>
 
@@ -865,7 +1275,6 @@ body {
 
         <section
             class="biography"
-            id="biography"
         >
 
             <p>
@@ -896,19 +1305,7 @@ body {
 <script>
 
 /* =====================================================
-   MEDIA SOURCES
-   ===================================================== */
-
-const R2_BASE =
-    "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
-
-
-const LANDING_PHOTOS_JSON =
-    "./landingPhotos.json";
-
-
-/* =====================================================
-   TIMING
+   GLOBAL TIMING
    ===================================================== */
 
 const WORD_TRANSITION_DURATION =
@@ -916,24 +1313,48 @@ const WORD_TRANSITION_DURATION =
 
 
 /*
-    Photography is deliberately shorter
-    than film.
+    Photography should feel like a short visual hit,
+    not a static 3-second image.
 
-    One static photograph = 1.5 sec.
+    Entire photography phase:
+    2200ms
 */
 
 const PHOTOGRAPHY_DURATION =
-    1500;
+    2200;
 
 
 /*
-    Film clip:
+    Two-photo choreography inside the
+    photography phase.
+*/
 
-    77 / 23.976
-    = 3.211544878... sec
+const PHOTO_TIMING = {
 
-    We still use the real VIDEO ENDED event
-    rather than trusting a JS timeout.
+    leftOpen:
+        0,
+
+    rightOpen:
+        220,
+
+    hold:
+        520,
+
+    leftClose:
+        1560,
+
+    rightClose:
+        1780
+
+};
+
+
+/*
+    Video:
+    77 frames / 23.976fps.
+
+    The JS does NOT cut it with a timer.
+    We use the actual ended event.
 */
 
 const VIDEO_FRAME_COUNT =
@@ -952,11 +1373,6 @@ const VIDEO_DURATION_MS =
     1000;
 
 
-/*
-    Brief typographic opening before
-    the first photo appears.
-*/
-
 const INITIAL_MEDIA_DELAY =
     700;
 
@@ -971,262 +1387,6 @@ const LOGO_STEP_DURATION =
 
 const LOGO_MOBILE_HOLD =
     2000;
-
-
-/* =====================================================
-   LANDING PHOTO POOL
-   ===================================================== */
-
-let landingPhotos =
-    [];
-
-
-let photoBag =
-    [];
-
-
-let currentPhoto =
-    null;
-
-
-/* =====================================================
-   SHUFFLE
-   ===================================================== */
-
-function shuffle(
-    array
-) {
-
-    const result =
-        array.slice();
-
-
-    for (
-        let i =
-            result.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const j =
-            Math.floor(
-                Math.random() *
-                (
-                    i + 1
-                )
-            );
-
-
-        [
-            result[i],
-            result[j]
-        ] =
-        [
-            result[j],
-            result[i]
-        ];
-
-    }
-
-
-    return result;
-
-}
-
-
-/* =====================================================
-   REFILL BAG
-
-   Every photograph is shown once
-   before anything repeats.
-
-   Also prevent the last photo of
-   one bag becoming the first photo
-   of the next bag.
-   ===================================================== */
-
-function refillPhotoBag() {
-
-    photoBag =
-        shuffle(
-            landingPhotos
-        );
-
-
-    if (
-        currentPhoto &&
-        photoBag.length > 1 &&
-        photoBag[0] ===
-        currentPhoto
-    ) {
-
-        [
-            photoBag[0],
-            photoBag[1]
-        ] =
-        [
-            photoBag[1],
-            photoBag[0]
-        ];
-
-    }
-
-}
-
-
-/* =====================================================
-   NEXT CURATED RANDOM PHOTO
-   ===================================================== */
-
-function getNextLandingPhoto() {
-
-    if (
-        landingPhotos.length ===
-        0
-    ) {
-
-        return null;
-
-    }
-
-
-    if (
-        photoBag.length ===
-        0
-    ) {
-
-        refillPhotoBag();
-
-    }
-
-
-    currentPhoto =
-        photoBag.shift();
-
-
-    return currentPhoto;
-
-}
-
-
-/* =====================================================
-   PRELOAD
-   ===================================================== */
-
-function preloadPhoto(
-    filename
-) {
-
-    if (
-        !filename
-    ) {
-
-        return;
-
-    }
-
-
-    const image =
-        new Image();
-
-
-    image.src =
-        R2_BASE +
-        encodeURIComponent(
-            filename
-        );
-
-}
-
-
-/* =====================================================
-   LOAD LANDING PHOTO MANIFEST
-   ===================================================== */
-
-async function loadLandingPhotos() {
-
-    try {
-
-        const response =
-            await fetch(
-                LANDING_PHOTOS_JSON,
-                {
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                "landingPhotos.json could not be loaded."
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        landingPhotos =
-            data.filter(
-                item =>
-                    typeof item ===
-                    "string" &&
-                    item.trim() !==
-                    ""
-            );
-
-
-        if (
-            landingPhotos.length ===
-            0
-        ) {
-
-            throw new Error(
-                "landingPhotos.json contains no images."
-            );
-
-        }
-
-
-        refillPhotoBag();
-
-
-        /*
-            Preload the whole small curated pool.
-
-            10–15 images is small enough,
-            and prevents hard-switch loading flashes.
-        */
-
-        landingPhotos.forEach(
-            preloadPhoto
-        );
-
-
-        return true;
-
-    }
-
-    catch (
-        error
-    ) {
-
-        console.error(
-            error
-        );
-
-
-        return false;
-
-    }
-
-}
 
 
 /* =====================================================
@@ -1269,9 +1429,9 @@ const filmMedia =
     );
 
 
-const landingPhoto =
+const photographySpread =
     document.getElementById(
-        "landing-photo"
+        "photography-spread"
     );
 
 
@@ -1285,38 +1445,41 @@ const filmVideo =
    NAV WORD STATE
    ===================================================== */
 
-const navItems =
-    {
+const navItems = {
 
-        photography: {
+    photography: {
 
-            word:
-                "photography",
+        word:
+            "photography",
 
-            element:
-                photographyText,
+        element:
+            photographyText,
 
-            count:
-                0
+        count:
+            0
 
-        },
+    },
 
 
-        film: {
+    film: {
 
-            word:
-                "film",
+        word:
+            "film",
 
-            element:
-                filmText,
+        element:
+            filmText,
 
-            count:
-                0
+        count:
+            0
 
-        }
+    }
 
-    };
+};
 
+
+/* =====================================================
+   CASE RENDER
+   ===================================================== */
 
 function renderCaseWord(
     word,
@@ -1346,12 +1509,9 @@ function renderCaseWord(
     ) {
 
         result +=
-            i <
-            count
-                ? word[i]
-                    .toUpperCase()
-                : word[i]
-                    .toLowerCase();
+            i < count
+                ? word[i].toUpperCase()
+                : word[i].toLowerCase();
 
     }
 
@@ -1360,6 +1520,10 @@ function renderCaseWord(
 
 }
 
+
+/* =====================================================
+   SET WORD
+   ===================================================== */
 
 function setWordCount(
     item,
@@ -1578,6 +1742,168 @@ function animateTitlesTo(
 
 
 /* =====================================================
+   PHOTO ANIMATION
+   ===================================================== */
+
+let photoTimers =
+    [];
+
+
+/* =====================================================
+   CLEAR PHOTO TIMERS
+   ===================================================== */
+
+function clearPhotoTimers() {
+
+    photoTimers.forEach(
+        timer => {
+
+            clearTimeout(
+                timer
+            );
+
+        }
+    );
+
+
+    photoTimers =
+        [];
+
+}
+
+
+/* =====================================================
+   SET PHOTO STATE
+   ===================================================== */
+
+function setPhotoState(
+    state
+) {
+
+    photographySpread.className =
+        "photography-spread";
+
+
+    if (
+        state
+    ) {
+
+        photographySpread
+            .classList
+            .add(
+                state
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   START PHOTO CHOREOGRAPHY
+   ===================================================== */
+
+function startPhotographyAnimation() {
+
+    clearPhotoTimers();
+
+
+    setPhotoState(
+        ""
+    );
+
+
+    /*
+        Force reflow so animation reliably
+        restarts every photography phase.
+    */
+
+    void photographySpread.offsetWidth;
+
+
+    photoTimers.push(
+
+        setTimeout(
+            () => {
+
+                setPhotoState(
+                    "state-open-left"
+                );
+
+            },
+            PHOTO_TIMING.leftOpen
+        )
+
+    );
+
+
+    photoTimers.push(
+
+        setTimeout(
+            () => {
+
+                setPhotoState(
+                    "state-open-right"
+                );
+
+            },
+            PHOTO_TIMING.rightOpen
+        )
+
+    );
+
+
+    photoTimers.push(
+
+        setTimeout(
+            () => {
+
+                setPhotoState(
+                    "state-hold"
+                );
+
+            },
+            PHOTO_TIMING.hold
+        )
+
+    );
+
+
+    photoTimers.push(
+
+        setTimeout(
+            () => {
+
+                setPhotoState(
+                    "state-close-left"
+                );
+
+            },
+            PHOTO_TIMING.leftClose
+        )
+
+    );
+
+
+    photoTimers.push(
+
+        setTimeout(
+            () => {
+
+                setPhotoState(
+                    "state-close-right"
+                );
+
+            },
+            PHOTO_TIMING.rightClose
+        )
+
+    );
+
+}
+
+
+/* =====================================================
    SHOW PHOTOGRAPHY
    ===================================================== */
 
@@ -1593,23 +1919,6 @@ function showPhotographyMedia() {
         );
 
 
-    const nextPhoto =
-        getNextLandingPhoto();
-
-
-    if (
-        nextPhoto
-    ) {
-
-        landingPhoto.src =
-            R2_BASE +
-            encodeURIComponent(
-                nextPhoto
-            );
-
-    }
-
-
     photographyMedia
         .classList
         .add(
@@ -1617,20 +1926,7 @@ function showPhotographyMedia() {
         );
 
 
-    /*
-        Preload next likely image while
-        current photo is being viewed.
-    */
-
-    if (
-        photoBag.length > 0
-    ) {
-
-        preloadPhoto(
-            photoBag[0]
-        );
-
-    }
+    startPhotographyAnimation();
 
 }
 
@@ -1640,6 +1936,14 @@ function showPhotographyMedia() {
    ===================================================== */
 
 async function showFilmMedia() {
+
+    clearPhotoTimers();
+
+
+    setPhotoState(
+        ""
+    );
+
 
     photographyMedia
         .classList
@@ -1708,7 +2012,7 @@ let modeToken =
 
 
 /* =====================================================
-   CLEAR PHOTO TIMER
+   CLEAR PHASE TIMER
    ===================================================== */
 
 function clearAutomaticTimers() {
@@ -1739,9 +2043,6 @@ async function activateMode(
     mode,
     {
         automatic =
-            true,
-
-        chooseNewPhoto =
             true
     } = {}
 ) {
@@ -1765,41 +2066,7 @@ async function activateMode(
         "photography"
     ) {
 
-        /*
-            Normally every NEW photography phase
-            receives another shuffled photo.
-
-            Re-entering photography through an
-            edge case can preserve it if requested.
-        */
-
-        if (
-            chooseNewPhoto
-        ) {
-
-            showPhotographyMedia();
-
-        }
-
-        else {
-
-            filmVideo.pause();
-
-
-            filmMedia
-                .classList
-                .remove(
-                    "active"
-                );
-
-
-            photographyMedia
-                .classList
-                .add(
-                    "active"
-                );
-
-        }
+        showPhotographyMedia();
 
     }
 
@@ -1810,18 +2077,13 @@ async function activateMode(
     }
 
 
-    /*
-        Media hard-switches immediately;
-        typography performs the transition.
-    */
-
     animateTitlesTo(
         mode
     );
 
 
     /*
-        Desktop hover freezes the chosen state.
+        Hover keeps selected state active.
     */
 
     if (
@@ -1834,12 +2096,6 @@ async function activateMode(
 
     }
 
-
-    /*
-        Photography stays only 1.5 seconds.
-
-        This is intentionally shorter than film.
-    */
 
     if (
         mode ===
@@ -1872,19 +2128,13 @@ async function activateMode(
 
     }
 
-
-    /*
-        Film has NO phase timeout.
-
-        Its real encoded ending controls
-        the next change.
-    */
-
 }
 
 
 /* =====================================================
    FILM ENDED
+
+   The encoded 77 frames decide the duration.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -1900,13 +2150,6 @@ filmVideo.addEventListener(
 
         }
 
-
-        /*
-            Hovering film:
-            remain on its actual final frame.
-
-            No frame is replayed.
-        */
 
         if (
             hoverMode ===
@@ -1927,7 +2170,7 @@ filmVideo.addEventListener(
 
 
 /* =====================================================
-   HOVER
+   DESKTOP HOVER
    ===================================================== */
 
 function canHover() {
@@ -1958,9 +2201,19 @@ function titleHoverEnter(
     }
 
 
-    const wasAlreadyPhotography =
-        activeMode ===
-        "photography";
+    /*
+        If already hovering exactly this active mode,
+        don't unnecessarily restart its visual.
+    */
+
+    if (
+        hoverMode ===
+        mode
+    ) {
+
+        return;
+
+    }
 
 
     hoverMode =
@@ -1971,23 +2224,7 @@ function titleHoverEnter(
         mode,
         {
             automatic:
-                false,
-
-            /*
-                If photo is already visible and user
-                merely hovers the word photography,
-                DON'T randomly replace the image.
-
-                Only a genuine new photo phase gets
-                another image.
-            */
-
-            chooseNewPhoto:
-                !(
-                    mode ===
-                    "photography" &&
-                    wasAlreadyPhotography
-                )
+                false
         }
     );
 
@@ -2026,12 +2263,6 @@ function titleHoverLeave(
                 );
 
 
-            /*
-                Direct photography -> film hover
-                or film -> photography hover:
-                new mouseenter owns the transition.
-            */
-
             if (
                 photographyHovered ||
                 filmHovered
@@ -2056,6 +2287,12 @@ function titleHoverLeave(
                 null;
 
 
+            /*
+                As discussed:
+                leaving the hovered category immediately
+                starts the opposite category.
+            */
+
             activateMode(
                 leavingMode ===
                 "photography"
@@ -2069,6 +2306,10 @@ function titleHoverLeave(
 
 }
 
+
+/* =====================================================
+   TITLE EVENTS
+   ===================================================== */
 
 photographyLink.addEventListener(
     "mouseenter",
@@ -2134,50 +2375,47 @@ const logoName =
     );
 
 
-const logoLetters =
-    [
+const logoLetters = [
 
-        document.getElementById(
-            "letter-a"
-        ),
+    document.getElementById(
+        "letter-a"
+    ),
 
-        document.getElementById(
-            "letter-y"
-        ),
+    document.getElementById(
+        "letter-y"
+    ),
 
-        document.getElementById(
-            "letter-b"
-        ),
+    document.getElementById(
+        "letter-b"
+    ),
 
-        document.getElementById(
-            "letter-a2"
-        ),
+    document.getElementById(
+        "letter-a2"
+    ),
 
-        document.getElementById(
-            "letter-k"
-        )
+    document.getElementById(
+        "letter-k"
+    )
 
-    ];
-
-
-const logoLowercase =
-    [
-        "a",
-        "y",
-        "b",
-        "a",
-        "k"
-    ];
+];
 
 
-const logoUppercase =
-    [
-        "A",
-        "Y",
-        "B",
-        "A",
-        "K"
-    ];
+const logoLowercase = [
+    "a",
+    "y",
+    "b",
+    "a",
+    "k"
+];
+
+
+const logoUppercase = [
+    "A",
+    "Y",
+    "B",
+    "A",
+    "K"
+];
 
 
 let logoState =
@@ -2197,7 +2435,7 @@ let logoMobileReturnTimer =
 
 
 /* =====================================================
-   LOGO RENDER
+   SET LOGO
    ===================================================== */
 
 function setLogoState(
@@ -2394,25 +2632,13 @@ logo.addEventListener(
 /* =====================================================
    MOBILE LOGO TAP
 
-   ONE tap:
+   One tap only.
 
-   Denizalp
-   aybak
-
+   Denizalp / aybak
        ↓
-
-   denizalp
-   AYBAK
-
-   2 second hold
-
-       ↓
-
-   Denizalp
-   aybak
-
-   No navigation.
-   No second tap.
+   denizalp / AYBAK
+       ↓ 2 sec hold
+   Denizalp / aybak
    ===================================================== */
 
 logo.addEventListener(
@@ -2475,276 +2701,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   LANDSCAPE FIT
-
-   Final safety pass for browser chrome /
-   unusual phone aspect ratios.
-
-   CSS handles the normal case.
-
-   JS only intervenes if the final line
-   still physically extends below the page.
-   ===================================================== */
-
-const landingGrid =
-    document.getElementById(
-        "landing-grid"
-    );
-
-
-const biography =
-    document.getElementById(
-        "biography"
-    );
-
-
-const opening =
-    document.querySelector(
-        ".opening"
-    );
-
-
-const navigation =
-    document.querySelector(
-        ".navigation"
-    );
-
-
-const contact =
-    document.querySelector(
-        ".contact"
-    );
-
-
-function isCompactLandscape() {
-
-    return window
-        .matchMedia(
-            "(orientation: landscape) and (max-height: 650px)"
-        )
-        .matches;
-
-}
-
-
-function getLeftContentBottom() {
-
-    return Math.max(
-
-        logo
-            .getBoundingClientRect()
-            .bottom,
-
-        opening
-            .getBoundingClientRect()
-            .bottom,
-
-        navigation
-            .getBoundingClientRect()
-            .bottom,
-
-        contact
-            .getBoundingClientRect()
-            .bottom,
-
-        biography
-            .getBoundingClientRect()
-            .bottom
-
-    );
-
-}
-
-
-/* =====================================================
-   DYNAMIC LANDSCAPE FIT
-   ===================================================== */
-
-function fitLandscapeTypography() {
-
-    const root =
-        document.documentElement;
-
-
-    /*
-        Remove only JS-level emergency overrides.
-        CSS media query becomes source of truth again.
-    */
-
-    root.style.removeProperty(
-        "--font-size"
-    );
-
-
-    root.style.removeProperty(
-        "--line-height"
-    );
-
-
-    root.style.removeProperty(
-        "--major-gap"
-    );
-
-
-    if (
-        !isCompactLandscape()
-    ) {
-
-        return;
-
-    }
-
-
-    const pageRect =
-        document
-            .querySelector(
-                ".page"
-            )
-            .getBoundingClientRect();
-
-
-    const safeBottom =
-        pageRect.bottom -
-        2;
-
-
-    if (
-        getLeftContentBottom() <=
-        safeBottom
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-        Find the largest type size that physically fits.
-
-        This is only an emergency rule for short
-        landscape devices/browser UI combinations.
-    */
-
-    let low =
-        8.5;
-
-
-    let high =
-        parseFloat(
-            getComputedStyle(
-                root
-            ).getPropertyValue(
-                "--font-size"
-            )
-        ) || 11;
-
-
-    let best =
-        low;
-
-
-    for (
-        let i = 0;
-        i < 14;
-        i++
-    ) {
-
-        const mid =
-            (
-                low +
-                high
-            ) /
-            2;
-
-
-        const lineHeight =
-            mid <= 9.5
-                ? 1.02
-                : 1.06;
-
-
-        const gap =
-            Math.max(
-                1.5,
-                mid *
-                0.3
-            );
-
-
-        root.style.setProperty(
-            "--font-size",
-            `${mid}px`
-        );
-
-
-        root.style.setProperty(
-            "--line-height",
-            `${lineHeight}`
-        );
-
-
-        root.style.setProperty(
-            "--major-gap",
-            `${gap}px`
-        );
-
-
-        if (
-            getLeftContentBottom() <=
-            safeBottom
-        ) {
-
-            best =
-                mid;
-
-
-            low =
-                mid;
-
-        }
-
-        else {
-
-            high =
-                mid;
-
-        }
-
-    }
-
-
-    const finalLineHeight =
-        best <= 9.5
-            ? 1.02
-            : 1.06;
-
-
-    root.style.setProperty(
-        "--font-size",
-        `${best}px`
-    );
-
-
-    root.style.setProperty(
-        "--line-height",
-        `${finalLineHeight}`
-    );
-
-
-    root.style.setProperty(
-        "--major-gap",
-        `${Math.max(
-            1.5,
-            best *
-            0.3
-        )}px`
-    );
-
-}
-
-
-/* =====================================================
-   VISIBILITY
+   TAB VISIBILITY
    ===================================================== */
 
 document.addEventListener(
@@ -2757,9 +2714,9 @@ document.addEventListener(
 
             clearAutomaticTimers();
 
+            clearPhotoTimers();
 
             filmVideo.pause();
-
 
             return;
 
@@ -2775,9 +2732,6 @@ document.addEventListener(
                 hoverMode,
                 {
                     automatic:
-                        false,
-
-                    chooseNewPhoto:
                         false
                 }
             );
@@ -2802,11 +2756,7 @@ document.addEventListener(
         else {
 
             activateMode(
-                "photography",
-                {
-                    chooseNewPhoto:
-                        false
-                }
+                "photography"
             );
 
         }
@@ -2816,103 +2766,43 @@ document.addEventListener(
 
 
 /* =====================================================
-   GEOMETRY
+   INITIAL
    ===================================================== */
 
-window.addEventListener(
-    "resize",
-    () => {
-
-        requestAnimationFrame(
-            fitLandscapeTypography
-        );
-
-    }
+setLogoState(
+    0
 );
 
 
-window.addEventListener(
-    "orientationchange",
-    () => {
-
-        setTimeout(
-            fitLandscapeTypography,
-            100
-        );
-
-
-        setTimeout(
-            fitLandscapeTypography,
-            350
-        );
-
-    }
+setWordCount(
+    navItems.photography,
+    0
 );
 
 
-/* =====================================================
-   INITIALIZE
-   ===================================================== */
-
-async function initialize() {
-
-    setLogoState(
-        0
-    );
-
-
-    setWordCount(
-        navItems.photography,
-        0
-    );
-
-
-    setWordCount(
-        navItems.film,
-        0
-    );
-
-
-    await loadLandingPhotos();
-
-
-    requestAnimationFrame(
-        fitLandscapeTypography
-    );
-
-
-    setTimeout(
-        () => {
-
-            if (
-                activeMode ===
-                null
-            ) {
-
-                activateMode(
-                    "photography"
-                );
-
-            }
-
-        },
-        INITIAL_MEDIA_DELAY
-    );
-
-}
-
-
-window.addEventListener(
-    "load",
-    () => {
-
-        fitLandscapeTypography();
-
-    }
+setWordCount(
+    navItems.film,
+    0
 );
 
 
-initialize();
+setTimeout(
+    () => {
+
+        if (
+            activeMode ===
+            null
+        ) {
+
+            activateMode(
+                "photography"
+            );
+
+        }
+
+    },
+    INITIAL_MEDIA_DELAY
+);
 
 </script>
 
