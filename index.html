@@ -87,7 +87,7 @@ body {
 
 
 /* =====================================================
-   GRID
+   MAIN GRID
    ===================================================== */
 
 .landing-grid {
@@ -310,8 +310,8 @@ body {
 /* =====================================================
    MEDIA FIELD
 
-   Photography and film use EXACTLY
-   the same area.
+   Photography and Film use the
+   SAME exact field.
    ===================================================== */
 
 .media-field {
@@ -336,12 +336,10 @@ body {
 
 
 /* =====================================================
-   VISUAL FRAME
+   16:9 VISUAL FRAME
 
-   Exact film ratio.
-
-   Photography contact sheet lives inside
-   this exact same rectangle.
+   Photography mosaic and Film use
+   exactly the same rectangle.
    ===================================================== */
 
 .visual-frame {
@@ -397,69 +395,53 @@ body {
 
 
 /* =====================================================
-   PHOTOGRAPHY CONTACT SHEET
+   PHOTOGRAPHY MOSAIC
 
-   Only project covers.
+   Completely gapless.
+
+   Individual images are absolutely positioned
+   by JS using their native aspect ratios.
    ===================================================== */
 
-.cover-grid {
-    display: grid;
+.mosaic-grid {
+    position: absolute;
+
+    inset: 0;
 
     width: 100%;
     height: 100%;
-
-    overflow: hidden;
-
-    align-items: stretch;
-    justify-items: stretch;
-}
-
-
-/* =====================================================
-   COVER CELL
-   ===================================================== */
-
-.cover-cell {
-    position: relative;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    height: 100%;
-
-    min-width: 0;
-    min-height: 0;
 
     overflow: hidden;
 }
 
 
 /* =====================================================
-   COVER IMAGE
-
-   No crop.
-   Preserve the index cover's ratio.
-
-   Hidden until the sequential reveal.
+   MOSAIC IMAGE
    ===================================================== */
 
-.cover-cell img {
+.mosaic-item {
+    position: absolute;
+
     display: block;
 
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
+    margin: 0;
+    padding: 0;
 
     opacity: 0;
 
     pointer-events: none;
+
+    /*
+        Geometry is calculated according to
+        each image's real aspect ratio.
+
+        No object-fit: cover.
+    */
+
+    object-fit: fill;
 }
 
-.cover-cell.visible img {
+.mosaic-item.visible {
     opacity: 1;
 }
 
@@ -525,12 +507,10 @@ body {
 
 
     .logo {
-
         grid-column: 1;
         grid-row: 1;
 
         height: 30px;
-
     }
 
 
@@ -540,52 +520,40 @@ body {
 
 
     .opening {
-
         grid-column: 1;
         grid-row: 2;
-
     }
 
 
     .navigation {
-
         grid-column: 1;
         grid-row: 3;
-
     }
 
 
     .media-field {
-
         grid-column: 1;
         grid-row: 4;
-
     }
 
 
     .contact {
-
         grid-column: 1;
         grid-row: 5;
-
     }
 
 
     .biography {
-
         grid-column: 1;
         grid-row: 6;
 
         max-width: none;
-
     }
 
 
     .visual-frame {
-
         width: 100%;
         max-width: 100%;
-
     }
 
 }
@@ -594,10 +562,10 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   Do NOT shrink typography.
+   Typography size stays 13px.
 
-   Left = 2/3
-   Media = 1/3
+   2/3 text
+   1/3 media
    ===================================================== */
 
 @media
@@ -621,11 +589,9 @@ body {
 
 
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 2fr)
             minmax(0, 1fr);
-
     }
 
 
@@ -658,10 +624,8 @@ body {
 
 
     .visual-frame {
-
         width: 100%;
         max-width: 100%;
-
     }
 
 }
@@ -692,11 +656,9 @@ body {
 
 
     .landing-grid {
-
         grid-template-columns:
             minmax(0, 470px)
             minmax(0, 1fr);
-
     }
 
 
@@ -792,9 +754,6 @@ body {
 
         <!-- =================================================
              MEDIA
-
-             Photography covers + film occupy
-             the exact same visual-frame.
              ================================================= -->
 
         <div
@@ -802,7 +761,10 @@ body {
             id="media-field"
         >
 
-            <div class="visual-frame">
+            <div
+                class="visual-frame"
+                id="visual-frame"
+            >
 
 
                 <!-- PHOTOGRAPHY -->
@@ -815,8 +777,8 @@ body {
                 >
 
                     <div
-                        class="cover-grid"
-                        id="cover-grid"
+                        class="mosaic-grid"
+                        id="mosaic-grid"
                     ></div>
 
                 </a>
@@ -916,20 +878,9 @@ body {
    DATA
    ===================================================== */
 
-
-/*
-    Same projects.json that controls
-    photography.denizalpaybak.com.
-*/
-
 const PROJECTS_JSON_URL =
     "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
 
-
-/*
-    Used when projects.json contains filenames
-    rather than complete URLs.
-*/
 
 const R2_PHOTOS_BASE =
     "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
@@ -944,47 +895,37 @@ const WORD_TRANSITION_DURATION =
 
 
 /*
-    Covers appear sequentially.
+    Photography:
 
-    Whole grid is constructed in 400ms.
+    mosaic builds quickly,
+    stays complete briefly,
+    disappears quickly.
 */
 
-const COVER_BUILD_DURATION =
+const MOSAIC_BUILD_DURATION =
     400;
 
 
-/*
-    Once complete, keep full cover grid
-    visible briefly.
-
-    Photography therefore remains shorter
-    than the film phase.
-*/
-
-const COVER_HOLD_DURATION =
+const MOSAIC_HOLD_DURATION =
     1000;
 
 
-/*
-    Reverse disappearance.
-*/
-
-const COVER_REMOVE_DURATION =
+const MOSAIC_REMOVE_DURATION =
     320;
 
 
 const PHOTOGRAPHY_DURATION =
-    COVER_BUILD_DURATION +
-    COVER_HOLD_DURATION +
-    COVER_REMOVE_DURATION;
+    MOSAIC_BUILD_DURATION +
+    MOSAIC_HOLD_DURATION +
+    MOSAIC_REMOVE_DURATION;
 
 
 /*
     Film:
     77 frames / 23.976 fps.
 
-    Actual duration still comes from
-    video "ended", not JS timer.
+    Actual transition is controlled by
+    video "ended".
 */
 
 const VIDEO_FRAME_COUNT =
@@ -1059,9 +1000,15 @@ const filmMedia =
     );
 
 
-const coverGrid =
+const visualFrame =
     document.getElementById(
-        "cover-grid"
+        "visual-frame"
+    );
+
+
+const mosaicGrid =
+    document.getElementById(
+        "mosaic-grid"
     );
 
 
@@ -1072,14 +1019,26 @@ const filmVideo =
 
 
 /* =====================================================
-   COVER DATA
+   PHOTOGRAPHY DATA
    ===================================================== */
 
 let projectCovers =
     [];
 
 
-let coverCells =
+let supplementalPhotos =
+    [];
+
+
+let photographyPool =
+    [];
+
+
+let photographyMetadata =
+    [];
+
+
+let mosaicItems =
     [];
 
 
@@ -1116,7 +1075,7 @@ function looksLikeImage(
 
 
 /* =====================================================
-   RESOLVE IMAGE URL
+   RESOLVE URL
    ===================================================== */
 
 function resolvePhotoUrl(
@@ -1158,11 +1117,10 @@ function resolvePhotoUrl(
 
 
     let path =
-        trimmed
-            .replace(
-                /^\/+/,
-                ""
-            );
+        trimmed.replace(
+            /^\/+/,
+            ""
+        );
 
 
     path =
@@ -1186,9 +1144,7 @@ function resolvePhotoUrl(
 
 
 /* =====================================================
-   FIND FIRST IMAGE INSIDE A VALUE
-
-   Used only as fallback.
+   FIRST IMAGE INSIDE VALUE
    ===================================================== */
 
 function findFirstImage(
@@ -1229,17 +1185,17 @@ function findFirstImage(
             const item of value
         ) {
 
-            const found =
+            const result =
                 findFirstImage(
                     item
                 );
 
 
             if (
-                found
+                result
             ) {
 
-                return found;
+                return result;
 
             }
 
@@ -1263,17 +1219,17 @@ function findFirstImage(
             )
         ) {
 
-            const found =
+            const result =
                 findFirstImage(
                     child
                 );
 
 
             if (
-                found
+                result
             ) {
 
-                return found;
+                return result;
 
             }
 
@@ -1288,13 +1244,113 @@ function findFirstImage(
 
 
 /* =====================================================
-   GET PROJECT COVER
+   COLLECT ALL IMAGES
+   ===================================================== */
 
-   Priority is specifically index / cover fields.
+function collectImages(
+    value,
+    output
+) {
 
-   This means we do NOT collect all project slides.
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
-   Only one image per project.
+        return;
+
+    }
+
+
+    if (
+        typeof value ===
+        "string"
+    ) {
+
+        if (
+            looksLikeImage(
+                value
+            )
+        ) {
+
+            const url =
+                resolvePhotoUrl(
+                    value
+                );
+
+
+            if (
+                url
+            ) {
+
+                output.push(
+                    url
+                );
+
+            }
+
+        }
+
+
+        return;
+
+    }
+
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+
+        value.forEach(
+            item => {
+
+                collectImages(
+                    item,
+                    output
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        typeof value ===
+        "object"
+    ) {
+
+        Object.values(
+            value
+        ).forEach(
+            child => {
+
+                collectImages(
+                    child,
+                    output
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   PROJECT COVER
+
+   The index / cover fields are prioritized.
+
+   If the JSON uses a slightly different
+   structure, the fallback uses the first
+   project image.
    ===================================================== */
 
 function getProjectCover(
@@ -1312,17 +1368,12 @@ function getProjectCover(
     }
 
 
-    /*
-        Most likely explicit cover fields.
-
-        If your projects.json uses one of these,
-        that exact image is used.
-    */
-
     const candidateKeys =
         [
+
             "indexImage",
             "index_image",
+
             "indexCover",
             "index_cover",
 
@@ -1335,9 +1386,11 @@ function getProjectCover(
             "thumbnail_image",
 
             "thumb",
+
             "preview",
             "previewImage",
             "preview_image"
+
         ];
 
 
@@ -1346,35 +1399,33 @@ function getProjectCover(
     ) {
 
         if (
-            project[key] !==
+            project[key] ===
             undefined
         ) {
 
-            const candidate =
-                findFirstImage(
-                    project[key]
-                );
+            continue;
+
+        }
 
 
-            if (
+        const candidate =
+            findFirstImage(
+                project[key]
+            );
+
+
+        if (
+            candidate
+        ) {
+
+            return resolvePhotoUrl(
                 candidate
-            ) {
-
-                return resolvePhotoUrl(
-                    candidate
-                );
-
-            }
+            );
 
         }
 
     }
 
-
-    /*
-        Some JSON structures keep index data
-        inside a nested index object.
-    */
 
     if (
         project.index &&
@@ -1382,18 +1433,18 @@ function getProjectCover(
         "object"
     ) {
 
-        const indexCandidate =
+        const candidate =
             findFirstImage(
                 project.index
             );
 
 
         if (
-            indexCandidate
+            candidate
         ) {
 
             return resolvePhotoUrl(
-                indexCandidate
+                candidate
             );
 
         }
@@ -1402,12 +1453,8 @@ function getProjectCover(
 
 
     /*
-        Last fallback only:
-
-        If no explicit cover information exists,
-        use the first image belonging to the project.
-
-        This prevents a completely empty grid.
+        Fallback:
+        first image belonging to project.
     */
 
     const fallback =
@@ -1426,20 +1473,7 @@ function getProjectCover(
 
 
 /* =====================================================
-   FIND PROJECT ARRAY
-
-   Supports:
-
-   [
-      {...},
-      {...}
-   ]
-
-   or:
-
-   {
-      "projects": [...]
-   }
+   PROJECT ARRAY
    ===================================================== */
 
 function getProjectsArray(
@@ -1469,36 +1503,20 @@ function getProjectsArray(
     }
 
 
-    /*
-        Defensive fallback:
-        object whose values are projects.
-    */
-
     if (
         data &&
         typeof data ===
         "object"
     ) {
 
-        const values =
-            Object.values(
-                data
-            );
-
-
-        if (
-            values.length > 0 &&
-            values.every(
-                value =>
-                    value &&
-                    typeof value ===
-                    "object"
-            )
-        ) {
-
-            return values;
-
-        }
+        return Object.values(
+            data
+        ).filter(
+            value =>
+                value &&
+                typeof value ===
+                "object"
+        );
 
     }
 
@@ -1509,10 +1527,145 @@ function getProjectsArray(
 
 
 /* =====================================================
-   LOAD PROJECT COVERS
+   UNIQUE URLS
    ===================================================== */
 
-async function loadProjectCovers() {
+function normalizeUrl(
+    url
+) {
+
+    return url
+        .split("?")[0]
+        .split("#")[0];
+
+}
+
+
+function uniqueUrls(
+    urls
+) {
+
+    const seen =
+        new Set();
+
+
+    return urls.filter(
+        url => {
+
+            const normalized =
+                normalizeUrl(
+                    url
+                );
+
+
+            if (
+                seen.has(
+                    normalized
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            seen.add(
+                normalized
+            );
+
+
+            return true;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   LOAD IMAGE METADATA
+   ===================================================== */
+
+function loadImageMetadata(
+    url,
+    priority
+) {
+
+    return new Promise(
+        resolve => {
+
+            const image =
+                new Image();
+
+
+            image.onload =
+                () => {
+
+                    if (
+                        !image.naturalWidth ||
+                        !image.naturalHeight
+                    ) {
+
+                        resolve(
+                            null
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    resolve(
+                        {
+
+                            url,
+
+                            width:
+                                image.naturalWidth,
+
+                            height:
+                                image.naturalHeight,
+
+                            ratio:
+                                image.naturalWidth /
+                                image.naturalHeight,
+
+                            priority
+
+                        }
+                    );
+
+                };
+
+
+            image.onerror =
+                () => {
+
+                    resolve(
+                        null
+                    );
+
+                };
+
+
+            image.src =
+                url;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   LOAD PROJECTS.JSON
+
+   1. covers first
+   2. all other photos afterwards
+   ===================================================== */
+
+async function loadPhotographyPool() {
 
     try {
 
@@ -1548,56 +1701,136 @@ async function loadProjectCovers() {
 
 
         const covers =
-            projects
-                .map(
-                    getProjectCover
-                )
-                .filter(
-                    Boolean
-                );
+            [];
 
 
-        /*
-            Prevent accidental duplicate covers.
-        */
-
-        const seen =
-            new Set();
+        const everyImage =
+            [];
 
 
-        projectCovers =
-            covers.filter(
-                url => {
+        projects.forEach(
+            project => {
 
-                    const normalized =
-                        url
-                            .split("?")[0]
-                            .split("#")[0];
-
-
-                    if (
-                        seen.has(
-                            normalized
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-
-                    seen.add(
-                        normalized
+                const cover =
+                    getProjectCover(
+                        project
                     );
 
 
-                    return true;
+                if (
+                    cover
+                ) {
+
+                    covers.push(
+                        cover
+                    );
 
                 }
+
+
+                collectImages(
+                    project,
+                    everyImage
+                );
+
+            }
+        );
+
+
+        projectCovers =
+            uniqueUrls(
+                covers
             );
 
 
-        buildCoverGrid();
+        const coverSet =
+            new Set(
+                projectCovers.map(
+                    normalizeUrl
+                )
+            );
+
+
+        supplementalPhotos =
+            uniqueUrls(
+                everyImage
+            ).filter(
+                url =>
+                    !coverSet.has(
+                        normalizeUrl(
+                            url
+                        )
+                    )
+            );
+
+
+        photographyPool =
+            projectCovers.concat(
+                supplementalPhotos
+            );
+
+
+        /*
+            Don't load an unnecessarily enormous
+            amount for the landing.
+
+            All covers + up to 40 additional
+            portfolio images are enough for the
+            mosaic solver.
+        */
+
+        const candidateUrls =
+            photographyPool.slice(
+                0,
+                Math.min(
+                    photographyPool.length,
+                    projectCovers.length + 40
+                )
+            );
+
+
+        const coverSetAgain =
+            new Set(
+                projectCovers.map(
+                    normalizeUrl
+                )
+            );
+
+
+        const metadata =
+            await Promise.all(
+                candidateUrls.map(
+                    url => {
+
+                        const isCover =
+                            coverSetAgain.has(
+                                normalizeUrl(
+                                    url
+                                )
+                            );
+
+
+                        return loadImageMetadata(
+                            url,
+                            isCover
+                                ? 0
+                                : 1
+                        );
+
+                    }
+                )
+            );
+
+
+        photographyMetadata =
+            metadata.filter(
+                Boolean
+            );
+
+
+        requestAnimationFrame(
+            buildMosaic
+        );
 
     }
 
@@ -1606,7 +1839,7 @@ async function loadProjectCovers() {
     ) {
 
         console.error(
-            "Project covers could not be loaded:",
+            "Photography mosaic could not be loaded:",
             error
         );
 
@@ -1616,272 +1849,451 @@ async function loadProjectCovers() {
 
 
 /* =====================================================
-   BUILD COVER GRID
+   ROW PARTITION
+
+   A row's images retain their aspect ratios.
+
+   For a row:
+   rowHeight = availableWidth / sum(ratios)
+
+   Therefore:
+   - no gap
+   - no crop
+   - row exactly reaches right edge.
    ===================================================== */
 
-function buildCoverGrid() {
+function makeRowsGreedy(
+    photos,
+    rowCount,
+    frameRatio
+) {
 
-    coverGrid.innerHTML =
-        "";
-
-
-    coverCells =
+    const rows =
         [];
 
 
-    projectCovers.forEach(
-        url => {
+    let cursor =
+        0;
 
-            const cell =
-                document.createElement(
-                    "div"
+
+    for (
+        let rowIndex = 0;
+        rowIndex < rowCount;
+        rowIndex++
+    ) {
+
+        const rowsRemaining =
+            rowCount -
+            rowIndex;
+
+
+        const photosRemaining =
+            photos.length -
+            cursor;
+
+
+        const maxTake =
+            photosRemaining -
+            (
+                rowsRemaining -
+                1
+            );
+
+
+        /*
+            For the entire 16:9 box, if there
+            are N rows, each row ideally has
+            aspect-sum ≈ N * frameRatio.
+        */
+
+        const targetRatioSum =
+            rowCount *
+            frameRatio;
+
+
+        let ratioSum =
+            0;
+
+
+        let bestTake =
+            1;
+
+
+        let bestError =
+            Infinity;
+
+
+        for (
+            let take = 1;
+            take <= maxTake;
+            take++
+        ) {
+
+            ratioSum +=
+                photos[
+                    cursor +
+                    take -
+                    1
+                ].ratio;
+
+
+            const error =
+                Math.abs(
+                    ratioSum -
+                    targetRatioSum
                 );
 
 
-            cell.className =
-                "cover-cell";
+            if (
+                error <
+                bestError
+            ) {
+
+                bestError =
+                    error;
 
 
-            const image =
-                document.createElement(
-                    "img"
-                );
+                bestTake =
+                    take;
+
+            }
 
 
-            image.src =
-                url;
+            if (
+                ratioSum >
+                targetRatioSum &&
+                take >
+                1
+            ) {
 
+                break;
 
-            image.alt =
-                "";
-
-
-            image.decoding =
-                "async";
-
-
-            image.loading =
-                "eager";
-
-
-            cell.appendChild(
-                image
-            );
-
-
-            coverGrid.appendChild(
-                cell
-            );
-
-
-            coverCells.push(
-                cell
-            );
+            }
 
         }
-    );
 
 
-    layoutCoverGrid();
+        rows.push(
+            photos.slice(
+                cursor,
+                cursor +
+                bestTake
+            )
+        );
+
+
+        cursor +=
+            bestTake;
+
+    }
+
+
+    if (
+        cursor <
+        photos.length
+    ) {
+
+        rows[
+            rows.length - 1
+        ].push(
+            ...photos.slice(
+                cursor
+            )
+        );
+
+    }
+
+
+    return rows;
 
 }
 
 
 /* =====================================================
-   GRID GEOMETRY
-
-   All project covers must fit inside
-   the exact 16:9 film rectangle.
-
-   No scroll.
+   MEASURE ROWS
    ===================================================== */
 
-function calculateBestGrid(
-    count,
-    width,
-    height
+function measureRows(
+    rows,
+    frameWidth
+) {
+
+    let totalHeight =
+        0;
+
+
+    const measured =
+        rows.map(
+            photos => {
+
+                const ratioSum =
+                    photos.reduce(
+                        (
+                            sum,
+                            photo
+                        ) =>
+                            sum +
+                            photo.ratio,
+                        0
+                    );
+
+
+                const height =
+                    frameWidth /
+                    ratioSum;
+
+
+                totalHeight +=
+                    height;
+
+
+                return {
+
+                    photos,
+
+                    ratioSum,
+
+                    height
+
+                };
+
+            }
+        );
+
+
+    return {
+
+        rows:
+            measured,
+
+        totalHeight
+
+    };
+
+}
+
+
+/* =====================================================
+   MOSAIC SOLVER
+
+   Important:
+
+   All project covers are mandatory.
+
+   Then normal portfolio images are gradually
+   added until the resulting justified mosaic
+   gets as close as possible to the exact
+   16:9 frame height.
+
+   No gaps.
+   No intentional crop.
+   ===================================================== */
+
+function findBestMosaic(
+    metadata,
+    requiredCoverCount,
+    frameWidth,
+    frameHeight
 ) {
 
     if (
-        count <= 0
+        metadata.length ===
+        0
     ) {
 
-        return {
-            columns: 1,
-            rows: 1,
-            gap: 0
-        };
+        return null;
 
     }
 
 
-    const aspect =
-        width /
-        Math.max(
-            1,
-            height
+    const frameRatio =
+        frameWidth /
+        frameHeight;
+
+
+    /*
+        At least all covers.
+    */
+
+    const minimumCount =
+        Math.min(
+            requiredCoverCount,
+            metadata.length
         );
 
 
-    const estimate =
-        Math.max(
-            1,
-            Math.round(
-                Math.sqrt(
-                    count *
-                    aspect
-                )
-            )
-        );
+    /*
+        Extra images may be used automatically.
+    */
 
-
-    const gap =
-        count >= 20
-            ? 2
-            : count >= 12
-                ? 3
-                : 4;
+    const maximumCount =
+        metadata.length;
 
 
     let best =
         null;
 
 
-    const start =
-        Math.max(
-            1,
-            estimate - 4
-        );
-
-
-    const end =
-        Math.min(
-            count,
-            estimate + 4
-        );
-
-
     for (
-        let columns = start;
-        columns <= end;
-        columns++
+        let count =
+            minimumCount;
+        count <=
+            maximumCount;
+        count++
     ) {
 
-        const rows =
-            Math.ceil(
-                count /
-                columns
+        const photos =
+            metadata.slice(
+                0,
+                count
             );
 
 
-        const cellWidth =
-            (
-                width -
-                gap *
-                (
-                    columns -
-                    1
-                )
-            ) /
-            columns;
-
-
-        const cellHeight =
-            (
-                height -
-                gap *
-                (
-                    rows -
-                    1
-                )
-            ) /
-            rows;
-
-
-        if (
-            cellWidth <= 0 ||
-            cellHeight <= 0
-        ) {
-
-            continue;
-
-        }
-
-
         /*
-            Favor largest cells,
-            with mild penalty for extreme ratios.
+            More than ~9 rows at landing size
+            starts becoming unnecessarily tiny.
         */
 
-        const ratio =
-            cellWidth /
-            cellHeight;
+        const maximumRows =
+            Math.min(
+                9,
+                photos.length
+            );
 
 
-        const penalty =
-            1 +
-            Math.abs(
-                Math.log(
-                    ratio
-                )
-            ) *
-            0.18;
-
-
-        const score =
-            (
-                cellWidth *
-                cellHeight
-            ) /
-            penalty;
-
-
-        if (
-            !best ||
-            score >
-            best.score
+        for (
+            let rowCount = 1;
+            rowCount <= maximumRows;
+            rowCount++
         ) {
 
-            best =
-                {
-                    columns,
-                    rows,
-                    gap,
-                    score
-                };
+            const rawRows =
+                makeRowsGreedy(
+                    photos,
+                    rowCount,
+                    frameRatio
+                );
+
+
+            const measured =
+                measureRows(
+                    rawRows,
+                    frameWidth
+                );
+
+
+            const heightError =
+                Math.abs(
+                    measured.totalHeight -
+                    frameHeight
+                );
+
+
+            /*
+                Covers are mandatory.
+
+                Small penalty for additional photos,
+                so if covers alone already fit very
+                well they win.
+
+                But geometry matters far more than
+                the extra-photo penalty.
+            */
+
+            const extraCount =
+                Math.max(
+                    0,
+                    count -
+                    minimumCount
+                );
+
+
+            const score =
+                heightError +
+                extraCount *
+                0.015;
+
+
+            if (
+                !best ||
+                score <
+                best.score
+            ) {
+
+                best =
+                    {
+
+                        count,
+
+                        rows:
+                            measured.rows,
+
+                        totalHeight:
+                            measured.totalHeight,
+
+                        heightError,
+
+                        score
+
+                    };
+
+            }
+
+
+            /*
+                Sub-pixel result is visually exact.
+            */
+
+            if (
+                heightError <
+                0.35
+            ) {
+
+                return best;
+
+            }
 
         }
 
     }
 
 
-    return (
-        best ||
-        {
-            columns:
-                estimate,
-
-            rows:
-                Math.ceil(
-                    count /
-                    estimate
-                ),
-
-            gap
-        }
-    );
+    return best;
 
 }
 
 
 /* =====================================================
-   LAYOUT GRID
+   CLEAR MOSAIC DOM
    ===================================================== */
 
-function layoutCoverGrid() {
+function clearMosaic() {
+
+    mosaicGrid.innerHTML =
+        "";
+
+
+    mosaicItems =
+        [];
+
+
+    mosaicGrid.style.transform =
+        "";
+
+}
+
+
+/* =====================================================
+   BUILD MOSAIC
+   ===================================================== */
+
+function buildMosaic() {
+
+    clearMosaic();
+
 
     if (
-        coverCells.length ===
+        photographyMetadata.length ===
         0
     ) {
 
@@ -1891,7 +2303,7 @@ function layoutCoverGrid() {
 
 
     const rect =
-        coverGrid
+        visualFrame
             .getBoundingClientRect();
 
 
@@ -1905,32 +2317,355 @@ function layoutCoverGrid() {
     }
 
 
-    const grid =
-        calculateBestGrid(
-            coverCells.length,
+    const actualCoverCount =
+        photographyMetadata.filter(
+            item =>
+                item.priority === 0
+        ).length;
+
+
+    const best =
+        findBestMosaic(
+            photographyMetadata,
+            actualCoverCount,
             rect.width,
             rect.height
         );
 
 
-    coverGrid.style
-        .gridTemplateColumns =
-        `repeat(${grid.columns}, minmax(0, 1fr))`;
+    if (
+        !best
+    ) {
+
+        return;
+
+    }
 
 
-    coverGrid.style
-        .gridTemplateRows =
-        `repeat(${grid.rows}, minmax(0, 1fr))`;
+    /*
+        Natural justified layout.
+    */
+
+    let naturalHeight =
+        best.totalHeight;
 
 
-    coverGrid.style.gap =
-        `${grid.gap}px`;
+    /*
+        In practice the solver should get very close.
+
+        Apply one global vertical correction only
+        to eliminate a microscopic remaining
+        floating-point / ratio residual.
+
+        This is not per-image cropping.
+    */
+
+    const verticalScale =
+        rect.height /
+        naturalHeight;
+
+
+    let naturalY =
+        0;
+
+
+    best.rows.forEach(
+        row => {
+
+            let x =
+                0;
+
+
+            row.photos.forEach(
+                (
+                    photo,
+                    index
+                ) => {
+
+                    let naturalWidth =
+                        row.height *
+                        photo.ratio;
+
+
+                    /*
+                        Eliminate floating-point seams
+                        on the right edge.
+                    */
+
+                    if (
+                        index ===
+                        row.photos.length -
+                        1
+                    ) {
+
+                        naturalWidth =
+                            rect.width -
+                            x;
+
+                    }
+
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    image.className =
+                        "mosaic-item";
+
+
+                    image.src =
+                        photo.url;
+
+
+                    image.alt =
+                        "";
+
+
+                    image.decoding =
+                        "async";
+
+
+                    /*
+                        X geometry does not need scaling.
+
+                        Y geometry receives the same
+                        microscopic global correction.
+                    */
+
+                    const finalTop =
+                        naturalY *
+                        verticalScale;
+
+
+                    const finalHeight =
+                        row.height *
+                        verticalScale;
+
+
+                    image.style.left =
+                        `${x}px`;
+
+
+                    image.style.top =
+                        `${finalTop}px`;
+
+
+                    image.style.width =
+                        `${naturalWidth}px`;
+
+
+                    image.style.height =
+                        `${finalHeight}px`;
+
+
+                    /*
+                        Because width was derived from
+                        the image's native ratio and
+                        the vertical correction is shared
+                        across the whole composition,
+                        no individual image receives a
+                        different crop behavior.
+                    */
+
+                    mosaicGrid.appendChild(
+                        image
+                    );
+
+
+                    mosaicItems.push(
+                        image
+                    );
+
+
+                    x +=
+                        naturalWidth;
+
+                }
+            );
+
+
+            naturalY +=
+                row.height;
+
+        }
+    );
 
 }
 
 
 /* =====================================================
-   NAV WORDS
+   MOSAIC ANIMATION
+   ===================================================== */
+
+let mosaicTimers =
+    [];
+
+
+/* =====================================================
+   CLEAR MOSAIC TIMERS
+   ===================================================== */
+
+function clearMosaicTimers() {
+
+    mosaicTimers.forEach(
+        timer => {
+
+            clearTimeout(
+                timer
+            );
+
+        }
+    );
+
+
+    mosaicTimers =
+        [];
+
+}
+
+
+/* =====================================================
+   RESET MOSAIC
+   ===================================================== */
+
+function resetMosaic() {
+
+    mosaicItems.forEach(
+        image => {
+
+            image.classList
+                .remove(
+                    "visible"
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REVEAL MOSAIC
+
+   Hard appearance.
+
+   No fade transition.
+   ===================================================== */
+
+function revealMosaic() {
+
+    clearMosaicTimers();
+
+
+    resetMosaic();
+
+
+    if (
+        mosaicItems.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const interval =
+        MOSAIC_BUILD_DURATION /
+        mosaicItems.length;
+
+
+    mosaicItems.forEach(
+        (
+            image,
+            index
+        ) => {
+
+            mosaicTimers.push(
+
+                setTimeout(
+                    () => {
+
+                        image.classList
+                            .add(
+                                "visible"
+                            );
+
+                    },
+                    interval *
+                    index
+                )
+
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   REMOVE MOSAIC
+
+   Reverse order.
+   ===================================================== */
+
+function removeMosaic() {
+
+    if (
+        mosaicItems.length ===
+        0
+    ) {
+
+        return;
+
+    }
+
+
+    const reversed =
+        mosaicItems
+            .slice()
+            .reverse();
+
+
+    const interval =
+        MOSAIC_REMOVE_DURATION /
+        reversed.length;
+
+
+    reversed.forEach(
+        (
+            image,
+            index
+        ) => {
+
+            mosaicTimers.push(
+
+                setTimeout(
+                    () => {
+
+                        image.classList
+                            .remove(
+                                "visible"
+                            );
+
+                    },
+                    interval *
+                    index
+                )
+
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   NAV WORD STATE
    ===================================================== */
 
 const navItems =
@@ -1967,7 +2702,7 @@ const navItems =
 
 
 /* =====================================================
-   RENDER CASE
+   CASE RENDER
    ===================================================== */
 
 function renderCaseWord(
@@ -2000,10 +2735,12 @@ function renderCaseWord(
         result +=
             i <
             normalized
-                ? word[i]
-                    .toUpperCase()
-                : word[i]
-                    .toLowerCase();
+                ? word[
+                    i
+                ].toUpperCase()
+                : word[
+                    i
+                ].toLowerCase();
 
     }
 
@@ -2116,7 +2853,7 @@ function animateTitlesTo(
             : 0;
 
 
-    const start =
+    const started =
         performance.now();
 
 
@@ -2139,7 +2876,7 @@ function animateTitlesTo(
                 1,
                 (
                     now -
-                    start
+                    started
                 ) /
                 WORD_TRANSITION_DURATION
             );
@@ -2238,176 +2975,7 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   COVER ANIMATION
-   ===================================================== */
-
-let coverTimers =
-    [];
-
-
-/* =====================================================
-   CLEAR COVER TIMERS
-   ===================================================== */
-
-function clearCoverTimers() {
-
-    coverTimers.forEach(
-        timer => {
-
-            clearTimeout(
-                timer
-            );
-
-        }
-    );
-
-
-    coverTimers =
-        [];
-
-}
-
-
-/* =====================================================
-   RESET COVER GRID
-   ===================================================== */
-
-function resetCoverGrid() {
-
-    coverCells.forEach(
-        cell => {
-
-            cell.classList
-                .remove(
-                    "visible"
-                );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   REVEAL COVERS
-
-   Hard-pop sequentially.
-   No fade.
-   No scale.
-   ===================================================== */
-
-function revealCovers() {
-
-    clearCoverTimers();
-
-
-    resetCoverGrid();
-
-
-    if (
-        coverCells.length ===
-        0
-    ) {
-
-        return;
-
-    }
-
-
-    const interval =
-        COVER_BUILD_DURATION /
-        coverCells.length;
-
-
-    coverCells.forEach(
-        (
-            cell,
-            index
-        ) => {
-
-            coverTimers.push(
-
-                setTimeout(
-                    () => {
-
-                        cell.classList
-                            .add(
-                                "visible"
-                            );
-
-                    },
-                    index *
-                    interval
-                )
-
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   REMOVE COVERS
-
-   Reverse sequence.
-   ===================================================== */
-
-function removeCovers() {
-
-    if (
-        coverCells.length ===
-        0
-    ) {
-
-        return;
-
-    }
-
-
-    const reversed =
-        coverCells
-            .slice()
-            .reverse();
-
-
-    const interval =
-        COVER_REMOVE_DURATION /
-        reversed.length;
-
-
-    reversed.forEach(
-        (
-            cell,
-            index
-        ) => {
-
-            coverTimers.push(
-
-                setTimeout(
-                    () => {
-
-                        cell.classList
-                            .remove(
-                                "visible"
-                            );
-
-                    },
-                    index *
-                    interval
-                )
-
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   MODE STATE
+   MODE
    ===================================================== */
 
 let activeMode =
@@ -2447,7 +3015,7 @@ function clearModeTimer() {
 
 
 /* =====================================================
-   SHOW PHOTOGRAPHY
+   START PHOTOGRAPHY
    ===================================================== */
 
 function startPhotography(
@@ -2462,7 +3030,7 @@ function startPhotography(
     clearModeTimer();
 
 
-    clearCoverTimers();
+    clearMosaicTimers();
 
 
     filmVideo.pause();
@@ -2483,13 +3051,10 @@ function startPhotography(
 
 
     /*
-        Grid may have been created while hidden.
-        Recalculate once visible.
+        Recalculate using current viewport.
     */
 
-    requestAnimationFrame(
-        layoutCoverGrid
-    );
+    buildMosaic();
 
 
     animateTitlesTo(
@@ -2497,8 +3062,12 @@ function startPhotography(
     );
 
 
-    revealCovers();
+    revealMosaic();
 
+
+    /*
+        Desktop hover freezes Photography.
+    */
 
     if (
         !automatic ||
@@ -2511,22 +3080,22 @@ function startPhotography(
     }
 
 
-    const removeAt =
-        COVER_BUILD_DURATION +
-        COVER_HOLD_DURATION;
+    const removeStart =
+        MOSAIC_BUILD_DURATION +
+        MOSAIC_HOLD_DURATION;
 
 
-    coverTimers.push(
+    mosaicTimers.push(
 
         setTimeout(
             () => {
 
-                removeCovers();
+                removeMosaic();
 
 
                 /*
-                    Begin typography transition
-                    while covers disappear.
+                    Begin title change while
+                    mosaic disappears.
                 */
 
                 animateTitlesTo(
@@ -2534,7 +3103,7 @@ function startPhotography(
                 );
 
             },
-            removeAt
+            removeStart
         )
 
     );
@@ -2564,7 +3133,7 @@ function startPhotography(
 
 
 /* =====================================================
-   SHOW FILM
+   START FILM
    ===================================================== */
 
 async function startFilm(
@@ -2579,10 +3148,10 @@ async function startFilm(
     clearModeTimer();
 
 
-    clearCoverTimers();
+    clearMosaicTimers();
 
 
-    resetCoverGrid();
+    resetMosaic();
 
 
     photographyMedia
@@ -2637,7 +3206,9 @@ async function startFilm(
 
 
 /* =====================================================
-   VIDEO END
+   FILM ENDED
+
+   All 77 frames are complete.
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -2695,6 +3266,18 @@ photographyLink.addEventListener(
 
         if (
             !canHover()
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            hoverMode ===
+            "photography" &&
+            activeMode ===
+            "photography"
         ) {
 
             return;
@@ -2778,6 +3361,18 @@ filmLink.addEventListener(
 
         if (
             !canHover()
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            hoverMode ===
+            "film" &&
+            activeMode ===
+            "film"
         ) {
 
             return;
@@ -2930,7 +3525,7 @@ let logoReturnTimer =
 
 
 /* =====================================================
-   SET LOGO STATE
+   LOGO STATE
    ===================================================== */
 
 function setLogoState(
@@ -3118,6 +3713,15 @@ logo.addEventListener(
 
 /* =====================================================
    MOBILE LOGO TAP
+
+   One tap:
+   Denizalp / aybak
+   ->
+   denizalp / AYBAK
+   ->
+   hold
+   ->
+   Denizalp / aybak
    ===================================================== */
 
 logo.addEventListener(
@@ -3187,9 +3791,45 @@ window.addEventListener(
     "resize",
     () => {
 
-        requestAnimationFrame(
-            layoutCoverGrid
-        );
+        if (
+            activeMode ===
+            "photography"
+        ) {
+
+            requestAnimationFrame(
+                () => {
+
+                    buildMosaic();
+
+
+                    /*
+                        If photography is currently
+                        on screen, keep all currently
+                        expected imagery visible.
+                    */
+
+                    if (
+                        activeMode ===
+                        "photography"
+                    ) {
+
+                        mosaicItems.forEach(
+                            item => {
+
+                                item.classList
+                                    .add(
+                                        "visible"
+                                    );
+
+                            }
+                        );
+
+                    }
+
+                }
+            );
+
+        }
 
     }
 );
@@ -3200,14 +3840,31 @@ window.addEventListener(
     () => {
 
         setTimeout(
-            layoutCoverGrid,
-            100
-        );
+            () => {
+
+                if (
+                    activeMode ===
+                    "photography"
+                ) {
+
+                    buildMosaic();
 
 
-        setTimeout(
-            layoutCoverGrid,
-            350
+                    mosaicItems.forEach(
+                        item => {
+
+                            item.classList
+                                .add(
+                                    "visible"
+                                );
+
+                        }
+                    );
+
+                }
+
+            },
+            200
         );
 
     }
@@ -3215,7 +3872,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   VISIBILITY
+   TAB VISIBILITY
    ===================================================== */
 
 document.addEventListener(
@@ -3228,7 +3885,7 @@ document.addEventListener(
 
             clearModeTimer();
 
-            clearCoverTimers();
+            clearMosaicTimers();
 
             filmVideo.pause();
 
@@ -3288,7 +3945,7 @@ document.addEventListener(
 
 
 /* =====================================================
-   INIT
+   INITIALIZE
    ===================================================== */
 
 async function init() {
@@ -3311,11 +3968,11 @@ async function init() {
 
 
     /*
-        Get one cover per project from
-        the same projects.json photography uses.
+        Load covers + supplemental portfolio images
+        from projects.json.
     */
 
-    await loadProjectCovers();
+    await loadPhotographyPool();
 
 
     setTimeout(
