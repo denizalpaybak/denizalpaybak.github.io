@@ -309,9 +309,6 @@ body {
 
 /* =====================================================
    MEDIA FIELD
-
-   Photography and Film use the
-   SAME exact field.
    ===================================================== */
 
 .media-field {
@@ -336,10 +333,7 @@ body {
 
 
 /* =====================================================
-   16:9 VISUAL FRAME
-
-   Photography mosaic and Film use
-   exactly the same rectangle.
+   VISUAL FRAME
    ===================================================== */
 
 .visual-frame {
@@ -372,7 +366,7 @@ body {
 
     inset: 0;
 
-    display: none;
+    display: block;
 
     width: 100%;
     height: 100%;
@@ -384,11 +378,13 @@ body {
 
     pointer-events: none;
 
+    visibility: hidden;
+
     -webkit-tap-highlight-color: transparent;
 }
 
 .media-layer.active {
-    display: block;
+    visibility: visible;
 
     pointer-events: auto;
 }
@@ -396,11 +392,6 @@ body {
 
 /* =====================================================
    PHOTOGRAPHY MOSAIC
-
-   Completely gapless.
-
-   Individual images are absolutely positioned
-   by JS using their native aspect ratios.
    ===================================================== */
 
 .mosaic-grid {
@@ -412,6 +403,11 @@ body {
     height: 100%;
 
     overflow: hidden;
+
+    contain:
+        layout
+        paint
+        size;
 }
 
 
@@ -431,14 +427,11 @@ body {
 
     pointer-events: none;
 
-    /*
-        Geometry is calculated according to
-        each image's real aspect ratio.
+    will-change: opacity;
 
-        No object-fit: cover.
-    */
+    backface-visibility: hidden;
 
-    object-fit: fill;
+    transform: translateZ(0);
 }
 
 .mosaic-item.visible {
@@ -460,6 +453,10 @@ body {
     object-position: center center;
 
     pointer-events: none;
+
+    backface-visibility: hidden;
+
+    transform: translateZ(0);
 }
 
 
@@ -562,10 +559,10 @@ body {
 /* =====================================================
    MOBILE LANDSCAPE
 
-   Typography size stays 13px.
+   Typography remains 13px.
 
-   2/3 text
-   1/3 media
+   Left 2/3
+   Media 1/3
    ===================================================== */
 
 @media
@@ -688,9 +685,7 @@ body {
     >
 
 
-        <!-- =================================================
-             LOGO
-             ================================================= -->
+        <!-- LOGO -->
 
         <button
             class="logo"
@@ -715,18 +710,14 @@ body {
         </button>
 
 
-        <!-- =================================================
-             OPENING
-             ================================================= -->
+        <!-- OPENING -->
 
         <p class="opening">
             is an istanbul-based fashion photographer and filmmaker.
         </p>
 
 
-        <!-- =================================================
-             NAVIGATION
-             ================================================= -->
+        <!-- NAVIGATION -->
 
         <nav class="navigation">
 
@@ -752,9 +743,7 @@ body {
         </nav>
 
 
-        <!-- =================================================
-             MEDIA
-             ================================================= -->
+        <!-- MEDIA -->
 
         <div
             class="media-field"
@@ -808,9 +797,7 @@ body {
         </div>
 
 
-        <!-- =================================================
-             CONTACT
-             ================================================= -->
+        <!-- CONTACT -->
 
         <div class="contact">
 
@@ -841,9 +828,7 @@ body {
         </div>
 
 
-        <!-- =================================================
-             BIO
-             ================================================= -->
+        <!-- BIO -->
 
         <section class="biography">
 
@@ -894,16 +879,8 @@ const WORD_TRANSITION_DURATION =
     400;
 
 
-/*
-    Photography:
-
-    mosaic builds quickly,
-    stays complete briefly,
-    disappears quickly.
-*/
-
 const MOSAIC_BUILD_DURATION =
-    400;
+    360;
 
 
 const MOSAIC_HOLD_DURATION =
@@ -911,46 +888,45 @@ const MOSAIC_HOLD_DURATION =
 
 
 const MOSAIC_REMOVE_DURATION =
-    320;
+    240;
+
+
+/*
+    Small separation between:
+    mosaic removal
+    and title morph.
+
+    This reduces main-thread contention.
+*/
+
+const FILM_TRANSITION_STAGGER =
+    80;
+
+
+/*
+    Film becomes visible partway through
+    title morph rather than on the exact
+    same frame as mosaic removal.
+*/
+
+const FILM_LAYER_DELAY =
+    150;
 
 
 const PHOTOGRAPHY_DURATION =
     MOSAIC_BUILD_DURATION +
     MOSAIC_HOLD_DURATION +
-    MOSAIC_REMOVE_DURATION;
-
-
-/*
-    Film:
-    77 frames / 23.976 fps.
-
-    Actual transition is controlled by
-    video "ended".
-*/
-
-const VIDEO_FRAME_COUNT =
-    77;
-
-
-const VIDEO_FPS =
-    23.976;
-
-
-const VIDEO_DURATION_MS =
-    (
-        VIDEO_FRAME_COUNT /
-        VIDEO_FPS
-    ) *
-    1000;
+    MOSAIC_REMOVE_DURATION +
+    FILM_TRANSITION_STAGGER;
 
 
 const INITIAL_DELAY =
     700;
 
 
-/*
-    Logo.
-*/
+/* =====================================================
+   LOGO TIMING
+   ===================================================== */
 
 const LOGO_STEP_DURATION =
     80;
@@ -1026,7 +1002,12 @@ let projectCovers =
     [];
 
 
-let supplementalPhotos =
+/*
+    Each project's remaining images are stored
+    separately so we can round-robin them.
+*/
+
+let projectSupplementalGroups =
     [];
 
 
@@ -1075,7 +1056,7 @@ function looksLikeImage(
 
 
 /* =====================================================
-   RESOLVE URL
+   RESOLVE PHOTO URL
    ===================================================== */
 
 function resolvePhotoUrl(
@@ -1144,7 +1125,67 @@ function resolvePhotoUrl(
 
 
 /* =====================================================
-   FIRST IMAGE INSIDE VALUE
+   NORMALIZE URL
+   ===================================================== */
+
+function normalizeUrl(
+    url
+) {
+
+    return url
+        .split("?")[0]
+        .split("#")[0];
+
+}
+
+
+/* =====================================================
+   UNIQUE URLS
+   ===================================================== */
+
+function uniqueUrls(
+    urls
+) {
+
+    const seen =
+        new Set();
+
+
+    return urls.filter(
+        url => {
+
+            const normalized =
+                normalizeUrl(
+                    url
+                );
+
+
+            if (
+                seen.has(
+                    normalized
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            seen.add(
+                normalized
+            );
+
+
+            return true;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FIRST IMAGE
    ===================================================== */
 
 function findFirstImage(
@@ -1345,12 +1386,6 @@ function collectImages(
 
 /* =====================================================
    PROJECT COVER
-
-   The index / cover fields are prioritized.
-
-   If the JSON uses a slightly different
-   structure, the fallback uses the first
-   project image.
    ===================================================== */
 
 function getProjectCover(
@@ -1452,11 +1487,6 @@ function getProjectCover(
     }
 
 
-    /*
-        Fallback:
-        first image belonging to project.
-    */
-
     const fallback =
         findFirstImage(
             project
@@ -1527,63 +1557,89 @@ function getProjectsArray(
 
 
 /* =====================================================
-   UNIQUE URLS
+   ROUND ROBIN SUPPLEMENTAL POOL
+
+   Example:
+
+   project A: a2 a3 a4
+   project B: b2 b3
+   project C: c2 c3 c4
+
+   Result:
+
+   a2 b2 c2
+   a3 b3 c3
+   a4    c4
+
+   This prevents 10 consecutive frames
+   from the same project.
    ===================================================== */
 
-function normalizeUrl(
-    url
+function buildRoundRobinSupplementals(
+    groups
 ) {
 
-    return url
-        .split("?")[0]
-        .split("#")[0];
-
-}
+    const result =
+        [];
 
 
-function uniqueUrls(
-    urls
-) {
-
-    const seen =
-        new Set();
+    let round =
+        0;
 
 
-    return urls.filter(
-        url => {
+    while (
+        true
+    ) {
 
-            const normalized =
-                normalizeUrl(
-                    url
+        let addedSomething =
+            false;
+
+
+        for (
+            const group of groups
+        ) {
+
+            if (
+                round <
+                group.length
+            ) {
+
+                result.push(
+                    group[
+                        round
+                    ]
                 );
 
 
-            if (
-                seen.has(
-                    normalized
-                )
-            ) {
-
-                return false;
+                addedSomething =
+                    true;
 
             }
 
-
-            seen.add(
-                normalized
-            );
+        }
 
 
-            return true;
+        if (
+            !addedSomething
+        ) {
+
+            break;
 
         }
-    );
+
+
+        round++;
+
+    }
+
+
+    return result;
 
 }
 
 
 /* =====================================================
-   LOAD IMAGE METADATA
+   IMAGE METADATA
    ===================================================== */
 
 function loadImageMetadata(
@@ -1596,6 +1652,10 @@ function loadImageMetadata(
 
             const image =
                 new Image();
+
+
+            image.decoding =
+                "async";
 
 
             image.onload =
@@ -1660,9 +1720,6 @@ function loadImageMetadata(
 
 /* =====================================================
    LOAD PROJECTS.JSON
-
-   1. covers first
-   2. all other photos afterwards
    ===================================================== */
 
 async function loadPhotographyPool() {
@@ -1704,7 +1761,7 @@ async function loadPhotographyPool() {
             [];
 
 
-        const everyImage =
+        const supplementalGroups =
             [];
 
 
@@ -1728,9 +1785,47 @@ async function loadPhotographyPool() {
                 }
 
 
+                const allImages =
+                    [];
+
+
                 collectImages(
                     project,
-                    everyImage
+                    allImages
+                );
+
+
+                const uniqueProjectImages =
+                    uniqueUrls(
+                        allImages
+                    );
+
+
+                const coverNormalized =
+                    cover
+                        ? normalizeUrl(
+                            cover
+                        )
+                        : null;
+
+
+                /*
+                    Remove that project's cover
+                    from its supplemental list.
+                */
+
+                const supplementals =
+                    uniqueProjectImages.filter(
+                        url =>
+                            normalizeUrl(
+                                url
+                            ) !==
+                            coverNormalized
+                    );
+
+
+                supplementalGroups.push(
+                    supplementals
                 );
 
             }
@@ -1743,6 +1838,28 @@ async function loadPhotographyPool() {
             );
 
 
+        projectSupplementalGroups =
+            supplementalGroups;
+
+
+        /*
+            IMPORTANT CHANGE:
+
+            supplementary images are now
+            interleaved project by project.
+        */
+
+        const roundRobinSupplementals =
+            buildRoundRobinSupplementals(
+                projectSupplementalGroups
+            );
+
+
+        /*
+            Remove any image that already exists
+            as another project's cover.
+        */
+
         const coverSet =
             new Set(
                 projectCovers.map(
@@ -1751,9 +1868,9 @@ async function loadPhotographyPool() {
             );
 
 
-        supplementalPhotos =
+        const cleanRoundRobin =
             uniqueUrls(
-                everyImage
+                roundRobinSupplementals
             ).filter(
                 url =>
                     !coverSet.has(
@@ -1766,17 +1883,13 @@ async function loadPhotographyPool() {
 
         photographyPool =
             projectCovers.concat(
-                supplementalPhotos
+                cleanRoundRobin
             );
 
 
         /*
-            Don't load an unnecessarily enormous
-            amount for the landing.
-
-            All covers + up to 40 additional
-            portfolio images are enough for the
-            mosaic solver.
+            Covers +
+            reasonable amount of potential fillers.
         */
 
         const candidateUrls =
@@ -1784,7 +1897,8 @@ async function loadPhotographyPool() {
                 0,
                 Math.min(
                     photographyPool.length,
-                    projectCovers.length + 40
+                    projectCovers.length +
+                    45
                 )
             );
 
@@ -1850,16 +1964,6 @@ async function loadPhotographyPool() {
 
 /* =====================================================
    ROW PARTITION
-
-   A row's images retain their aspect ratios.
-
-   For a row:
-   rowHeight = availableWidth / sum(ratios)
-
-   Therefore:
-   - no gap
-   - no crop
-   - row exactly reaches right edge.
    ===================================================== */
 
 function makeRowsGreedy(
@@ -1899,12 +2003,6 @@ function makeRowsGreedy(
                 1
             );
 
-
-        /*
-            For the entire 16:9 box, if there
-            are N rows, each row ideally has
-            aspect-sum ≈ N * frameRatio.
-        */
 
         const targetRatioSum =
             rowCount *
@@ -2075,18 +2173,6 @@ function measureRows(
 
 /* =====================================================
    MOSAIC SOLVER
-
-   Important:
-
-   All project covers are mandatory.
-
-   Then normal portfolio images are gradually
-   added until the resulting justified mosaic
-   gets as close as possible to the exact
-   16:9 frame height.
-
-   No gaps.
-   No intentional crop.
    ===================================================== */
 
 function findBestMosaic(
@@ -2111,20 +2197,12 @@ function findBestMosaic(
         frameHeight;
 
 
-    /*
-        At least all covers.
-    */
-
     const minimumCount =
         Math.min(
             requiredCoverCount,
             metadata.length
         );
 
-
-    /*
-        Extra images may be used automatically.
-    */
 
     const maximumCount =
         metadata.length;
@@ -2148,11 +2226,6 @@ function findBestMosaic(
                 count
             );
 
-
-        /*
-            More than ~9 rows at landing size
-            starts becoming unnecessarily tiny.
-        */
 
         const maximumRows =
             Math.min(
@@ -2189,17 +2262,6 @@ function findBestMosaic(
                 );
 
 
-            /*
-                Covers are mandatory.
-
-                Small penalty for additional photos,
-                so if covers alone already fit very
-                well they win.
-
-                But geometry matters far more than
-                the extra-photo penalty.
-            */
-
             const extraCount =
                 Math.max(
                     0,
@@ -2208,10 +2270,17 @@ function findBestMosaic(
                 );
 
 
+            /*
+                Geometry strongly prioritized.
+
+                Tiny penalty only prevents using
+                30 extras when 2 extras already fit.
+            */
+
             const score =
                 heightError +
                 extraCount *
-                0.015;
+                0.01;
 
 
             if (
@@ -2240,13 +2309,9 @@ function findBestMosaic(
             }
 
 
-            /*
-                Sub-pixel result is visually exact.
-            */
-
             if (
                 heightError <
-                0.35
+                0.25
             ) {
 
                 return best;
@@ -2264,7 +2329,7 @@ function findBestMosaic(
 
 
 /* =====================================================
-   CLEAR MOSAIC DOM
+   MOSAIC DOM
    ===================================================== */
 
 function clearMosaic() {
@@ -2275,10 +2340,6 @@ function clearMosaic() {
 
     mosaicItems =
         [];
-
-
-    mosaicGrid.style.transform =
-        "";
 
 }
 
@@ -2342,22 +2403,15 @@ function buildMosaic() {
     }
 
 
-    /*
-        Natural justified layout.
-    */
-
-    let naturalHeight =
+    const naturalHeight =
         best.totalHeight;
 
 
     /*
-        In practice the solver should get very close.
+        One shared microscopic vertical correction
+        makes outer bounds mathematically exact.
 
-        Apply one global vertical correction only
-        to eliminate a microscopic remaining
-        floating-point / ratio residual.
-
-        This is not per-image cropping.
+        Individual images are not independently cropped.
     */
 
     const verticalScale =
@@ -2367,6 +2421,10 @@ function buildMosaic() {
 
     let naturalY =
         0;
+
+
+    const fragment =
+        document.createDocumentFragment();
 
 
     best.rows.forEach(
@@ -2386,11 +2444,6 @@ function buildMosaic() {
                         row.height *
                         photo.ratio;
 
-
-                    /*
-                        Eliminate floating-point seams
-                        on the right edge.
-                    */
 
                     if (
                         index ===
@@ -2427,13 +2480,6 @@ function buildMosaic() {
                         "async";
 
 
-                    /*
-                        X geometry does not need scaling.
-
-                        Y geometry receives the same
-                        microscopic global correction.
-                    */
-
                     const finalTop =
                         naturalY *
                         verticalScale;
@@ -2460,16 +2506,7 @@ function buildMosaic() {
                         `${finalHeight}px`;
 
 
-                    /*
-                        Because width was derived from
-                        the image's native ratio and
-                        the vertical correction is shared
-                        across the whole composition,
-                        no individual image receives a
-                        different crop behavior.
-                    */
-
-                    mosaicGrid.appendChild(
+                    fragment.appendChild(
                         image
                     );
 
@@ -2492,6 +2529,16 @@ function buildMosaic() {
         }
     );
 
+
+    /*
+        One DOM append instead of many separate
+        layout-triggering appends.
+    */
+
+    mosaicGrid.appendChild(
+        fragment
+    );
+
 }
 
 
@@ -2502,10 +2549,6 @@ function buildMosaic() {
 let mosaicTimers =
     [];
 
-
-/* =====================================================
-   CLEAR MOSAIC TIMERS
-   ===================================================== */
 
 function clearMosaicTimers() {
 
@@ -2548,10 +2591,6 @@ function resetMosaic() {
 
 /* =====================================================
    REVEAL MOSAIC
-
-   Hard appearance.
-
-   No fade transition.
    ===================================================== */
 
 function revealMosaic() {
@@ -2608,8 +2647,6 @@ function revealMosaic() {
 
 /* =====================================================
    REMOVE MOSAIC
-
-   Reverse order.
    ===================================================== */
 
 function removeMosaic() {
@@ -2665,7 +2702,7 @@ function removeMosaic() {
 
 
 /* =====================================================
-   NAV WORD STATE
+   NAV WORDS
    ===================================================== */
 
 const navItems =
@@ -2702,7 +2739,7 @@ const navItems =
 
 
 /* =====================================================
-   CASE RENDER
+   RENDER CASE
    ===================================================== */
 
 function renderCaseWord(
@@ -2751,7 +2788,7 @@ function renderCaseWord(
 
 
 /* =====================================================
-   SET WORD
+   SET WORD COUNT
    ===================================================== */
 
 function setWordCount(
@@ -2838,18 +2875,14 @@ function animateTitlesTo(
     const photoTarget =
         mode ===
         "photography"
-            ? photography
-                .word
-                .length
+            ? photography.word.length
             : 0;
 
 
     const filmTarget =
         mode ===
         "film"
-            ? film
-                .word
-                .length
+            ? film.word.length
             : 0;
 
 
@@ -2975,7 +3008,7 @@ function animateTitlesTo(
 
 
 /* =====================================================
-   MODE
+   MODE STATE
    ===================================================== */
 
 let activeMode =
@@ -2988,6 +3021,33 @@ let hoverMode =
 
 let photographyTimer =
     null;
+
+
+let transitionTimers =
+    [];
+
+
+/* =====================================================
+   CLEAR TRANSITION TIMERS
+   ===================================================== */
+
+function clearTransitionTimers() {
+
+    transitionTimers.forEach(
+        timer => {
+
+            clearTimeout(
+                timer
+            );
+
+        }
+    );
+
+
+    transitionTimers =
+        [];
+
+}
 
 
 /* =====================================================
@@ -3008,6 +3068,43 @@ function clearModeTimer() {
 
         photographyTimer =
             null;
+
+    }
+
+
+    clearTransitionTimers();
+
+}
+
+
+/* =====================================================
+   PREPARE FILM
+
+   Keep video ready in memory while
+   Photography is still visible.
+   ===================================================== */
+
+function prepareFilmVideo() {
+
+    /*
+        preload="auto" is already set,
+        but explicitly load once if needed.
+    */
+
+    if (
+        filmVideo.readyState <
+        2
+    ) {
+
+        try {
+
+            filmVideo.load();
+
+        }
+
+        catch (
+            error
+        ) {}
 
     }
 
@@ -3050,10 +3147,6 @@ function startPhotography(
         );
 
 
-    /*
-        Recalculate using current viewport.
-    */
-
     buildMosaic();
 
 
@@ -3066,8 +3159,12 @@ function startPhotography(
 
 
     /*
-        Desktop hover freezes Photography.
+        Prepare film in the background while
+        Photography is on screen.
     */
+
+    prepareFilmVideo();
+
 
     if (
         !automatic ||
@@ -3080,30 +3177,44 @@ function startPhotography(
     }
 
 
-    const removeStart =
-        MOSAIC_BUILD_DURATION +
-        MOSAIC_HOLD_DURATION;
+    /*
+        First: remove mosaic.
+    */
 
-
-    mosaicTimers.push(
+    transitionTimers.push(
 
         setTimeout(
             () => {
 
                 removeMosaic();
 
+            },
+            MOSAIC_BUILD_DURATION +
+            MOSAIC_HOLD_DURATION
+        )
 
-                /*
-                    Begin title change while
-                    mosaic disappears.
-                */
+    );
+
+
+    /*
+        Then title morph starts a little later,
+        preventing both operations landing on
+        the exact same main-thread frame.
+    */
+
+    transitionTimers.push(
+
+        setTimeout(
+            () => {
 
                 animateTitlesTo(
                     "film"
                 );
 
             },
-            removeStart
+            MOSAIC_BUILD_DURATION +
+            MOSAIC_HOLD_DURATION +
+            FILM_TRANSITION_STAGGER
         )
 
     );
@@ -3151,8 +3262,12 @@ async function startFilm(
     clearMosaicTimers();
 
 
-    resetMosaic();
+    /*
+        We no longer reset all mosaic classes
+        synchronously before video playback.
 
+        Photography layer is simply hidden.
+    */
 
     photographyMedia
         .classList
@@ -3161,25 +3276,25 @@ async function startFilm(
         );
 
 
-    filmMedia
-        .classList
-        .add(
-            "active"
-        );
-
-
-    animateTitlesTo(
-        "film"
-    );
-
+    /*
+        Set currentTime before layer becomes visible.
+    */
 
     filmVideo.pause();
 
 
     try {
 
-        filmVideo.currentTime =
-            0;
+        if (
+            filmVideo.currentTime >
+            0.02 ||
+            filmVideo.ended
+        ) {
+
+            filmVideo.currentTime =
+                0;
+
+        }
 
     }
 
@@ -3190,6 +3305,48 @@ async function startFilm(
 
     filmVideo.playbackRate =
         1;
+
+
+    /*
+        Title animation may already be in progress
+        from automatic Photography exit.
+
+        Calling this again safely continues from
+        current letter states.
+    */
+
+    animateTitlesTo(
+        "film"
+    );
+
+
+    /*
+        Give browser one animation frame to paint
+        the photography removal before film appears.
+    */
+
+    await new Promise(
+        resolve => {
+
+            requestAnimationFrame(
+                () => {
+
+                    requestAnimationFrame(
+                        resolve
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    filmMedia
+        .classList
+        .add(
+            "active"
+        );
 
 
     try {
@@ -3206,9 +3363,7 @@ async function startFilm(
 
 
 /* =====================================================
-   FILM ENDED
-
-   All 77 frames are complete.
+   VIDEO END
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -3713,15 +3868,6 @@ logo.addEventListener(
 
 /* =====================================================
    MOBILE LOGO TAP
-
-   One tap:
-   Denizalp / aybak
-   ->
-   denizalp / AYBAK
-   ->
-   hold
-   ->
-   Denizalp / aybak
    ===================================================== */
 
 logo.addEventListener(
@@ -3792,44 +3938,34 @@ window.addEventListener(
     () => {
 
         if (
-            activeMode ===
+            activeMode !==
             "photography"
         ) {
 
-            requestAnimationFrame(
-                () => {
-
-                    buildMosaic();
-
-
-                    /*
-                        If photography is currently
-                        on screen, keep all currently
-                        expected imagery visible.
-                    */
-
-                    if (
-                        activeMode ===
-                        "photography"
-                    ) {
-
-                        mosaicItems.forEach(
-                            item => {
-
-                                item.classList
-                                    .add(
-                                        "visible"
-                                    );
-
-                            }
-                        );
-
-                    }
-
-                }
-            );
+            return;
 
         }
+
+
+        requestAnimationFrame(
+            () => {
+
+                buildMosaic();
+
+
+                mosaicItems.forEach(
+                    item => {
+
+                        item.classList
+                            .add(
+                                "visible"
+                            );
+
+                    }
+                );
+
+            }
+        );
 
     }
 );
@@ -3843,25 +3979,28 @@ window.addEventListener(
             () => {
 
                 if (
-                    activeMode ===
+                    activeMode !==
                     "photography"
                 ) {
 
-                    buildMosaic();
-
-
-                    mosaicItems.forEach(
-                        item => {
-
-                            item.classList
-                                .add(
-                                    "visible"
-                                );
-
-                        }
-                    );
+                    return;
 
                 }
+
+
+                buildMosaic();
+
+
+                mosaicItems.forEach(
+                    item => {
+
+                        item.classList
+                            .add(
+                                "visible"
+                            );
+
+                    }
+                );
 
             },
             200
@@ -3872,7 +4011,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   TAB VISIBILITY
+   VISIBILITY
    ===================================================== */
 
 document.addEventListener(
@@ -3968,8 +4107,15 @@ async function init() {
 
 
     /*
-        Load covers + supplemental portfolio images
-        from projects.json.
+        Start video buffering immediately.
+    */
+
+    prepareFilmVideo();
+
+
+    /*
+        Load project covers + round-robin
+        supplemental images.
     */
 
     await loadPhotographyPool();
