@@ -25,17 +25,25 @@ html,
 body {
     margin: 0;
     padding: 0;
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
+
     background: #fff;
+
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
 }
 
 body {
     color: #000;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
 
@@ -44,6 +52,7 @@ body {
    ===================================================== */
 
 :root {
+
     --page-x: 48px;
     --page-top: 32px;
     --page-bottom: 48px;
@@ -53,6 +62,7 @@ body {
 
     --major-gap: 17px;
     --column-gap: 48px;
+
 }
 
 
@@ -84,6 +94,7 @@ body {
 
 .landing-grid {
     position: relative;
+
     z-index: 2;
 
     display: grid;
@@ -99,8 +110,11 @@ body {
         auto
         minmax(0, 1fr);
 
-    column-gap: var(--column-gap);
-    row-gap: var(--major-gap);
+    column-gap:
+        var(--column-gap);
+
+    row-gap:
+        var(--major-gap);
 
     width: 100%;
     height: 100%;
@@ -144,6 +158,7 @@ body {
     -webkit-appearance: none;
 
     background: transparent;
+
     color: #000;
 
     cursor: pointer;
@@ -160,6 +175,7 @@ body {
 
 .logo-name {
     position: absolute;
+
     top: 0;
     left: 0;
 
@@ -168,6 +184,7 @@ body {
 
 .logo-aybak {
     position: absolute;
+
     top: 17px;
     left: 0;
 
@@ -305,11 +322,6 @@ body {
     white-space: nowrap;
 }
 
-/*
-    Desktopta son satırın yalnızca
-    "evoke feeling." olarak kalmasını önler.
-*/
-
 .bio-ending {
     white-space: nowrap;
 }
@@ -336,7 +348,7 @@ body {
 
 
 /* =====================================================
-   PHOTOGRAPHY FIELD — DESKTOP
+   PHOTOGRAPHY FIELD
    ===================================================== */
 
 .photography-field {
@@ -355,7 +367,9 @@ body {
 
     pointer-events: none;
 
-    contain: layout paint;
+    contain:
+        layout
+        paint;
 }
 
 .photography-field.active {
@@ -391,8 +405,17 @@ body {
     top: 0;
     left: 0;
 
-    width: var(--group-width, 100px);
-    height: var(--group-height, 100px);
+    width:
+        var(
+            --group-width,
+            100px
+        );
+
+    height:
+        var(
+            --group-height,
+            100px
+        );
 
     visibility: hidden;
 
@@ -407,7 +430,9 @@ body {
 
     backface-visibility: hidden;
 
-    contain: layout paint;
+    contain:
+        layout
+        paint;
 }
 
 .photo-group.visible {
@@ -450,7 +475,8 @@ body {
 
     backface-visibility: hidden;
 
-    transform: translateZ(0);
+    transform:
+        translateZ(0);
 }
 
 
@@ -475,6 +501,7 @@ body {
 
 .film-field.active {
     visibility: visible;
+
     pointer-events: auto;
 }
 
@@ -523,19 +550,39 @@ body {
 
     backface-visibility: hidden;
 
-    transform: translateZ(0);
+    transform:
+        translateZ(0);
 }
 
 
 /* =====================================================
    MOBILE PORTRAIT
+
+   Portrait hierarchy is now:
+
+   logo
+   opening
+   navigation
+   contact
+   biography
+   media
+
+   The media field therefore sits beneath ALL text.
+
+   When media disappears, no text needs to move.
    ===================================================== */
 
 @media
     (max-width: 600px)
     and (orientation: portrait) {
 
+    html,
+    body {
+        overflow: hidden;
+    }
+
     :root {
+
         --page-x: 24px;
         --page-top: 20px;
         --page-bottom: 32px;
@@ -544,6 +591,7 @@ body {
         --line-height: 1.15;
 
         --major-gap: 15px;
+
     }
 
     .landing-grid {
@@ -554,13 +602,14 @@ body {
             auto
             auto
             auto
-            minmax(0, 1fr)
             auto
-            auto;
+            auto
+            minmax(0, 1fr);
 
         column-gap: 0;
 
-        row-gap: var(--major-gap);
+        row-gap:
+            var(--major-gap);
     }
 
     .logo {
@@ -584,47 +633,39 @@ body {
         grid-row: 3;
     }
 
-    .media-field {
+    .contact {
         grid-column: 1;
         grid-row: 4;
     }
 
-    /*
-        IMPORTANT:
-        Mobile photography is locked back into
-        the old media-field.
+    .biography {
+        grid-column: 1;
+        grid-row: 5;
 
-        It cannot spread behind / over the text.
+        max-width: none;
+    }
+
+    .media-field {
+        grid-column: 1;
+        grid-row: 6;
+
+        min-height: 0;
+    }
+
+    /*
+        Photography stays entirely inside
+        the bottom media field.
     */
 
     .photography-field {
         position: absolute;
 
-        z-index: 1;
-
-        top: auto;
-        right: auto;
-        bottom: auto;
-        left: auto;
-
         inset: 0;
+
+        z-index: auto;
 
         width: 100%;
         height: 100%;
-
-        overflow: hidden;
-    }
-
-    .contact {
-        grid-column: 1;
-        grid-row: 5;
-    }
-
-    .biography {
-        grid-column: 1;
-        grid-row: 6;
-
-        max-width: none;
     }
 
     .bio-ending {
@@ -634,6 +675,7 @@ body {
     .film-link {
         max-width: 100%;
     }
+
 }
 
 
@@ -647,6 +689,7 @@ body {
     and (max-width: 1000px) {
 
     :root {
+
         --page-x: 24px;
         --page-top: 14px;
         --page-bottom: 14px;
@@ -656,6 +699,7 @@ body {
 
         --major-gap: 8px;
         --column-gap: 24px;
+
     }
 
     .landing-grid {
@@ -683,30 +727,19 @@ body {
     }
 
     .biography p {
-        margin-bottom: var(--major-gap);
+        margin-bottom:
+            var(--major-gap);
     }
-
-    /*
-        Landscape mobile also stays completely
-        inside the media column.
-    */
 
     .photography-field {
         position: absolute;
 
-        z-index: 1;
-
-        top: auto;
-        right: auto;
-        bottom: auto;
-        left: auto;
-
         inset: 0;
+
+        z-index: auto;
 
         width: 100%;
         height: 100%;
-
-        overflow: hidden;
     }
 
     .bio-ending {
@@ -716,6 +749,7 @@ body {
     .film-link {
         max-width: 100%;
     }
+
 }
 
 
@@ -729,6 +763,7 @@ body {
     and (max-height: 700px) {
 
     :root {
+
         --page-x: 24px;
         --page-top: 20px;
         --page-bottom: 20px;
@@ -738,6 +773,7 @@ body {
 
         --major-gap: 9px;
         --column-gap: 32px;
+
     }
 
     .landing-grid {
@@ -753,6 +789,7 @@ body {
     .logo-aybak {
         top: 15px;
     }
+
 }
 
 </style>
@@ -957,56 +994,80 @@ const R2_PHOTOS_BASE =
    TIMING
    ===================================================== */
 
-const WORD_TRANSITION_DURATION = 400;
+const WORD_TRANSITION_DURATION =
+    400;
 
-const PHOTO_SEQUENCE_DURATION = 400;
+const PHOTO_SEQUENCE_DURATION =
+    400;
 
-const PHOTO_HOLD_DURATION = 1150;
+const PHOTO_HOLD_DURATION =
+    1150;
+
 
 /*
-    Mobile only:
-    blank breathing space between photography and film.
+    Mobile is intentionally NOT a permanent loop anymore.
+
+    Sequence:
+
+    FILM once
+    ↓
+    short clean transition
+    ↓
+    PHOTOGRAPHY once
+    ↓
+    permanent typographic idle state
+
+    This makes the landing page feel less like a slideshow
+    and more like an introduction.
 */
 
-const MOBILE_INTERLUDE_DURATION = 800;
+const MOBILE_BETWEEN_MEDIA_DURATION =
+    1200;
 
 
 /* =====================================================
    LOGO
    ===================================================== */
 
-const LOGO_STEP_DURATION = 80;
+const LOGO_STEP_DURATION =
+    80;
 
-const LOGO_MOBILE_HOLD = 2000;
+const LOGO_MOBILE_HOLD =
+    2000;
 
 
 /* =====================================================
    DESKTOP LAYOUT
    ===================================================== */
 
-const DESKTOP_PROJECT_GAP_MIN = 18;
+const DESKTOP_PROJECT_GAP_MIN =
+    18;
 
-const DESKTOP_PROJECT_GAP_MAX = 46;
+const DESKTOP_PROJECT_GAP_MAX =
+    46;
 
-const DESKTOP_PAIR_DISTANCE_MIN = 8;
+const DESKTOP_PAIR_DISTANCE_MIN =
+    8;
 
-const DESKTOP_PAIR_DISTANCE_MAX = 24;
+const DESKTOP_PAIR_DISTANCE_MAX =
+    24;
 
-const DESKTOP_TEXT_CLEARANCE_X = 42;
+const DESKTOP_TEXT_CLEARANCE_X =
+    42;
 
-const DESKTOP_TEXT_CLEARANCE_Y = 34;
+const DESKTOP_TEXT_CLEARANCE_Y =
+    34;
 
 
 /* =====================================================
    MOBILE LAYOUT
-
-   Slightly tighter than before so photos can be
-   somewhat larger without filling the entire field.
    ===================================================== */
 
-const MOBILE_PROJECT_GAP_MIN = 6;
+const MOBILE_PROJECT_GAP_MIN =
+    8;
 
-const MOBILE_PROJECT_GAP_MAX = 16;
+const MOBILE_PROJECT_GAP_MAX =
+    22;
 
 
 /* =====================================================
@@ -1080,16 +1141,17 @@ const filmVideo =
 
 function isMobileLayout() {
 
-    return window.matchMedia(
-        "(max-width: 1000px)"
-    ).matches;
+    return window
+        .matchMedia(
+            "(max-width: 1000px)"
+        )
+        .matches;
 
 }
 
 
 /* =====================================================
-   IMPORTANT:
-   MOVE PHOTOGRAPHY FIELD BETWEEN DESKTOP + MOBILE
+   PHOTOGRAPHY FIELD PARENT
    ===================================================== */
 
 function mountPhotographyField() {
@@ -1100,10 +1162,10 @@ function mountPhotographyField() {
 
         /*
             Mobile:
-            photography lives INSIDE media-field.
+            photography belongs to media-field.
 
-            This guarantees that it cannot collide
-            with the typography above or below.
+            In portrait, media-field itself is underneath
+            every text block.
         */
 
         if (
@@ -1123,8 +1185,8 @@ function mountPhotographyField() {
 
         /*
             Desktop:
-            photography returns to the page layer
-            so it can use the larger L-shaped area.
+            photography returns to the page level
+            so the large L-shaped composition remains.
         */
 
         if (
@@ -1147,21 +1209,48 @@ function mountPhotographyField() {
    STATE
    ===================================================== */
 
-let projectRecords = [];
+let projectRecords =
+    [];
 
-let desktopProjectVisualGroups = [];
+let desktopProjectVisualGroups =
+    [];
 
-let projectVisualGroups = [];
+let projectVisualGroups =
+    [];
 
-let groupElements = [];
+let groupElements =
+    [];
 
-let photographyInitialReady = false;
+let photographyInitialReady =
+    false;
 
-let supplementalAnalysisFinished = false;
+let supplementalAnalysisFinished =
+    false;
 
-let photographyLoadPromise = null;
+let photographyLoadPromise =
+    null;
 
-let renderedMobileMode = null;
+let renderedMobileMode =
+    null;
+
+
+/*
+    Mobile intro state.
+
+    Once film and photography have each appeared,
+    the page remains quiet.
+
+    No 10-second recurring cycle.
+*/
+
+let mobileFilmHasPlayed =
+    false;
+
+let mobilePhotographyHasPlayed =
+    false;
+
+let mobileIntroFinished =
+    false;
 
 
 /* =====================================================
@@ -1714,7 +1803,7 @@ function updateActiveVisualGroups() {
 
         /*
             Mobile:
-            ONLY one cover / thumbnail per project.
+            one cover / thumbnail per project.
         */
 
         projectVisualGroups =
@@ -1907,11 +1996,6 @@ async function loadInitialPhotography() {
 
                 photographyInitialReady =
                     true;
-
-                /*
-                    Optional second landscape images
-                    are prepared quietly in background.
-                */
 
                 analyzeSupplementalImagesInBackground();
 
@@ -2180,16 +2264,11 @@ function createProjectGeometry(
     const mobile =
         isMobileLayout();
 
-    /*
-        Mobile size variation is still obvious,
-        but slightly larger overall than before.
-    */
-
     const firstScale =
         mobile
             ? randomBetween(
-                0.82,
-                1.58
+                0.68,
+                1.46
             )
             : randomBetween(
                 0.64,
@@ -2421,12 +2500,20 @@ function getDesktopExclusionZone() {
         );
 
     return {
-        left: 0,
-        top: 0,
+        left:
+            0,
+
+        top:
+            0,
+
         right,
         bottom,
-        width: right,
-        height: bottom
+
+        width:
+            right,
+
+        height:
+            bottom
     };
 
 }
@@ -2449,19 +2536,26 @@ function packRegion(
     ) {
 
         return {
-            rows: [],
-            totalHeight: 0
+            rows:
+                [],
+
+            totalHeight:
+                0
         };
 
     }
 
-    const rows = [];
+    const rows =
+        [];
 
-    let row = [];
+    let row =
+        [];
 
-    let rowWidth = 0;
+    let rowWidth =
+        0;
 
-    let rowHeight = 0;
+    let rowHeight =
+        0;
 
     for (
         const geometry of geometries
@@ -2496,11 +2590,14 @@ function packRegion(
                 }
             );
 
-            row = [];
+            row =
+                [];
 
-            rowWidth = 0;
+            rowWidth =
+                0;
 
-            rowHeight = 0;
+            rowHeight =
+                0;
 
         }
 
@@ -2552,7 +2649,8 @@ function packRegion(
 
     }
 
-    let totalHeight = 0;
+    let totalHeight =
+        0;
 
     rows.forEach(
         (
@@ -2729,6 +2827,7 @@ function createDesktopComposition(
             best =
                 {
                     score,
+
                     upper,
                     lower,
 
@@ -2761,25 +2860,25 @@ function packMobileProjects(
     fieldHeight
 ) {
 
-    const rows = [];
+    const rows =
+        [];
 
-    let currentRow = [];
+    let currentRow =
+        [];
 
-    let currentWidth = 0;
+    let currentWidth =
+        0;
 
-    let rowHeight = 0;
+    let rowHeight =
+        0;
 
     geometries.forEach(
         geometry => {
 
-            /*
-                Use nearly all horizontal space.
-            */
-
             const rowLimit =
                 fieldWidth *
                 randomBetween(
-                    0.97,
+                    0.94,
                     1
                 );
 
@@ -2814,11 +2913,14 @@ function packMobileProjects(
                     }
                 );
 
-                currentRow = [];
+                currentRow =
+                    [];
 
-                currentWidth = 0;
+                currentWidth =
+                    0;
 
-                rowHeight = 0;
+                rowHeight =
+                    0;
 
             }
 
@@ -2869,7 +2971,8 @@ function packMobileProjects(
 
     }
 
-    const rowGaps = [];
+    const rowGaps =
+        [];
 
     for (
         let i = 0;
@@ -2879,8 +2982,8 @@ function packMobileProjects(
 
         rowGaps.push(
             randomBetween(
-                6,
-                16
+                8,
+                22
             )
         );
 
@@ -2956,16 +3059,12 @@ function createPhotographyComposition(
     const mobile =
         isMobileLayout();
 
-    /*
-        Mobile starts slightly larger than before.
-    */
-
     let low =
         mobile
             ? Math.max(
-                42,
+                38,
                 fieldHeight *
-                0.13
+                0.11
             )
             : Math.max(
                 34,
@@ -2977,9 +3076,9 @@ function createPhotographyComposition(
         mobile
             ? Math.min(
                 fieldHeight *
-                0.48,
+                0.42,
                 fieldWidth *
-                0.40
+                0.34
             )
             : Math.min(
                 fieldHeight *
@@ -3306,17 +3405,12 @@ function applyMobileComposition(
             totalHeight
         );
 
-    /*
-        Keep some breathing room,
-        but much less empty space than before.
-    */
-
     let y =
         randomBetween(
             spareVertical *
-            0.01,
+            0.02,
             spareVertical *
-            0.10
+            0.22
         );
 
     const placements =
@@ -3341,7 +3435,7 @@ function applyMobileComposition(
                     Math.min(
                         spareHorizontal,
                         fieldWidth *
-                        0.05
+                        0.10
                     )
                 );
 
@@ -3793,7 +3887,9 @@ function animatePhotoGroups(
 
 const navItems =
     {
+
         photography: {
+
             word:
                 "photography",
 
@@ -3802,9 +3898,11 @@ const navItems =
 
             count:
                 0
+
         },
 
         film: {
+
             word:
                 "film",
 
@@ -3813,7 +3911,9 @@ const navItems =
 
             count:
                 0
+
         }
+
     };
 
 
@@ -4130,6 +4230,52 @@ async function switchToFilmLayer() {
 
 
 /* =====================================================
+   HIDE FILM WITH TITLE
+
+   Important:
+
+   Video stays visible while FILM transforms back
+   into film.
+
+   Only when the word has fully returned to lowercase
+   does the video disappear.
+
+   Opening and closing are therefore symmetrical.
+   ===================================================== */
+
+function hideFilmWithTitle(
+    onComplete =
+        null
+) {
+
+    filmVideo.pause();
+
+    animateTitlesTo(
+        null,
+        () => {
+
+            filmField
+                .classList
+                .remove(
+                    "active"
+                );
+
+            if (
+                typeof onComplete ===
+                "function"
+            ) {
+
+                onComplete();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
    REFRESH PHOTO DOM
    ===================================================== */
 
@@ -4194,7 +4340,7 @@ function refreshPhotographyDOMIfNeeded() {
 
 
 /* =====================================================
-   IDLE
+   QUIET IDLE
    ===================================================== */
 
 function enterIdle() {
@@ -4202,6 +4348,98 @@ function enterIdle() {
     clearPhaseTimer();
 
     cancelPhotoSequence();
+
+    activeMode =
+        null;
+
+    /*
+        Photography retracts together with its title.
+    */
+
+    if (
+        photographyField
+            .classList
+            .contains(
+                "active"
+            )
+    ) {
+
+        animatePhotoGroups(
+            0
+        );
+
+        animateTitlesTo(
+            null,
+            () => {
+
+                photographyField
+                    .classList
+                    .remove(
+                        "active"
+                    );
+
+            }
+        );
+
+        return;
+
+    }
+
+    /*
+        Film retracts together with FILM -> film.
+    */
+
+    if (
+        filmField
+            .classList
+            .contains(
+                "active"
+            )
+    ) {
+
+        hideFilmWithTitle();
+
+        return;
+
+    }
+
+    filmVideo.pause();
+
+    setVisiblePhotoGroupCount(
+        0
+    );
+
+    photographyField
+        .classList
+        .remove(
+            "active"
+        );
+
+    filmField
+        .classList
+        .remove(
+            "active"
+        );
+
+    animateTitlesTo(
+        null
+    );
+
+}
+
+
+/* =====================================================
+   MOBILE INTRO FINISH
+   ===================================================== */
+
+function finishMobileIntro() {
+
+    clearPhaseTimer();
+
+    cancelPhotoSequence();
+
+    mobileIntroFinished =
+        true;
 
     activeMode =
         null;
@@ -4214,38 +4452,38 @@ function enterIdle() {
             "active"
         );
 
-    /*
-        Photos and title retract simultaneously.
-    */
+    photographyField
+        .classList
+        .remove(
+            "active"
+        );
 
-    animatePhotoGroups(
+    setVisiblePhotoGroupCount(
         0
     );
 
-    animateTitlesTo(
-        null,
-        () => {
+    setWordCount(
+        navItems.photography,
+        0
+    );
 
-            photographyField
-                .classList
-                .remove(
-                    "active"
-                );
-
-        }
+    setWordCount(
+        navItems.film,
+        0
     );
 
 }
 
 
 /* =====================================================
-   MOBILE INTERLUDE
+   MOBILE — FILM TO PHOTOGRAPHY
    ===================================================== */
 
 function scheduleMobilePhotography() {
 
     if (
-        !isMobileLayout()
+        !isMobileLayout() ||
+        mobileIntroFinished
     ) {
 
         return;
@@ -4254,16 +4492,13 @@ function scheduleMobilePhotography() {
 
     clearPhaseTimer();
 
-    /*
-        Empty 800ms breathing space.
-    */
-
     phaseTimer =
         setTimeout(
             () => {
 
                 if (
-                    !isMobileLayout()
+                    !isMobileLayout() ||
+                    mobileIntroFinished
                 ) {
 
                     return;
@@ -4275,46 +4510,7 @@ function scheduleMobilePhotography() {
                 );
 
             },
-            MOBILE_INTERLUDE_DURATION
-        );
-
-}
-
-
-function scheduleMobileFilm() {
-
-    if (
-        !isMobileLayout()
-    ) {
-
-        return;
-
-    }
-
-    clearPhaseTimer();
-
-    /*
-        Empty 800ms breathing space.
-    */
-
-    phaseTimer =
-        setTimeout(
-            () => {
-
-                if (
-                    !isMobileLayout()
-                ) {
-
-                    return;
-
-                }
-
-                startFilm(
-                    true
-                );
-
-            },
-            MOBILE_INTERLUDE_DURATION
+            MOBILE_BETWEEN_MEDIA_DURATION
         );
 
 }
@@ -4365,6 +4561,11 @@ function startPhotography(
 
     cancelPhotoSequence();
 
+    /*
+        If film is still around for any reason,
+        remove it before photography begins.
+    */
+
     filmVideo.pause();
 
     filmField
@@ -4388,7 +4589,7 @@ function startPhotography(
         );
 
     /*
-        PHOTOGRAPHY and photos start together.
+        PHOTOGRAPHY and images enter together.
     */
 
     animateTitlesTo(
@@ -4400,11 +4601,7 @@ function startPhotography(
     );
 
     /*
-        DESKTOP:
-        no automatic transition whatsoever.
-
-        Photography exists only while user is
-        interacting with photography.
+        Desktop remains interaction-only.
     */
 
     if (
@@ -4416,10 +4613,14 @@ function startPhotography(
 
     }
 
+    mobilePhotographyHasPlayed =
+        true;
+
     /*
-        MOBILE:
-        hold photography briefly,
-        then retract everything simultaneously.
+        Mobile:
+        photography appears once,
+        stays briefly,
+        then disappears permanently.
     */
 
     phaseTimer =
@@ -4435,6 +4636,11 @@ function startPhotography(
                     return;
 
                 }
+
+                /*
+                    Images and PHOTOGRAPHY retract
+                    at the same time.
+                */
 
                 animatePhotoGroups(
                     0
@@ -4463,7 +4669,7 @@ function startPhotography(
                         activeMode =
                             null;
 
-                        scheduleMobileFilm();
+                        finishMobileIntro();
 
                     }
                 );
@@ -4539,6 +4745,11 @@ function startFilm(
 
     }
 
+    /*
+        Video appears only once the title has
+        completely reached FILM.
+    */
+
     animateTitlesTo(
         "film",
         revealFilm
@@ -4565,11 +4776,9 @@ filmVideo.addEventListener(
         }
 
         /*
-            DESKTOP:
-            film normally won't reach here unless
-            mouse stays over it for the full duration.
-
-            Do NOT begin an automatic photography cycle.
+            Desktop:
+            if the pointer is still on FILM,
+            keep the final frame visible.
         */
 
         if (
@@ -4580,11 +4789,6 @@ filmVideo.addEventListener(
                 hoverMode ===
                 "film"
             ) {
-
-                /*
-                    Keep FILM state while hovered.
-                    Freeze on final frame.
-                */
 
                 return;
 
@@ -4597,25 +4801,39 @@ filmVideo.addEventListener(
         }
 
         /*
-            MOBILE:
-            film ends -> everything disappears ->
-            blank pause -> photography.
+            Mobile:
+            film has now completed its one appearance.
+
+            KEY CHANGE:
+
+            FILM -> film starts WHILE the video is
+            still visible.
+
+            The video disappears only when lowercase
+            "film" has been reached.
         */
 
-        filmVideo.pause();
+        mobileFilmHasPlayed =
+            true;
 
-        filmField
-            .classList
-            .remove(
-                "active"
-            );
-
-        activeMode =
-            null;
-
-        animateTitlesTo(
-            null,
+        hideFilmWithTitle(
             () => {
+
+                if (
+                    !isMobileLayout()
+                ) {
+
+                    return;
+
+                }
+
+                activeMode =
+                    null;
+
+                /*
+                    After a short clean pause,
+                    photography gets its one appearance.
+                */
 
                 scheduleMobilePhotography();
 
@@ -4682,12 +4900,6 @@ photographyLink.addEventListener(
 
         setTimeout(
             () => {
-
-                /*
-                    If user moved directly from
-                    photography to film, film's
-                    mouseenter owns the new state.
-                */
 
                 if (
                     photographyLink.matches(
@@ -4791,6 +5003,13 @@ filmLink.addEventListener(
                 hoverMode =
                     null;
 
+                /*
+                    Same symmetrical film exit applies
+                    on desktop hover leave:
+                    video stays visible until FILM has
+                    returned to film.
+                */
+
                 enterIdle();
 
             },
@@ -4817,6 +5036,7 @@ const logoName =
 
 const logoLetters =
     [
+
         document.getElementById(
             "letter-a"
         ),
@@ -4836,6 +5056,7 @@ const logoLetters =
         document.getElementById(
             "letter-k"
         )
+
     ];
 
 const logoLowercase =
@@ -5044,10 +5265,6 @@ logo.addEventListener(
 
         event.preventDefault();
 
-        /*
-            Clicking the logo does NOT reload the site.
-        */
-
         if (
             canHover()
         ) {
@@ -5123,13 +5340,6 @@ window.addEventListener(
             setTimeout(
                 () => {
 
-                    /*
-                        Critical:
-                        move photography layer back to the
-                        correct parent after orientation /
-                        breakpoint change.
-                    */
-
                     mountPhotographyField();
 
                     if (
@@ -5180,19 +5390,10 @@ window.addEventListener(
                     }
 
                     /*
-                        Switching into desktop:
-                        immediately stop any automatic
-                        mobile cycle.
+                        If user crosses back to desktop
+                        without hovering anything,
+                        desktop returns to its quiet state.
                     */
-
-                    if (
-                        !isMobileLayout() &&
-                        !canHover()
-                    ) {
-
-                        return;
-
-                    }
 
                     if (
                         !isMobileLayout() &&
@@ -5260,10 +5461,6 @@ document.addEventListener(
 
         }
 
-        /*
-            Desktop always returns to quiet default.
-        */
-
         if (
             !isMobileLayout()
         ) {
@@ -5275,8 +5472,46 @@ document.addEventListener(
         }
 
         /*
-            Mobile resumes its automatic cycle.
+            Once the mobile intro has finished,
+            returning to the tab does NOT restart it.
         */
+
+        if (
+            mobileIntroFinished
+        ) {
+
+            finishMobileIntro();
+
+            return;
+
+        }
+
+        /*
+            If film was interrupted by leaving the tab,
+            resume film.
+
+            If photography was interrupted,
+            resume photography.
+        */
+
+        if (
+            activeMode ===
+            "film"
+        ) {
+
+            try {
+
+                filmVideo.play();
+
+            }
+
+            catch (
+                error
+            ) {}
+
+            return;
+
+        }
 
         if (
             activeMode ===
@@ -5287,24 +5522,33 @@ document.addEventListener(
                 true
             );
 
+            return;
+
         }
 
-        else if (
-            activeMode ===
-            "film"
+        /*
+            If film already completed but photography
+            has not yet appeared, continue to photography.
+        */
+
+        if (
+            mobileFilmHasPlayed &&
+            !mobilePhotographyHasPlayed
         ) {
-
-            startFilm(
-                true
-            );
-
-        }
-
-        else {
 
             scheduleMobilePhotography();
 
+            return;
+
         }
+
+        /*
+            Otherwise start the intro from film.
+        */
+
+        startFilm(
+            true
+        );
 
     }
 );
@@ -5315,6 +5559,11 @@ document.addEventListener(
    ===================================================== */
 
 function init() {
+
+    /*
+        Put photography in the correct parent
+        before measuring anything.
+    */
 
     mountPhotographyField();
 
@@ -5333,7 +5582,7 @@ function init() {
     );
 
     /*
-        Prepare photos quietly in background.
+        Photography assets prepare quietly.
     */
 
     loadInitialPhotography()
@@ -5350,24 +5599,24 @@ function init() {
 
     /*
         DESKTOP
-        ---------------------------------------------
-        No automatic content at all.
 
         Default:
             photography
             film
+            no media
 
         Hover photography:
             PHOTOGRAPHY + photos
 
         Leave:
-            photography + empty white space
+            photography + no media
 
         Hover film:
             FILM + video
 
         Leave:
-            film + empty white space
+            FILM -> film while video remains visible,
+            then video disappears.
     */
 
     if (
@@ -5382,21 +5631,27 @@ function init() {
 
     /*
         MOBILE
-        ---------------------------------------------
-        Start with FILM.
 
-        This also gives photography assets time
-        to prepare quietly in the background.
+        Film is shown once.
 
-        FILM
-        ↓
-        blank 800ms
-        ↓
-        PHOTOGRAPHY
-        ↓
-        blank 800ms
-        ↓
-        FILM
+        When it ends:
+            FILM -> film
+            while video remains visible.
+
+        Then:
+            short empty pause.
+
+        Then:
+            photography is shown once.
+
+        Finally:
+            PHOTOGRAPHY -> photography
+            while photos retract.
+
+        After that:
+            permanent quiet typographic state.
+
+        No repeating slideshow.
     */
 
     startFilm(
