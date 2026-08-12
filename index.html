@@ -71,6 +71,8 @@ body {
    ===================================================== */
 
 .page {
+    position: relative;
+
     width: 100%;
 
     height: 100vh;
@@ -91,6 +93,9 @@ body {
    ===================================================== */
 
 .landing-grid {
+    position: relative;
+    z-index: 2;
+
     display: grid;
 
     grid-template-columns:
@@ -115,6 +120,23 @@ body {
 
     min-width: 0;
     min-height: 0;
+
+    pointer-events: none;
+}
+
+
+/*
+    Interactive elements remain clickable even though
+    the grid itself allows the photography layer behind
+    it to occupy the full page.
+*/
+
+.logo,
+.navigation,
+.contact,
+.biography,
+.opening {
+    pointer-events: auto;
 }
 
 
@@ -307,6 +329,18 @@ body {
 }
 
 
+/*
+    Keeps the ending together.
+
+    If there isn't enough room for the whole phrase,
+    "made to evoke feeling." moves as one unit.
+*/
+
+.bio-ending {
+    white-space: nowrap;
+}
+
+
 /* =====================================================
    MEDIA FIELD
    ===================================================== */
@@ -323,18 +357,28 @@ body {
     min-width: 0;
     min-height: 0;
 
-    overflow: hidden;
+    pointer-events: none;
 }
 
 
 /* =====================================================
    PHOTOGRAPHY FIELD
+
+   DESKTOP photography is no longer restricted
+   to grid column 2.
+
+   It occupies the entire usable page.
    ===================================================== */
 
 .photography-field {
-    position: absolute;
+    position: fixed;
 
-    inset: 0;
+    z-index: 1;
+
+    top: var(--page-top);
+    right: var(--page-x);
+    bottom: var(--page-bottom);
+    left: var(--page-x);
 
     visibility: hidden;
 
@@ -342,34 +386,13 @@ body {
 
     pointer-events: none;
 
-    contain:
-        layout
-        paint
-        size;
+    contain: layout paint;
 }
 
 .photography-field.active {
     visibility: visible;
 
-    pointer-events: auto;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY LINK
-   ===================================================== */
-
-.photography-stage-link {
-    position: absolute;
-
-    inset: 0;
-
-    display: block;
-
-    color: inherit;
-    text-decoration: none;
-
-    -webkit-tap-highlight-color: transparent;
+    pointer-events: none;
 }
 
 
@@ -386,6 +409,8 @@ body {
     height: 100%;
 
     overflow: hidden;
+
+    pointer-events: none;
 }
 
 
@@ -516,9 +541,10 @@ body {
 
     overflow: hidden;
 
+    pointer-events: auto;
+
     -webkit-tap-highlight-color: transparent;
 }
-
 
 #film-video {
     display: block;
@@ -611,6 +637,21 @@ body {
     }
 
 
+    /*
+        On mobile photography remains inside the
+        dedicated media area rather than spreading
+        behind the text.
+    */
+
+    .photography-field {
+        position: absolute;
+
+        inset: 0;
+
+        z-index: auto;
+    }
+
+
     .contact {
         grid-column: 1;
         grid-row: 5;
@@ -622,6 +663,11 @@ body {
         grid-row: 6;
 
         max-width: none;
+    }
+
+
+    .bio-ending {
+        white-space: normal;
     }
 
 
@@ -691,6 +737,25 @@ body {
     }
 
 
+    /*
+        Keep mobile landscape photography inside
+        the media column.
+    */
+
+    .photography-field {
+        position: absolute;
+
+        inset: 0;
+
+        z-index: auto;
+    }
+
+
+    .bio-ending {
+        white-space: normal;
+    }
+
+
     .film-link {
         max-width: 100%;
     }
@@ -747,7 +812,29 @@ body {
 
 <body>
 
-<div class="page">
+<div
+    class="page"
+    id="page"
+>
+
+    <!--
+        PHOTOGRAPHY IS OUTSIDE THE GRID.
+
+        This is what allows it to use the lower-left
+        desktop whitespace.
+    -->
+
+    <div
+        class="photography-field"
+        id="photography-field"
+    >
+
+        <div
+            id="scattered-stage"
+        ></div>
+
+    </div>
+
 
     <main
         class="landing-grid"
@@ -820,31 +907,6 @@ body {
             id="media-field"
         >
 
-
-            <!-- PHOTOGRAPHY -->
-
-            <div
-                class="photography-field"
-                id="photography-field"
-            >
-
-                <a
-                    class="photography-stage-link"
-                    href="https://photography.denizalpaybak.com/"
-                    aria-label="Photography"
-                >
-
-                    <div
-                        id="scattered-stage"
-                    ></div>
-
-                </a>
-
-            </div>
-
-
-            <!-- FILM -->
-
             <div
                 class="film-field"
                 id="film-field"
@@ -904,14 +966,17 @@ body {
 
         <!-- BIOGRAPHY -->
 
-        <section class="biography">
+        <section
+            class="biography"
+            id="biography"
+        >
 
             <p>
                 having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
             </p>
 
             <p>
-                his work is built around atmosphere, with every creative decision made to evoke feeling.
+                his work is built around atmosphere, with every creative decision <span class="bio-ending">made to evoke feeling.</span>
             </p>
 
             <p>
@@ -978,28 +1043,74 @@ const LOGO_MOBILE_HOLD =
 
 
 /* =====================================================
-   LAYOUT
+   DESKTOP LAYOUT
    ===================================================== */
 
-const PROJECT_GAP_MIN =
+const DESKTOP_PROJECT_GAP_MIN =
     18;
 
 
-const PROJECT_GAP_MAX =
+const DESKTOP_PROJECT_GAP_MAX =
     46;
 
 
-const PAIR_DISTANCE_MIN =
+const DESKTOP_PAIR_DISTANCE_MIN =
     8;
 
 
-const PAIR_DISTANCE_MAX =
+const DESKTOP_PAIR_DISTANCE_MAX =
     24;
+
+
+/*
+    Distance kept around the text block.
+
+    This makes the photography composition feel
+    deliberately separate from the typography rather
+    than accidentally almost touching it.
+*/
+
+const DESKTOP_TEXT_CLEARANCE_X =
+    42;
+
+
+const DESKTOP_TEXT_CLEARANCE_Y =
+    34;
+
+
+/* =====================================================
+   MOBILE LAYOUT
+   ===================================================== */
+
+const MOBILE_PROJECT_GAP_MIN =
+    8;
+
+
+const MOBILE_PROJECT_GAP_MAX =
+    22;
 
 
 /* =====================================================
    ELEMENTS
    ===================================================== */
+
+const page =
+    document.getElementById(
+        "page"
+    );
+
+
+const landingGrid =
+    document.getElementById(
+        "landing-grid"
+    );
+
+
+const biography =
+    document.getElementById(
+        "biography"
+    );
+
 
 const mediaField =
     document.getElementById(
@@ -1057,10 +1168,6 @@ const filmVideo =
 
 /* =====================================================
    DEVICE MODE
-
-   Mobile = touch-oriented layouts up to 1000px.
-   On mobile only the project cover is used.
-   Desktop keeps cover + landscape secondary image.
    ===================================================== */
 
 function isMobileLayout() {
@@ -1080,18 +1187,9 @@ let projectRecords =
     [];
 
 
-/*
-    Full desktop dataset:
-    cover + optional landscape.
-*/
-
 let desktopProjectVisualGroups =
     [];
 
-
-/*
-    Active dataset currently rendered.
-*/
 
 let projectVisualGroups =
     [];
@@ -1696,13 +1794,7 @@ function loadImageMetadata(
 
 
 /* =====================================================
-   ACTIVE VISUAL DATASET
-
-   MOBILE:
-   one image per project = cover only.
-
-   DESKTOP:
-   cover + optional landscape second image.
+   ACTIVE DATASET
    ===================================================== */
 
 function updateActiveVisualGroups() {
@@ -1716,28 +1808,30 @@ function updateActiveVisualGroups() {
     ) {
 
         projectVisualGroups =
-            desktopProjectVisualGroups.map(
-                group => {
+            desktopProjectVisualGroups
+                .map(
+                    group => {
 
-                    return {
+                        return {
 
-                        projectIndex:
-                            group.projectIndex,
+                            projectIndex:
+                                group.projectIndex,
 
-                        photos:
-                            group.photos.length
-                                ? [
-                                    group.photos[0]
-                                ]
-                                : []
+                            photos:
+                                group.photos.length
+                                    ? [
+                                        group.photos[0]
+                                    ]
+                                    : []
 
-                    };
+                        };
 
-                }
-            ).filter(
-                group =>
-                    group.photos.length
-            );
+                    }
+                )
+                .filter(
+                    group =>
+                        group.photos.length
+                );
 
     }
 
@@ -1773,7 +1867,7 @@ function updateActiveVisualGroups() {
 
 
 /* =====================================================
-   PHOTOGRAPHY LOAD
+   INITIAL PHOTOGRAPHY LOAD
    ===================================================== */
 
 async function loadInitialPhotography() {
@@ -1823,57 +1917,51 @@ async function loadInitialPhotography() {
 
 
                 projectRecords =
-                    projects.map(
-                        (
-                            project,
-                            projectIndex
-                        ) => {
+                    projects
+                        .map(
+                            (
+                                project,
+                                projectIndex
+                            ) => {
 
-                            const coverUrl =
-                                getProjectCover(
-                                    project
+                                const coverUrl =
+                                    getProjectCover(
+                                        project
+                                    );
+
+
+                                const allUrls =
+                                    [];
+
+
+                                collectImages(
+                                    project,
+                                    allUrls
                                 );
 
 
-                            const allUrls =
-                                [];
+                                return {
 
+                                    projectIndex,
 
-                            collectImages(
-                                project,
-                                allUrls
-                            );
+                                    project,
 
+                                    coverUrl,
 
-                            return {
+                                    allUrls:
+                                        uniqueUrls(
+                                            allUrls
+                                        )
 
-                                projectIndex,
+                                };
 
-                                project,
+                            }
+                        )
+                        .filter(
+                            record =>
+                                record.coverUrl
+                        );
 
-                                coverUrl,
-
-                                allUrls:
-                                    uniqueUrls(
-                                        allUrls
-                                    )
-
-                            };
-
-                        }
-                    ).filter(
-                        record =>
-                            record.coverUrl
-                    );
-
-
-                /*
-                    Initial dataset is cover-only
-                    on both desktop and mobile.
-
-                    Desktop supplemental images are
-                    added later in the background.
-                */
 
                 const initialGroups =
                     await Promise.all(
@@ -1932,16 +2020,6 @@ async function loadInitialPhotography() {
                 photographyInitialReady =
                     true;
 
-
-                /*
-                    Desktop can use the optional
-                    landscape secondary frame.
-
-                    Analysis can still happen in
-                    the background on mobile, but
-                    mobile rendering will always
-                    discard that second image.
-                */
 
                 analyzeSupplementalImagesInBackground();
 
@@ -2067,14 +2145,6 @@ async function analyzeSupplementalImagesInBackground() {
         supplementalAnalysisFinished =
             true;
 
-
-        /*
-            If PHOTOGRAPHY is not currently active,
-            safely adopt the richer desktop dataset.
-
-            On mobile updateActiveVisualGroups()
-            strips every project back to cover-only.
-        */
 
         if (
             activeMode !==
@@ -2245,12 +2315,25 @@ function createProjectGeometry(
     baseHeight
 ) {
 
+    const mobile =
+        isMobileLayout();
+
+
+    const firstScale =
+        mobile
+            ? randomBetween(
+                0.68,
+                1.46
+            )
+            : randomBetween(
+                0.64,
+                1.38
+            );
+
+
     const firstHeight =
         baseHeight *
-        randomBetween(
-            0.72,
-            1.22
-        );
+        firstScale;
 
 
     const first =
@@ -2275,11 +2358,6 @@ function createProjectGeometry(
         };
 
 
-    /*
-        Mobile reaches this point with
-        exactly one image per project.
-    */
-
     if (
         group.photos.length ===
         1
@@ -2303,11 +2381,6 @@ function createProjectGeometry(
     }
 
 
-    /*
-        Desktop only:
-        optional landscape second image.
-    */
-
     const secondPhoto =
         group.photos[1];
 
@@ -2315,8 +2388,8 @@ function createProjectGeometry(
     const secondHeight =
         baseHeight *
         randomBetween(
-            0.65,
-            1.18
+            0.55,
+            1.34
         );
 
 
@@ -2327,8 +2400,8 @@ function createProjectGeometry(
 
     const horizontalGap =
         randomBetween(
-            PAIR_DISTANCE_MIN,
-            PAIR_DISTANCE_MAX
+            DESKTOP_PAIR_DISTANCE_MIN,
+            DESKTOP_PAIR_DISTANCE_MAX
         );
 
 
@@ -2340,8 +2413,8 @@ function createProjectGeometry(
     const verticalOffset =
         baseHeight *
         randomBetween(
-            0.10,
-            0.48
+            0.12,
+            0.62
         ) *
         randomSign();
 
@@ -2413,6 +2486,22 @@ function createAllProjectGeometries(
     baseHeight
 ) {
 
+    const mobile =
+        isMobileLayout();
+
+
+    const gapMin =
+        mobile
+            ? MOBILE_PROJECT_GAP_MIN
+            : DESKTOP_PROJECT_GAP_MIN;
+
+
+    const gapMax =
+        mobile
+            ? MOBILE_PROJECT_GAP_MAX
+            : DESKTOP_PROJECT_GAP_MAX;
+
+
     return projectVisualGroups.map(
         (
             group,
@@ -2430,8 +2519,8 @@ function createAllProjectGeometries(
 
                 gapAfter:
                     randomBetween(
-                        PROJECT_GAP_MIN,
-                        PROJECT_GAP_MAX
+                        gapMin,
+                        gapMax
                     )
 
             };
@@ -2443,10 +2532,498 @@ function createAllProjectGeometries(
 
 
 /* =====================================================
-   PACK PROJECTS
+   DESKTOP EXCLUSION ZONE
+
+   The upper-left text area is excluded.
+
+   Everything below the biography is free space,
+   including the area highlighted in the screenshot.
    ===================================================== */
 
-function packOrderedProjects(
+function getDesktopExclusionZone() {
+
+    if (
+        isMobileLayout()
+    ) {
+
+        return null;
+
+    }
+
+
+    const stageRect =
+        photographyField
+            .getBoundingClientRect();
+
+
+    const bioRect =
+        biography
+            .getBoundingClientRect();
+
+
+    const gridRect =
+        landingGrid
+            .getBoundingClientRect();
+
+
+    const left =
+        0;
+
+
+    const right =
+        Math.min(
+            stageRect.width,
+
+            (
+                gridRect.left -
+                stageRect.left
+            ) +
+            530 +
+            DESKTOP_TEXT_CLEARANCE_X
+        );
+
+
+    const bottom =
+        Math.min(
+            stageRect.height,
+
+            (
+                bioRect.bottom -
+                stageRect.top
+            ) +
+            DESKTOP_TEXT_CLEARANCE_Y
+        );
+
+
+    return {
+
+        left,
+        top: 0,
+        right,
+        bottom,
+
+        width:
+            right,
+
+        height:
+            bottom
+
+    };
+
+}
+
+
+/* =====================================================
+   REGION PACKER
+   ===================================================== */
+
+function packRegion(
+    geometries,
+    regionWidth,
+    regionHeight,
+    gapMin,
+    gapMax
+) {
+
+    if (
+        !geometries.length
+    ) {
+
+        return {
+
+            rows: [],
+            totalHeight: 0
+
+        };
+
+    }
+
+
+    const rows =
+        [];
+
+
+    let row =
+        [];
+
+
+    let rowWidth =
+        0;
+
+
+    let rowHeight =
+        0;
+
+
+    for (
+        const geometry of geometries
+    ) {
+
+        const gap =
+            row.length
+                ? randomBetween(
+                    gapMin,
+                    gapMax
+                )
+                : 0;
+
+
+        if (
+            row.length &&
+            rowWidth +
+            gap +
+            geometry.width >
+            regionWidth
+        ) {
+
+            rows.push(
+                {
+
+                    items:
+                        row,
+
+                    width:
+                        rowWidth,
+
+                    height:
+                        rowHeight
+
+                }
+            );
+
+
+            row =
+                [];
+
+
+            rowWidth =
+                0;
+
+
+            rowHeight =
+                0;
+
+        }
+
+
+        const actualGap =
+            row.length
+                ? randomBetween(
+                    gapMin,
+                    gapMax
+                )
+                : 0;
+
+
+        row.push(
+            {
+
+                geometry,
+
+                gapBefore:
+                    actualGap
+
+            }
+        );
+
+
+        rowWidth +=
+            actualGap +
+            geometry.width;
+
+
+        rowHeight =
+            Math.max(
+                rowHeight,
+                geometry.height
+            );
+
+    }
+
+
+    if (
+        row.length
+    ) {
+
+        rows.push(
+            {
+
+                items:
+                    row,
+
+                width:
+                    rowWidth,
+
+                height:
+                    rowHeight
+
+            }
+        );
+
+    }
+
+
+    let totalHeight =
+        0;
+
+
+    rows.forEach(
+        (
+            current,
+            index
+        ) => {
+
+            totalHeight +=
+                current.height;
+
+
+            if (
+                index <
+                rows.length - 1
+            ) {
+
+                totalHeight +=
+                    randomBetween(
+                        gapMin,
+                        gapMax
+                    );
+
+            }
+
+        }
+    );
+
+
+    if (
+        totalHeight >
+        regionHeight
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        rows,
+        totalHeight
+
+    };
+
+}
+
+
+/* =====================================================
+   DESKTOP L-SHAPE COMPOSITION
+
+   Upper section:
+       only the area to the RIGHT of the text.
+
+   Lower section:
+       entire page width.
+
+   This is the key change that fills the formerly
+   unused lower-left white area.
+   ===================================================== */
+
+function createDesktopComposition(
+    fieldWidth,
+    fieldHeight,
+    baseHeight
+) {
+
+    const geometries =
+        createAllProjectGeometries(
+            baseHeight
+        );
+
+
+    const exclusion =
+        getDesktopExclusionZone();
+
+
+    if (
+        !exclusion
+    ) {
+
+        return null;
+
+    }
+
+
+    const upperX =
+        exclusion.right;
+
+
+    const upperWidth =
+        Math.max(
+            0,
+            fieldWidth -
+            upperX
+        );
+
+
+    const upperHeight =
+        Math.max(
+            0,
+            exclusion.bottom
+        );
+
+
+    const lowerY =
+        exclusion.bottom;
+
+
+    const lowerHeight =
+        Math.max(
+            0,
+            fieldHeight -
+            lowerY
+        );
+
+
+    /*
+        Try different split points.
+
+        Projects remain in their original order.
+
+        We look for the split that uses the upper-right
+        region efficiently while still allowing the rest
+        to fit across the entire lower area.
+    */
+
+    let best =
+        null;
+
+
+    for (
+        let split = 0;
+        split <= geometries.length;
+        split++
+    ) {
+
+        const upperItems =
+            geometries.slice(
+                0,
+                split
+            );
+
+
+        const lowerItems =
+            geometries.slice(
+                split
+            );
+
+
+        const upper =
+            packRegion(
+                upperItems,
+                upperWidth,
+                upperHeight,
+                DESKTOP_PROJECT_GAP_MIN,
+                DESKTOP_PROJECT_GAP_MAX
+            );
+
+
+        if (
+            !upper
+        ) {
+
+            continue;
+
+        }
+
+
+        const lower =
+            packRegion(
+                lowerItems,
+                fieldWidth,
+                lowerHeight,
+                DESKTOP_PROJECT_GAP_MIN,
+                DESKTOP_PROJECT_GAP_MAX
+            );
+
+
+        if (
+            !lower
+        ) {
+
+            continue;
+
+        }
+
+
+        /*
+            Prefer using more of the upper-right region,
+            but avoid forcing everything into it.
+
+            Lower-area occupancy is rewarded because
+            that's precisely the previously unused space.
+        */
+
+        const upperFill =
+            upperHeight > 0
+                ? upper.totalHeight /
+                  upperHeight
+                : 0;
+
+
+        const lowerFill =
+            lowerHeight > 0
+                ? lower.totalHeight /
+                  lowerHeight
+                : 0;
+
+
+        const score =
+            upperFill *
+            0.45 +
+            lowerFill *
+            0.55;
+
+
+        if (
+            !best ||
+            score >
+            best.score
+        ) {
+
+            best =
+                {
+
+                    score,
+
+                    upper,
+
+                    lower,
+
+                    upperX,
+                    upperWidth,
+                    upperHeight,
+
+                    lowerY,
+                    lowerHeight,
+
+                    geometries
+
+                };
+
+        }
+
+    }
+
+
+    return best;
+
+}
+
+
+/* =====================================================
+   MOBILE PACK
+   ===================================================== */
+
+function packMobileProjects(
     geometries,
     fieldWidth,
     fieldHeight
@@ -2474,8 +3051,8 @@ function packOrderedProjects(
             const rowLimit =
                 fieldWidth *
                 randomBetween(
-                    0.82,
-                    0.98
+                    0.94,
+                    1
                 );
 
 
@@ -2594,9 +3171,8 @@ function packOrderedProjects(
 
         rowGaps.push(
             randomBetween(
-                PROJECT_GAP_MIN,
-                PROJECT_GAP_MAX *
-                1.15
+                8,
+                22
             )
         );
 
@@ -2650,9 +3226,7 @@ function packOrderedProjects(
     return {
 
         rows,
-
         rowGaps,
-
         totalHeight
 
     };
@@ -2678,21 +3252,38 @@ function createPhotographyComposition(
     }
 
 
+    const mobile =
+        isMobileLayout();
+
+
     let low =
-        Math.max(
-            28,
-            fieldHeight *
-            0.07
-        );
+        mobile
+            ? Math.max(
+                38,
+                fieldHeight *
+                0.11
+            )
+            : Math.max(
+                34,
+                fieldHeight *
+                0.075
+            );
 
 
     let high =
-        Math.min(
-            fieldHeight *
-            0.30,
-            fieldWidth *
-            0.22
-        );
+        mobile
+            ? Math.min(
+                fieldHeight *
+                0.42,
+                fieldWidth *
+                0.34
+            )
+            : Math.min(
+                fieldHeight *
+                0.32,
+                fieldWidth *
+                0.18
+            );
 
 
     let best =
@@ -2701,7 +3292,7 @@ function createPhotographyComposition(
 
     for (
         let iteration = 0;
-        iteration < 7;
+        iteration < 8;
         iteration++
     ) {
 
@@ -2719,38 +3310,78 @@ function createPhotographyComposition(
 
         for (
             let test = 0;
-            test < 4;
+            test < 6;
             test++
         ) {
 
-            const geometries =
-                createAllProjectGeometries(
-                    mid
-                );
-
-
-            const packed =
-                packOrderedProjects(
-                    geometries,
-                    fieldWidth,
-                    fieldHeight
-                );
-
-
             if (
-                packed
+                mobile
             ) {
 
-                candidate =
-                    {
+                const geometries =
+                    createAllProjectGeometries(
+                        mid
+                    );
 
+
+                const packed =
+                    packMobileProjects(
                         geometries,
-                        packed
+                        fieldWidth,
+                        fieldHeight
+                    );
 
-                    };
+
+                if (
+                    packed
+                ) {
+
+                    candidate =
+                        {
+
+                            type:
+                                "mobile",
+
+                            geometries,
+                            packed
+
+                        };
 
 
-                break;
+                    break;
+
+                }
+
+            }
+
+            else {
+
+                const desktop =
+                    createDesktopComposition(
+                        fieldWidth,
+                        fieldHeight,
+                        mid
+                    );
+
+
+                if (
+                    desktop
+                ) {
+
+                    candidate =
+                        {
+
+                            type:
+                                "desktop",
+
+                            ...desktop
+
+                        };
+
+
+                    break;
+
+                }
 
             }
 
@@ -2763,6 +3394,7 @@ function createPhotographyComposition(
 
             best =
                 candidate;
+
 
             low =
                 mid;
@@ -2785,23 +3417,224 @@ function createPhotographyComposition(
 
 
 /* =====================================================
-   APPLY PHOTOGRAPHY COMPOSITION
+   PLACE REGION ROWS
    ===================================================== */
 
-function applyPhotographyComposition(
-    composition,
-    fieldWidth,
-    fieldHeight
+function placeRegionRows(
+    rows,
+    regionX,
+    regionY,
+    regionWidth,
+    regionHeight,
+    placements
 ) {
 
     if (
-        !composition
+        !rows.length
     ) {
 
         return;
 
     }
 
+
+    const totalRowHeight =
+        rows.reduce(
+            (
+                total,
+                row
+            ) =>
+                total +
+                row.height,
+            0
+        );
+
+
+    const minimumGap =
+        rows.length > 1
+            ? DESKTOP_PROJECT_GAP_MIN *
+              (
+                  rows.length -
+                  1
+              )
+            : 0;
+
+
+    const spare =
+        Math.max(
+            0,
+            regionHeight -
+            totalRowHeight -
+            minimumGap
+        );
+
+
+    /*
+        Don't center the whole region too rigidly.
+        A small random offset keeps the scattered feel.
+    */
+
+    let y =
+        regionY +
+        randomBetween(
+            0,
+            Math.min(
+                spare *
+                0.35,
+                30
+            )
+        );
+
+
+    rows.forEach(
+        (
+            row,
+            rowIndex
+        ) => {
+
+            const spareX =
+                Math.max(
+                    0,
+                    regionWidth -
+                    row.width
+                );
+
+
+            let x =
+                regionX +
+                randomBetween(
+                    0,
+                    spareX
+                );
+
+
+            row.items.forEach(
+                item => {
+
+                    x +=
+                        item.gapBefore ||
+                        0;
+
+
+                    const geometry =
+                        item.geometry;
+
+
+                    const verticalFreedom =
+                        Math.max(
+                            0,
+                            row.height -
+                            geometry.height
+                        );
+
+
+                    placements.set(
+                        geometry.index,
+                        {
+
+                            x,
+
+                            y:
+                                y +
+                                randomBetween(
+                                    0,
+                                    verticalFreedom
+                                ),
+
+                            geometry
+
+                        }
+                    );
+
+
+                    x +=
+                        geometry.width;
+
+                }
+            );
+
+
+            y +=
+                row.height;
+
+
+            if (
+                rowIndex <
+                rows.length - 1
+            ) {
+
+                y +=
+                    randomBetween(
+                        DESKTOP_PROJECT_GAP_MIN,
+                        DESKTOP_PROJECT_GAP_MAX
+                    );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   APPLY DESKTOP COMPOSITION
+   ===================================================== */
+
+function applyDesktopComposition(
+    composition,
+    fieldWidth,
+    fieldHeight
+) {
+
+    const placements =
+        new Map();
+
+
+    placeRegionRows(
+        composition.upper.rows,
+        composition.upperX,
+        0,
+        composition.upperWidth,
+        composition.upperHeight,
+        placements
+    );
+
+
+    /*
+        The lower region starts at the biography's
+        bottom and spans THE ENTIRE WIDTH.
+
+        Therefore images can now occupy the lower-left
+        area underneath the text.
+    */
+
+    placeRegionRows(
+        composition.lower.rows,
+        0,
+        composition.lowerY,
+        fieldWidth,
+        composition.lowerHeight,
+        placements
+    );
+
+
+    applyPlacements(
+        placements
+    );
+
+}
+
+
+/* =====================================================
+   APPLY MOBILE COMPOSITION
+   ===================================================== */
+
+function applyMobileComposition(
+    composition,
+    fieldWidth,
+    fieldHeight
+) {
 
     const {
         rows,
@@ -2822,9 +3655,9 @@ function applyPhotographyComposition(
     let y =
         randomBetween(
             spareVertical *
-            0.08,
+            0.02,
             spareVertical *
-            0.92
+            0.22
         );
 
 
@@ -2849,7 +3682,11 @@ function applyPhotographyComposition(
             let x =
                 randomBetween(
                     0,
-                    spareHorizontal
+                    Math.min(
+                        spareHorizontal,
+                        fieldWidth *
+                        0.10
+                    )
                 );
 
 
@@ -2923,6 +3760,21 @@ function applyPhotographyComposition(
         }
     );
 
+
+    applyPlacements(
+        placements
+    );
+
+}
+
+
+/* =====================================================
+   APPLY PLACEMENTS
+   ===================================================== */
+
+function applyPlacements(
+    placements
+) {
 
     groupElements.forEach(
         (
@@ -3040,7 +3892,7 @@ function applyPhotographyComposition(
 function randomizePhotographyLayout() {
 
     const rect =
-        mediaField
+        photographyField
             .getBoundingClientRect();
 
 
@@ -3062,11 +3914,37 @@ function randomizePhotographyLayout() {
         );
 
 
-    applyPhotographyComposition(
-        composition,
-        rect.width,
-        rect.height
-    );
+    if (
+        !composition
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        composition.type ===
+        "mobile"
+    ) {
+
+        applyMobileComposition(
+            composition,
+            rect.width,
+            rect.height
+        );
+
+    }
+
+    else {
+
+        applyDesktopComposition(
+            composition,
+            rect.width,
+            rect.height
+        );
+
+    }
 
 }
 
@@ -3140,7 +4018,7 @@ function setVisiblePhotoGroupCount(
 
 
 /* =====================================================
-   HARD SEQUENTIAL PHOTO ANIMATION
+   PHOTO ANIMATION
    ===================================================== */
 
 function animatePhotoGroups(
@@ -3646,41 +4524,7 @@ function clearPhaseTimer() {
 
 
 /* =====================================================
-   PRIME FILM
-   ===================================================== */
-
-function primeFilm() {
-
-    filmVideo.pause();
-
-
-    try {
-
-        if (
-            filmVideo.readyState >=
-            1 &&
-            Math.abs(
-                filmVideo.currentTime
-            ) >
-            0.01
-        ) {
-
-            filmVideo.currentTime =
-                0;
-
-        }
-
-    }
-
-    catch (
-        error
-    ) {}
-
-}
-
-
-/* =====================================================
-   SHOW FILM LAYER
+   SHOW FILM
    ===================================================== */
 
 async function switchToFilmLayer() {
@@ -3717,7 +4561,7 @@ async function switchToFilmLayer() {
 
 
 /* =====================================================
-   REFRESH PHOTOGRAPHY DOM
+   REFRESH PHOTO DOM
    ===================================================== */
 
 function refreshPhotographyDOMIfNeeded() {
@@ -3725,13 +4569,6 @@ function refreshPhotographyDOMIfNeeded() {
     const currentMobileMode =
         isMobileLayout();
 
-
-    /*
-        Orientation / breakpoint changed.
-        Rebuild because mobile must have
-        cover-only while desktop may have
-        two images per project.
-    */
 
     if (
         renderedMobileMode !==
@@ -3757,11 +4594,6 @@ function refreshPhotographyDOMIfNeeded() {
 
     }
 
-
-    /*
-        Ensure active data reflects the latest
-        desktop supplemental analysis.
-    */
 
     updateActiveVisualGroups();
 
@@ -3880,11 +4712,6 @@ function startPhotography(
         );
 
 
-    /*
-        PHOTOGRAPHY enters together with
-        the sequential image appearance.
-    */
-
     animateTitlesTo(
         "photography"
     );
@@ -3921,19 +4748,6 @@ function startPhotography(
 
                 }
 
-
-                /*
-                    IMPORTANT CHANGE:
-
-                    The photo disappearance and the
-                    PHOTOGRAPHY -> photography /
-                    film -> FILM title transition
-                    now START AT THE SAME MOMENT.
-
-                    We no longer wait for all photos
-                    to disappear before shrinking
-                    the title.
-                */
 
                 animatePhotoGroups(
                     0
@@ -4001,12 +4815,6 @@ function startFilm(
         "film";
 
 
-    /*
-        If photography is currently visible,
-        photos and typography now exit
-        simultaneously here too.
-    */
-
     if (
         photographyVisible
     ) {
@@ -4041,11 +4849,6 @@ function startFilm(
     }
 
 
-    /*
-        Initial load:
-        film -> FILM.
-    */
-
     animateTitlesTo(
         "film",
         () => {
@@ -4069,7 +4872,7 @@ function startFilm(
 
 
 /* =====================================================
-   VIDEO ENDED
+   VIDEO END
    ===================================================== */
 
 filmVideo.addEventListener(
@@ -4333,8 +5136,16 @@ const logoUppercase =
         "Y",
         "B",
         "A",
-        "K"
+        "Y"
     ];
+
+
+/*
+    Correct final letter.
+*/
+
+logoUppercase[4] =
+    "K";
 
 
 let logoState =
@@ -4588,7 +5399,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   RESIZE / ORIENTATION CHANGE
+   RESIZE
    ===================================================== */
 
 let resizeTimer =
@@ -4628,17 +5439,6 @@ window.addEventListener(
                         renderedMobileMode !==
                         isMobileLayout();
 
-
-                    /*
-                        Desktop <-> mobile breakpoint:
-                        rebuild the active photo set.
-
-                        Mobile:
-                        cover only.
-
-                        Desktop:
-                        cover + optional landscape.
-                    */
 
                     if (
                         modeChanged
@@ -4783,11 +5583,6 @@ function init() {
     );
 
 
-    /*
-        Prepare photography while FILM
-        is already being shown.
-    */
-
     loadInitialPhotography()
         .catch(
             error => {
@@ -4800,10 +5595,6 @@ function init() {
             }
         );
 
-
-    /*
-        FILM remains the opening state.
-    */
 
     if (
         INITIAL_FILM_DELAY >
