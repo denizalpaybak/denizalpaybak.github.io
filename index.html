@@ -1848,99 +1848,111 @@ function collectImages(
 
 
 /* =====================================================
-   COVER
+   RANDOM PROJECT COVER
    ===================================================== */
+
+/*
+    Landing-page cover logic now mirrors the photography
+    site's new logic:
+
+    - coverOverride always wins.
+    - Otherwise one image is chosen randomly from images[].
+    - The choice is made once when projectRecords are built,
+      so relayouting the mosaic does not change the cover.
+    - Legacy cover fields are intentionally ignored.
+*/
+
+function getProjectImageValues(
+    project
+) {
+
+    if (
+        !project ||
+        !Array.isArray(
+            project.images
+        )
+    ) {
+
+        return [];
+
+    }
+
+
+    return project.images.filter(
+        value =>
+            looksLikeImage(
+                value
+            )
+    );
+
+}
+
 
 function getProjectCover(
     project
 ) {
 
-    const keys =
-        [
-            "indexImage",
-            "index_image",
-
-            "indexCover",
-            "index_cover",
-
-            "cover",
-            "coverImage",
-            "cover_image",
-
-            "thumbnail",
-            "thumbnailImage",
-            "thumbnail_image",
-
-            "thumb",
-
-            "preview",
-            "previewImage",
-            "preview_image"
-        ];
-
-    for (
-        const key of keys
-    ) {
-
-        if (
-            project[key] ===
-            undefined
-        ) {
-
-            continue;
-
-        }
-
-        const candidate =
-            findFirstImage(
-                project[key]
-            );
-
-        if (
-            candidate
-        ) {
-
-            return resolvePhotoUrl(
-                candidate
-            );
-
-        }
-
-    }
-
     if (
-        project.index &&
-        typeof project.index ===
-        "object"
+        project &&
+        looksLikeImage(
+            project.coverOverride
+        )
     ) {
 
-        const candidate =
-            findFirstImage(
-                project.index
+        const overrideUrl =
+            resolvePhotoUrl(
+                project.coverOverride
             );
+
 
         if (
-            candidate
+            overrideUrl
         ) {
 
-            return resolvePhotoUrl(
-                candidate
-            );
+            return overrideUrl;
 
         }
 
     }
 
-    const fallback =
-        findFirstImage(
+
+    const images =
+        getProjectImageValues(
             project
         );
 
-    return fallback
-        ? resolvePhotoUrl(
-            fallback
-        )
-        : null;
+
+    if (
+        !images.length
+    ) {
+
+        const fallback =
+            findFirstImage(
+                project
+            );
+
+
+        return fallback
+            ? resolvePhotoUrl(
+                fallback
+            )
+            : null;
+
+    }
+
+
+    const randomIndex =
+        Math.floor(
+            Math.random() *
+            images.length
+        );
+
+
+    return resolvePhotoUrl(
+        images[
+            randomIndex
+        ]
+    );
 
 }
 
@@ -2012,6 +2024,16 @@ function loadImageMetadata(
 
             image.decoding =
                 "async";
+
+
+            /*
+                Metadata probes are background work.
+                Keeping them low-priority avoids competing
+                with the landing UI and film preview.
+            */
+
+            image.fetchPriority =
+                "low";
 
             image.onload =
                 () => {
@@ -2191,12 +2213,39 @@ async function loadInitialPhotography() {
                                     );
 
                                 const allUrls =
-                                    [];
+                                    getProjectImageValues(
+                                        project
+                                    )
+                                        .map(
+                                            resolvePhotoUrl
+                                        )
+                                        .filter(
+                                            Boolean
+                                        );
 
-                                collectImages(
-                                    project,
-                                    allUrls
-                                );
+
+                                if (
+                                    project.coverOverride
+                                ) {
+
+                                    const overrideUrl =
+                                        resolvePhotoUrl(
+                                            project.coverOverride
+                                        );
+
+
+                                    if (
+                                        overrideUrl
+                                    ) {
+
+                                        allUrls.unshift(
+                                            overrideUrl
+                                        );
+
+                                    }
+
+                                }
+
 
                                 return {
                                     projectIndex,
@@ -2264,7 +2313,48 @@ async function loadInitialPhotography() {
                 photographyInitialReady =
                     true;
 
-                analyzeSupplementalImagesInBackground();
+
+                /*
+                    The first randomly selected image from
+                    each project is enough for the initial
+                    photography state.
+
+                    Optional second / landscape images are
+                    analyzed later so mobile does not start
+                    downloading every full-resolution image
+                    at once.
+                */
+
+                const startSupplementalAnalysis =
+                    () => {
+
+                        analyzeSupplementalImagesInBackground();
+
+                    };
+
+
+                if (
+                    "requestIdleCallback" in window
+                ) {
+
+                    requestIdleCallback(
+                        startSupplementalAnalysis,
+                        {
+                            timeout:
+                                1800
+                        }
+                    );
+
+                }
+
+                else {
+
+                    setTimeout(
+                        startSupplementalAnalysis,
+                        700
+                    );
+
+                }
 
             }
         )();
@@ -2459,6 +2549,15 @@ function buildPhotographyDOM() {
 
                     image.decoding =
                         "async";
+
+
+                    image.loading =
+                        "eager";
+
+
+                    image.fetchPriority =
+                        "low";
+
 
                     image.dataset.photoIndex =
                         photoIndex;
