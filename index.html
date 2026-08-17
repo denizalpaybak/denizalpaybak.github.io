@@ -94,7 +94,6 @@ body {
 
 .landing-grid {
     position: relative;
-
     z-index: 2;
 
     display: grid;
@@ -124,6 +123,13 @@ body {
 
     pointer-events: none;
 }
+
+
+/*
+    Interactive elements remain clickable even though
+    the grid itself allows the photography layer behind
+    it to occupy the full page.
+*/
 
 .logo,
 .navigation,
@@ -272,6 +278,32 @@ body {
 
 
 /* =====================================================
+   PORTFOLIO DOWNLOAD
+   ===================================================== */
+
+.portfolio-download {
+    display: inline-block;
+
+    width: max-content;
+
+    color: #000;
+    text-decoration: none;
+
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.portfolio-download:hover {
+    text-decoration: underline;
+}
+
+
+/* =====================================================
    BIOGRAPHY
    ===================================================== */
 
@@ -322,20 +354,16 @@ body {
     white-space: nowrap;
 }
 
-.bio-ending {
-    white-space: nowrap;
-}
-
 
 /*
-    Hidden everywhere by default.
+    Keeps the ending together.
 
-    On portrait mobile this becomes a real line break
-    before Peugeot, creating a deliberate 3 + 3 split.
+    If there isn't enough room for the whole phrase,
+    "made to evoke feeling." moves as one unit.
 */
 
-.mobile-client-break {
-    display: none;
+.bio-ending {
+    white-space: nowrap;
 }
 
 
@@ -361,6 +389,11 @@ body {
 
 /* =====================================================
    PHOTOGRAPHY FIELD
+
+   DESKTOP photography is no longer restricted
+   to grid column 2.
+
+   It occupies the entire usable page.
    ===================================================== */
 
 .photography-field {
@@ -379,18 +412,18 @@ body {
 
     pointer-events: none;
 
-    contain:
-        layout
-        paint;
+    contain: layout paint;
 }
 
 .photography-field.active {
     visibility: visible;
+
+    pointer-events: none;
 }
 
 
 /* =====================================================
-   PHOTOGRAPHY STAGE
+   STAGE
    ===================================================== */
 
 #scattered-stage {
@@ -417,17 +450,8 @@ body {
     top: 0;
     left: 0;
 
-    width:
-        var(
-            --group-width,
-            100px
-        );
-
-    height:
-        var(
-            --group-height,
-            100px
-        );
+    width: var(--group-width, 100px);
+    height: var(--group-height, 100px);
 
     visibility: hidden;
 
@@ -573,11 +597,6 @@ body {
     (max-width: 600px)
     and (orientation: portrait) {
 
-    html,
-    body {
-        overflow: hidden;
-    }
-
     :root {
 
         --page-x: 24px;
@@ -591,7 +610,9 @@ body {
 
     }
 
+
     .landing-grid {
+
         grid-template-columns:
             minmax(0, 1fr);
 
@@ -599,15 +620,17 @@ body {
             auto
             auto
             auto
+            minmax(0, 1fr)
             auto
-            auto
-            minmax(0, 1fr);
+            auto;
 
         column-gap: 0;
 
         row-gap:
             var(--major-gap);
+
     }
+
 
     .logo {
         grid-column: 1;
@@ -616,38 +639,35 @@ body {
         height: 30px;
     }
 
+
     .logo-aybak {
         top: 15px;
     }
+
 
     .opening {
         grid-column: 1;
         grid-row: 2;
     }
 
+
     .navigation {
         grid-column: 1;
         grid-row: 3;
     }
 
-    .contact {
+
+    .media-field {
         grid-column: 1;
         grid-row: 4;
     }
 
-    .biography {
-        grid-column: 1;
-        grid-row: 5;
 
-        max-width: none;
-    }
-
-    .media-field {
-        grid-column: 1;
-        grid-row: 6;
-
-        min-height: 0;
-    }
+    /*
+        On mobile photography remains inside the
+        dedicated media area rather than spreading
+        behind the text.
+    */
 
     .photography-field {
         position: absolute;
@@ -655,25 +675,27 @@ body {
         inset: 0;
 
         z-index: auto;
-
-        width: 100%;
-        height: 100%;
     }
+
+
+    .contact {
+        grid-column: 1;
+        grid-row: 5;
+    }
+
+
+    .biography {
+        grid-column: 1;
+        grid-row: 6;
+
+        max-width: none;
+    }
+
 
     .bio-ending {
         white-space: normal;
     }
 
-    /*
-        Portrait mobile only:
-
-        vakko, bee goddess, zeynep arcay,
-        peugeot, skechers, lc waikiki
-    */
-
-    .mobile-client-break {
-        display: inline;
-    }
 
     .film-link {
         max-width: 100%;
@@ -705,34 +727,46 @@ body {
 
     }
 
+
     .landing-grid {
         grid-template-columns:
             minmax(0, 2fr)
             minmax(0, 1fr);
     }
 
+
     .logo {
         height: 30px;
     }
 
+
     .logo-aybak {
         top: 15px;
     }
+
 
     .opening,
     .biography {
         max-width: none;
     }
 
+
     .opening,
     .biography p {
         text-wrap: pretty;
     }
 
+
     .biography p {
         margin-bottom:
             var(--major-gap);
     }
+
+
+    /*
+        Keep mobile landscape photography inside
+        the media column.
+    */
 
     .photography-field {
         position: absolute;
@@ -740,14 +774,13 @@ body {
         inset: 0;
 
         z-index: auto;
-
-        width: 100%;
-        height: 100%;
     }
+
 
     .bio-ending {
         white-space: normal;
     }
+
 
     .film-link {
         max-width: 100%;
@@ -779,15 +812,18 @@ body {
 
     }
 
+
     .landing-grid {
         grid-template-columns:
             minmax(0, 470px)
             minmax(0, 1fr);
     }
 
+
     .logo {
         height: 30px;
     }
+
 
     .logo-aybak {
         top: 15px;
@@ -806,6 +842,13 @@ body {
     class="page"
     id="page"
 >
+
+    <!--
+        PHOTOGRAPHY IS OUTSIDE THE GRID.
+
+        This is what allows it to use the lower-left
+        desktop whitespace.
+    -->
 
     <div
         class="photography-field"
@@ -869,6 +912,7 @@ body {
                     photography
                 </span>
             </a>
+
 
             <a
                 href="https://film.denizalpaybak.com/"
@@ -968,7 +1012,18 @@ body {
 
             <p>
                 selected clients:<br>
-                <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
+                <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>, <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
+            </p>
+
+            <p>
+                <a
+                    class="portfolio-download"
+                    id="portfolio-download"
+                    href="https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/portfolio/denizalp-aybak-portfolio.pdf"
+                    download="denizalp-aybak-portfolio.pdf"
+                >
+                    portfolio.pdf ↓
+                </a>
             </p>
 
         </section>
@@ -987,110 +1042,49 @@ body {
 const PROJECTS_JSON_URL =
     "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
 
+
 const R2_PHOTOS_BASE =
     "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/photos/";
+
+
+const PORTFOLIO_PDF_URL =
+    "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/portfolio/denizalp-aybak-portfolio.pdf";
 
 
 /* =====================================================
    TIMING
    ===================================================== */
 
-const INTRO_INITIAL_DELAY =
-    4000;
-
-const INTRO_AFTER_LOGO_DELAY =
-    650;
-
-
-/*
-    Photography:
-
-    400 ms reveal
-    3200 ms fully open
-    400 ms closing
-
-    This gives the photographic state enough time to
-    register against the 3.21 second moving-image state.
-*/
-
-const INTRO_PHOTO_HOLD =
-    3200;
-
-const INTRO_BETWEEN_PHOTO_FILM =
-    650;
-
 const WORD_TRANSITION_DURATION =
     400;
+
 
 const PHOTO_SEQUENCE_DURATION =
     400;
 
-const LOGO_STEP_DURATION =
-    80;
 
-const LOGO_INTRO_HOLD =
+const PHOTO_HOLD_DURATION =
+    1150;
+
+
+const INITIAL_FILM_DELAY =
+    0;
+
+
+const MOBILE_INTERLUDE_DURATION =
     800;
-
-const LOGO_MOBILE_HOLD =
-    2000;
-
-
-/*
-    Mobile navigation hold:
-
-    Photography / film is allowed to reach its full
-    uppercase state, then remain there briefly before
-    leaving the landing page.
-*/
-const MOBILE_SECTION_NAV_HOLD =
-    520;
 
 
 /* =====================================================
-   FILM TIMING
+   LOGO
    ===================================================== */
 
-const FILM_FRAME_COUNT =
-    77;
-
-const FILM_FPS =
-    23.976;
-
-const FILM_EXACT_DURATION =
-    FILM_FRAME_COUNT /
-    FILM_FPS;
+const LOGO_STEP_DURATION =
+    80;
 
 
-/*
-    IMPORTANT CHANGE
-
-    We do NOT start the closing gesture one frame
-    before the end anymore.
-
-    Why?
-
-    FILM -> film takes 400 ms.
-
-    If we started only 41.7 ms before the video ended,
-    the browser would reach the final frame almost
-    immediately and display that frozen final frame
-    throughout most of the 400 ms text animation.
-
-    Instead, the text transition now begins roughly
-    one complete word-transition duration before the
-    video finishes.
-
-    The video therefore keeps moving during virtually
-    the entire FILM -> film gesture.
-
-    When the real media "ended" event fires, the video
-    layer is removed immediately so the browser never
-    gets a chance to visibly hold its final frame.
-*/
-
-const FILM_AUTO_CLOSE_LEAD =
-    WORD_TRANSITION_DURATION /
-    1000;
+const LOGO_MOBILE_HOLD =
+    2000;
 
 
 /* =====================================================
@@ -1100,17 +1094,30 @@ const FILM_AUTO_CLOSE_LEAD =
 const DESKTOP_PROJECT_GAP_MIN =
     18;
 
+
 const DESKTOP_PROJECT_GAP_MAX =
     46;
+
 
 const DESKTOP_PAIR_DISTANCE_MIN =
     8;
 
+
 const DESKTOP_PAIR_DISTANCE_MAX =
     24;
 
+
+/*
+    Distance kept around the text block.
+
+    This makes the photography composition feel
+    deliberately separate from the typography rather
+    than accidentally almost touching it.
+*/
+
 const DESKTOP_TEXT_CLEARANCE_X =
     42;
+
 
 const DESKTOP_TEXT_CLEARANCE_Y =
     34;
@@ -1122,6 +1129,7 @@ const DESKTOP_TEXT_CLEARANCE_Y =
 
 const MOBILE_PROJECT_GAP_MIN =
     8;
+
 
 const MOBILE_PROJECT_GAP_MAX =
     22;
@@ -1136,55 +1144,66 @@ const page =
         "page"
     );
 
+
 const landingGrid =
     document.getElementById(
         "landing-grid"
     );
+
 
 const biography =
     document.getElementById(
         "biography"
     );
 
+
 const mediaField =
     document.getElementById(
         "media-field"
     );
+
 
 const photographyField =
     document.getElementById(
         "photography-field"
     );
 
+
 const filmField =
     document.getElementById(
         "film-field"
     );
+
 
 const scatteredStage =
     document.getElementById(
         "scattered-stage"
     );
 
+
 const photographyLink =
     document.getElementById(
         "photography-link"
     );
+
 
 const filmLink =
     document.getElementById(
         "film-link"
     );
 
+
 const photographyText =
     document.getElementById(
         "photography-text"
     );
 
+
 const filmText =
     document.getElementById(
         "film-text"
     );
+
 
 const filmVideo =
     document.getElementById(
@@ -1198,52 +1217,9 @@ const filmVideo =
 
 function isMobileLayout() {
 
-    return window
-        .matchMedia(
-            "(max-width: 1000px)"
-        )
-        .matches;
-
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY FIELD PARENT
-   ===================================================== */
-
-function mountPhotographyField() {
-
-    if (
-        isMobileLayout()
-    ) {
-
-        if (
-            photographyField.parentElement !==
-            mediaField
-        ) {
-
-            mediaField.prepend(
-                photographyField
-            );
-
-        }
-
-    }
-
-    else {
-
-        if (
-            photographyField.parentElement !==
-            page
-        ) {
-
-            page.prepend(
-                photographyField
-            );
-
-        }
-
-    }
+    return window.matchMedia(
+        "(max-width: 1000px)"
+    ).matches;
 
 }
 
@@ -1255,57 +1231,33 @@ function mountPhotographyField() {
 let projectRecords =
     [];
 
+
 let desktopProjectVisualGroups =
     [];
+
 
 let projectVisualGroups =
     [];
 
+
 let groupElements =
     [];
+
 
 let photographyInitialReady =
     false;
 
+
 let supplementalAnalysisFinished =
     false;
+
 
 let photographyLoadPromise =
     null;
 
+
 let renderedMobileMode =
     null;
-
-
-/* =====================================================
-   INTRO STATE
-   ===================================================== */
-
-let introStarted =
-    false;
-
-let introFinished =
-    false;
-
-let introCancelled =
-    false;
-
-let introTimer =
-    null;
-
-
-/* =====================================================
-   FILM STATE
-   ===================================================== */
-
-let filmPlaybackMode =
-    "auto";
-
-let filmAutoCloseFrame =
-    null;
-
-let filmAutoCloseStarted =
-    false;
 
 
 /* =====================================================
@@ -1324,6 +1276,7 @@ function looksLikeImage(
         return false;
 
     }
+
 
     return /\.(jpe?g|png|webp|avif)$/i
         .test(
@@ -1348,8 +1301,10 @@ function resolvePhotoUrl(
 
     }
 
+
     const trimmed =
         value.trim();
+
 
     if (
         !trimmed
@@ -1358,6 +1313,7 @@ function resolvePhotoUrl(
         return null;
 
     }
+
 
     if (
         /^https?:\/\//i
@@ -1370,6 +1326,7 @@ function resolvePhotoUrl(
 
     }
 
+
     let path =
         trimmed
             .replace(
@@ -1380,6 +1337,7 @@ function resolvePhotoUrl(
                 /^photos\//i,
                 ""
             );
+
 
     return (
         R2_PHOTOS_BASE +
@@ -1412,6 +1370,7 @@ function uniqueUrls(
     const seen =
         new Set();
 
+
     return urls.filter(
         url => {
 
@@ -1419,6 +1378,7 @@ function uniqueUrls(
                 normalizeUrl(
                     url
                 );
+
 
             if (
                 seen.has(
@@ -1430,236 +1390,16 @@ function uniqueUrls(
 
             }
 
+
             seen.add(
                 key
             );
+
 
             return true;
 
         }
     );
-
-}
-
-
-/* =====================================================
-   TIMER HELPERS
-   ===================================================== */
-
-function clearIntroTimer() {
-
-    if (
-        introTimer !==
-        null
-    ) {
-
-        clearTimeout(
-            introTimer
-        );
-
-        introTimer =
-            null;
-
-    }
-
-}
-
-
-function introWait(
-    duration,
-    callback
-) {
-
-    clearIntroTimer();
-
-    introTimer =
-        setTimeout(
-            () => {
-
-                introTimer =
-                    null;
-
-                if (
-                    introCancelled
-                ) {
-
-                    return;
-
-                }
-
-                callback();
-
-            },
-            duration
-        );
-
-}
-
-
-/* =====================================================
-   FILM AUTO-CLOSE
-   ===================================================== */
-
-function cancelFilmAutoClose() {
-
-    filmAutoCloseStarted =
-        false;
-
-    if (
-        filmAutoCloseFrame !==
-        null
-    ) {
-
-        cancelAnimationFrame(
-            filmAutoCloseFrame
-        );
-
-        filmAutoCloseFrame =
-            null;
-
-    }
-
-}
-
-
-/*
-    Automatic film closing is now split into TWO
-    independent events:
-
-    A)
-    ~400 ms before the video ends:
-    FILM -> film starts.
-
-    B)
-    When the video ACTUALLY ends:
-    video layer disappears immediately.
-
-    This prevents a frozen final frame.
-*/
-
-function scheduleAutomaticFilmClose() {
-
-    cancelFilmAutoClose();
-
-    function checkFilmPosition() {
-
-        if (
-            activeMode !==
-            "film" ||
-            filmPlaybackMode !==
-            "auto" ||
-            introCancelled
-        ) {
-
-            filmAutoCloseFrame =
-                null;
-
-            return;
-
-        }
-
-
-        let duration =
-            FILM_EXACT_DURATION;
-
-
-        if (
-            Number.isFinite(
-                filmVideo.duration
-            ) &&
-            filmVideo.duration >
-            0
-        ) {
-
-            duration =
-                filmVideo.duration;
-
-        }
-
-
-        const closeAt =
-            Math.max(
-                0,
-                duration -
-                FILM_AUTO_CLOSE_LEAD
-            );
-
-
-        if (
-            filmVideo.currentTime >=
-            closeAt &&
-            !filmAutoCloseStarted
-        ) {
-
-            filmAutoCloseStarted =
-                true;
-
-            filmAutoCloseFrame =
-                null;
-
-
-            /*
-                DO NOT pause the video.
-
-                It continues playing underneath
-                FILM -> film.
-            */
-
-            animateTitlesTo(
-                null,
-                () => {
-
-                    /*
-                        Usually the real "ended" event will
-                        already have removed the layer by
-                        this point.
-
-                        This is just cleanup.
-                    */
-
-                    filmVideo.pause();
-
-                    filmField
-                        .classList
-                        .remove(
-                            "active"
-                        );
-
-                    activeMode =
-                        null;
-
-                    filmAutoCloseStarted =
-                        false;
-
-                    if (
-                        !introCancelled
-                    ) {
-
-                        introFinished =
-                            true;
-
-                    }
-
-                }
-            );
-
-            return;
-
-        }
-
-
-        filmAutoCloseFrame =
-            requestAnimationFrame(
-                checkFilmPosition
-            );
-
-    }
-
-
-    filmAutoCloseFrame =
-        requestAnimationFrame(
-            checkFilmPosition
-        );
 
 }
 
@@ -1681,6 +1421,7 @@ function findFirstImage(
 
     }
 
+
     if (
         typeof value ===
         "string"
@@ -1693,6 +1434,7 @@ function findFirstImage(
             : null;
 
     }
+
 
     if (
         Array.isArray(
@@ -1709,6 +1451,7 @@ function findFirstImage(
                     item
                 );
 
+
             if (
                 result
             ) {
@@ -1719,9 +1462,11 @@ function findFirstImage(
 
         }
 
+
         return null;
 
     }
+
 
     if (
         typeof value ===
@@ -1740,6 +1485,7 @@ function findFirstImage(
                     child
                 );
 
+
             if (
                 result
             ) {
@@ -1751,6 +1497,7 @@ function findFirstImage(
         }
 
     }
+
 
     return null;
 
@@ -1771,6 +1518,7 @@ function collectImages(
 
     }
 
+
     if (
         typeof value ===
         "string"
@@ -1787,6 +1535,7 @@ function collectImages(
                     value
                 );
 
+
             if (
                 url
             ) {
@@ -1799,9 +1548,11 @@ function collectImages(
 
         }
 
+
         return;
 
     }
+
 
     if (
         Array.isArray(
@@ -1820,9 +1571,11 @@ function collectImages(
             }
         );
 
+
         return;
 
     }
+
 
     if (
         typeof value ===
@@ -1848,111 +1601,108 @@ function collectImages(
 
 
 /* =====================================================
-   RANDOM PROJECT COVER
+   COVER
    ===================================================== */
-
-/*
-    Landing-page cover logic now mirrors the photography
-    site's new logic:
-
-    - coverOverride always wins.
-    - Otherwise one image is chosen randomly from images[].
-    - The choice is made once when projectRecords are built,
-      so relayouting the mosaic does not change the cover.
-    - Legacy cover fields are intentionally ignored.
-*/
-
-function getProjectImageValues(
-    project
-) {
-
-    if (
-        !project ||
-        !Array.isArray(
-            project.images
-        )
-    ) {
-
-        return [];
-
-    }
-
-
-    return project.images.filter(
-        value =>
-            looksLikeImage(
-                value
-            )
-    );
-
-}
-
 
 function getProjectCover(
     project
 ) {
 
-    if (
-        project &&
-        looksLikeImage(
-            project.coverOverride
-        )
+    const keys =
+        [
+
+            "indexImage",
+            "index_image",
+
+            "indexCover",
+            "index_cover",
+
+            "cover",
+            "coverImage",
+            "cover_image",
+
+            "thumbnail",
+            "thumbnailImage",
+            "thumbnail_image",
+
+            "thumb",
+
+            "preview",
+            "previewImage",
+            "preview_image"
+
+        ];
+
+
+    for (
+        const key of keys
     ) {
 
-        const overrideUrl =
-            resolvePhotoUrl(
-                project.coverOverride
+        if (
+            project[key] ===
+            undefined
+        ) {
+
+            continue;
+
+        }
+
+
+        const candidate =
+            findFirstImage(
+                project[key]
             );
 
 
         if (
-            overrideUrl
+            candidate
         ) {
 
-            return overrideUrl;
+            return resolvePhotoUrl(
+                candidate
+            );
 
         }
 
     }
 
 
-    const images =
-        getProjectImageValues(
-            project
-        );
-
-
     if (
-        !images.length
+        project.index &&
+        typeof project.index ===
+        "object"
     ) {
 
-        const fallback =
+        const candidate =
             findFirstImage(
-                project
+                project.index
             );
 
 
-        return fallback
-            ? resolvePhotoUrl(
-                fallback
-            )
-            : null;
+        if (
+            candidate
+        ) {
+
+            return resolvePhotoUrl(
+                candidate
+            );
+
+        }
 
     }
 
 
-    const randomIndex =
-        Math.floor(
-            Math.random() *
-            images.length
+    const fallback =
+        findFirstImage(
+            project
         );
 
 
-    return resolvePhotoUrl(
-        images[
-            randomIndex
-        ]
-    );
+    return fallback
+        ? resolvePhotoUrl(
+            fallback
+        )
+        : null;
 
 }
 
@@ -1975,6 +1725,7 @@ function getProjectsArray(
 
     }
 
+
     if (
         data &&
         Array.isArray(
@@ -1985,6 +1736,7 @@ function getProjectsArray(
         return data.projects;
 
     }
+
 
     if (
         data &&
@@ -2002,6 +1754,7 @@ function getProjectsArray(
         );
 
     }
+
 
     return [];
 
@@ -2022,18 +1775,10 @@ function loadImageMetadata(
             const image =
                 new Image();
 
+
             image.decoding =
                 "async";
 
-
-            /*
-                Metadata probes are background work.
-                Keeping them low-priority avoids competing
-                with the landing UI and film preview.
-            */
-
-            image.fetchPriority =
-                "low";
 
             image.onload =
                 () => {
@@ -2047,12 +1792,15 @@ function loadImageMetadata(
                             null
                         );
 
+
                         return;
 
                     }
 
+
                     resolve(
                         {
+
                             url,
 
                             width:
@@ -2064,10 +1812,12 @@ function loadImageMetadata(
                             ratio:
                                 image.naturalWidth /
                                 image.naturalHeight
+
                         }
                     );
 
                 };
+
 
             image.onerror =
                 () => {
@@ -2077,6 +1827,7 @@ function loadImageMetadata(
                     );
 
                 };
+
 
             image.src =
                 url;
@@ -2096,6 +1847,7 @@ function updateActiveVisualGroups() {
     const mobile =
         isMobileLayout();
 
+
     if (
         mobile
     ) {
@@ -2106,6 +1858,7 @@ function updateActiveVisualGroups() {
                     group => {
 
                         return {
+
                             projectIndex:
                                 group.projectIndex,
 
@@ -2115,6 +1868,7 @@ function updateActiveVisualGroups() {
                                         group.photos[0]
                                     ]
                                     : []
+
                         };
 
                     }
@@ -2133,6 +1887,7 @@ function updateActiveVisualGroups() {
                 group => {
 
                     return {
+
                         projectIndex:
                             group.projectIndex,
 
@@ -2141,12 +1896,14 @@ function updateActiveVisualGroups() {
                                 0,
                                 2
                             )
+
                     };
 
                 }
             );
 
     }
+
 
     renderedMobileMode =
         mobile;
@@ -2168,6 +1925,7 @@ async function loadInitialPhotography() {
 
     }
 
+
     photographyLoadPromise =
         (
             async () => {
@@ -2181,6 +1939,7 @@ async function loadInitialPhotography() {
                         }
                     );
 
+
                 if (
                     !response.ok
                 ) {
@@ -2191,13 +1950,16 @@ async function loadInitialPhotography() {
 
                 }
 
+
                 const data =
                     await response.json();
+
 
                 const projects =
                     getProjectsArray(
                         data
                     );
+
 
                 projectRecords =
                     projects
@@ -2212,50 +1974,30 @@ async function loadInitialPhotography() {
                                         project
                                     );
 
+
                                 const allUrls =
-                                    getProjectImageValues(
-                                        project
-                                    )
-                                        .map(
-                                            resolvePhotoUrl
-                                        )
-                                        .filter(
-                                            Boolean
-                                        );
+                                    [];
 
 
-                                if (
-                                    project.coverOverride
-                                ) {
-
-                                    const overrideUrl =
-                                        resolvePhotoUrl(
-                                            project.coverOverride
-                                        );
-
-
-                                    if (
-                                        overrideUrl
-                                    ) {
-
-                                        allUrls.unshift(
-                                            overrideUrl
-                                        );
-
-                                    }
-
-                                }
+                                collectImages(
+                                    project,
+                                    allUrls
+                                );
 
 
                                 return {
+
                                     projectIndex,
+
                                     project,
+
                                     coverUrl,
 
                                     allUrls:
                                         uniqueUrls(
                                             allUrls
                                         )
+
                                 };
 
                             }
@@ -2264,6 +2006,7 @@ async function loadInitialPhotography() {
                             record =>
                                 record.coverUrl
                         );
+
 
                 const initialGroups =
                     await Promise.all(
@@ -2276,6 +2019,7 @@ async function loadInitialPhotography() {
                                         record.coverUrl
                                     );
 
+
                                 if (
                                     !cover
                                 ) {
@@ -2284,7 +2028,9 @@ async function loadInitialPhotography() {
 
                                 }
 
+
                                 return {
+
                                     projectIndex:
                                         record.projectIndex,
 
@@ -2292,6 +2038,7 @@ async function loadInitialPhotography() {
                                         [
                                             cover
                                         ]
+
                                 };
 
                             }
@@ -2299,65 +2046,31 @@ async function loadInitialPhotography() {
 
                     );
 
+
                 desktopProjectVisualGroups =
                     initialGroups.filter(
                         Boolean
                     );
 
+
                 updateActiveVisualGroups();
+
 
                 buildPhotographyDOM();
 
+
                 randomizePhotographyLayout();
+
 
                 photographyInitialReady =
                     true;
 
 
-                /*
-                    The first randomly selected image from
-                    each project is enough for the initial
-                    photography state.
-
-                    Optional second / landscape images are
-                    analyzed later so mobile does not start
-                    downloading every full-resolution image
-                    at once.
-                */
-
-                const startSupplementalAnalysis =
-                    () => {
-
-                        analyzeSupplementalImagesInBackground();
-
-                    };
-
-
-                if (
-                    "requestIdleCallback" in window
-                ) {
-
-                    requestIdleCallback(
-                        startSupplementalAnalysis,
-                        {
-                            timeout:
-                                1800
-                        }
-                    );
-
-                }
-
-                else {
-
-                    setTimeout(
-                        startSupplementalAnalysis,
-                        700
-                    );
-
-                }
+                analyzeSupplementalImagesInBackground();
 
             }
         )();
+
 
     return photographyLoadPromise;
 
@@ -2385,6 +2098,7 @@ async function analyzeSupplementalImagesInBackground() {
                                     record.projectIndex
                             );
 
+
                         if (
                             !current
                         ) {
@@ -2393,13 +2107,16 @@ async function analyzeSupplementalImagesInBackground() {
 
                         }
 
+
                         const cover =
                             current.photos[0];
+
 
                         const coverKey =
                             normalizeUrl(
                                 record.coverUrl
                             );
+
 
                         const otherUrls =
                             record.allUrls.filter(
@@ -2409,6 +2126,7 @@ async function analyzeSupplementalImagesInBackground() {
                                     ) !==
                                     coverKey
                             );
+
 
                         const metadata =
                             (
@@ -2420,6 +2138,7 @@ async function analyzeSupplementalImagesInBackground() {
                             ).filter(
                                 Boolean
                             );
+
 
                         const landscape =
                             metadata
@@ -2438,7 +2157,9 @@ async function analyzeSupplementalImagesInBackground() {
                                 )[0] ||
                             null;
 
+
                         return {
+
                             projectIndex:
                                 record.projectIndex,
 
@@ -2451,6 +2172,7 @@ async function analyzeSupplementalImagesInBackground() {
                                     : [
                                         cover
                                     ]
+
                         };
 
                     }
@@ -2458,13 +2180,16 @@ async function analyzeSupplementalImagesInBackground() {
 
             );
 
+
         desktopProjectVisualGroups =
             completed.filter(
                 Boolean
             );
 
+
         supplementalAnalysisFinished =
             true;
+
 
         if (
             activeMode !==
@@ -2473,7 +2198,9 @@ async function analyzeSupplementalImagesInBackground() {
 
             updateActiveVisualGroups();
 
+
             buildPhotographyDOM();
+
 
             randomizePhotographyLayout();
 
@@ -2504,11 +2231,14 @@ function buildPhotographyDOM() {
     scatteredStage.innerHTML =
         "";
 
+
     groupElements =
         [];
 
+
     const fragment =
         document.createDocumentFragment();
+
 
     projectVisualGroups.forEach(
         (
@@ -2521,11 +2251,14 @@ function buildPhotographyDOM() {
                     "div"
                 );
 
+
             element.className =
                 "photo-group";
 
+
             element.dataset.groupIndex =
                 groupIndex;
+
 
             group.photos.forEach(
                 (
@@ -2538,29 +2271,26 @@ function buildPhotographyDOM() {
                             "img"
                         );
 
+
                     image.className =
                         "project-photo";
+
 
                     image.src =
                         photo.url;
 
+
                     image.alt =
                         "";
+
 
                     image.decoding =
                         "async";
 
 
-                    image.loading =
-                        "eager";
-
-
-                    image.fetchPriority =
-                        "low";
-
-
                     image.dataset.photoIndex =
                         photoIndex;
+
 
                     element.appendChild(
                         image
@@ -2569,9 +2299,11 @@ function buildPhotographyDOM() {
                 }
             );
 
+
             fragment.appendChild(
                 element
             );
+
 
             groupElements.push(
                 element
@@ -2579,6 +2311,7 @@ function buildPhotographyDOM() {
 
         }
     );
+
 
     scatteredStage.appendChild(
         fragment
@@ -2630,6 +2363,7 @@ function createProjectGeometry(
     const mobile =
         isMobileLayout();
 
+
     const firstScale =
         mobile
             ? randomBetween(
@@ -2641,12 +2375,15 @@ function createProjectGeometry(
                 1.38
             );
 
+
     const firstHeight =
         baseHeight *
         firstScale;
 
+
     const first =
         {
+
             photo:
                 group.photos[0],
 
@@ -2662,7 +2399,9 @@ function createProjectGeometry(
 
             y:
                 0
+
         };
+
 
     if (
         group.photos.length ===
@@ -2670,6 +2409,7 @@ function createProjectGeometry(
     ) {
 
         return {
+
             photos:
                 [
                     first
@@ -2680,12 +2420,15 @@ function createProjectGeometry(
 
             height:
                 first.height
+
         };
 
     }
 
+
     const secondPhoto =
         group.photos[1];
+
 
     const secondHeight =
         baseHeight *
@@ -2694,9 +2437,11 @@ function createProjectGeometry(
             1.34
         );
 
+
     const secondWidth =
         secondHeight *
         secondPhoto.ratio;
+
 
     const horizontalGap =
         randomBetween(
@@ -2704,9 +2449,11 @@ function createProjectGeometry(
             DESKTOP_PAIR_DISTANCE_MAX
         );
 
+
     const secondX =
         first.width +
         horizontalGap;
+
 
     const verticalOffset =
         baseHeight *
@@ -2716,17 +2463,21 @@ function createProjectGeometry(
         ) *
         randomSign();
 
+
     const minY =
         Math.min(
             0,
             verticalOffset
         );
 
+
     first.y =
         -minY;
 
+
     const second =
         {
+
             photo:
                 secondPhoto,
 
@@ -2742,9 +2493,12 @@ function createProjectGeometry(
             y:
                 verticalOffset -
                 minY
+
         };
 
+
     return {
+
         photos:
             [
                 first,
@@ -2763,6 +2517,7 @@ function createProjectGeometry(
                 second.y +
                 second.height
             )
+
     };
 
 }
@@ -2779,15 +2534,18 @@ function createAllProjectGeometries(
     const mobile =
         isMobileLayout();
 
+
     const gapMin =
         mobile
             ? MOBILE_PROJECT_GAP_MIN
             : DESKTOP_PROJECT_GAP_MIN;
 
+
     const gapMax =
         mobile
             ? MOBILE_PROJECT_GAP_MAX
             : DESKTOP_PROJECT_GAP_MAX;
+
 
     return projectVisualGroups.map(
         (
@@ -2796,6 +2554,7 @@ function createAllProjectGeometries(
         ) => {
 
             return {
+
                 index,
 
                 ...createProjectGeometry(
@@ -2808,6 +2567,7 @@ function createAllProjectGeometries(
                         gapMin,
                         gapMax
                     )
+
             };
 
         }
@@ -2818,6 +2578,11 @@ function createAllProjectGeometries(
 
 /* =====================================================
    DESKTOP EXCLUSION ZONE
+
+   The upper-left text area is excluded.
+
+   Everything below the biography is free space,
+   including the area highlighted in the screenshot.
    ===================================================== */
 
 function getDesktopExclusionZone() {
@@ -2830,17 +2595,25 @@ function getDesktopExclusionZone() {
 
     }
 
+
     const stageRect =
         photographyField
             .getBoundingClientRect();
+
 
     const bioRect =
         biography
             .getBoundingClientRect();
 
+
     const gridRect =
         landingGrid
             .getBoundingClientRect();
+
+
+    const left =
+        0;
+
 
     const right =
         Math.min(
@@ -2854,6 +2627,7 @@ function getDesktopExclusionZone() {
             DESKTOP_TEXT_CLEARANCE_X
         );
 
+
     const bottom =
         Math.min(
             stageRect.height,
@@ -2865,13 +2639,11 @@ function getDesktopExclusionZone() {
             DESKTOP_TEXT_CLEARANCE_Y
         );
 
+
     return {
-        left:
-            0,
 
-        top:
-            0,
-
+        left,
+        top: 0,
         right,
         bottom,
 
@@ -2880,6 +2652,7 @@ function getDesktopExclusionZone() {
 
         height:
             bottom
+
     };
 
 }
@@ -2902,26 +2675,30 @@ function packRegion(
     ) {
 
         return {
-            rows:
-                [],
 
-            totalHeight:
-                0
+            rows: [],
+            totalHeight: 0
+
         };
 
     }
 
+
     const rows =
         [];
+
 
     let row =
         [];
 
+
     let rowWidth =
         0;
 
+
     let rowHeight =
         0;
+
 
     for (
         const geometry of geometries
@@ -2935,6 +2712,7 @@ function packRegion(
                 )
                 : 0;
 
+
         if (
             row.length &&
             rowWidth +
@@ -2945,6 +2723,7 @@ function packRegion(
 
             rows.push(
                 {
+
                     items:
                         row,
 
@@ -2953,19 +2732,24 @@ function packRegion(
 
                     height:
                         rowHeight
+
                 }
             );
+
 
             row =
                 [];
 
+
             rowWidth =
                 0;
+
 
             rowHeight =
                 0;
 
         }
+
 
         const actualGap =
             row.length
@@ -2975,18 +2759,23 @@ function packRegion(
                 )
                 : 0;
 
+
         row.push(
             {
+
                 geometry,
 
                 gapBefore:
                     actualGap
+
             }
         );
+
 
         rowWidth +=
             actualGap +
             geometry.width;
+
 
         rowHeight =
             Math.max(
@@ -2996,12 +2785,14 @@ function packRegion(
 
     }
 
+
     if (
         row.length
     ) {
 
         rows.push(
             {
+
                 items:
                     row,
 
@@ -3010,13 +2801,16 @@ function packRegion(
 
                 height:
                     rowHeight
+
             }
         );
 
     }
 
+
     let totalHeight =
         0;
+
 
     rows.forEach(
         (
@@ -3026,6 +2820,7 @@ function packRegion(
 
             totalHeight +=
                 current.height;
+
 
             if (
                 index <
@@ -3043,6 +2838,7 @@ function packRegion(
         }
     );
 
+
     if (
         totalHeight >
         regionHeight
@@ -3052,9 +2848,12 @@ function packRegion(
 
     }
 
+
     return {
+
         rows,
         totalHeight
+
     };
 
 }
@@ -3062,6 +2861,15 @@ function packRegion(
 
 /* =====================================================
    DESKTOP L-SHAPE COMPOSITION
+
+   Upper section:
+       only the area to the RIGHT of the text.
+
+   Lower section:
+       entire page width.
+
+   This is the key change that fills the formerly
+   unused lower-left white area.
    ===================================================== */
 
 function createDesktopComposition(
@@ -3075,8 +2883,10 @@ function createDesktopComposition(
             baseHeight
         );
 
+
     const exclusion =
         getDesktopExclusionZone();
+
 
     if (
         !exclusion
@@ -3086,8 +2896,10 @@ function createDesktopComposition(
 
     }
 
+
     const upperX =
         exclusion.right;
+
 
     const upperWidth =
         Math.max(
@@ -3096,14 +2908,17 @@ function createDesktopComposition(
             upperX
         );
 
+
     const upperHeight =
         Math.max(
             0,
             exclusion.bottom
         );
 
+
     const lowerY =
         exclusion.bottom;
+
 
     const lowerHeight =
         Math.max(
@@ -3112,8 +2927,20 @@ function createDesktopComposition(
             lowerY
         );
 
+
+    /*
+        Try different split points.
+
+        Projects remain in their original order.
+
+        We look for the split that uses the upper-right
+        region efficiently while still allowing the rest
+        to fit across the entire lower area.
+    */
+
     let best =
         null;
+
 
     for (
         let split = 0;
@@ -3127,10 +2954,12 @@ function createDesktopComposition(
                 split
             );
 
+
         const lowerItems =
             geometries.slice(
                 split
             );
+
 
         const upper =
             packRegion(
@@ -3141,6 +2970,7 @@ function createDesktopComposition(
                 DESKTOP_PROJECT_GAP_MAX
             );
 
+
         if (
             !upper
         ) {
@@ -3148,6 +2978,7 @@ function createDesktopComposition(
             continue;
 
         }
+
 
         const lower =
             packRegion(
@@ -3158,6 +2989,7 @@ function createDesktopComposition(
                 DESKTOP_PROJECT_GAP_MAX
             );
 
+
         if (
             !lower
         ) {
@@ -3166,11 +2998,21 @@ function createDesktopComposition(
 
         }
 
+
+        /*
+            Prefer using more of the upper-right region,
+            but avoid forcing everything into it.
+
+            Lower-area occupancy is rewarded because
+            that's precisely the previously unused space.
+        */
+
         const upperFill =
             upperHeight > 0
                 ? upper.totalHeight /
                   upperHeight
                 : 0;
+
 
         const lowerFill =
             lowerHeight > 0
@@ -3178,11 +3020,13 @@ function createDesktopComposition(
                   lowerHeight
                 : 0;
 
+
         const score =
             upperFill *
             0.45 +
             lowerFill *
             0.55;
+
 
         if (
             !best ||
@@ -3192,9 +3036,11 @@ function createDesktopComposition(
 
             best =
                 {
+
                     score,
 
                     upper,
+
                     lower,
 
                     upperX,
@@ -3205,11 +3051,13 @@ function createDesktopComposition(
                     lowerHeight,
 
                     geometries
+
                 };
 
         }
 
     }
+
 
     return best;
 
@@ -3229,14 +3077,18 @@ function packMobileProjects(
     const rows =
         [];
 
+
     let currentRow =
         [];
+
 
     let currentWidth =
         0;
 
+
     let rowHeight =
         0;
+
 
     geometries.forEach(
         geometry => {
@@ -3247,6 +3099,7 @@ function packMobileProjects(
                     0.94,
                     1
                 );
+
 
             const addition =
                 currentRow.length
@@ -3259,6 +3112,7 @@ function packMobileProjects(
                     )
                     : geometry.width;
 
+
             if (
                 currentRow.length &&
                 currentWidth +
@@ -3268,6 +3122,7 @@ function packMobileProjects(
 
                 rows.push(
                     {
+
                         items:
                             currentRow,
 
@@ -3276,19 +3131,24 @@ function packMobileProjects(
 
                         height:
                             rowHeight
+
                     }
                 );
+
 
                 currentRow =
                     [];
 
+
                 currentWidth =
                     0;
+
 
                 rowHeight =
                     0;
 
             }
+
 
             if (
                 currentRow.length
@@ -3302,12 +3162,15 @@ function packMobileProjects(
 
             }
 
+
             currentRow.push(
                 geometry
             );
 
+
             currentWidth +=
                 geometry.width;
+
 
             rowHeight =
                 Math.max(
@@ -3318,12 +3181,14 @@ function packMobileProjects(
         }
     );
 
+
     if (
         currentRow.length
     ) {
 
         rows.push(
             {
+
                 items:
                     currentRow,
 
@@ -3332,13 +3197,16 @@ function packMobileProjects(
 
                 height:
                     rowHeight
+
             }
         );
 
     }
 
+
     const rowGaps =
         [];
+
 
     for (
         let i = 0;
@@ -3354,6 +3222,7 @@ function packMobileProjects(
         );
 
     }
+
 
     const totalHeight =
         rows.reduce(
@@ -3375,6 +3244,7 @@ function packMobileProjects(
             0
         );
 
+
     if (
         totalHeight >
         fieldHeight
@@ -3383,6 +3253,7 @@ function packMobileProjects(
         return null;
 
     }
+
 
     if (
         rows.some(
@@ -3396,10 +3267,13 @@ function packMobileProjects(
 
     }
 
+
     return {
+
         rows,
         rowGaps,
         totalHeight
+
     };
 
 }
@@ -3422,8 +3296,10 @@ function createPhotographyComposition(
 
     }
 
+
     const mobile =
         isMobileLayout();
+
 
     let low =
         mobile
@@ -3437,6 +3313,7 @@ function createPhotographyComposition(
                 fieldHeight *
                 0.075
             );
+
 
     let high =
         mobile
@@ -3453,8 +3330,10 @@ function createPhotographyComposition(
                 0.18
             );
 
+
     let best =
         null;
+
 
     for (
         let iteration = 0;
@@ -3469,8 +3348,10 @@ function createPhotographyComposition(
             ) /
             2;
 
+
         let candidate =
             null;
+
 
         for (
             let test = 0;
@@ -3487,6 +3368,7 @@ function createPhotographyComposition(
                         mid
                     );
 
+
                 const packed =
                     packMobileProjects(
                         geometries,
@@ -3494,18 +3376,22 @@ function createPhotographyComposition(
                         fieldHeight
                     );
 
+
                 if (
                     packed
                 ) {
 
                     candidate =
                         {
+
                             type:
                                 "mobile",
 
                             geometries,
                             packed
+
                         };
+
 
                     break;
 
@@ -3522,17 +3408,21 @@ function createPhotographyComposition(
                         mid
                     );
 
+
                 if (
                     desktop
                 ) {
 
                     candidate =
                         {
+
                             type:
                                 "desktop",
 
                             ...desktop
+
                         };
+
 
                     break;
 
@@ -3542,12 +3432,14 @@ function createPhotographyComposition(
 
         }
 
+
         if (
             candidate
         ) {
 
             best =
                 candidate;
+
 
             low =
                 mid;
@@ -3562,6 +3454,7 @@ function createPhotographyComposition(
         }
 
     }
+
 
     return best;
 
@@ -3589,6 +3482,7 @@ function placeRegionRows(
 
     }
 
+
     const totalRowHeight =
         rows.reduce(
             (
@@ -3600,6 +3494,7 @@ function placeRegionRows(
             0
         );
 
+
     const minimumGap =
         rows.length > 1
             ? DESKTOP_PROJECT_GAP_MIN *
@@ -3609,6 +3504,7 @@ function placeRegionRows(
               )
             : 0;
 
+
     const spare =
         Math.max(
             0,
@@ -3616,6 +3512,12 @@ function placeRegionRows(
             totalRowHeight -
             minimumGap
         );
+
+
+    /*
+        Don't center the whole region too rigidly.
+        A small random offset keeps the scattered feel.
+    */
 
     let y =
         regionY +
@@ -3627,6 +3529,7 @@ function placeRegionRows(
                 30
             )
         );
+
 
     rows.forEach(
         (
@@ -3641,12 +3544,14 @@ function placeRegionRows(
                     row.width
                 );
 
+
             let x =
                 regionX +
                 randomBetween(
                     0,
                     spareX
                 );
+
 
             row.items.forEach(
                 item => {
@@ -3655,8 +3560,10 @@ function placeRegionRows(
                         item.gapBefore ||
                         0;
 
+
                     const geometry =
                         item.geometry;
+
 
                     const verticalFreedom =
                         Math.max(
@@ -3665,9 +3572,11 @@ function placeRegionRows(
                             geometry.height
                         );
 
+
                     placements.set(
                         geometry.index,
                         {
+
                             x,
 
                             y:
@@ -3678,8 +3587,10 @@ function placeRegionRows(
                                 ),
 
                             geometry
+
                         }
                     );
+
 
                     x +=
                         geometry.width;
@@ -3687,8 +3598,10 @@ function placeRegionRows(
                 }
             );
 
+
             y +=
                 row.height;
+
 
             if (
                 rowIndex <
@@ -3722,6 +3635,7 @@ function applyDesktopComposition(
     const placements =
         new Map();
 
+
     placeRegionRows(
         composition.upper.rows,
         composition.upperX,
@@ -3731,6 +3645,15 @@ function applyDesktopComposition(
         placements
     );
 
+
+    /*
+        The lower region starts at the biography's
+        bottom and spans THE ENTIRE WIDTH.
+
+        Therefore images can now occupy the lower-left
+        area underneath the text.
+    */
+
     placeRegionRows(
         composition.lower.rows,
         0,
@@ -3739,6 +3662,7 @@ function applyDesktopComposition(
         composition.lowerHeight,
         placements
     );
+
 
     applyPlacements(
         placements
@@ -3764,12 +3688,14 @@ function applyMobileComposition(
     } =
         composition.packed;
 
+
     const spareVertical =
         Math.max(
             0,
             fieldHeight -
             totalHeight
         );
+
 
     let y =
         randomBetween(
@@ -3779,8 +3705,10 @@ function applyMobileComposition(
             0.22
         );
 
+
     const placements =
         new Map();
+
 
     rows.forEach(
         (
@@ -3795,6 +3723,7 @@ function applyMobileComposition(
                     row.width
                 );
 
+
             let x =
                 randomBetween(
                     0,
@@ -3804,6 +3733,7 @@ function applyMobileComposition(
                         0.10
                     )
                 );
+
 
             row.items.forEach(
                 (
@@ -3818,9 +3748,11 @@ function applyMobileComposition(
                             geometry.height
                         );
 
+
                     placements.set(
                         geometry.index,
                         {
+
                             x,
 
                             y:
@@ -3831,11 +3763,14 @@ function applyMobileComposition(
                                 ),
 
                             geometry
+
                         }
                     );
 
+
                     x +=
                         geometry.width;
+
 
                     if (
                         index <
@@ -3850,8 +3785,10 @@ function applyMobileComposition(
                 }
             );
 
+
             y +=
                 row.height;
+
 
             if (
                 rowIndex <
@@ -3867,6 +3804,7 @@ function applyMobileComposition(
 
         }
     );
+
 
     applyPlacements(
         placements
@@ -3894,6 +3832,7 @@ function applyPlacements(
                     index
                 );
 
+
             if (
                 !placement
             ) {
@@ -3902,8 +3841,10 @@ function applyPlacements(
 
             }
 
+
             const geometry =
                 placement.geometry;
+
 
             element.style
                 .setProperty(
@@ -3911,11 +3852,13 @@ function applyPlacements(
                     `${placement.x}px`
                 );
 
+
             element.style
                 .setProperty(
                     "--group-y",
                     `${placement.y}px`
                 );
+
 
             element.style
                 .setProperty(
@@ -3923,16 +3866,19 @@ function applyPlacements(
                     `${geometry.width}px`
                 );
 
+
             element.style
                 .setProperty(
                     "--group-height",
                     `${geometry.height}px`
                 );
 
+
             const images =
                 element.querySelectorAll(
                     ".project-photo"
                 );
+
 
             geometry.photos.forEach(
                 (
@@ -3945,6 +3891,7 @@ function applyPlacements(
                             photoIndex
                         ];
 
+
                     if (
                         !image
                     ) {
@@ -3953,17 +3900,20 @@ function applyPlacements(
 
                     }
 
+
                     image.style
                         .setProperty(
                             "--photo-height",
                             `${photo.height}px`
                         );
 
+
                     image.style
                         .setProperty(
                             "--photo-x",
                             `${photo.x}px`
                         );
+
 
                     image.style
                         .setProperty(
@@ -3990,6 +3940,7 @@ function randomizePhotographyLayout() {
         photographyField
             .getBoundingClientRect();
 
+
     if (
         rect.width <= 0 ||
         rect.height <= 0 ||
@@ -4000,11 +3951,13 @@ function randomizePhotographyLayout() {
 
     }
 
+
     const composition =
         createPhotographyComposition(
             rect.width,
             rect.height
         );
+
 
     if (
         !composition
@@ -4013,6 +3966,7 @@ function randomizePhotographyLayout() {
         return;
 
     }
+
 
     if (
         composition.type ===
@@ -4047,6 +4001,7 @@ function randomizePhotographyLayout() {
 let photoSequenceFrame =
     null;
 
+
 let photoSequenceToken =
     0;
 
@@ -4054,6 +4009,7 @@ let photoSequenceToken =
 function cancelPhotoSequence() {
 
     photoSequenceToken++;
+
 
     if (
         photoSequenceFrame !==
@@ -4063,6 +4019,7 @@ function cancelPhotoSequence() {
         cancelAnimationFrame(
             photoSequenceFrame
         );
+
 
         photoSequenceFrame =
             null;
@@ -4084,6 +4041,7 @@ function setVisiblePhotoGroupCount(
                 count
             )
         );
+
 
     groupElements.forEach(
         (
@@ -4116,8 +4074,10 @@ function animatePhotoGroups(
 
     cancelPhotoSequence();
 
+
     const token =
         photoSequenceToken;
+
 
     const currentCount =
         groupElements.filter(
@@ -4128,6 +4088,7 @@ function animatePhotoGroups(
                     )
         ).length;
 
+
     const target =
         Math.max(
             0,
@@ -4136,6 +4097,7 @@ function animatePhotoGroups(
                 targetCount
             )
         );
+
 
     if (
         currentCount ===
@@ -4151,12 +4113,15 @@ function animatePhotoGroups(
 
         }
 
+
         return;
 
     }
 
+
     const started =
         performance.now();
+
 
     function frame(
         now
@@ -4171,6 +4136,7 @@ function animatePhotoGroups(
 
         }
 
+
         const progress =
             Math.min(
                 1,
@@ -4181,6 +4147,7 @@ function animatePhotoGroups(
                 PHOTO_SEQUENCE_DURATION
             );
 
+
         const raw =
             currentCount +
             (
@@ -4188,6 +4155,7 @@ function animatePhotoGroups(
                 currentCount
             ) *
             progress;
+
 
         const count =
             target >
@@ -4201,9 +4169,11 @@ function animatePhotoGroups(
                     0.0001
                 );
 
+
         setVisiblePhotoGroupCount(
             count
         );
+
 
         if (
             progress <
@@ -4215,16 +4185,20 @@ function animatePhotoGroups(
                     frame
                 );
 
+
             return;
 
         }
+
 
         setVisiblePhotoGroupCount(
             target
         );
 
+
         photoSequenceFrame =
             null;
+
 
         if (
             typeof onComplete ===
@@ -4238,6 +4212,7 @@ function animatePhotoGroups(
         }
 
     }
+
 
     photoSequenceFrame =
         requestAnimationFrame(
@@ -4267,6 +4242,7 @@ const navItems =
 
         },
 
+
         film: {
 
             word:
@@ -4291,6 +4267,7 @@ function renderCaseWord(
     let result =
         "";
 
+
     const normalized =
         Math.max(
             0,
@@ -4301,6 +4278,7 @@ function renderCaseWord(
                 )
             )
         );
+
 
     for (
         let i = 0;
@@ -4317,6 +4295,7 @@ function renderCaseWord(
                     .toLowerCase();
 
     }
+
 
     return result;
 
@@ -4339,6 +4318,7 @@ function setWordCount(
             )
         );
 
+
     item.element.textContent =
         renderCaseWord(
             item.word,
@@ -4355,6 +4335,7 @@ function setWordCount(
 let titleFrame =
     null;
 
+
 let titleToken =
     0;
 
@@ -4367,8 +4348,10 @@ function animateTitlesTo(
 
     titleToken++;
 
+
     const token =
         titleToken;
+
 
     if (
         titleFrame !==
@@ -4379,22 +4362,28 @@ function animateTitlesTo(
             titleFrame
         );
 
+
         titleFrame =
             null;
 
     }
 
+
     const photography =
         navItems.photography;
+
 
     const film =
         navItems.film;
 
+
     const photoStart =
         photography.count;
 
+
     const filmStart =
         film.count;
+
 
     const photoTarget =
         mode ===
@@ -4402,14 +4391,17 @@ function animateTitlesTo(
             ? photography.word.length
             : 0;
 
+
     const filmTarget =
         mode ===
         "film"
             ? film.word.length
             : 0;
 
+
     const started =
         performance.now();
+
 
     function frame(
         now
@@ -4424,6 +4416,7 @@ function animateTitlesTo(
 
         }
 
+
         const progress =
             Math.min(
                 1,
@@ -4434,6 +4427,7 @@ function animateTitlesTo(
                 WORD_TRANSITION_DURATION
             );
 
+
         const photoRaw =
             photoStart +
             (
@@ -4442,6 +4436,7 @@ function animateTitlesTo(
             ) *
             progress;
 
+
         const filmRaw =
             filmStart +
             (
@@ -4449,6 +4444,7 @@ function animateTitlesTo(
                 filmStart
             ) *
             progress;
+
 
         setWordCount(
             photography,
@@ -4465,6 +4461,7 @@ function animateTitlesTo(
                 )
         );
 
+
         setWordCount(
             film,
 
@@ -4480,6 +4477,7 @@ function animateTitlesTo(
                 )
         );
 
+
         if (
             progress <
             1
@@ -4490,22 +4488,27 @@ function animateTitlesTo(
                     frame
                 );
 
+
             return;
 
         }
+
 
         setWordCount(
             photography,
             photoTarget
         );
 
+
         setWordCount(
             film,
             filmTarget
         );
 
+
         titleFrame =
             null;
+
 
         if (
             typeof onComplete ===
@@ -4519,6 +4522,7 @@ function animateTitlesTo(
         }
 
     }
+
 
     titleFrame =
         requestAnimationFrame(
@@ -4535,38 +4539,31 @@ function animateTitlesTo(
 let activeMode =
     null;
 
+
 let hoverMode =
     null;
 
 
-/*
-    Prevent a second mobile navigation gesture from
-    starting while the first one is already resolving.
-*/
-let mobileSectionNavigationInProgress =
-    false;
+let phaseTimer =
+    null;
 
 
-/* =====================================================
-   PLAY FILM
-   ===================================================== */
+function clearPhaseTimer() {
 
-async function playFilmFromBeginning() {
+    if (
+        phaseTimer !==
+        null
+    ) {
 
-    try {
+        clearTimeout(
+            phaseTimer
+        );
 
-        filmVideo.pause();
 
-        filmVideo.currentTime =
-            0;
-
-        await filmVideo.play();
+        phaseTimer =
+            null;
 
     }
-
-    catch (
-        error
-    ) {}
 
 }
 
@@ -4583,54 +4580,27 @@ async function switchToFilmLayer() {
             "active"
         );
 
+
     filmField
         .classList
         .add(
             "active"
         );
 
-    await playFilmFromBeginning();
 
-}
+    try {
+
+        filmVideo.currentTime =
+            0;
 
 
-/* =====================================================
-   HIDE FILM — MANUAL / HOVER
-   ===================================================== */
+        await filmVideo.play();
 
-function hideFilmWithTitle(
-    onComplete =
-        null
-) {
+    }
 
-    cancelFilmAutoClose();
-
-    filmVideo.pause();
-
-    animateTitlesTo(
-        null,
-        () => {
-
-            filmField
-                .classList
-                .remove(
-                    "active"
-                );
-
-            activeMode =
-                null;
-
-            if (
-                typeof onComplete ===
-                "function"
-            ) {
-
-                onComplete();
-
-            }
-
-        }
-    );
+    catch (
+        error
+    ) {}
 
 }
 
@@ -4644,6 +4614,7 @@ function refreshPhotographyDOMIfNeeded() {
     const currentMobileMode =
         isMobileLayout();
 
+
     if (
         renderedMobileMode !==
         currentMobileMode
@@ -4651,11 +4622,14 @@ function refreshPhotographyDOMIfNeeded() {
 
         updateActiveVisualGroups();
 
+
         buildPhotographyDOM();
+
 
         return;
 
     }
+
 
     if (
         !supplementalAnalysisFinished
@@ -4665,7 +4639,9 @@ function refreshPhotographyDOMIfNeeded() {
 
     }
 
+
     updateActiveVisualGroups();
+
 
     const expectedImages =
         projectVisualGroups.reduce(
@@ -4678,12 +4654,14 @@ function refreshPhotographyDOMIfNeeded() {
             0
         );
 
+
     const currentImages =
         scatteredStage
             .querySelectorAll(
                 ".project-photo"
             )
             .length;
+
 
     if (
         expectedImages ===
@@ -4694,108 +4672,75 @@ function refreshPhotographyDOMIfNeeded() {
 
     }
 
+
     buildPhotographyDOM();
 
 }
 
 
 /* =====================================================
-   IDLE
+   IDLE / MOBILE CYCLE
    ===================================================== */
 
-function enterIdle(
-    onComplete =
-        null
-) {
+function enterIdle() {
 
+    clearPhaseTimer();
     cancelPhotoSequence();
 
-    cancelFilmAutoClose();
-
-    filmPlaybackMode =
-        "auto";
-
-    if (
-        photographyField
-            .classList
-            .contains(
-                "active"
-            )
-    ) {
-
-        animatePhotoGroups(
-            0
-        );
-
-        animateTitlesTo(
-            null,
-            () => {
-
-                photographyField
-                    .classList
-                    .remove(
-                        "active"
-                    );
-
-                activeMode =
-                    null;
-
-                if (
-                    typeof onComplete ===
-                    "function"
-                ) {
-
-                    onComplete();
-
-                }
-
-            }
-        );
-
-        return;
-
-    }
-
-    if (
-        filmField
-            .classList
-            .contains(
-                "active"
-            )
-    ) {
-
-        hideFilmWithTitle(
-            onComplete
-        );
-
-        return;
-
-    }
+    activeMode = null;
 
     filmVideo.pause();
 
-    setVisiblePhotoGroupCount(
-        0
+    filmField.classList.remove("active");
+
+    animatePhotoGroups(0);
+
+    animateTitlesTo(null, () => {
+        photographyField.classList.remove("active");
+    });
+
+}
+
+
+function scheduleMobilePhotography() {
+
+    if (!isMobileLayout() || hoverMode !== null) {
+        return;
+    }
+
+    clearPhaseTimer();
+
+    phaseTimer = setTimeout(
+        () => {
+            if (!isMobileLayout() || hoverMode !== null) {
+                return;
+            }
+
+            startPhotography(true);
+        },
+        MOBILE_INTERLUDE_DURATION
     );
 
-    photographyField
-        .classList
-        .remove(
-            "active"
-        );
+}
 
-    filmField
-        .classList
-        .remove(
-            "active"
-        );
 
-    activeMode =
-        null;
+function scheduleMobileFilm() {
 
-    animateTitlesTo(
-        null,
-        onComplete
+    if (!isMobileLayout() || hoverMode !== null) {
+        return;
+    }
+
+    clearPhaseTimer();
+
+    phaseTimer = setTimeout(
+        () => {
+            if (!isMobileLayout() || hoverMode !== null) {
+                return;
+            }
+
+            startFilm(true);
+        },
+        MOBILE_INTERLUDE_DURATION
     );
 
 }
@@ -4806,68 +4751,74 @@ function enterIdle(
    ===================================================== */
 
 function startPhotography(
-    onReady =
-        null
+    automatic = true
 ) {
 
-    if (
-        !photographyInitialReady
-    ) {
+    clearPhaseTimer();
 
-        setTimeout(
+    if (!photographyInitialReady) {
+
+        phaseTimer = setTimeout(
             () => {
+                if (hoverMode === "film") {
+                    return;
+                }
 
-                startPhotography(
-                    onReady
-                );
-
+                startPhotography(automatic);
             },
             100
         );
 
         return;
-
     }
 
-    activeMode =
-        "photography";
-
-    filmPlaybackMode =
-        "auto";
-
-    cancelFilmAutoClose();
+    activeMode = "photography";
 
     cancelPhotoSequence();
-
     filmVideo.pause();
-
-    filmField
-        .classList
-        .remove(
-            "active"
-        );
+    filmField.classList.remove("active");
 
     refreshPhotographyDOMIfNeeded();
-
     randomizePhotographyLayout();
+    setVisiblePhotoGroupCount(0);
 
-    setVisiblePhotoGroupCount(
-        0
-    );
+    photographyField.classList.add("active");
 
-    photographyField
-        .classList
-        .add(
-            "active"
-        );
+    animateTitlesTo("photography");
+    animatePhotoGroups(groupElements.length);
 
-    animateTitlesTo(
-        "photography"
-    );
+    /* Desktop is interaction-only: no automatic cycle. */
+    if (!isMobileLayout() || !automatic || hoverMode !== null) {
+        return;
+    }
 
-    animatePhotoGroups(
-        groupElements.length,
-        onReady
+    phaseTimer = setTimeout(
+        () => {
+            if (
+                !isMobileLayout() ||
+                activeMode !== "photography" ||
+                hoverMode !== null
+            ) {
+                return;
+            }
+
+            animatePhotoGroups(0);
+
+            animateTitlesTo(null, () => {
+                if (
+                    !isMobileLayout() ||
+                    activeMode !== "photography" ||
+                    hoverMode !== null
+                ) {
+                    return;
+                }
+
+                photographyField.classList.remove("active");
+                activeMode = null;
+                scheduleMobileFilm();
+            });
+        },
+        PHOTO_SEQUENCE_DURATION + PHOTO_HOLD_DURATION
     );
 
 }
@@ -4878,303 +4829,33 @@ function startPhotography(
    ===================================================== */
 
 function startFilm(
-    onReady =
-        null,
-    playbackMode =
-        "auto"
+    automatic = true
 ) {
 
+    clearPhaseTimer();
     cancelPhotoSequence();
 
-    cancelFilmAutoClose();
-
-    activeMode =
-        "film";
-
-    filmPlaybackMode =
-        playbackMode;
-
     const photographyVisible =
-        photographyField
-            .classList
-            .contains(
-                "active"
-            );
+        photographyField.classList.contains("active");
 
-    const revealFilm =
-        () => {
+    activeMode = "film";
 
-            if (
-                activeMode !==
-                "film"
-            ) {
-
-                return;
-
-            }
-
-            photographyField
-                .classList
-                .remove(
-                    "active"
-                );
-
-            switchToFilmLayer()
-                .then(
-                    () => {
-
-                        if (
-                            playbackMode ===
-                            "auto"
-                        ) {
-
-                            scheduleAutomaticFilmClose();
-
-                        }
-
-                        if (
-                            typeof onReady ===
-                            "function"
-                        ) {
-
-                            onReady();
-
-                        }
-
-                    }
-                );
-
-        };
-
-    if (
-        photographyVisible
-    ) {
-
-        animatePhotoGroups(
-            0
-        );
-
-        animateTitlesTo(
-            "film",
-            revealFilm
-        );
-
-        return;
-
-    }
-
-    animateTitlesTo(
-        "film",
-        revealFilm
-    );
-
-}
-
-
-/* =====================================================
-   INTRO — LOGO
-   ===================================================== */
-
-function introLogo() {
-
-    if (
-        introCancelled
-    ) {
-
-        return;
-
-    }
-
-    animateLogoTo(
-        5,
-        () => {
-
-            if (
-                introCancelled
-            ) {
-
-                return;
-
-            }
-
-            introWait(
-                LOGO_INTRO_HOLD,
-                () => {
-
-                    animateLogoTo(
-                        0,
-                        () => {
-
-                            if (
-                                introCancelled
-                            ) {
-
-                                return;
-
-                            }
-
-                            introWait(
-                                INTRO_AFTER_LOGO_DELAY,
-                                introPhotography
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
+    const revealFilm = () => {
+        if (activeMode !== "film") {
+            return;
         }
-    );
 
-}
+        photographyField.classList.remove("active");
+        switchToFilmLayer();
+    };
 
-
-/* =====================================================
-   INTRO — PHOTOGRAPHY
-   ===================================================== */
-
-function introPhotography() {
-
-    if (
-        introCancelled
-    ) {
-
+    if (photographyVisible) {
+        animatePhotoGroups(0);
+        animateTitlesTo("film", revealFilm);
         return;
-
     }
 
-    startPhotography(
-        () => {
-
-            if (
-                introCancelled
-            ) {
-
-                return;
-
-            }
-
-            introWait(
-                INTRO_PHOTO_HOLD,
-                () => {
-
-                    if (
-                        introCancelled
-                    ) {
-
-                        return;
-
-                    }
-
-                    animatePhotoGroups(
-                        0
-                    );
-
-                    animateTitlesTo(
-                        null,
-                        () => {
-
-                            photographyField
-                                .classList
-                                .remove(
-                                    "active"
-                                );
-
-                            activeMode =
-                                null;
-
-                            introWait(
-                                INTRO_BETWEEN_PHOTO_FILM,
-                                introFilm
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   INTRO — FILM
-   ===================================================== */
-
-function introFilm() {
-
-    if (
-        introCancelled
-    ) {
-
-        return;
-
-    }
-
-    startFilm(
-        null,
-        "auto"
-    );
-
-}
-
-
-/* =====================================================
-   INTRO START
-   ===================================================== */
-
-function startAutomaticIntro() {
-
-    if (
-        introStarted ||
-        introFinished
-    ) {
-
-        return;
-
-    }
-
-    introStarted =
-        true;
-
-    introCancelled =
-        false;
-
-    introWait(
-        INTRO_INITIAL_DELAY,
-        introLogo
-    );
-
-}
-
-
-/* =====================================================
-   CANCEL INTRO
-   ===================================================== */
-
-function cancelAutomaticIntroForInteraction() {
-
-    if (
-        introFinished
-    ) {
-
-        return;
-
-    }
-
-    introCancelled =
-        true;
-
-    introFinished =
-        true;
-
-    clearIntroTimer();
-
-    cancelFilmAutoClose();
+    animateTitlesTo("film", revealFilm);
 
 }
 
@@ -5185,117 +4866,36 @@ function cancelAutomaticIntroForInteraction() {
 
 filmVideo.addEventListener(
     "ended",
-    async () => {
+    () => {
 
-        if (
-            activeMode !==
-            "film"
-        ) {
-
+        if (activeMode !== "film") {
             return;
-
         }
 
-
-        /*
-            HOVER
-
-            Hard cut back to beginning and keep playing.
-        */
-
-        if (
-            filmPlaybackMode ===
-            "hover" &&
-            canHover() &&
-            hoverMode ===
-            "film"
-        ) {
-
-            await playFilmFromBeginning();
-
+        if (hoverMode === "film") {
             return;
-
         }
 
-
-        /*
-            AUTOMATIC INTRO
-
-            If the closing animation has already started,
-            remove the video IMMEDIATELY when the actual
-            clip reaches its end.
-
-            This is the critical anti-freeze behaviour.
-
-            The browser cannot leave its final frame
-            sitting on screen while FILM -> film finishes.
-        */
-
-        if (
-            filmPlaybackMode ===
-            "auto" &&
-            filmAutoCloseStarted
-        ) {
-
-            filmField
-                .classList
-                .remove(
-                    "active"
-                );
-
+        /* Desktop film only exists while hovered. */
+        if (!isMobileLayout()) {
+            enterIdle();
             return;
-
         }
 
+        filmVideo.pause();
+        filmField.classList.remove("active");
+        activeMode = null;
 
-        /*
-            Safety fallback.
-
-            If for some reason the rAF watcher never
-            triggered the early title transition,
-            close everything immediately.
-        */
-
-        if (
-            filmPlaybackMode ===
-            "auto"
-        ) {
-
-            cancelFilmAutoClose();
-
-            filmField
-                .classList
-                .remove(
-                    "active"
-                );
-
-            animateTitlesTo(
-                null,
-                () => {
-
-                    activeMode =
-                        null;
-
-                    if (
-                        !introCancelled
-                    ) {
-
-                        introFinished =
-                            true;
-
-                    }
-
-                }
-            );
-
-        }
+        animateTitlesTo(null, () => {
+            scheduleMobilePhotography();
+        });
 
     }
 );
 
 
 /* =====================================================
-   HOVER CAPABILITY
+   HOVER
    ===================================================== */
 
 function canHover() {
@@ -5309,28 +4909,16 @@ function canHover() {
 }
 
 
-/* =====================================================
-   DESKTOP PHOTOGRAPHY HOVER
-   ===================================================== */
-
 photographyLink.addEventListener(
     "mouseenter",
     () => {
 
-        if (
-            !canHover()
-        ) {
-
+        if (!canHover()) {
             return;
-
         }
 
-        cancelAutomaticIntroForInteraction();
-
-        hoverMode =
-            "photography";
-
-        startPhotography();
+        hoverMode = "photography";
+        startPhotography(false);
 
     }
 );
@@ -5340,42 +4928,25 @@ photographyLink.addEventListener(
     "mouseleave",
     () => {
 
-        if (
-            !canHover()
-        ) {
-
+        if (!canHover()) {
             return;
-
         }
 
         setTimeout(
             () => {
 
                 if (
-                    photographyLink.matches(
-                        ":hover"
-                    ) ||
-                    filmLink.matches(
-                        ":hover"
-                    )
+                    photographyLink.matches(":hover") ||
+                    filmLink.matches(":hover")
                 ) {
-
                     return;
-
                 }
 
-                if (
-                    hoverMode !==
-                    "photography"
-                ) {
-
+                if (hoverMode !== "photography") {
                     return;
-
                 }
 
-                hoverMode =
-                    null;
-
+                hoverMode = null;
                 enterIdle();
 
             },
@@ -5386,31 +4957,16 @@ photographyLink.addEventListener(
 );
 
 
-/* =====================================================
-   DESKTOP FILM HOVER
-   ===================================================== */
-
 filmLink.addEventListener(
     "mouseenter",
     () => {
 
-        if (
-            !canHover()
-        ) {
-
+        if (!canHover()) {
             return;
-
         }
 
-        cancelAutomaticIntroForInteraction();
-
-        hoverMode =
-            "film";
-
-        startFilm(
-            null,
-            "hover"
-        );
+        hoverMode = "film";
+        startFilm(false);
 
     }
 );
@@ -5420,323 +4976,29 @@ filmLink.addEventListener(
     "mouseleave",
     () => {
 
-        if (
-            !canHover()
-        ) {
-
+        if (!canHover()) {
             return;
-
         }
 
         setTimeout(
             () => {
 
                 if (
-                    filmLink.matches(
-                        ":hover"
-                    ) ||
-                    photographyLink.matches(
-                        ":hover"
-                    )
+                    filmLink.matches(":hover") ||
+                    photographyLink.matches(":hover")
                 ) {
-
                     return;
-
                 }
 
-                if (
-                    hoverMode !==
-                    "film"
-                ) {
-
+                if (hoverMode !== "film") {
                     return;
-
                 }
 
-                hoverMode =
-                    null;
-
-                filmPlaybackMode =
-                    "auto";
-
-                cancelFilmAutoClose();
-
+                hoverMode = null;
                 enterIdle();
 
             },
             0
-        );
-
-    }
-);
-
-
-/* =====================================================
-   MOBILE SECTION NAVIGATION
-
-   Mobile only.
-
-   Tapping "photography" or "film":
-
-   1. cancels the automatic intro / hover state
-   2. closes any visible or opening photography mosaic
-   3. hides / pauses any visible film
-   4. returns the Denizalp Aybak logo to its normal state
-   5. morphs ONLY the tapped navigation word to uppercase
-   6. holds that clean state briefly
-   7. opens the corresponding section site
-
-   No photography mosaic or film is opened as part of
-   this tap gesture.
-   ===================================================== */
-
-function waitForMobileSectionNavigation(
-    duration
-) {
-
-    return new Promise(
-        resolve => {
-
-            setTimeout(
-                resolve,
-                duration
-            );
-
-        }
-    );
-
-}
-
-
-function animateTitlesToPromise(
-    mode
-) {
-
-    return new Promise(
-        resolve => {
-
-            animateTitlesTo(
-                mode,
-                resolve
-            );
-
-        }
-    );
-
-}
-
-
-function animateLogoToPromise(
-    target
-) {
-
-    return new Promise(
-        resolve => {
-
-            animateLogoTo(
-                target,
-                resolve
-            );
-
-        }
-    );
-
-}
-
-
-function closePhotographyForMobileNavigation() {
-
-    return new Promise(
-        resolve => {
-
-            cancelPhotoSequence();
-
-            if (
-                photographyField
-                    .classList
-                    .contains(
-                        "active"
-                    )
-            ) {
-
-                animatePhotoGroups(
-                    0,
-                    () => {
-
-                        photographyField
-                            .classList
-                            .remove(
-                                "active"
-                            );
-
-                        setVisiblePhotoGroupCount(
-                            0
-                        );
-
-                        resolve();
-
-                    }
-                );
-
-                return;
-
-            }
-
-            setVisiblePhotoGroupCount(
-                0
-            );
-
-            photographyField
-                .classList
-                .remove(
-                    "active"
-                );
-
-            resolve();
-
-        }
-    );
-
-}
-
-
-async function navigateFromMobileSection(
-    targetMode,
-    destination
-) {
-
-    if (
-        canHover() ||
-        mobileSectionNavigationInProgress
-    ) {
-
-        return;
-
-    }
-
-    mobileSectionNavigationInProgress =
-        true;
-
-    /*
-        Stop every automatic / interactive state first.
-    */
-
-    cancelAutomaticIntroForInteraction();
-
-    clearIntroTimer();
-
-    cancelFilmAutoClose();
-
-    cancelPhotoSequence();
-
-    hoverMode =
-        null;
-
-    filmPlaybackMode =
-        "auto";
-
-    /*
-        The film must never remain visible during the
-        navigation gesture, even when the user taps while
-        it is opening or already playing.
-    */
-
-    filmVideo.pause();
-
-    filmField
-        .classList
-        .remove(
-            "active"
-        );
-
-    /*
-        Resolve the visual states simultaneously:
-
-        - mosaic closes
-        - logo returns to normal
-        - tapped word becomes uppercase
-        - the other word returns to lowercase
-    */
-
-    const photographyClosing =
-        closePhotographyForMobileNavigation();
-
-    const logoReset =
-        animateLogoToPromise(
-            0
-        );
-
-    const titleTransition =
-        animateTitlesToPromise(
-            targetMode
-        );
-
-    await Promise.all(
-        [
-            photographyClosing,
-            logoReset,
-            titleTransition
-        ]
-    );
-
-    activeMode =
-        null;
-
-    /*
-        Give the user enough time to register the final
-        uppercase state before navigation.
-    */
-
-    await waitForMobileSectionNavigation(
-        MOBILE_SECTION_NAV_HOLD
-    );
-
-    window.location.href =
-        destination;
-
-}
-
-
-photographyLink.addEventListener(
-    "click",
-    event => {
-
-        if (
-            canHover()
-        ) {
-
-            return;
-
-        }
-
-        event.preventDefault();
-
-        navigateFromMobileSection(
-            "photography",
-            photographyLink.href
-        );
-
-    }
-);
-
-
-filmLink.addEventListener(
-    "click",
-    event => {
-
-        if (
-            canHover()
-        ) {
-
-            return;
-
-        }
-
-        event.preventDefault();
-
-        navigateFromMobileSection(
-            "film",
-            filmLink.href
         );
 
     }
@@ -5752,10 +5014,12 @@ const logo =
         "logo"
     );
 
+
 const logoName =
     document.getElementById(
         "logo-name"
     );
+
 
 const logoLetters =
     [
@@ -5782,6 +5046,7 @@ const logoLetters =
 
     ];
 
+
 const logoLowercase =
     [
         "a",
@@ -5791,31 +5056,40 @@ const logoLowercase =
         "k"
     ];
 
+
 const logoUppercase =
     [
         "A",
         "Y",
         "B",
         "A",
-        "K"
+        "Y"
     ];
+
+
+/*
+    Correct final letter.
+*/
+
+logoUppercase[4] =
+    "K";
+
 
 let logoState =
     0;
 
+
 let logoTarget =
     0;
+
 
 let logoTimer =
     null;
 
+
 let logoReturnTimer =
     null;
 
-
-/* =====================================================
-   LOGO STATE
-   ===================================================== */
 
 function setLogoState(
     state
@@ -5830,11 +5104,13 @@ function setLogoState(
             )
         );
 
+
     logoName.textContent =
         logoState ===
         0
             ? "Denizalp"
             : "denizalp";
+
 
     logoLetters.forEach(
         (
@@ -5858,10 +5134,6 @@ function setLogoState(
 }
 
 
-/* =====================================================
-   LOGO ANIMATION
-   ===================================================== */
-
 function animateLogoTo(
     target,
     callback =
@@ -5870,6 +5142,7 @@ function animateLogoTo(
 
     logoTarget =
         target;
+
 
     if (
         logoTimer !==
@@ -5880,10 +5153,12 @@ function animateLogoTo(
             logoTimer
         );
 
+
         logoTimer =
             null;
 
     }
+
 
     function step() {
 
@@ -5895,6 +5170,7 @@ function animateLogoTo(
             logoTimer =
                 null;
 
+
             if (
                 typeof callback ===
                 "function"
@@ -5904,9 +5180,11 @@ function animateLogoTo(
 
             }
 
+
             return;
 
         }
+
 
         setLogoState(
             logoState <
@@ -5914,6 +5192,7 @@ function animateLogoTo(
                 ? logoState + 1
                 : logoState - 1
         );
+
 
         logoTimer =
             setTimeout(
@@ -5923,14 +5202,11 @@ function animateLogoTo(
 
     }
 
+
     step();
 
 }
 
-
-/* =====================================================
-   LOGO DESKTOP HOVER
-   ===================================================== */
 
 logo.addEventListener(
     "mouseenter",
@@ -5944,7 +5220,6 @@ logo.addEventListener(
 
         }
 
-        cancelAutomaticIntroForInteraction();
 
         if (
             logoReturnTimer !==
@@ -5955,10 +5230,12 @@ logo.addEventListener(
                 logoReturnTimer
             );
 
+
             logoReturnTimer =
                 null;
 
         }
+
 
         animateLogoTo(
             5
@@ -5980,6 +5257,7 @@ logo.addEventListener(
 
         }
 
+
         animateLogoTo(
             0
         );
@@ -5988,15 +5266,12 @@ logo.addEventListener(
 );
 
 
-/* =====================================================
-   LOGO MOBILE TAP
-   ===================================================== */
-
 logo.addEventListener(
     "click",
     event => {
 
         event.preventDefault();
+
 
         if (
             canHover()
@@ -6006,7 +5281,6 @@ logo.addEventListener(
 
         }
 
-        cancelAutomaticIntroForInteraction();
 
         if (
             logoReturnTimer !==
@@ -6017,10 +5291,12 @@ logo.addEventListener(
                 logoReturnTimer
             );
 
+
             logoReturnTimer =
                 null;
 
         }
+
 
         animateLogoTo(
             5,
@@ -6033,6 +5309,7 @@ logo.addEventListener(
                             animateLogoTo(
                                 0
                             );
+
 
                             logoReturnTimer =
                                 null;
@@ -6049,7 +5326,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   RESIZE / ORIENTATION
+   RESIZE
    ===================================================== */
 
 let resizeTimer =
@@ -6071,11 +5348,10 @@ window.addEventListener(
 
         }
 
+
         resizeTimer =
             setTimeout(
                 () => {
-
-                    mountPhotographyField();
 
                     if (
                         !photographyInitialReady
@@ -6085,9 +5361,11 @@ window.addEventListener(
 
                     }
 
+
                     const modeChanged =
                         renderedMobileMode !==
                         isMobileLayout();
+
 
                     if (
                         modeChanged
@@ -6097,11 +5375,15 @@ window.addEventListener(
                             activeMode ===
                             "photography";
 
+
                         updateActiveVisualGroups();
+
 
                         buildPhotographyDOM();
 
+
                         randomizePhotographyLayout();
+
 
                         if (
                             wasVisible
@@ -6140,59 +5422,36 @@ document.addEventListener(
     "visibilitychange",
     () => {
 
-        if (
-            document.hidden
-        ) {
-
+        if (document.hidden) {
+            clearPhaseTimer();
+            cancelPhotoSequence();
             filmVideo.pause();
-
             return;
-
         }
 
-        if (
-            hoverMode ===
-            "photography"
-        ) {
-
-            startPhotography();
-
+        if (hoverMode === "photography") {
+            startPhotography(false);
             return;
-
         }
 
-        if (
-            hoverMode ===
-            "film"
-        ) {
-
-            startFilm(
-                null,
-                "hover"
-            );
-
+        if (hoverMode === "film") {
+            startFilm(false);
             return;
-
         }
 
-        if (
-            activeMode ===
-            "film" &&
-            filmField.classList.contains(
-                "active"
-            )
-        ) {
+        if (!isMobileLayout()) {
+            enterIdle();
+            return;
+        }
 
-            try {
-
-                filmVideo.play();
-
-            }
-
-            catch (
-                error
-            ) {}
-
+        if (activeMode === "photography") {
+            startPhotography(true);
+        }
+        else if (activeMode === "film") {
+            startFilm(true);
+        }
+        else {
+            scheduleMobilePhotography();
         }
 
     }
@@ -6205,56 +5464,180 @@ document.addEventListener(
 
 function init() {
 
-    mountPhotographyField();
+    setLogoState(0);
 
-    setLogoState(
-        0
-    );
-
-    setWordCount(
-        navItems.photography,
-        0
-    );
-
-    setWordCount(
-        navItems.film,
-        0
-    );
-
-    setVisiblePhotoGroupCount(
-        0
-    );
-
-    photographyField
-        .classList
-        .remove(
-            "active"
-        );
-
-    filmField
-        .classList
-        .remove(
-            "active"
-        );
+    setWordCount(navItems.photography, 0);
+    setWordCount(navItems.film, 0);
 
     loadInitialPhotography()
         .catch(
             error => {
-
                 console.error(
                     "Photography preparation failed:",
                     error
                 );
-
             }
         );
 
-    startAutomaticIntro();
+    /*
+        Desktop starts completely typographic / empty.
+        Mobile keeps the automatic photography ↔ film cycle.
+    */
+    if (!isMobileLayout()) {
+        enterIdle();
+        return;
+    }
+
+    if (INITIAL_FILM_DELAY > 0) {
+        setTimeout(
+            () => {
+                startFilm(true);
+            },
+            INITIAL_FILM_DELAY
+        );
+    }
+    else {
+        startFilm(true);
+    }
 
 }
 
 
 init();
+
+
+
+/* =====================================================
+   PORTFOLIO DOWNLOAD
+
+   The PDF lives on R2, which is a different origin.
+   Browsers may ignore the HTML `download` attribute for
+   cross-origin files, so we fetch it as a Blob first and
+   download the local object URL instead. This keeps the
+   visitor on the landing page rather than opening the PDF.
+   ===================================================== */
+
+const portfolioDownload =
+    document.getElementById(
+        "portfolio-download"
+    );
+
+
+portfolioDownload.addEventListener(
+    "click",
+    async event => {
+
+        event.preventDefault();
+
+
+        if (
+            portfolioDownload.dataset.downloading ===
+            "true"
+        ) {
+
+            return;
+
+        }
+
+
+        portfolioDownload.dataset.downloading =
+            "true";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    PORTFOLIO_PDF_URL,
+                    {
+                        method: "GET",
+                        mode: "cors",
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (
+                !response.ok
+            ) {
+
+                throw new Error(
+                    `Portfolio download failed: ${response.status}`
+                );
+
+            }
+
+
+            const blob =
+                await response.blob();
+
+
+            const objectUrl =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const temporaryLink =
+                document.createElement(
+                    "a"
+                );
+
+
+            temporaryLink.href =
+                objectUrl;
+
+            temporaryLink.download =
+                "denizalp-aybak-portfolio.pdf";
+
+            temporaryLink.style.display =
+                "none";
+
+
+            document.body.appendChild(
+                temporaryLink
+            );
+
+
+            temporaryLink.click();
+
+
+            temporaryLink.remove();
+
+
+            window.setTimeout(
+                () => {
+
+                    URL.revokeObjectURL(
+                        objectUrl
+                    );
+
+                },
+                1000
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                error
+            );
+
+        }
+
+        finally {
+
+            delete portfolioDownload
+                .dataset
+                .downloading;
+
+        }
+
+    }
+);
 
 </script>
 
