@@ -990,7 +990,7 @@ body {
 
             <p class="portfolio-download">
                 <a
-                    href="https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/portfolio/denizalp-aybak-portfolio.pdf"
+                    href="./denizalp-aybak-portfolio.pdf"
                     id="portfolio-download"
                     download="denizalp-aybak-portfolio.pdf"
                 >
@@ -1218,11 +1218,6 @@ const filmVideo =
         "film-video"
     );
 
-
-const portfolioDownload =
-    document.getElementById(
-        "portfolio-download"
-    );
 
 
 /* =====================================================
@@ -6231,143 +6226,6 @@ document.addEventListener(
     }
 );
 
-
-
-/* =====================================================
-   PORTFOLIO DOWNLOAD
-   ===================================================== */
-
-const PORTFOLIO_PDF_URL =
-    "https://pub-14d397941aeb40e5bd3f66ac028fef80.r2.dev/portfolio/denizalp-aybak-portfolio.pdf";
-
-const PORTFOLIO_PDF_FILENAME =
-    "denizalp-aybak-portfolio.pdf";
-
-
-async function downloadPortfolioPdf(
-    event
-) {
-
-    event.preventDefault();
-
-
-    if (
-        portfolioDownload.dataset.downloading ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    portfolioDownload.dataset.downloading =
-        "true";
-
-
-    try {
-
-        const response =
-            await fetch(
-                PORTFOLIO_PDF_URL,
-                {
-                    mode:
-                        "cors",
-
-                    cache:
-                        "no-store"
-                }
-            );
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                `Portfolio download failed: ${response.status}`
-            );
-
-        }
-
-
-        const blob =
-            await response.blob();
-
-
-        const objectUrl =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        const anchor =
-            document.createElement(
-                "a"
-            );
-
-
-        anchor.href =
-            objectUrl;
-
-
-        anchor.download =
-            PORTFOLIO_PDF_FILENAME;
-
-
-        anchor.style.display =
-            "none";
-
-
-        document.body.appendChild(
-            anchor
-        );
-
-
-        anchor.click();
-
-
-        anchor.remove();
-
-
-        window.setTimeout(
-            () => {
-
-                URL.revokeObjectURL(
-                    objectUrl
-                );
-
-            },
-            1000
-        );
-
-    }
-
-    catch (
-        error
-    ) {
-
-        console.error(
-            "Portfolio download failed:",
-            error
-        );
-
-    }
-
-    finally {
-
-        portfolioDownload.dataset.downloading =
-            "false";
-
-    }
-
-}
-
-
-portfolioDownload.addEventListener(
-    "click",
-    downloadPortfolioPdf
-);
 
 
 /* =====================================================
