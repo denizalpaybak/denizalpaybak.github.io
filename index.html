@@ -67,6 +67,59 @@ body {
 
 
 /* =====================================================
+   ANIMATED SERIF BACKGROUND
+   ===================================================== */
+
+.serif-aybak-background {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    pointer-events: none;
+
+    color: #f00;
+
+    opacity: var(--serif-aybak-opacity, 0);
+
+    transition:
+        opacity 80ms linear;
+}
+
+.serif-aybak-background span {
+    display: block;
+
+    width: max-content;
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+    font-size: 112vh;
+    font-size: 112dvh;
+    font-weight: 400;
+    line-height: 0.72;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+
+    transform:
+        scaleX(
+            var(--serif-aybak-scale-x, 0.05)
+        );
+
+    transform-origin: center center;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+/* =====================================================
    PAGE
    ===================================================== */
 
@@ -822,6 +875,14 @@ body {
     class="page"
     id="page"
 >
+
+    <div
+        class="serif-aybak-background"
+        id="serif-aybak-background"
+        aria-hidden="true"
+    >
+        <span>AYBAK</span>
+    </div>
 
     <div
         class="photography-field"
@@ -5775,6 +5836,11 @@ filmLink.addEventListener(
    LOGO
    ===================================================== */
 
+const serifAybakBackground =
+    document.getElementById(
+        "serif-aybak-background"
+    );
+
 const logo =
     document.getElementById(
         "logo"
@@ -5857,6 +5923,30 @@ function setLogoState(
                 state
             )
         );
+
+    /*
+        The giant Times AYBAK is tied directly to the same five-step
+        logo state, so it opens and closes in exact sync with the
+        existing Denizalp / aybak morph.
+    */
+    const serifProgress =
+        logoState / 5;
+
+    const serifScaleX =
+        0.05 +
+        serifProgress * 0.30;
+
+    serifAybakBackground.style.setProperty(
+        "--serif-aybak-scale-x",
+        serifScaleX.toFixed(3)
+    );
+
+    serifAybakBackground.style.setProperty(
+        "--serif-aybak-opacity",
+        logoState === 0
+            ? "0"
+            : "1"
+    );
 
     logoName.textContent =
         logoState ===
