@@ -334,6 +334,17 @@ body {
     text-decoration: underline;
 }
 
+.download-arrow {
+    display: inline-block;
+
+    /*
+        Optical alignment:
+        the down arrow naturally hangs too low relative to Helvetica text.
+        Lift it slightly so it reads as part of the same typographic line.
+    */
+    transform: translateY(-0.12em);
+}
+
 .item {
     white-space: nowrap;
 }
@@ -994,7 +1005,7 @@ body {
                     id="portfolio-download"
                     download="denizalp-aybak-portfolio.pdf"
                 >
-                    portfolio.pdf ↓
+                    portfolio.pdf <span class="download-arrow">↓</span>
                 </a>
             </p>
 
