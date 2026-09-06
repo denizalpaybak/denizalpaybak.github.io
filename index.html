@@ -1078,28 +1078,40 @@ body.landing-aybak-active #landing-aybak-word {
 #fixed-photo-preview {
     position: absolute;
 
+    z-index: 2;
+
     top: 50%;
     left: 50%;
 
-    display: none;
+    display: block;
 
     width: auto;
     height: auto;
 
     max-width:
-        calc(
-            100vw -
-            2 * var(--page-x)
+        min(
+            72vw,
+            calc(
+                100vw -
+                2 * var(--page-x)
+            )
         );
 
     max-height:
-        calc(
-            100vh -
-            var(--page-top) -
-            var(--page-bottom)
+        min(
+            76vh,
+            calc(
+                100vh -
+                var(--page-top) -
+                var(--page-bottom)
+            )
         );
 
     object-fit: contain;
+
+    opacity: 0;
+
+    visibility: hidden;
 
     transform:
         translate(
@@ -1110,8 +1122,9 @@ body.landing-aybak-active #landing-aybak-word {
     pointer-events: none;
 }
 
-#fixed-photo-preview.single-photo-visible {
-    display: block;
+#fixed-photo-preview.visible {
+    opacity: 1;
+    visibility: visible;
 }
 
 
@@ -1134,14 +1147,14 @@ body.landing-aybak-active #landing-aybak-word {
 
         <div
             id="scattered-stage"
+        ></div>
+
+        <img
+            id="fixed-photo-preview"
+            src="./photo.jpg"
+            alt=""
+            aria-hidden="true"
         >
-            <img
-                id="fixed-photo-preview"
-                src="./photo.jpg"
-                alt=""
-                aria-hidden="true"
-            >
-        </div>
 
     </div>
 
@@ -5199,6 +5212,11 @@ function enterIdle(
 
 function clearSinglePhotographyPreview() {
 
+    fixedPhotoPreview.classList.remove(
+        "visible"
+    );
+
+
     scatteredStage.classList.remove(
         "single-photo-mode"
     );
@@ -5225,22 +5243,12 @@ function clearSinglePhotographyPreview() {
                 )
         );
 
-
-    fixedPhotoPreview.classList.remove(
-        "single-photo-visible"
-    );
-
 }
 
 
 function showRandomPhotographyImage(
     onReady = null
 ) {
-
-    /*
-        Keep all existing Photography hover/open/close behavior,
-        but always use the root-level photo.jpg file.
-    */
 
     clearSinglePhotographyPreview();
 
@@ -5255,7 +5263,7 @@ function showRandomPhotographyImage(
 
 
     fixedPhotoPreview.classList.add(
-        "single-photo-visible"
+        "visible"
     );
 
 
@@ -5264,7 +5272,7 @@ function showRandomPhotographyImage(
 
             if (
                 typeof onReady ===
-                "function"
+                    "function"
             ) {
 
                 onReady();
