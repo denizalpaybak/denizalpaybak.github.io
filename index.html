@@ -5875,6 +5875,60 @@ function startFilm(
         };
 
     if (
+        photographyVisible &&
+        playbackMode ===
+            "hover"
+    ) {
+
+        /*
+            Desktop hover handoff:
+            switch the media layer immediately and let the
+            title morph run at the same time. This prevents
+            photography -> film from waiting for the full
+            400 ms word animation before the video appears.
+        */
+        cancelPhotoSequence();
+
+        clearSinglePhotographyPreview();
+
+        setVisiblePhotoGroupCount(
+            0
+        );
+
+        photographyField
+            .classList
+            .remove(
+                "active"
+            );
+
+        filmField
+            .classList
+            .add(
+                "active"
+            );
+
+        playFilmFromBeginning();
+
+        animateTitlesTo(
+            "film"
+        );
+
+        if (
+            typeof onReady ===
+                "function"
+        ) {
+
+            requestAnimationFrame(
+                onReady
+            );
+
+        }
+
+        return;
+
+    }
+
+    if (
         photographyVisible
     ) {
 
