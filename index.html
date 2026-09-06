@@ -1128,6 +1128,107 @@ body.landing-aybak-active #landing-aybak-word {
 }
 
 
+
+
+/* =====================================================
+   LANDING V6 — WHITE-SURFACE PREVIEW ZONES
+   ===================================================== */
+
+/*
+    Photography / Film previews now live inside the unused white area
+    of the landing page. No black preview state and no text hiding.
+*/
+body.preview-active,
+body.preview-active .page,
+body.preview-photography,
+body.preview-film {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+body.preview-active .logo,
+body.preview-active .opening,
+body.preview-active .biography,
+body.preview-active .contact,
+body.preview-active .contact a,
+body.preview-active .portfolio-download,
+body.preview-active .navigation a,
+body.preview-photography .navigation #photography-link,
+body.preview-film .navigation #film-link {
+    color: #000 !important;
+}
+
+body.preview-active .logo,
+body.preview-active .opening,
+body.preview-active .biography,
+body.preview-active .contact,
+body.preview-active .portfolio-download {
+    pointer-events: auto !important;
+}
+
+/*
+    The fields themselves are positioned by JS into the largest safe
+    rectangle that does not overlap the biography, navigation, contact
+    or portfolio download.
+*/
+.photography-field,
+.film-field {
+    position: fixed !important;
+    z-index: 10 !important;
+    top: var(--preview-zone-top, 50%) !important;
+    left: var(--preview-zone-left, 50%) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: var(--preview-zone-width, 0px) !important;
+    height: var(--preview-zone-height, 0px) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.film-field {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.film-link {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+#film-video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+}
+
+#fixed-photo-preview {
+    top: 50% !important;
+    left: 50% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/*
+    Avoid the old mobile rules remounting photography into media-field
+    geometry. It remains a viewport-fixed preview zone on every platform.
+*/
+@media (max-width: 1000px) {
+    .photography-field,
+    .film-field {
+        position: fixed !important;
+    }
+}
+
+
 </style>
 
 </head>
@@ -1554,6 +1655,292 @@ const filmVideo =
 
 
 
+
+/* =====================================================
+   SAFE PREVIEW ZONE
+   ===================================================== */
+
+function setPreviewZoneRect(
+    rect
+) {
+
+    const width =
+        Math.max(
+            0,
+            rect.width
+        );
+
+    const height =
+        Math.max(
+            0,
+            rect.height
+        );
+
+
+    document.documentElement.style.setProperty(
+        "--preview-zone-left",
+        `${Math.round(rect.left)}px`
+    );
+
+    document.documentElement.style.setProperty(
+        "--preview-zone-top",
+        `${Math.round(rect.top)}px`
+    );
+
+    document.documentElement.style.setProperty(
+        "--preview-zone-width",
+        `${Math.round(width)}px`
+    );
+
+    document.documentElement.style.setProperty(
+        "--preview-zone-height",
+        `${Math.round(height)}px`
+    );
+
+}
+
+
+function calculatePreviewZone() {
+
+    const viewportWidth =
+        window.innerWidth;
+
+    const viewportHeight =
+        window.innerHeight;
+
+
+    const pageStyles =
+        getComputedStyle(
+            document.documentElement
+        );
+
+
+    const pageX =
+        parseFloat(
+            pageStyles.getPropertyValue(
+                "--page-x"
+            )
+        ) || 24;
+
+
+    const pageTop =
+        parseFloat(
+            pageStyles.getPropertyValue(
+                "--page-top"
+            )
+        ) || 20;
+
+
+    const pageBottom =
+        parseFloat(
+            pageStyles.getPropertyValue(
+                "--page-bottom"
+            )
+        ) || 24;
+
+
+    const gap =
+        Math.max(
+            18,
+            parseFloat(
+                pageStyles.getPropertyValue(
+                    "--major-gap"
+                )
+            ) || 16
+        );
+
+
+    const bioRect =
+        biography
+            .getBoundingClientRect();
+
+
+    const navigationRect =
+        document.querySelector(
+            ".navigation"
+        )
+            .getBoundingClientRect();
+
+
+    const contactRect =
+        document.querySelector(
+            ".contact"
+        )
+            .getBoundingClientRect();
+
+
+    const portfolioRect =
+        document.querySelector(
+            ".portfolio-download"
+        )
+            .getBoundingClientRect();
+
+
+    const portrait =
+        viewportHeight >
+        viewportWidth;
+
+
+    let rect;
+
+
+    if (
+        portrait
+    ) {
+
+        /*
+            Portrait:
+            use the whitespace between the biography and the footer.
+        */
+        const top =
+            Math.max(
+                bioRect.bottom + gap,
+                navigationRect.bottom + gap
+            );
+
+
+        const footerTop =
+            Math.min(
+                contactRect.top,
+                portfolioRect.top
+            );
+
+
+        const bottom =
+            Math.max(
+                top,
+                footerTop - gap
+            );
+
+
+        rect = {
+            left:
+                pageX,
+            top,
+            width:
+                Math.max(
+                    0,
+                    viewportWidth -
+                    pageX * 2
+                ),
+            height:
+                Math.max(
+                    0,
+                    bottom - top
+                )
+        };
+
+    }
+
+    else {
+
+        /*
+            Landscape / desktop:
+            use the whitespace to the right of the biography.
+        */
+        const left =
+            Math.max(
+                bioRect.right + gap,
+                viewportWidth * 0.46
+            );
+
+
+        const top =
+            Math.max(
+                pageTop,
+                navigationRect.bottom + gap
+            );
+
+
+        const footerTop =
+            Math.min(
+                contactRect.top,
+                portfolioRect.top
+            );
+
+
+        const right =
+            viewportWidth -
+            pageX;
+
+
+        const bottom =
+            Math.max(
+                top,
+                footerTop - gap
+            );
+
+
+        rect = {
+            left,
+            top,
+            width:
+                Math.max(
+                    0,
+                    right - left
+                ),
+            height:
+                Math.max(
+                    0,
+                    bottom - top
+                )
+        };
+
+    }
+
+
+    /*
+        Safety fallback for unusually short viewports:
+        keep a usable centered zone without touching the fixed footer.
+    */
+    if (
+        rect.width < 140 ||
+        rect.height < 110
+    ) {
+
+        const top =
+            Math.max(
+                bioRect.bottom + gap,
+                navigationRect.bottom + gap
+            );
+
+
+        const footerTop =
+            Math.min(
+                contactRect.top,
+                portfolioRect.top
+            );
+
+
+        rect = {
+            left:
+                pageX,
+            top,
+            width:
+                Math.max(
+                    0,
+                    viewportWidth -
+                    pageX * 2
+                ),
+            height:
+                Math.max(
+                    0,
+                    footerTop -
+                    gap -
+                    top
+                )
+        };
+
+    }
+
+
+    setPreviewZoneRect(
+        rect
+    );
+
+}
+
+
 /* =====================================================
    DEVICE MODE
    ===================================================== */
@@ -1576,36 +1963,18 @@ function isMobileLayout() {
 function mountPhotographyField() {
 
     if (
-        isMobileLayout()
+        photographyField.parentElement !==
+        page
     ) {
 
-        if (
-            photographyField.parentElement !==
-            mediaField
-        ) {
-
-            mediaField.prepend(
-                photographyField
-            );
-
-        }
+        page.prepend(
+            photographyField
+        );
 
     }
 
-    else {
 
-        if (
-            photographyField.parentElement !==
-            page
-        ) {
-
-            page.prepend(
-                photographyField
-            );
-
-        }
-
-    }
+    calculatePreviewZone();
 
 }
 
@@ -6908,9 +7277,7 @@ function setLandingAybakEndCard(
             Photography/film black surface -> white AYBAK page / black word.
         */
         landingAybakLight =
-            document.body.classList.contains(
-                "preview-active"
-            );
+            false;
 
         document.body.classList.toggle(
             "landing-aybak-light",
@@ -7099,6 +7466,72 @@ window.addEventListener(
             setLandingAybakEndCard(false);
         }
     }
+);
+
+
+
+/* =====================================================
+   GLOBAL INTERACTION CANCEL
+   ===================================================== */
+
+function cancelLandingAutomationFromUi() {
+
+    cancelAutomaticIntroForInteraction();
+
+    clearIntroTimer();
+
+    cancelFilmAutoClose();
+
+}
+
+
+window.addEventListener(
+    "pointerdown",
+    () => {
+
+        cancelLandingAutomationFromUi();
+
+    },
+    true
+);
+
+
+window.addEventListener(
+    "touchstart",
+    () => {
+
+        cancelLandingAutomationFromUi();
+
+    },
+    {
+        capture: true,
+        passive: true
+    }
+);
+
+
+window.addEventListener(
+    "wheel",
+    () => {
+
+        cancelLandingAutomationFromUi();
+
+    },
+    {
+        capture: true,
+        passive: true
+    }
+);
+
+
+window.addEventListener(
+    "keydown",
+    () => {
+
+        cancelLandingAutomationFromUi();
+
+    },
+    true
 );
 
 
@@ -7311,6 +7744,8 @@ function init() {
 
             }
         );
+    calculatePreviewZone();
+
 
     startAutomaticIntro();
 
@@ -7318,6 +7753,20 @@ function init() {
 
 
 init();
+
+
+
+window.addEventListener(
+    "load",
+    () => {
+
+        calculatePreviewZone();
+
+    },
+    {
+        once: true
+    }
+);
 
 </script>
 
