@@ -1016,10 +1016,14 @@ body.landing-aybak-active #landing-aybak-end-card {
         visibility 0s linear 0s;
 }
 
+html.landing-aybak-active:not(.landing-aybak-light),
+body.landing-aybak-active:not(.landing-aybak-light),
 body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
     background: #000;
 }
 
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
 body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     background: #fff;
 }
@@ -7194,7 +7198,19 @@ function fitLandingAybakWord() {
 
     const sampleSize = 1000;
     const trackingEm = -0.045;
+
+    /*
+        The first A felt optically detached from Y.
+        Tighten ONLY the A-Y pair a little, without making the letters touch.
+        All outer ink bounds are still refitted to the same page edges below.
+    */
+    const FIRST_PAIR_TIGHTEN_EM =
+        -0.022;
+
     const trackingPx = trackingEm * sampleSize;
+    const firstPairTightenPx =
+        FIRST_PAIR_TIGHTEN_EM * sampleSize;
+
     const padding = 420;
 
     const measureCanvas =
@@ -7244,7 +7260,8 @@ function fitLandingAybakWord() {
         Math.max(
             0,
             letters.length - 1
-        );
+        ) +
+        firstPairTightenPx;
 
     measureCanvas.width =
         Math.ceil(
@@ -7295,6 +7312,12 @@ function fitLandingAybakWord() {
                 letters.length - 1
             ) {
                 x += trackingPx;
+
+                if (
+                    index === 0
+                ) {
+                    x += firstPairTightenPx;
+                }
             }
 
         }
@@ -7456,6 +7479,14 @@ function fitLandingAybakWord() {
                 letters.length - 1
             ) {
                 drawX += tracking;
+
+                if (
+                    index === 0
+                ) {
+                    drawX +=
+                        FIRST_PAIR_TIGHTEN_EM *
+                        fontSize;
+                }
             }
 
         }
@@ -7493,12 +7524,22 @@ function setLandingAybakEndCard(
             "landing-aybak-light",
             landingAybakLight
         );
+
+        document.documentElement.classList.toggle(
+            "landing-aybak-light",
+            landingAybakLight
+        );
     }
 
     landingAybakActive =
         next;
 
     document.body.classList.toggle(
+        "landing-aybak-active",
+        landingAybakActive
+    );
+
+    document.documentElement.classList.toggle(
         "landing-aybak-active",
         landingAybakActive
     );
