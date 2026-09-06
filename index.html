@@ -7181,10 +7181,21 @@ function fitLandingAybakWord() {
             )
         ) || 0;
 
+    /*
+        Landing experiment:
+        only the FIRST A is larger.
+
+        The complete word is still measured from its actual ink bounds,
+        then fitted back into the exact same left / right / bottom limits.
+        So the larger initial never changes the page-edge alignment.
+    */
+    const FIRST_A_SCALE =
+        1.12;
+
     const sampleSize = 1000;
     const trackingEm = -0.045;
     const trackingPx = trackingEm * sampleSize;
-    const padding = 320;
+    const padding = 420;
 
     const measureCanvas =
         document.createElement(
@@ -7196,20 +7207,31 @@ function fitLandingAybakWord() {
             "2d"
         );
 
-    mctx.font =
-        `400 ${sampleSize}px "Times New Roman", Times, serif`;
-
     const letters =
         Array.from(
             "AYBAK"
         );
 
+    const letterScales =
+        letters.map(
+            (_, index) =>
+                index === 0
+                    ? FIRST_A_SCALE
+                    : 1
+        );
+
     const advances =
         letters.map(
-            letter =>
-                mctx.measureText(
+            (letter, index) => {
+
+                mctx.font =
+                    `400 ${sampleSize * letterScales[index]}px "Times New Roman", Times, serif`;
+
+                return mctx.measureText(
                     letter
-                ).width
+                ).width;
+
+            }
         );
 
     const advance =
@@ -7231,8 +7253,10 @@ function fitLandingAybakWord() {
         );
 
     measureCanvas.height =
-        sampleSize +
-        padding * 2;
+        Math.ceil(
+            sampleSize * FIRST_A_SCALE +
+            padding * 2
+        );
 
     const draw =
         measureCanvas.getContext(
@@ -7240,31 +7264,39 @@ function fitLandingAybakWord() {
             { willReadFrequently: true }
         );
 
-    draw.font =
-        `400 ${sampleSize}px "Times New Roman", Times, serif`;
     draw.textBaseline =
         "alphabetic";
     draw.fillStyle =
         "#fff";
 
     const originX = padding;
-    const baselineY = padding + sampleSize;
+    const baselineY =
+        padding +
+        sampleSize * FIRST_A_SCALE;
+
     let x = originX;
 
     letters.forEach(
         (letter, index) => {
+
+            draw.font =
+                `400 ${sampleSize * letterScales[index]}px "Times New Roman", Times, serif`;
+
             draw.fillText(
                 letter,
                 x,
                 baselineY
             );
+
             x += advances[index];
+
             if (
                 index <
                 letters.length - 1
             ) {
                 x += trackingPx;
             }
+
         }
     );
 
@@ -7292,6 +7324,7 @@ function fitLandingAybakWord() {
         ) {
             const alpha =
                 data[(yy * measureCanvas.width + xx) * 4 + 3];
+
             if (alpha > 8) {
                 minX = Math.min(minX, xx);
                 maxX = Math.max(maxX, xx);
@@ -7309,8 +7342,10 @@ function fitLandingAybakWord() {
 
     const sampleInkLeft =
         minX - originX;
+
     const sampleInkWidth =
         maxX - minX + 1;
+
     const sampleInkBottom =
         maxY - baselineY;
 
@@ -7348,12 +7383,15 @@ function fitLandingAybakWord() {
         Math.round(
             w * dpr
         );
+
     landingAybakCanvas.height =
         Math.round(
             h * dpr
         );
+
     landingAybakCanvas.style.width =
         `${w}px`;
+
     landingAybakCanvas.style.height =
         `${h}px`;
 
@@ -7378,10 +7416,9 @@ function fitLandingAybakWord() {
         h
     );
 
-    ctx.font =
-        `400 ${fontSize}px "Times New Roman", Times, serif`;
     ctx.textBaseline =
         "alphabetic";
+
     ctx.fillStyle =
         landingAybakLight
             ? "#000"
@@ -7395,26 +7432,36 @@ function fitLandingAybakWord() {
 
     letters.forEach(
         (letter, index) => {
+
+            const letterFontSize =
+                fontSize *
+                letterScales[index];
+
+            ctx.font =
+                `400 ${letterFontSize}px "Times New Roman", Times, serif`;
+
             ctx.fillText(
                 letter,
                 drawX,
                 finalBaselineY
             );
+
             drawX +=
                 ctx.measureText(
                     letter
                 ).width;
+
             if (
                 index <
                 letters.length - 1
             ) {
                 drawX += tracking;
             }
+
         }
     );
 
 }
-
 
 function setLandingAybakEndCard(
     active
