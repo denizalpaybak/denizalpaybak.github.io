@@ -2024,6 +2024,12 @@ let introCancelled =
 let introTimer =
     null;
 
+let introLogoCompleted =
+    false;
+
+let introBootScheduled =
+    false;
+
 
 /* =====================================================
    FILM STATE
@@ -2166,6 +2172,38 @@ function uniqueUrls(
             );
 
             return true;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PAINT BARRIER
+   ===================================================== */
+
+function afterTwoPaints(
+    callback
+) {
+
+    requestAnimationFrame(
+        () => {
+
+            requestAnimationFrame(
+                () => {
+
+                    if (
+                        typeof callback ===
+                            "function"
+                    ) {
+
+                        callback();
+
+                    }
+
+                }
+            );
 
         }
     );
@@ -5869,8 +5907,17 @@ function introLogo() {
 
     }
 
-    animateLogoTo(
-        5,
+
+    introLogoCompleted =
+        false;
+
+
+    setLogoState(
+        0
+    );
+
+
+    afterTwoPaints(
         () => {
 
             if (
@@ -5881,25 +5928,62 @@ function introLogo() {
 
             }
 
-            introWait(
-                LOGO_INTRO_HOLD,
+
+            animateLogoTo(
+                5,
                 () => {
 
-                    animateLogoTo(
-                        0,
+                    if (
+                        introCancelled
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    introWait(
+                        LOGO_INTRO_HOLD,
                         () => {
 
-                            if (
-                                introCancelled
-                            ) {
+                            animateLogoTo(
+                                0,
+                                () => {
 
-                                return;
+                                    if (
+                                        introCancelled
+                                    ) {
 
-                            }
+                                        return;
 
-                            introWait(
-                                INTRO_AFTER_LOGO_DELAY,
-                                introPhotography
+                                    }
+
+
+                                    afterTwoPaints(
+                                        () => {
+
+                                            if (
+                                                introCancelled
+                                            ) {
+
+                                                return;
+
+                                            }
+
+
+                                            introLogoCompleted =
+                                                true;
+
+
+                                            introWait(
+                                                INTRO_AFTER_LOGO_DELAY,
+                                                introPhotography
+                                            );
+
+                                        }
+                                    );
+
+                                }
                             );
 
                         }
@@ -5921,7 +6005,8 @@ function introLogo() {
 function introPhotography() {
 
     if (
-        introCancelled
+        introCancelled ||
+        !introLogoCompleted
     ) {
 
         return;
@@ -6007,6 +6092,81 @@ function introFilm() {
 }
 
 
+function scheduleAutomaticIntroBoot() {
+
+    if (
+        introBootScheduled
+    ) {
+
+        return;
+
+    }
+
+
+    introBootScheduled =
+        true;
+
+
+    const boot =
+        () => {
+
+            if (
+                introCancelled ||
+                introStarted ||
+                introFinished
+            ) {
+
+                return;
+
+            }
+
+
+            afterTwoPaints(
+                () => {
+
+                    if (
+                        introCancelled ||
+                        introStarted ||
+                        introFinished
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    scheduleAutomaticIntroBoot();
+
+                }
+            );
+
+        };
+
+
+    if (
+        document.readyState ===
+            "complete"
+    ) {
+
+        boot();
+
+    }
+
+    else {
+
+        window.addEventListener(
+            "load",
+            boot,
+            {
+                once: true
+            }
+        );
+
+    }
+
+}
+
+
 /* =====================================================
    INTRO START
    ===================================================== */
@@ -6026,6 +6186,9 @@ function startAutomaticIntro() {
         true;
 
     introCancelled =
+        false;
+
+    introLogoCompleted =
         false;
 
     introWait(
