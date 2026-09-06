@@ -1069,6 +1069,94 @@ body.landing-aybak-active #landing-aybak-word {
     }
 }
 
+
+
+/* =====================================================
+   LANDING V3 — FIXED PHOTO / SMOOTHER FILM PREVIEW
+   ===================================================== */
+
+/* Root-level photography preview image. */
+#fixed-photo-preview {
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    max-width: min(72vw, calc(100vw - 2 * var(--page-x)));
+    max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom)));
+    object-fit: contain;
+    transform: translate3d(-50%, -50%, 0);
+    backface-visibility: hidden;
+    will-change: opacity;
+    pointer-events: none;
+}
+
+#scattered-stage.single-photo-mode #fixed-photo-preview.single-photo-visible {
+    display: block !important;
+}
+
+/*
+    Film gets its own composited black surface.
+    Opacity animation is significantly cheaper than repainting the whole
+    page background while the video decoder is starting.
+*/
+body::before {
+    content: "";
+    position: fixed;
+    z-index: 6;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms cubic-bezier(.22,.61,.36,1);
+    will-change: opacity;
+}
+
+body.preview-film::before {
+    opacity: 1;
+}
+
+/*
+    Photography keeps the existing background transition that already
+    feels right. Film leaves body/page white underneath and uses the
+    composited overlay above instead.
+*/
+body.preview-film,
+body.preview-film .page {
+    background: #fff !important;
+}
+
+/* Video appears through opacity rather than a hard visibility pop. */
+.film-field {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms cubic-bezier(.22,.61,.36,1);
+    will-change: opacity;
+    transform: translateZ(0);
+}
+
+.film-field.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#film-video {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* Film must sit above the composited black surface. */
+.film-field {
+    z-index: 10;
+}
+
+/* Active navigation stays above everything except the AYBAK end card. */
+.navigation {
+    z-index: 20;
+}
+
+
 </style>
 
 </head>
@@ -1088,7 +1176,14 @@ body.landing-aybak-active #landing-aybak-word {
 
         <div
             id="scattered-stage"
-        ></div>
+        >
+            <img
+                id="fixed-photo-preview"
+                src="./photo.jpg"
+                alt=""
+                aria-hidden="true"
+            >
+        </div>
 
     </div>
 
@@ -1453,6 +1548,12 @@ const filmField =
 const scatteredStage =
     document.getElementById(
         "scattered-stage"
+    );
+
+
+const fixedPhotoPreview =
+    document.getElementById(
+        "fixed-photo-preview"
     );
 
 const photographyLink =
@@ -5166,6 +5267,11 @@ function clearSinglePhotographyPreview() {
                 )
         );
 
+
+    fixedPhotoPreview.classList.remove(
+        "single-photo-visible"
+    );
+
 }
 
 
@@ -5173,52 +5279,10 @@ function showRandomPhotographyImage(
     onReady = null
 ) {
 
-    const images =
-        [
-            ...scatteredStage.querySelectorAll(
-                ".project-photo"
-            )
-        ];
-
-    if (
-        !images.length
-    ) {
-
-        if (
-            typeof onReady ===
-            "function"
-        ) {
-            onReady();
-        }
-
-        return;
-    }
-
-    let candidates =
-        images;
-
-    if (
-        images.length > 1 &&
-        lastRandomPhotographyImage
-    ) {
-        candidates =
-            images.filter(
-                image =>
-                    image !==
-                    lastRandomPhotographyImage
-            );
-    }
-
-    const chosen =
-        candidates[
-            Math.floor(
-                Math.random() *
-                candidates.length
-            )
-        ];
-
-    lastRandomPhotographyImage =
-        chosen;
+    /*
+        The landing photography preview is intentionally fixed:
+        always use the root-level photo.jpg file.
+    */
 
     clearSinglePhotographyPreview();
 
@@ -5226,54 +5290,57 @@ function showRandomPhotographyImage(
         0
     );
 
-    const group =
-        chosen.closest(
-            ".photo-group"
-        );
-
-    if (
-        group
-    ) {
-        group.classList.add(
-            "single-photo-group"
-        );
-    }
-
-    chosen.classList.add(
-        "single-photo-visible"
-    );
 
     scatteredStage.classList.add(
         "single-photo-mode"
     );
 
+
+    fixedPhotoPreview.classList.add(
+        "single-photo-visible"
+    );
+
+
     const ready =
         () => {
+
             if (
                 typeof onReady ===
                 "function"
             ) {
+
                 onReady();
+
             }
+
         };
 
+
     if (
-        chosen.complete &&
-        chosen.naturalWidth > 0
+        fixedPhotoPreview.complete &&
+        fixedPhotoPreview.naturalWidth > 0
     ) {
+
         ready();
+
     }
+
     else {
-        chosen.addEventListener(
+
+        fixedPhotoPreview.addEventListener(
             "load",
             ready,
-            { once: true }
+            {
+                once: true
+            }
         );
+
 
         setTimeout(
             ready,
-            800
+            1000
         );
+
     }
 
 }
@@ -5790,6 +5857,97 @@ function canHover() {
         .matches;
 
 }
+
+
+
+/* =====================================================
+   FILM DECODER WARMUP
+   ===================================================== */
+
+function warmFilmDecoder() {
+
+    if (
+        !filmVideo ||
+        filmVideo.readyState < 2
+    ) {
+
+        return;
+
+    }
+
+
+    const originalTime =
+        filmVideo.currentTime;
+
+
+    filmVideo
+        .play()
+        .then(
+            () => {
+
+                filmVideo.pause();
+
+
+                try {
+
+                    filmVideo.currentTime =
+                        originalTime || 0;
+
+                }
+
+                catch (
+                    error
+                ) {}
+
+            }
+        )
+        .catch(
+            () => {}
+        );
+
+}
+
+
+if (
+    "requestIdleCallback" in window
+) {
+
+    requestIdleCallback(
+        warmFilmDecoder,
+        {
+            timeout: 1800
+        }
+    );
+
+}
+
+else {
+
+    setTimeout(
+        warmFilmDecoder,
+        900
+    );
+
+}
+
+
+filmVideo.addEventListener(
+    "canplay",
+    () => {
+
+        if (
+            activeMode === null
+        ) {
+
+            warmFilmDecoder();
+
+        }
+
+    },
+    {
+        once: true
+    }
+);
 
 
 /* =====================================================
