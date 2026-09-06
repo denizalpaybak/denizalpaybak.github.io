@@ -1072,88 +1072,46 @@ body.landing-aybak-active #landing-aybak-word {
 
 
 /* =====================================================
-   LANDING V3 — FIXED PHOTO / SMOOTHER FILM PREVIEW
+   FIXED PHOTOGRAPHY PREVIEW
    ===================================================== */
 
-/* Root-level photography preview image. */
 #fixed-photo-preview {
     position: absolute;
-    display: none;
+
     top: 50%;
     left: 50%;
+
+    display: none;
+
     width: auto;
     height: auto;
-    max-width: min(72vw, calc(100vw - 2 * var(--page-x)));
-    max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom)));
+
+    max-width:
+        calc(
+            100vw -
+            2 * var(--page-x)
+        );
+
+    max-height:
+        calc(
+            100vh -
+            var(--page-top) -
+            var(--page-bottom)
+        );
+
     object-fit: contain;
-    transform: translate3d(-50%, -50%, 0);
-    backface-visibility: hidden;
-    will-change: opacity;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
     pointer-events: none;
 }
 
-#scattered-stage.single-photo-mode #fixed-photo-preview.single-photo-visible {
-    display: block !important;
-}
-
-/*
-    Film gets its own composited black surface.
-    Opacity animation is significantly cheaper than repainting the whole
-    page background while the video decoder is starting.
-*/
-body::before {
-    content: "";
-    position: fixed;
-    z-index: 6;
-    inset: 0;
-    background: #000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 400ms cubic-bezier(.22,.61,.36,1);
-    will-change: opacity;
-}
-
-body.preview-film::before {
-    opacity: 1;
-}
-
-/*
-    Photography keeps the existing background transition that already
-    feels right. Film leaves body/page white underneath and uses the
-    composited overlay above instead.
-*/
-body.preview-film,
-body.preview-film .page {
-    background: #fff !important;
-}
-
-/* Video appears through opacity rather than a hard visibility pop. */
-.film-field {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 220ms cubic-bezier(.22,.61,.36,1);
-    will-change: opacity;
-    transform: translateZ(0);
-}
-
-.film-field.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-#film-video {
-    will-change: transform, opacity;
-    transform: translateZ(0);
-}
-
-/* Film must sit above the composited black surface. */
-.film-field {
-    z-index: 10;
-}
-
-/* Active navigation stays above everything except the AYBAK end card. */
-.navigation {
-    z-index: 20;
+#fixed-photo-preview.single-photo-visible {
+    display: block;
 }
 
 
@@ -5280,8 +5238,8 @@ function showRandomPhotographyImage(
 ) {
 
     /*
-        The landing photography preview is intentionally fixed:
-        always use the root-level photo.jpg file.
+        Keep all existing Photography hover/open/close behavior,
+        but always use the root-level photo.jpg file.
     */
 
     clearSinglePhotographyPreview();
@@ -5336,9 +5294,12 @@ function showRandomPhotographyImage(
         );
 
 
-        setTimeout(
+        fixedPhotoPreview.addEventListener(
+            "error",
             ready,
-            1000
+            {
+                once: true
+            }
         );
 
     }
@@ -5857,97 +5818,6 @@ function canHover() {
         .matches;
 
 }
-
-
-
-/* =====================================================
-   FILM DECODER WARMUP
-   ===================================================== */
-
-function warmFilmDecoder() {
-
-    if (
-        !filmVideo ||
-        filmVideo.readyState < 2
-    ) {
-
-        return;
-
-    }
-
-
-    const originalTime =
-        filmVideo.currentTime;
-
-
-    filmVideo
-        .play()
-        .then(
-            () => {
-
-                filmVideo.pause();
-
-
-                try {
-
-                    filmVideo.currentTime =
-                        originalTime || 0;
-
-                }
-
-                catch (
-                    error
-                ) {}
-
-            }
-        )
-        .catch(
-            () => {}
-        );
-
-}
-
-
-if (
-    "requestIdleCallback" in window
-) {
-
-    requestIdleCallback(
-        warmFilmDecoder,
-        {
-            timeout: 1800
-        }
-    );
-
-}
-
-else {
-
-    setTimeout(
-        warmFilmDecoder,
-        900
-    );
-
-}
-
-
-filmVideo.addEventListener(
-    "canplay",
-    () => {
-
-        if (
-            activeMode === null
-        ) {
-
-            warmFilmDecoder();
-
-        }
-
-    },
-    {
-        once: true
-    }
-);
 
 
 /* =====================================================
