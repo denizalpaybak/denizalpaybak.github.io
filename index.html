@@ -7200,16 +7200,13 @@ function fitLandingAybakWord() {
     const trackingEm = -0.045;
 
     /*
-        The first A felt optically detached from Y.
-        Tighten ONLY the A-Y pair a little, without making the letters touch.
-        All outer ink bounds are still refitted to the same page edges below.
+        A-Y spacing is solved from the actual glyph bounds so that the B sits
+        exactly on the visual horizontal center of the complete AYBAK word.
+        Only the A-Y pair changes; the first A stays at 114% and the final
+        word is still refitted to the same left / right / bottom page limits.
     */
-    const FIRST_PAIR_TIGHTEN_EM =
-        -0.055;
 
     const trackingPx = trackingEm * sampleSize;
-    const firstPairTightenPx =
-        FIRST_PAIR_TIGHTEN_EM * sampleSize;
 
     const padding = 420;
 
@@ -7236,7 +7233,7 @@ function fitLandingAybakWord() {
                     : 1
         );
 
-    const advances =
+    const metrics =
         letters.map(
             (letter, index) => {
 
@@ -7245,10 +7242,86 @@ function fitLandingAybakWord() {
 
                 return mctx.measureText(
                     letter
-                ).width;
+                );
 
             }
         );
+
+    const advances =
+        metrics.map(
+            metric => metric.width
+        );
+
+    const basePositions = [];
+    let baseX = 0;
+
+    letters.forEach(
+        (_, index) => {
+
+            basePositions.push(
+                baseX
+            );
+
+            baseX += advances[index];
+
+            if (
+                index <
+                letters.length - 1
+            ) {
+                baseX += trackingPx;
+            }
+
+        }
+    );
+
+    const firstMetric = metrics[0];
+    const bMetric = metrics[2];
+    const lastMetric = metrics[metrics.length - 1];
+
+    const baseInkLeft =
+        basePositions[0] -
+        (Number.isFinite(firstMetric.actualBoundingBoxLeft)
+            ? firstMetric.actualBoundingBoxLeft
+            : 0);
+
+    const baseInkRight =
+        basePositions[metrics.length - 1] +
+        (Number.isFinite(lastMetric.actualBoundingBoxRight)
+            ? lastMetric.actualBoundingBoxRight
+            : lastMetric.width);
+
+    const baseBCenter =
+        basePositions[2] +
+        (
+            (Number.isFinite(bMetric.actualBoundingBoxRight)
+                ? bMetric.actualBoundingBoxRight
+                : bMetric.width) -
+            (Number.isFinite(bMetric.actualBoundingBoxLeft)
+                ? bMetric.actualBoundingBoxLeft
+                : 0)
+        ) / 2;
+
+    const solvedFirstPairTightenPx =
+        baseInkLeft +
+        baseInkRight -
+        2 * baseBCenter;
+
+    /*
+        The solved value is normally negative. Clamp only as a safety net so
+        a font-metric oddity can never force the A and Y into each other.
+    */
+    const firstPairTightenPx =
+        Math.max(
+            -0.13 * sampleSize,
+            Math.min(
+                -0.02 * sampleSize,
+                solvedFirstPairTightenPx
+            )
+        );
+
+    const FIRST_PAIR_TIGHTEN_EM =
+        firstPairTightenPx /
+        sampleSize;
 
     const advance =
         advances.reduce(
