@@ -11,6 +11,8 @@
 
 <title>Denizalp Aybak</title>
 
+<link rel="stylesheet" href="https://use.typekit.net/rmn7qgm.css">
+
 <style>
 
 /* =====================================================
@@ -7145,13 +7147,41 @@ const LANDING_AYBAK_SWIPE_THRESHOLD =
     52;
 
 
-function fitLandingAybakWord() {
+async function fitLandingAybakWord() {
 
     if (
         !landingAybakCanvas ||
         !landingAybakEndCard
     ) {
         return;
+    }
+
+    /*
+        AYBAK end-card only:
+
+        - Acumin Pro Wide Semibold (600)
+        - native font kerning; no manual tracking / pair adjustments
+        - visible left edge of A aligns with the page's left text axis
+        - visible right edge of K aligns with the page's right text axis
+        - bottom visible edge uses the same margin as the top headings
+        - the font size is recalculated from the actual viewport width,
+          so these alignments remain fixed on every device / orientation
+    */
+
+    if (
+        document.fonts &&
+        document.fonts.load
+    ) {
+        try {
+            await document.fonts.load(
+                '600 1000px "acumin-pro-wide"',
+                "AYBAK"
+            );
+            await document.fonts.ready;
+        }
+        catch (_) {
+            /* The fallback below still keeps the geometry intact. */
+        }
     }
 
     const w =
@@ -7185,270 +7215,66 @@ function fitLandingAybakWord() {
             )
         ) || 0;
 
-    /*
-        Landing experiment:
-        only the FIRST A is larger.
+    const word =
+        "AYBAK";
 
-        The complete word is still measured from its actual ink bounds,
-        then fitted back into the exact same left / right / bottom limits.
-        So the larger initial never changes the page-edge alignment.
-    */
-    const FIRST_A_SCALE =
-        1.14;
-
-    const sampleSize = 1000;
-    const trackingEm = -0.045;
-
-    /*
-        A-Y spacing is solved from the actual glyph bounds so that the B sits
-        exactly on the visual horizontal center of the complete AYBAK word.
-        Only the A-Y pair changes; the first A stays at 114% and the final
-        word is still refitted to the same left / right / bottom page limits.
-    */
-
-    const trackingPx = trackingEm * sampleSize;
-
-    const padding = 420;
+    const sampleSize =
+        1000;
 
     const measureCanvas =
         document.createElement(
             "canvas"
         );
 
-    const mctx =
+    const measureContext =
         measureCanvas.getContext(
             "2d"
         );
 
-    const letters =
-        Array.from(
-            "AYBAK"
-        );
-
-    const letterScales =
-        letters.map(
-            (_, index) =>
-                index === 0
-                    ? FIRST_A_SCALE
-                    : 1
-        );
-
-    const metrics =
-        letters.map(
-            (letter, index) => {
-
-                mctx.font =
-                    `400 ${sampleSize * letterScales[index]}px "Times New Roman", Times, serif`;
-
-                return mctx.measureText(
-                    letter
-                );
-
-            }
-        );
-
-    const advances =
-        metrics.map(
-            metric => metric.width
-        );
-
-    const basePositions = [];
-    let baseX = 0;
-
-    letters.forEach(
-        (_, index) => {
-
-            basePositions.push(
-                baseX
-            );
-
-            baseX += advances[index];
-
-            if (
-                index <
-                letters.length - 1
-            ) {
-                baseX += trackingPx;
-            }
-
-        }
-    );
-
-    const firstMetric = metrics[0];
-    const bMetric = metrics[2];
-    const lastMetric = metrics[metrics.length - 1];
-
-    const baseInkLeft =
-        basePositions[0] -
-        (Number.isFinite(firstMetric.actualBoundingBoxLeft)
-            ? firstMetric.actualBoundingBoxLeft
-            : 0);
-
-    const baseInkRight =
-        basePositions[metrics.length - 1] +
-        (Number.isFinite(lastMetric.actualBoundingBoxRight)
-            ? lastMetric.actualBoundingBoxRight
-            : lastMetric.width);
-
-    const baseBCenter =
-        basePositions[2] +
-        (
-            (Number.isFinite(bMetric.actualBoundingBoxRight)
-                ? bMetric.actualBoundingBoxRight
-                : bMetric.width) -
-            (Number.isFinite(bMetric.actualBoundingBoxLeft)
-                ? bMetric.actualBoundingBoxLeft
-                : 0)
-        ) / 2;
-
-    const solvedFirstPairTightenPx =
-        baseInkLeft +
-        baseInkRight -
-        2 * baseBCenter;
-
-    /*
-        The solved value is normally negative. Clamp only as a safety net so
-        a font-metric oddity can never force the A and Y into each other.
-    */
-    const firstPairTightenPx =
-        Math.max(
-            -0.13 * sampleSize,
-            Math.min(
-                -0.02 * sampleSize,
-                solvedFirstPairTightenPx
-            )
-        );
-
-    const FIRST_PAIR_TIGHTEN_EM =
-        firstPairTightenPx /
-        sampleSize;
-
-    const advance =
-        advances.reduce(
-            (sum, width) =>
-                sum + width,
-            0
-        ) +
-        trackingPx *
-        Math.max(
-            0,
-            letters.length - 1
-        ) +
-        firstPairTightenPx;
-
-    measureCanvas.width =
-        Math.ceil(
-            advance +
-            padding * 2
-        );
-
-    measureCanvas.height =
-        Math.ceil(
-            sampleSize * FIRST_A_SCALE +
-            padding * 2
-        );
-
-    const draw =
-        measureCanvas.getContext(
-            "2d",
-            { willReadFrequently: true }
-        );
-
-    draw.textBaseline =
+    measureContext.textBaseline =
         "alphabetic";
-    draw.fillStyle =
-        "#fff";
 
-    const originX = padding;
-    const baselineY =
-        padding +
-        sampleSize * FIRST_A_SCALE;
+    measureContext.font =
+        `600 ${sampleSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
 
-    let x = originX;
-
-    letters.forEach(
-        (letter, index) => {
-
-            draw.font =
-                `400 ${sampleSize * letterScales[index]}px "Times New Roman", Times, serif`;
-
-            draw.fillText(
-                letter,
-                x,
-                baselineY
-            );
-
-            x += advances[index];
-
-            if (
-                index <
-                letters.length - 1
-            ) {
-                x += trackingPx;
-
-                if (
-                    index === 0
-                ) {
-                    x += firstPairTightenPx;
-                }
-            }
-
-        }
-    );
-
-    const data =
-        draw.getImageData(
-            0,
-            0,
-            measureCanvas.width,
-            measureCanvas.height
-        ).data;
-
-    let minX = measureCanvas.width;
-    let maxX = -1;
-    let maxY = -1;
-
-    for (
-        let yy = 0;
-        yy < measureCanvas.height;
-        yy++
-    ) {
-        for (
-            let xx = 0;
-            xx < measureCanvas.width;
-            xx++
-        ) {
-            const alpha =
-                data[(yy * measureCanvas.width + xx) * 4 + 3];
-
-            if (alpha > 8) {
-                minX = Math.min(minX, xx);
-                maxX = Math.max(maxX, xx);
-                maxY = Math.max(maxY, yy);
-            }
-        }
-    }
-
-    if (
-        maxX < minX ||
-        maxY < 0
-    ) {
-        return;
-    }
+    const sampleMetrics =
+        measureContext.measureText(
+            word
+        );
 
     const sampleInkLeft =
-        minX - originX;
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxLeft
+        )
+            ? sampleMetrics.actualBoundingBoxLeft
+            : 0;
 
-    const sampleInkWidth =
-        maxX - minX + 1;
+    const sampleInkRight =
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxRight
+        )
+            ? sampleMetrics.actualBoundingBoxRight
+            : sampleMetrics.width;
 
     const sampleInkBottom =
-        maxY - baselineY;
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxDescent
+        )
+            ? sampleMetrics.actualBoundingBoxDescent
+            : 0;
+
+    const sampleInkWidth =
+        Math.max(
+            1,
+            sampleInkLeft +
+            sampleInkRight
+        );
 
     const targetInkWidth =
         Math.max(
             1,
-            w - side * 2
+            w -
+            side * 2
         );
 
     const fontSize =
@@ -7460,14 +7286,25 @@ function fitLandingAybakWord() {
         fontSize /
         sampleSize;
 
+    /*
+        Canvas fillText() uses the text origin, not the visible glyph edge.
+        Offset the origin by actualBoundingBoxLeft so the visible A begins
+        exactly on the same left axis as "Denizalp Aybak".
+    */
     const finalOriginX =
-        side -
-        sampleInkLeft * scale;
+        side +
+        sampleInkLeft *
+        scale;
 
+    /*
+        Place the visible bottom of the word exactly --page-top from the
+        viewport bottom, matching the headings' top margin.
+    */
     const finalBaselineY =
         h -
         bottomGap -
-        sampleInkBottom * scale;
+        sampleInkBottom *
+        scale;
 
     const dpr =
         Math.max(
@@ -7520,49 +7357,13 @@ function fitLandingAybakWord() {
             ? "#000"
             : "#fff";
 
-    const tracking =
-        trackingEm * fontSize;
+    ctx.font =
+        `600 ${fontSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
 
-    let drawX =
-        finalOriginX;
-
-    letters.forEach(
-        (letter, index) => {
-
-            const letterFontSize =
-                fontSize *
-                letterScales[index];
-
-            ctx.font =
-                `400 ${letterFontSize}px "Times New Roman", Times, serif`;
-
-            ctx.fillText(
-                letter,
-                drawX,
-                finalBaselineY
-            );
-
-            drawX +=
-                ctx.measureText(
-                    letter
-                ).width;
-
-            if (
-                index <
-                letters.length - 1
-            ) {
-                drawX += tracking;
-
-                if (
-                    index === 0
-                ) {
-                    drawX +=
-                        FIRST_PAIR_TIGHTEN_EM *
-                        fontSize;
-                }
-            }
-
-        }
+    ctx.fillText(
+        word,
+        finalOriginX,
+        finalBaselineY
     );
 
 }
