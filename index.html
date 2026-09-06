@@ -7217,7 +7217,7 @@ async function fitLandingAybakWord() {
         - native font kerning; no manual tracking / pair adjustments
         - visible left edge of A aligns with the page's left text axis
         - visible right edge of K aligns with the page's right text axis
-        - bottom visible edge uses the same margin as the top headings
+        - bottom visible edge uses the same optical margin as the page footer metadata
         - the font size is recalculated from the actual viewport width,
           so these alignments remain fixed on every device / orientation
     */
@@ -7265,7 +7265,7 @@ async function fitLandingAybakWord() {
     const bottomGap =
         parseFloat(
             root.getPropertyValue(
-                "--page-top"
+                "--page-bottom"
             )
         ) || 0;
 
@@ -7351,8 +7351,9 @@ async function fitLandingAybakWord() {
         scale;
 
     /*
-        Place the visible bottom of the word exactly --page-top from the
-        viewport bottom, matching the headings' top margin.
+        Place the visible bottom of the word exactly --page-bottom from the
+        viewport bottom. This matches the footer metadata's optical bottom margin
+        and prevents the word from sitting too low on portrait mobile.
     */
     const finalBaselineY =
         h -
