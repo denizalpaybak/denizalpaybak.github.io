@@ -822,6 +822,253 @@ body {
 
 }
 
+
+
+/* =====================================================
+   LANDING V2 — REPOSITIONED INFORMATION
+   ===================================================== */
+
+html,
+body,
+.page {
+    transition:
+        background-color 400ms cubic-bezier(.22,.61,.36,1),
+        color 400ms cubic-bezier(.22,.61,.36,1);
+}
+
+.landing-grid {
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.opening {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.biography {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+}
+
+.navigation {
+    position: fixed;
+    z-index: 20;
+    top: var(--page-top);
+    right: var(--page-x);
+    display: flex;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.navigation a {
+    width: max-content;
+    text-align: right;
+    transition: color 400ms cubic-bezier(.22,.61,.36,1);
+}
+
+.contact {
+    position: fixed;
+    z-index: 20;
+    left: var(--page-x);
+    bottom: var(--page-bottom);
+    text-align: left;
+}
+
+.portfolio-download {
+    position: fixed;
+    z-index: 20;
+    right: var(--page-x);
+    bottom: var(--page-bottom);
+    margin: 0 !important;
+    text-align: right;
+}
+
+.logo,
+.opening,
+.biography,
+.contact,
+.portfolio-download,
+.navigation a {
+    transition: color 400ms cubic-bezier(.22,.61,.36,1);
+}
+
+/* =====================================================
+   BLACK PREVIEW SURFACE
+   ===================================================== */
+
+body.preview-active,
+body.preview-active .page {
+    background: #000;
+}
+
+body.preview-active .logo,
+body.preview-active .opening,
+body.preview-active .biography,
+body.preview-active .contact,
+body.preview-active .contact a,
+body.preview-active .portfolio-download,
+body.preview-active .navigation a {
+    color: transparent;
+}
+
+body.preview-photography .navigation #photography-link,
+body.preview-film .navigation #film-link {
+    color: #fff;
+}
+
+/* Keep only the navigation itself interactive while the preview is open. */
+body.preview-active .logo,
+body.preview-active .opening,
+body.preview-active .biography,
+body.preview-active .contact,
+body.preview-active .portfolio-download {
+    pointer-events: none;
+}
+
+/* =====================================================
+   CENTERED FILM PREVIEW
+   ===================================================== */
+
+.film-field {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    padding:
+        var(--page-top)
+        var(--page-x)
+        var(--page-bottom);
+    align-items: center;
+    justify-content: center;
+}
+
+.film-link {
+    width: min(
+        calc(100vw - 2 * var(--page-x)),
+        calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
+    );
+    max-width: none;
+    aspect-ratio: 16 / 9;
+}
+
+/* =====================================================
+   SINGLE RANDOM PHOTOGRAPHY PREVIEW
+   ===================================================== */
+
+.photography-field {
+    z-index: 10;
+}
+
+#scattered-stage.single-photo-mode .photo-group {
+    visibility: hidden !important;
+}
+
+#scattered-stage.single-photo-mode .photo-group.single-photo-group {
+    visibility: visible !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    contain: none !important;
+}
+
+#scattered-stage.single-photo-mode .project-photo {
+    display: none !important;
+}
+
+#scattered-stage.single-photo-mode .project-photo.single-photo-visible {
+    position: absolute !important;
+    display: block !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: min(72vw, calc(100vw - 2 * var(--page-x))) !important;
+    max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom))) !important;
+    object-fit: contain !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* =====================================================
+   AYBAK END CARD — ONLY THE WORD
+   ===================================================== */
+
+#landing-aybak-end-card {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    background: rgba(0,0,0,0);
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 460ms;
+    touch-action: none;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 0s;
+}
+
+body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
+    background: #000;
+}
+
+body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
+    background: #fff;
+}
+
+#landing-aybak-word {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 170ms ease;
+    pointer-events: none;
+}
+
+body.landing-aybak-active #landing-aybak-word {
+    opacity: 1;
+    transition-delay: 255ms;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .landing-grid {
+        grid-template-columns: minmax(0,1fr);
+        grid-template-rows: auto auto auto minmax(0,1fr);
+    }
+
+    .biography {
+        max-width: min(100%, 530px);
+    }
+
+    .film-field {
+        padding:
+            var(--page-top)
+            var(--page-x)
+            var(--page-bottom);
+    }
+
+    .film-link {
+        width: min(
+            calc(100vw - 2 * var(--page-x)),
+            calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
+        );
+    }
+
+    #scattered-stage.single-photo-mode .project-photo.single-photo-visible {
+        max-width: calc(100vw - 2 * var(--page-x)) !important;
+        max-height: 62vh !important;
+    }
+}
+
 </style>
 
 </head>
@@ -1012,6 +1259,10 @@ body {
         </section>
 
     </main>
+
+    <div id="landing-aybak-end-card" aria-hidden="true">
+        <canvas id="landing-aybak-word" aria-label="AYBAK"></canvas>
+    </div>
 
 </div>
 
@@ -1643,6 +1894,8 @@ function scheduleAutomaticFilmClose() {
                 It continues playing underneath
                 FILM -> film.
             */
+
+            clearPreviewTheme();
 
             animateTitlesTo(
                 null,
@@ -4578,6 +4831,42 @@ let hoverMode =
     null;
 
 
+let lastRandomPhotographyImage =
+    null;
+
+
+function setPreviewTheme(
+    mode
+) {
+
+    document.body.classList.add(
+        "preview-active"
+    );
+
+    document.body.classList.toggle(
+        "preview-photography",
+        mode === "photography"
+    );
+
+    document.body.classList.toggle(
+        "preview-film",
+        mode === "film"
+    );
+
+}
+
+
+function clearPreviewTheme() {
+
+    document.body.classList.remove(
+        "preview-active",
+        "preview-photography",
+        "preview-film"
+    );
+
+}
+
+
 /*
     Prevent a second mobile navigation gesture from
     starting while the first one is already resolving.
@@ -4641,6 +4930,8 @@ function hideFilmWithTitle(
     onComplete =
         null
 ) {
+
+    clearPreviewTheme();
 
     cancelFilmAutoClose();
 
@@ -4747,6 +5038,8 @@ function enterIdle(
         null
 ) {
 
+    clearPreviewTheme();
+
     cancelPhotoSequence();
 
     cancelFilmAutoClose();
@@ -4762,9 +5055,7 @@ function enterIdle(
             )
     ) {
 
-        animatePhotoGroups(
-            0
-        );
+        clearSinglePhotographyPreview();
 
         animateTitlesTo(
             null,
@@ -4775,6 +5066,10 @@ function enterIdle(
                     .remove(
                         "active"
                     );
+
+                setVisiblePhotoGroupCount(
+                    0
+                );
 
                 activeMode =
                     null;
@@ -4813,6 +5108,8 @@ function enterIdle(
 
     filmVideo.pause();
 
+    clearSinglePhotographyPreview();
+
     setVisiblePhotoGroupCount(
         0
     );
@@ -4836,6 +5133,148 @@ function enterIdle(
         null,
         onComplete
     );
+
+}
+
+
+
+function clearSinglePhotographyPreview() {
+
+    scatteredStage.classList.remove(
+        "single-photo-mode"
+    );
+
+    scatteredStage
+        .querySelectorAll(
+            ".single-photo-group"
+        )
+        .forEach(
+            element =>
+                element.classList.remove(
+                    "single-photo-group"
+                )
+        );
+
+    scatteredStage
+        .querySelectorAll(
+            ".single-photo-visible"
+        )
+        .forEach(
+            element =>
+                element.classList.remove(
+                    "single-photo-visible"
+                )
+        );
+
+}
+
+
+function showRandomPhotographyImage(
+    onReady = null
+) {
+
+    const images =
+        [
+            ...scatteredStage.querySelectorAll(
+                ".project-photo"
+            )
+        ];
+
+    if (
+        !images.length
+    ) {
+
+        if (
+            typeof onReady ===
+            "function"
+        ) {
+            onReady();
+        }
+
+        return;
+    }
+
+    let candidates =
+        images;
+
+    if (
+        images.length > 1 &&
+        lastRandomPhotographyImage
+    ) {
+        candidates =
+            images.filter(
+                image =>
+                    image !==
+                    lastRandomPhotographyImage
+            );
+    }
+
+    const chosen =
+        candidates[
+            Math.floor(
+                Math.random() *
+                candidates.length
+            )
+        ];
+
+    lastRandomPhotographyImage =
+        chosen;
+
+    clearSinglePhotographyPreview();
+
+    setVisiblePhotoGroupCount(
+        0
+    );
+
+    const group =
+        chosen.closest(
+            ".photo-group"
+        );
+
+    if (
+        group
+    ) {
+        group.classList.add(
+            "single-photo-group"
+        );
+    }
+
+    chosen.classList.add(
+        "single-photo-visible"
+    );
+
+    scatteredStage.classList.add(
+        "single-photo-mode"
+    );
+
+    const ready =
+        () => {
+            if (
+                typeof onReady ===
+                "function"
+            ) {
+                onReady();
+            }
+        };
+
+    if (
+        chosen.complete &&
+        chosen.naturalWidth > 0
+    ) {
+        ready();
+    }
+    else {
+        chosen.addEventListener(
+            "load",
+            ready,
+            { once: true }
+        );
+
+        setTimeout(
+            ready,
+            800
+        );
+    }
 
 }
 
@@ -4871,6 +5310,10 @@ function startPhotography(
     activeMode =
         "photography";
 
+    setPreviewTheme(
+        "photography"
+    );
+
     filmPlaybackMode =
         "auto";
 
@@ -4888,25 +5331,18 @@ function startPhotography(
 
     refreshPhotographyDOMIfNeeded();
 
-    randomizePhotographyLayout();
-
-    setVisiblePhotoGroupCount(
-        0
-    );
-
     photographyField
         .classList
         .add(
             "active"
         );
 
-    animateTitlesTo(
-        "photography"
+    showRandomPhotographyImage(
+        onReady
     );
 
-    animatePhotoGroups(
-        groupElements.length,
-        onReady
+    animateTitlesTo(
+        "photography"
     );
 
 }
@@ -4929,6 +5365,10 @@ function startFilm(
 
     activeMode =
         "film";
+
+    setPreviewTheme(
+        "film"
+    );
 
     filmPlaybackMode =
         playbackMode;
@@ -5106,9 +5546,9 @@ function introPhotography() {
 
                     }
 
-                    animatePhotoGroups(
-                        0
-                    );
+                    clearPreviewTheme();
+
+                    clearSinglePhotographyPreview();
 
                     animateTitlesTo(
                         null,
@@ -5282,6 +5722,8 @@ filmVideo.addEventListener(
                     "active"
                 );
 
+            clearPreviewTheme();
+
             return;
 
         }
@@ -5307,6 +5749,8 @@ filmVideo.addEventListener(
                 .remove(
                     "active"
                 );
+
+            clearPreviewTheme();
 
             animateTitlesTo(
                 null,
@@ -5655,6 +6099,8 @@ async function navigateFromMobileSection(
 
     mobileSectionNavigationInProgress =
         true;
+
+    clearPreviewTheme();
 
     /*
         Stop every automatic / interactive state first.
@@ -6087,6 +6533,539 @@ logo.addEventListener(
 );
 
 
+
+/* =====================================================
+   AYBAK END CARD — TWO-STATE VERTICAL NAVIGATION
+   ===================================================== */
+
+const landingAybakEndCard =
+    document.getElementById(
+        "landing-aybak-end-card"
+    );
+
+const landingAybakCanvas =
+    document.getElementById(
+        "landing-aybak-word"
+    );
+
+let landingAybakActive =
+    false;
+
+let landingAybakLight =
+    false;
+
+let landingAybakTouchStartX =
+    null;
+
+let landingAybakTouchStartY =
+    null;
+
+let landingAybakWheelAccumulator =
+    0;
+
+let landingAybakWheelTimer =
+    null;
+
+const LANDING_AYBAK_WHEEL_THRESHOLD =
+    48;
+
+const LANDING_AYBAK_SWIPE_THRESHOLD =
+    52;
+
+
+function fitLandingAybakWord() {
+
+    if (
+        !landingAybakCanvas ||
+        !landingAybakEndCard
+    ) {
+        return;
+    }
+
+    const w =
+        Math.max(
+            1,
+            landingAybakEndCard.clientWidth
+        );
+
+    const h =
+        Math.max(
+            1,
+            landingAybakEndCard.clientHeight
+        );
+
+    const root =
+        getComputedStyle(
+            document.documentElement
+        );
+
+    const side =
+        parseFloat(
+            root.getPropertyValue(
+                "--page-x"
+            )
+        ) || 0;
+
+    const bottomGap =
+        parseFloat(
+            root.getPropertyValue(
+                "--page-top"
+            )
+        ) || 0;
+
+    const sampleSize = 1000;
+    const trackingEm = -0.045;
+    const trackingPx = trackingEm * sampleSize;
+    const padding = 320;
+
+    const measureCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    const mctx =
+        measureCanvas.getContext(
+            "2d"
+        );
+
+    mctx.font =
+        `400 ${sampleSize}px "Times New Roman", Times, serif`;
+
+    const letters =
+        Array.from(
+            "AYBAK"
+        );
+
+    const advances =
+        letters.map(
+            letter =>
+                mctx.measureText(
+                    letter
+                ).width
+        );
+
+    const advance =
+        advances.reduce(
+            (sum, width) =>
+                sum + width,
+            0
+        ) +
+        trackingPx *
+        Math.max(
+            0,
+            letters.length - 1
+        );
+
+    measureCanvas.width =
+        Math.ceil(
+            advance +
+            padding * 2
+        );
+
+    measureCanvas.height =
+        sampleSize +
+        padding * 2;
+
+    const draw =
+        measureCanvas.getContext(
+            "2d",
+            { willReadFrequently: true }
+        );
+
+    draw.font =
+        `400 ${sampleSize}px "Times New Roman", Times, serif`;
+    draw.textBaseline =
+        "alphabetic";
+    draw.fillStyle =
+        "#fff";
+
+    const originX = padding;
+    const baselineY = padding + sampleSize;
+    let x = originX;
+
+    letters.forEach(
+        (letter, index) => {
+            draw.fillText(
+                letter,
+                x,
+                baselineY
+            );
+            x += advances[index];
+            if (
+                index <
+                letters.length - 1
+            ) {
+                x += trackingPx;
+            }
+        }
+    );
+
+    const data =
+        draw.getImageData(
+            0,
+            0,
+            measureCanvas.width,
+            measureCanvas.height
+        ).data;
+
+    let minX = measureCanvas.width;
+    let maxX = -1;
+    let maxY = -1;
+
+    for (
+        let yy = 0;
+        yy < measureCanvas.height;
+        yy++
+    ) {
+        for (
+            let xx = 0;
+            xx < measureCanvas.width;
+            xx++
+        ) {
+            const alpha =
+                data[(yy * measureCanvas.width + xx) * 4 + 3];
+            if (alpha > 8) {
+                minX = Math.min(minX, xx);
+                maxX = Math.max(maxX, xx);
+                maxY = Math.max(maxY, yy);
+            }
+        }
+    }
+
+    if (
+        maxX < minX ||
+        maxY < 0
+    ) {
+        return;
+    }
+
+    const sampleInkLeft =
+        minX - originX;
+    const sampleInkWidth =
+        maxX - minX + 1;
+    const sampleInkBottom =
+        maxY - baselineY;
+
+    const targetInkWidth =
+        Math.max(
+            1,
+            w - side * 2
+        );
+
+    const fontSize =
+        targetInkWidth *
+        sampleSize /
+        sampleInkWidth;
+
+    const scale =
+        fontSize /
+        sampleSize;
+
+    const finalOriginX =
+        side -
+        sampleInkLeft * scale;
+
+    const finalBaselineY =
+        h -
+        bottomGap -
+        sampleInkBottom * scale;
+
+    const dpr =
+        Math.max(
+            1,
+            window.devicePixelRatio || 1
+        );
+
+    landingAybakCanvas.width =
+        Math.round(
+            w * dpr
+        );
+    landingAybakCanvas.height =
+        Math.round(
+            h * dpr
+        );
+    landingAybakCanvas.style.width =
+        `${w}px`;
+    landingAybakCanvas.style.height =
+        `${h}px`;
+
+    const ctx =
+        landingAybakCanvas.getContext(
+            "2d"
+        );
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    ctx.clearRect(
+        0,
+        0,
+        w,
+        h
+    );
+
+    ctx.font =
+        `400 ${fontSize}px "Times New Roman", Times, serif`;
+    ctx.textBaseline =
+        "alphabetic";
+    ctx.fillStyle =
+        landingAybakLight
+            ? "#000"
+            : "#fff";
+
+    const tracking =
+        trackingEm * fontSize;
+
+    let drawX =
+        finalOriginX;
+
+    letters.forEach(
+        (letter, index) => {
+            ctx.fillText(
+                letter,
+                drawX,
+                finalBaselineY
+            );
+            drawX +=
+                ctx.measureText(
+                    letter
+                ).width;
+            if (
+                index <
+                letters.length - 1
+            ) {
+                drawX += tracking;
+            }
+        }
+    );
+
+}
+
+
+function setLandingAybakEndCard(
+    active
+) {
+
+    const next =
+        Boolean(
+            active
+        );
+
+    if (
+        next ===
+        landingAybakActive
+    ) {
+        return;
+    }
+
+    if (
+        next
+    ) {
+        /*
+            Idle white surface -> black AYBAK page / white word.
+            Photography/film black surface -> white AYBAK page / black word.
+        */
+        landingAybakLight =
+            document.body.classList.contains(
+                "preview-active"
+            );
+
+        document.body.classList.toggle(
+            "landing-aybak-light",
+            landingAybakLight
+        );
+    }
+
+    landingAybakActive =
+        next;
+
+    document.body.classList.toggle(
+        "landing-aybak-active",
+        landingAybakActive
+    );
+
+    landingAybakEndCard.setAttribute(
+        "aria-hidden",
+        landingAybakActive
+            ? "false"
+            : "true"
+    );
+
+    if (
+        landingAybakActive
+    ) {
+        requestAnimationFrame(
+            fitLandingAybakWord
+        );
+    }
+
+}
+
+
+window.addEventListener(
+    "wheel",
+    event => {
+
+        if (
+            event.ctrlKey
+        ) {
+            return;
+        }
+
+        landingAybakWheelAccumulator +=
+            event.deltaY;
+
+        if (
+            landingAybakWheelTimer !==
+            null
+        ) {
+            clearTimeout(
+                landingAybakWheelTimer
+            );
+        }
+
+        landingAybakWheelTimer =
+            setTimeout(
+                () => {
+                    landingAybakWheelAccumulator = 0;
+                    landingAybakWheelTimer = null;
+                },
+                140
+            );
+
+        if (
+            !landingAybakActive &&
+            landingAybakWheelAccumulator >
+                LANDING_AYBAK_WHEEL_THRESHOLD
+        ) {
+            event.preventDefault();
+            landingAybakWheelAccumulator = 0;
+            setLandingAybakEndCard(
+                true
+            );
+        }
+        else if (
+            landingAybakActive &&
+            landingAybakWheelAccumulator <
+                -LANDING_AYBAK_WHEEL_THRESHOLD
+        ) {
+            event.preventDefault();
+            landingAybakWheelAccumulator = 0;
+            setLandingAybakEndCard(
+                false
+            );
+        }
+
+    },
+    { passive: false }
+);
+
+
+window.addEventListener(
+    "touchstart",
+    event => {
+        const touch =
+            event.touches[0];
+        landingAybakTouchStartX =
+            touch ? touch.clientX : null;
+        landingAybakTouchStartY =
+            touch ? touch.clientY : null;
+    },
+    { passive: true }
+);
+
+
+window.addEventListener(
+    "touchend",
+    event => {
+
+        if (
+            landingAybakTouchStartX === null ||
+            landingAybakTouchStartY === null
+        ) {
+            return;
+        }
+
+        const touch =
+            event.changedTouches[0];
+
+        if (
+            !touch
+        ) {
+            return;
+        }
+
+        const dx =
+            touch.clientX -
+            landingAybakTouchStartX;
+        const dy =
+            touch.clientY -
+            landingAybakTouchStartY;
+
+        landingAybakTouchStartX = null;
+        landingAybakTouchStartY = null;
+
+        if (
+            Math.abs(dy) <=
+            Math.abs(dx) ||
+            Math.abs(dy) <
+            LANDING_AYBAK_SWIPE_THRESHOLD
+        ) {
+            return;
+        }
+
+        if (
+            !landingAybakActive &&
+            dy < 0
+        ) {
+            setLandingAybakEndCard(
+                true
+            );
+        }
+        else if (
+            landingAybakActive &&
+            dy > 0
+        ) {
+            setLandingAybakEndCard(
+                false
+            );
+        }
+
+    },
+    { passive: true }
+);
+
+
+window.addEventListener(
+    "keydown",
+    event => {
+        if (
+            !landingAybakActive &&
+            event.code === "ArrowDown"
+        ) {
+            event.preventDefault();
+            setLandingAybakEndCard(true);
+        }
+        else if (
+            landingAybakActive &&
+            (
+                event.code === "ArrowUp" ||
+                event.code === "Escape"
+            )
+        ) {
+            event.preventDefault();
+            setLandingAybakEndCard(false);
+        }
+    }
+);
+
+
 /* =====================================================
    RESIZE / ORIENTATION
    ===================================================== */
@@ -6115,6 +7094,12 @@ window.addEventListener(
                 () => {
 
                     mountPhotographyField();
+
+                    if (
+                        landingAybakActive
+                    ) {
+                        fitLandingAybakWord();
+                    }
 
                     if (
                         !photographyInitialReady
@@ -6244,6 +7229,8 @@ document.addEventListener(
    ===================================================== */
 
 function init() {
+
+    clearPreviewTheme();
 
     mountPhotographyField();
 
