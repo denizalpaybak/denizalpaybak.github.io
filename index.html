@@ -1338,6 +1338,23 @@ body.landing-aybak-active #landing-aybak-end-card::before {
     pointer-events: none;
 }
 </style>
+
+<style id="final-ios-landscape-aybak-viewport-fill-v2">
+/* Extend the black AYBAK surface through iOS landscape safe-area gutters. */
+html.landing-aybak-active,
+body.landing-aybak-active {
+    background: #000 !important;
+}
+body.landing-aybak-active #landing-aybak-end-card {
+    left: calc(-1 * env(safe-area-inset-left)) !important;
+    right: calc(-1 * env(safe-area-inset-right)) !important;
+    top: calc(-1 * env(safe-area-inset-top)) !important;
+    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    height: auto !important;
+    background: #000 !important;
+}
+</style>
 </head>
 
 
