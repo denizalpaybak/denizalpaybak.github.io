@@ -1305,6 +1305,17 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 
 </style>
 
+
+<style id="final-aybak-monochrome-override">
+html.landing-aybak-active,
+body.landing-aybak-active,
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active #landing-aybak-end-card,
+body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
+    background: #000 !important;
+}
+</style>
 </head>
 
 
@@ -7478,7 +7489,7 @@ async function fitLandingAybakWord() {
         "alphabetic";
 
     ctx.fillStyle =
-        "#f8fed3";
+        "#fff";
 
     ctx.font =
         `600 ${fontSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
