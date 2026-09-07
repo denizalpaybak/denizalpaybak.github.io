@@ -1285,8 +1285,8 @@ body.preview-active .portfolio-download {
     font-size: 1em;
     font-weight: 400;
     line-height: 1;
-    vertical-align: middle;
-    transform: translateY(-0.035em);
+    vertical-align: 0.10em;
+    transform: none;
 }
 
 .portfolio-download a {
@@ -7200,7 +7200,7 @@ logo.addEventListener(
 
         }
 
-        cancelAutomaticIntroForInteraction();
+        /* A mobile logo tap is visual only; it does not stop the intro. */
 
         if (
             logoReturnTimer !==
@@ -7521,6 +7521,12 @@ function setLandingAybakEndCard(
     if (
         next
     ) {
+        /* Entering the AYBAK page is an explicit interaction and permanently
+           stops the automatic landing sequence. */
+        cancelAutomaticIntroForInteraction();
+        clearIntroTimer();
+        cancelFilmAutoClose();
+
         /*
             Idle white surface -> black AYBAK page / white word.
             Photography/film black surface -> white AYBAK page / black word.
@@ -7730,37 +7736,45 @@ window.addEventListener(
 
 
 /* =====================================================
-   GLOBAL INTERACTION CANCEL
+   SCOPED INTERACTION CANCEL
+
+   Blank white space on mobile is deliberately inert: tapping it must not
+   cancel the automatic landing sequence. Only actual navigation/contact
+   actions stop automation. AYBAK entry is handled in setLandingAybakEndCard().
    ===================================================== */
 
 function cancelLandingAutomationFromUi() {
-
     cancelAutomaticIntroForInteraction();
-
     clearIntroTimer();
-
     cancelFilmAutoClose();
-
 }
 
+function landingTargetStopsAutomation(target) {
+    return Boolean(
+        target &&
+        target.closest &&
+        target.closest(
+            "#photography-link, #film-link, #portfolio-download, .contact a, .film-link"
+        )
+    );
+}
 
 window.addEventListener(
     "pointerdown",
-    () => {
-
-        cancelLandingAutomationFromUi();
-
+    event => {
+        if (landingTargetStopsAutomation(event.target)) {
+            cancelLandingAutomationFromUi();
+        }
     },
     true
 );
 
-
 window.addEventListener(
     "touchstart",
-    () => {
-
-        cancelLandingAutomationFromUi();
-
+    event => {
+        if (landingTargetStopsAutomation(event.target)) {
+            cancelLandingAutomationFromUi();
+        }
     },
     {
         capture: true,
@@ -7768,27 +7782,19 @@ window.addEventListener(
     }
 );
 
-
-window.addEventListener(
-    "wheel",
-    () => {
-
-        cancelLandingAutomationFromUi();
-
-    },
-    {
-        capture: true,
-        passive: true
-    }
-);
-
-
+/* Keyboard navigation is always explicit user interaction. */
 window.addEventListener(
     "keydown",
-    () => {
-
-        cancelLandingAutomationFromUi();
-
+    event => {
+        if (
+            event.target &&
+            event.target.closest &&
+            event.target.closest(
+                "#photography-link, #film-link, #portfolio-download, .contact a, .film-link"
+            )
+        ) {
+            cancelLandingAutomationFromUi();
+        }
     },
     true
 );
