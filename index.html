@@ -3090,6 +3090,8 @@ async function loadInitialPhotography() {
                 photographyInitialReady =
                     true;
 
+                stabilizeLandingLayout();
+
 
                 /*
                     The first randomly selected image from
@@ -7874,6 +7876,50 @@ document.addEventListener(
 
 
 /* =====================================================
+   FIRST-LOAD LAYOUT STABILIZATION
+   ===================================================== */
+
+let landingLayoutStabilizeToken = 0;
+
+function stabilizeLandingLayout() {
+    const token = ++landingLayoutStabilizeToken;
+
+    const settle = () => {
+        if (token !== landingLayoutStabilizeToken) {
+            return;
+        }
+
+        mountPhotographyField();
+        calculatePreviewZone();
+
+        if (photographyInitialReady) {
+            randomizePhotographyLayout();
+        }
+
+        if (landingAybakActive) {
+            fitLandingAybakWord();
+        }
+    };
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(settle);
+    });
+
+    setTimeout(settle, 120);
+}
+
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(stabilizeLandingLayout);
+}
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener(
+        "resize",
+        stabilizeLandingLayout
+    );
+}
+
+/* =====================================================
    INIT
    ===================================================== */
 
@@ -7924,7 +7970,7 @@ function init() {
 
             }
         );
-    calculatePreviewZone();
+    stabilizeLandingLayout();
 
 
     startAutomaticIntro();
@@ -7940,7 +7986,7 @@ window.addEventListener(
     "load",
     () => {
 
-        calculatePreviewZone();
+        stabilizeLandingLayout();
 
     },
     {
