@@ -229,7 +229,9 @@ body {
 }
 
 .navigation a {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28em;
 
     width: max-content;
 
@@ -339,31 +341,24 @@ body {
 .site-arrow {
     display: inline-block;
     flex: 0 0 auto;
-    width: 0.74em;
-    height: 0.74em;
+    width: 1em;
+    height: 1em;
     overflow: visible;
     color: currentColor;
-    vertical-align: -0.055em;
     pointer-events: none;
 }
 
 .site-arrow path {
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.15;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    vector-effect: non-scaling-stroke;
+    stroke-width: 1.05;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
 }
 
-.portfolio-download a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.34em;
-}
-
-.site-arrow--down {
-    transform: translateY(-0.01em);
+.site-arrow--down,
+.site-arrow--external {
+    transform: none;
 }
 
 .item {
@@ -1333,7 +1328,9 @@ body.preview-active .portfolio-download {
             >
                 <span id="photography-text">
                     photography
-                </span>
+                </span><svg class="site-arrow site-arrow--external" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+<path d="M1.75 10.25L10.25 1.75M4.25 1.75H10.25V7.75"></path>
+</svg>
             </a>
 
             <a
@@ -1342,7 +1339,9 @@ body.preview-active .portfolio-download {
             >
                 <span id="film-text">
                     film
-                </span>
+                </span><svg class="site-arrow site-arrow--external" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+<path d="M1.75 10.25L10.25 1.75M4.25 1.75H10.25V7.75"></path>
+</svg>
             </a>
 
         </nav>
@@ -1445,7 +1444,7 @@ body.preview-active .portfolio-download {
                     download="denizalp-aybak-portfolio.pdf"
                 >
                     portfolio.pdf <svg class="site-arrow site-arrow--down" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
-<path d="M6 1.5V10.5M2.75 7.25L6 10.5L9.25 7.25"></path>
+<path d="M6 1.75V10.25M2.75 7L6 10.25L9.25 7"></path>
 </svg>
                 </a>
             </p>
