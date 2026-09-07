@@ -336,15 +336,34 @@ body {
     text-decoration: underline;
 }
 
-.download-arrow {
+.site-arrow {
     display: inline-block;
+    flex: 0 0 auto;
+    width: 0.74em;
+    height: 0.74em;
+    overflow: visible;
+    color: currentColor;
+    vertical-align: -0.055em;
+    pointer-events: none;
+}
 
-    /*
-        Optical alignment:
-        the down arrow naturally hangs too low relative to Helvetica text.
-        Lift it slightly so it reads as part of the same typographic line.
-    */
-    transform: translateY(-0.12em);
+.site-arrow path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.portfolio-download a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34em;
+}
+
+.site-arrow--down {
+    transform: translateY(-0.01em);
 }
 
 .item {
@@ -1425,7 +1444,9 @@ body.preview-active .portfolio-download {
                     id="portfolio-download"
                     download="denizalp-aybak-portfolio.pdf"
                 >
-                    portfolio.pdf <span class="download-arrow">↓</span>
+                    portfolio.pdf <svg class="site-arrow site-arrow--down" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+<path d="M6 1.5V10.5M2.75 7.25L6 10.5L9.25 7.25"></path>
+</svg>
                 </a>
             </p>
 
