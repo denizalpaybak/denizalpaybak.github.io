@@ -1318,6 +1318,26 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     background: #000 !important;
 }
 </style>
+
+<style id="final-mobile-aybak-safe-area-fix">
+html.landing-aybak-active,
+body.landing-aybak-active,
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active .page,
+body.landing-aybak-active #landing-aybak-end-card {
+    background: #000 !important;
+}
+
+body.landing-aybak-active #landing-aybak-end-card::before {
+    content: "";
+    position: fixed;
+    inset: -320px;
+    z-index: -1;
+    background: #000;
+    pointer-events: none;
+}
+</style>
 </head>
 
 
@@ -1394,7 +1414,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
                 id="photography-link"
             >
                 <span id="photography-text">
-                    photography
+                    PHOTOGRAPHY.
                 </span>
             </a>
 
@@ -1403,7 +1423,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
                 id="film-link"
             >
                 <span id="film-text">
-                    film
+                    FILM.
                 </span>
             </a>
 
@@ -5117,26 +5137,32 @@ const navItems =
         photography: {
 
             word:
-                "photography",
+                "PHOTOGRAPHY.DENIZALPAYBAK.COM",
+
+            baseCount:
+                "PHOTOGRAPHY.".length,
 
             element:
                 photographyText,
 
             count:
-                0
+                "PHOTOGRAPHY.".length
 
         },
 
         film: {
 
             word:
-                "film",
+                "FILM.DENIZALPAYBAK.COM",
+
+            baseCount:
+                "FILM.".length,
 
             element:
                 filmText,
 
             count:
-                0
+                "FILM.".length
 
         }
 
@@ -5147,9 +5173,6 @@ function renderCaseWord(
     word,
     count
 ) {
-
-    let result =
-        "";
 
     const normalized =
         Math.max(
@@ -5162,23 +5185,7 @@ function renderCaseWord(
             )
         );
 
-    for (
-        let i = 0;
-        i < word.length;
-        i++
-    ) {
-
-        result +=
-            i <
-            normalized
-                ? word[i]
-                    .toUpperCase()
-                : word[i]
-                    .toLowerCase();
-
-    }
-
-    return result;
+    return word.slice(0, normalized);
 
 }
 
@@ -5260,13 +5267,13 @@ function animateTitlesTo(
         mode ===
         "photography"
             ? photography.word.length
-            : 0;
+            : photography.baseCount;
 
     const filmTarget =
         mode ===
         "film"
             ? film.word.length
-            : 0;
+            : film.baseCount;
 
     const started =
         performance.now();
@@ -8053,12 +8060,12 @@ function init() {
 
     setWordCount(
         navItems.photography,
-        0
+        navItems.photography.baseCount
     );
 
     setWordCount(
         navItems.film,
-        0
+        navItems.film.baseCount
     );
 
     setVisiblePhotoGroupCount(
