@@ -1161,6 +1161,8 @@ body.landing-aybak-active #landing-aybak-word {
 #fixed-photo-preview.visible {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 
@@ -5807,6 +5809,32 @@ function showRandomPhotographyImage(
     }
 
 }
+
+
+/* =====================================================
+   PHOTOGRAPHY PREVIEW LINK
+
+   The visible landing photograph itself is a navigation surface.
+   Blank white space remains inert and does not cancel automation.
+   ===================================================== */
+
+fixedPhotoPreview.addEventListener(
+    "click",
+    event => {
+        if (
+            !fixedPhotoPreview.classList.contains("visible") ||
+            !photographyField.classList.contains("active")
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        cancelAutomaticIntroForInteraction();
+        clearIntroTimer();
+        cancelFilmAutoClose();
+        window.location.href = "https://photography.denizalpaybak.com/";
+    }
+);
 
 
 /* =====================================================
