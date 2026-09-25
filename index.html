@@ -1545,6 +1545,114 @@ body:not(.landing-aybak-active) .logo {
 }
 </style>
 
+
+<style id="final-bio-block-and-portfolio-fix">
+/* Remove the old opening copy completely. */
+.opening { display: none !important; }
+
+/* A centered rectangular editorial text block. */
+.biography {
+    position: fixed !important;
+    z-index: 5 !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: clamp(420px, 38vw, 620px) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-align: justify !important;
+    text-align-last: justify !important;
+    text-justify: inter-word !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+}
+
+.biography p {
+    margin: 0 0 var(--major-gap) 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    text-align: justify !important;
+    text-align-last: justify !important;
+    text-justify: inter-word !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+}
+
+/* Collaborator headings stay normal while their list remains cleanly spaced. */
+.biography p:has(br) {
+    text-align-last: left !important;
+}
+
+.biography-divider {
+    display: block !important;
+    width: 100% !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: calc(var(--major-gap) + 1px) 0 calc(var(--major-gap) + 1px) 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-align: left !important;
+}
+
+/* Portfolio is a page-level footer item, fixed to the bottom-right corner. */
+.portfolio-download {
+    position: fixed !important;
+    z-index: 20 !important;
+    right: var(--page-x) !important;
+    bottom: var(--page-bottom) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: right !important;
+}
+
+.portfolio-download a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.30em !important;
+    color: #000 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.portfolio-download a:hover {
+    text-decoration: underline !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography { width: min(86vw, 420px) !important; }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography { width: min(70vw, 560px) !important; }
+}
+
+@media (orientation: landscape) and (min-width: 1001px) and (max-height: 700px) {
+    .biography { width: min(42vw, 560px) !important; }
+}
+</style>
+
 </head>
 
 
@@ -1603,14 +1711,6 @@ body:not(.landing-aybak-active) .logo {
             </span>
 
         </button>
-
-
-        <!-- OPENING -->
-
-        <p class="opening">
-            is an istanbul-based fashion photographer and filmmaker.
-        </p>
-
 
         <!-- NAVIGATION -->
 
@@ -1733,18 +1833,18 @@ body:not(.landing-aybak-active) .logo {
         brand collaborators:<br>
         <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
     </p>
-
-    <p class="portfolio-download">
-        <a
-                    href="./denizalp-aybak-portfolio.pdf"
-                    id="portfolio-download"
-                    download="denizalp-aybak-portfolio.pdf"
-        >
-            portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
-        </a>
-    </p>
 </section>
 
+        <p class="portfolio-download">
+                <a
+                            href="./denizalp-aybak-portfolio.pdf"
+                            id="portfolio-download"
+                            download="denizalp-aybak-portfolio.pdf"
+                >
+                    portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
+                </a>
+            </p>
+        
     </main>
 
     <div id="landing-aybak-end-card" aria-hidden="true">
