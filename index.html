@@ -280,18 +280,16 @@ body {
    ===================================================== */
 
 .biography {
-    position: fixed;
+    grid-column: 1;
+    grid-row: 5;
 
-    top: 50%;
-    left: 50%;
+    align-self: start;
 
-    width: min(530px, calc(100vw - 2 * var(--page-x)));
+    width: 100%;
     max-width: 530px;
 
     margin: 0;
     padding: 0;
-
-    transform: translate(-50%, -50%);
 
     font-size: var(--font-size);
     font-weight: 400;
@@ -697,7 +695,9 @@ body {
     }
 
     .biography {
-        width: calc(100vw - 2 * var(--page-x));
+        grid-column: 1;
+        grid-row: 5;
+
         max-width: none;
     }
 
@@ -778,12 +778,8 @@ body {
         top: 15px;
     }
 
-    .opening {
-        max-width: none;
-    }
-
+    .opening,
     .biography {
-        width: calc(100vw - 2 * var(--page-x));
         max-width: none;
     }
 
@@ -920,13 +916,6 @@ body,
     text-align: right;
 }
 
-.portfolio-download,
-.portfolio-download a {
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-}
-
 .logo,
 .opening,
 .biography,
@@ -934,58 +923,6 @@ body,
 .portfolio-download,
 .navigation a {
     transition: color 400ms cubic-bezier(.22,.61,.36,1);
-}
-
-
-/* Landing navigation is typography only: no photo.jpg / film.mp4 preview surfaces. */
-.photography-field,
-.film-field,
-#fixed-photo-preview,
-#film-video {
-    display: none !important;
-}
-
-/* Central biography copy. */
-.central-copy {
-    position: fixed;
-    z-index: 20;
-    top: 50%;
-    left: 50%;
-    width: min(680px, calc(100vw - 48px));
-    max-height: calc(100dvh - 40px);
-    overflow: visible;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transform: translate3d(-50%, -50%, 0);
-    text-align: center;
-}
-
-.central-copy .opening,
-.central-copy .biography {
-    position: static !important;
-    inset: auto !important;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    transform: none !important;
-    text-align: center;
-}
-
-.central-copy .opening {
-    margin: 0 0 var(--major-gap) 0;
-}
-
-.central-copy .biography {
-    display: block;
-}
-
-.central-copy .biography p {
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center !important;
 }
 
 /* =====================================================
@@ -1085,53 +1022,90 @@ body.preview-active .portfolio-download {
     transform: translate(-50%, -50%) !important;
 }
 
-/* Landing is typography-only: no photo.jpg / film.mp4 can be displayed. */
-.photography-field,
-.film-field,
-#fixed-photo-preview,
-#film-video,
-#scattered-stage {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-}
-
 /* =====================================================
-   AYBAK END CARD — CENTERED TWO-LINE LOGO
+   AYBAK END CARD — ONLY THE WORD
    ===================================================== */
 
 #landing-aybak-end-card {
-    position: fixed; inset: 0; z-index: 10000;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; visibility: hidden; pointer-events: none;
-    background: #000; opacity: 0; transform: translate3d(0,0,0);
-    transition: opacity 300ms linear, visibility 0s linear 300ms;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    background: rgba(0,0,0,0);
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 460ms;
     touch-action: none;
 }
 
 body.landing-aybak-active #landing-aybak-end-card {
-    visibility: visible; pointer-events: auto; opacity: 1; transform: translate3d(0,0,0);
-    transition: opacity 300ms linear, visibility 0s linear 0s;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 0s;
 }
 
-body.landing-aybak-leaving, html.landing-aybak-leaving { background: #fff !important; }
-
-body.landing-aybak-leaving #landing-aybak-end-card {
-    visibility: visible; pointer-events: none; opacity: 0;
-    transition: opacity 300ms linear, visibility 0s linear 300ms;
+html.landing-aybak-active:not(.landing-aybak-light),
+body.landing-aybak-active:not(.landing-aybak-light),
+body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
+    background: #000;
 }
 
-#landing-aybak-logo {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: max-content; height: auto; margin: 0; padding: 0; border: 0;
-    appearance: none; -webkit-appearance: none; background: transparent; color: #fff;
-    cursor: pointer; font-family: inherit; font-size: var(--font-size); font-weight: 400;
-    line-height: var(--line-height); text-align: center; -webkit-tap-highlight-color: transparent;
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
+    background: #fff;
 }
 
-#landing-aybak-name, #landing-aybak-aybak {
-    display: block; white-space: nowrap; height: calc(var(--font-size) * var(--line-height));
+#landing-aybak-word {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 170ms ease;
+    pointer-events: none;
 }
+
+body.landing-aybak-active #landing-aybak-word {
+    opacity: 1;
+    transition-delay: 255ms;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .landing-grid {
+        grid-template-columns: minmax(0,1fr);
+        grid-template-rows: auto auto auto minmax(0,1fr);
+    }
+
+    .biography {
+        max-width: min(100%, 530px);
+    }
+
+    .film-field {
+        padding:
+            var(--page-top)
+            var(--page-x)
+            var(--page-bottom);
+    }
+
+    .film-link {
+        width: min(
+            calc(100vw - 2 * var(--page-x)),
+            calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
+        );
+    }
+
+    #scattered-stage.single-photo-mode .project-photo.single-photo-visible {
+        max-width: calc(100vw - 2 * var(--page-x)) !important;
+        max-height: 62vh !important;
+    }
+}
+
+
 
 /* =====================================================
    FIXED PHOTOGRAPHY PREVIEW
@@ -1335,190 +1309,240 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 
 
 <style id="final-aybak-monochrome-override">
-html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active #landing-aybak-end-card { background:#000 !important; }
+html.landing-aybak-active,
+body.landing-aybak-active,
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active #landing-aybak-end-card,
+body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
+    background: #000 !important;
+}
 </style>
 
-<!-- USER FINAL LANDING ADJUSTMENTS -->
-<style id="user-final-landing-adjustments">
-    /* Remove the white-page identity block from the upper-left.
-       The photography navigation now occupies that exact role. */
-    .landing-grid > .logo {
-        display: none !important;
-    }
+<style id="final-mobile-aybak-safe-area-fix">
+html.landing-aybak-active,
+body.landing-aybak-active,
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active .page,
+body.landing-aybak-active #landing-aybak-end-card {
+    background: #000 !important;
+}
 
-    /* Keep the two navigation labels on the same top row, with
-       photography moved to the former logo position and film retained
-       at the upper-right. Their text/case animation remains unchanged. */
-    .navigation {
-        position: fixed !important;
-        top: var(--page-top) !important;
-        left: var(--page-x) !important;
-        right: var(--page-x) !important;
-        z-index: 20 !important;
-        display: block !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        height: auto !important;
+body.landing-aybak-active #landing-aybak-end-card::before {
+    content: "";
+    position: fixed;
+    inset: -320px;
+    z-index: -1;
+    background: #000;
+    pointer-events: none;
+}
+</style>
+
+<style id="final-ios-landscape-aybak-viewport-fill-v2">
+/* Extend the black AYBAK surface through iOS landscape safe-area gutters. */
+html.landing-aybak-active,
+body.landing-aybak-active {
+    background: #000 !important;
+}
+body.landing-aybak-active #landing-aybak-end-card {
+    left: calc(-1 * env(safe-area-inset-left)) !important;
+    right: calc(-1 * env(safe-area-inset-right)) !important;
+    top: calc(-1 * env(safe-area-inset-top)) !important;
+    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    height: auto !important;
+    background: #000 !important;
+}
+</style>
+
+<style id="final-landing-block-revision">
+/* =====================================================
+   FINAL LANDING TYPOGRAPHY / POSITIONING
+   ===================================================== */
+
+/* The white landing surface no longer shows the old top-left logo. */
+body:not(.landing-aybak-active) .logo {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Photography left / Film right, same top axis. */
+.navigation {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 20 !important;
+    display: block !important;
+    pointer-events: none !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.navigation a {
+    position: absolute !important;
+    top: var(--page-top) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    pointer-events: auto !important;
+    text-align: left !important;
+}
+
+.navigation #photography-link {
+    left: var(--page-x) !important;
+    right: auto !important;
+}
+
+.navigation #film-link {
+    right: var(--page-x) !important;
+    left: auto !important;
+    text-align: right !important;
+}
+
+/* The biography is the single centered typographic block. */
+.biography {
+    position: fixed !important;
+    z-index: 5 !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: min(42vw, 560px) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translate(-50%, -50%) !important;
+
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: auto !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+    word-spacing: normal !important;
+    text-wrap: pretty !important;
+}
+
+.biography p {
+    margin: 0 0 var(--major-gap) 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: auto !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+    word-spacing: normal !important;
+}
+
+.biography p:last-of-type {
+    margin-bottom: 0 !important;
+}
+
+/* Section labels stay optically left; the content below them remains justified. */
+.biography p br + .item {
+    /* no special tracking or spacing */
+}
+
+/* Typographic divider uses the same font, size, weight and line-height as the bio. */
+.biography-divider {
+    display: block !important;
+    width: 100% !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: calc(var(--major-gap) + 2px) 0 calc(var(--major-gap) + 2px) 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-align: left !important;
+}
+
+/* Keep the portfolio exactly as normal site metadata: fixed, same font and size,
+   clickable, and using the working relative GitHub Pages file path. */
+.biography .portfolio-download {
+    position: fixed !important;
+    right: var(--page-x) !important;
+    bottom: var(--page-bottom) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-align: right !important;
+}
+
+.biography .portfolio-download a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.30em !important;
+    color: #000 !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.biography .portfolio-download a:hover {
+    text-decoration: underline !important;
+}
+
+/* We are not showing photography / film media on the landing page anymore. */
+.media-field,
+.photography-field,
+.film-field,
+#fixed-photo-preview {
+    display: none !important;
+}
+
+/* =====================================================
+   NAVIGATION LABELS
+   ===================================================== */
+
+.navigation a span {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: 0;
+}
+
+/* Portrait: compact labels. Landscape + desktop use full domains. */
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography {
+        width: min(82vw, 420px) !important;
     }
 
     .navigation #photography-link,
     .navigation #film-link {
-        position: absolute !important;
-        top: 0 !important;
-        margin: 0 !important;
+        top: var(--page-top) !important;
     }
+}
 
-    .navigation #photography-link {
-        left: 0 !important;
-        right: auto !important;
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography {
+        width: min(72vw, 520px) !important;
     }
+}
 
-    .navigation #film-link {
-        right: 0 !important;
-        left: auto !important;
+@media (orientation: landscape) and (min-width: 1001px) and (max-height: 700px) {
+    .biography {
+        width: min(45vw, 520px) !important;
     }
-
-    /* A small, deliberate breath before Editorial collaborators. */
-    .central-copy .biography p:nth-child(3) {
-        margin-top: 10px !important;
-    }
-
-    /* Ensure the complete biography remains a single centered typographic
-       block on every orientation. */
-    .central-copy {
-        box-sizing: border-box !important;
-        width: min(680px, calc(100vw - 2 * var(--page-x))) !important;
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate3d(-50%, -50%, 0) !important;
-        text-align: center !important;
-    }
-
-    .central-copy .opening,
-    .central-copy .biography,
-    .central-copy .biography p {
-        width: 100% !important;
-        text-align: center !important;
-    }
-<style id="final-central-copy-typography">
-    /*
-       Final landing biography treatment:
-       one centered block, but with justified paragraph composition rather
-       than centered lines. The width is deliberately tuned per platform so
-       word spacing stays controlled and the block retains a calm proportion.
-    */
-    .central-copy {
-        box-sizing: border-box !important;
-        position: fixed !important;
-        z-index: 20 !important;
-        top: 50% !important;
-        left: 50% !important;
-        width: min(640px, 42vw) !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        transform: translate3d(-50%, -50%, 0) !important;
-        display: block !important;
-        text-align: justify !important;
-        text-justify: inter-word !important;
-        text-align-last: left !important;
-    }
-
-    .central-copy .opening,
-    .central-copy .biography,
-    .central-copy .biography p {
-        width: 100% !important;
-        max-width: none !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        text-align: justify !important;
-        text-justify: inter-word !important;
-        text-align-last: left !important;
-        hyphens: auto;
-        overflow-wrap: normal;
-    }
-
-    .central-copy .opening {
-        position: static !important;
-        margin-top: 0 !important;
-        margin-bottom: var(--major-gap) !important;
-        padding: 0 !important;
-        transform: none !important;
-    }
-
-    .central-copy .biography {
-        position: static !important;
-        inset: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        transform: none !important;
-    }
-
-    .central-copy .biography p {
-        margin-top: 0 !important;
-        margin-bottom: var(--major-gap) !important;
-    }
-
-    /* A fuller pause before the editorial credits. */
-    .central-copy .biography p:nth-child(3) {
-        margin-top: 28px !important;
-    }
-
-    /* Collaborator labels stay optically left-aligned within the justified
-       block so the short heading never gets stretched across the line. */
-    .central-copy .collab-label {
-        display: inline-block;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    @media (min-width: 1001px) {
-        .central-copy {
-            width: min(640px, 42vw) !important;
-        }
-    }
-
-    @media (min-width: 601px) and (max-width: 1000px) {
-        .central-copy {
-            width: min(560px, calc(100vw - 96px)) !important;
-        }
-    }
-
-    @media (orientation: landscape) and (max-width: 1000px) and (max-height: 650px) {
-        .central-copy {
-            width: min(520px, calc(100vw - 120px)) !important;
-        }
-
-        .central-copy .biography p:nth-child(3) {
-            margin-top: 24px !important;
-        }
-    }
-
-    @media (max-width: 600px) and (orientation: portrait) {
-        .central-copy {
-            width: min(340px, calc(100vw - 48px)) !important;
-        }
-
-        .central-copy .biography p:nth-child(3) {
-            margin-top: 24px !important;
-        }
-    }
-
-    /* Restore the portfolio as a normal clickable/downloadable footer link. */
-    .portfolio-download,
-    .portfolio-download a {
-        font-size: var(--font-size) !important;
-        font-weight: 400 !important;
-        line-height: var(--line-height) !important;
-    }
-
-    .portfolio-download a {
-        display: inline-flex !important;
-        align-items: center;
-        gap: 0.30em;
-        pointer-events: auto !important;
-        cursor: pointer;
-    }
+}
 </style>
 
 </head>
@@ -1542,6 +1566,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
 
         <img
             id="fixed-photo-preview"
+            src="./photo.jpg"
             alt=""
             aria-hidden="true"
         >
@@ -1580,42 +1605,11 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         </button>
 
 
-        <!-- CENTRAL COPY -->
+        <!-- OPENING -->
 
-        <div class="central-copy" id="central-copy">
-
-            <!-- OPENING -->
-
-            <p class="opening">
-                denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
-            </p>
-
-            <section
-                class="biography"
-                id="biography"
-            >
-
-                <p>
-                    having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
-                </p>
-
-                <p>
-                    his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
-                </p>
-
-                <p>
-                    <span class="collab-label">editorial collaborators:</span><br>
-                    <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
-                </p>
-
-                <p>
-                    <span class="collab-label">brand collaborators:</span><br>
-                    <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
-                </p>
-
-            </section>
-
-        </div>
+        <p class="opening">
+            is an istanbul-based fashion photographer and filmmaker.
+        </p>
 
 
         <!-- NAVIGATION -->
@@ -1627,7 +1621,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
                 id="photography-link"
             >
                 <span id="photography-text">
-                    photography.denizalpaybak.com
+                    PHOTOGRAPHY.
                 </span>
             </a>
 
@@ -1636,7 +1630,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
                 id="film-link"
             >
                 <span id="film-text">
-                    film.denizalpaybak.com
+                    FILM.
                 </span>
             </a>
 
@@ -1663,6 +1657,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
 
                     <video
                         id="film-video"
+                        src="./film.mp4"
                         muted
                         playsinline
                         preload="auto"
@@ -1706,25 +1701,54 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         </div>
 
 
-        <!-- PORTFOLIO -->
+        <!-- BIOGRAPHY -->
 
-        <p class="portfolio-download">
-            <a
-                href="https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/denizalp-aybak-portfolio.pdf"
-                id="portfolio-download"
-                download="denizalp-aybak-portfolio.pdf"
-            >
-                portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
-            </a>
-        </p>
+        <section
+    class="biography"
+    id="biography"
+>
+    <p>
+        denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
+    </p>
+
+    <p>
+        having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
+    </p>
+
+    <p>
+        his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
+    </p>
+
+    <div
+        class="biography-divider"
+        aria-hidden="true"
+    >————————————————————————————————————————————————————————————————</div>
+
+    <p>
+        editorial collaborators:<br>
+        <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
+    </p>
+
+    <p>
+        brand collaborators:<br>
+        <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
+    </p>
+
+    <p class="portfolio-download">
+        <a
+                    href="./denizalp-aybak-portfolio.pdf"
+                    id="portfolio-download"
+                    download="denizalp-aybak-portfolio.pdf"
+        >
+            portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
+        </a>
+    </p>
+</section>
 
     </main>
 
     <div id="landing-aybak-end-card" aria-hidden="true">
-        <button id="landing-aybak-logo" type="button" aria-label="Denizalp Aybak">
-            <span id="landing-aybak-name">Denizalp</span>
-            <span id="landing-aybak-aybak">aybak</span>
-        </button>
+        <canvas id="landing-aybak-word" aria-label="AYBAK"></canvas>
     </div>
 
 </div>
@@ -5322,8 +5346,9 @@ function animatePhotoGroups(
 
 const navItems =
     {
-
         photography: {
+            desktopWord: "photography.denizalpaybak.com",
+            mobileWord: "photography.",
             word: "photography.denizalpaybak.com",
             baseCount: 0,
             element: photographyText,
@@ -5331,69 +5356,52 @@ const navItems =
         },
 
         film: {
+            desktopWord: "film.denizalpaybak.com",
+            mobileWord: "film.",
             word: "film.denizalpaybak.com",
             baseCount: 0,
             element: filmText,
             count: 0
         }
-
     };
 
-function getLandingNavigationWord(mode) {
-    const portrait =
-        window.matchMedia("(max-width: 600px) and (orientation: portrait)").matches;
 
-    if (portrait) {
-        return mode === "photography" ? "photography." : "film.";
-    }
-
-    return mode === "photography"
-        ? "photography.denizalpaybak.com"
-        : "film.denizalpaybak.com";
+function isPortraitNavigation() {
+    return window.matchMedia(
+        "(max-width: 600px) and (orientation: portrait)"
+    ).matches;
 }
 
-function syncLandingNavigationWords() {
-    ["photography", "film"].forEach(mode => {
-        const item = navItems[mode];
-        const next = getLandingNavigationWord(mode);
-        if (item.word === next) return;
-        item.word = next;
+
+function syncNavigationWords() {
+    const portrait = isPortraitNavigation();
+
+    [navItems.photography, navItems.film].forEach(item => {
+        item.word = portrait ? item.mobileWord : item.desktopWord;
         item.baseCount = 0;
-        item.count = 0;
-        item.element.textContent = next;
+        item.count = Math.min(item.count, item.word.length);
+        item.element.textContent = item.word;
     });
 }
 
-syncLandingNavigationWords();
-window.addEventListener("resize", syncLandingNavigationWords, { passive: true });
-window.addEventListener("orientationchange", syncLandingNavigationWords, { passive: true });
-
 
 function renderCaseWord(
-    word,
+    item,
     count
 ) {
-
     const normalized =
         Math.max(
             0,
             Math.min(
-                word.length,
-                Math.round(
-                    count
-                )
+                item.word.length,
+                Math.round(count)
             )
         );
 
-    return word
-        .split("")
-        .map((letter, index) =>
-            index < normalized
-                ? letter.toUpperCase()
-                : letter.toLowerCase()
-        )
-        .join("");
-
+    return (
+        item.word.slice(0, normalized).toUpperCase() +
+        item.word.slice(normalized)
+    );
 }
 
 
@@ -5415,7 +5423,7 @@ function setWordCount(
 
     item.element.textContent =
         renderCaseWord(
-            item.word,
+            item,
             item.count
         );
 
@@ -6360,7 +6368,9 @@ function introLogo() {
 
                                             introWait(
                                                 INTRO_AFTER_LOGO_DELAY,
-                                                introPhotography
+                                                () => {
+                                                    introFinished = true;
+                                                }
                                             );
 
                                         }
@@ -6386,21 +6396,71 @@ function introLogo() {
    ===================================================== */
 
 function introPhotography() {
-    if (introCancelled || !introLogoCompleted) return;
 
-    clearPreviewTheme();
-    clearSinglePhotographyPreview();
-    photographyField.classList.remove("active");
-    filmField.classList.remove("active");
-    activeMode = null;
-    animateTitlesTo(null);
+    if (
+        introCancelled ||
+        !introLogoCompleted
+    ) {
 
-    introWait(
-        INTRO_BETWEEN_PHOTO_FILM,
-        introFilm
+        return;
+
+    }
+
+    startPhotography(
+        () => {
+
+            if (
+                introCancelled
+            ) {
+
+                return;
+
+            }
+
+            introWait(
+                INTRO_PHOTO_HOLD,
+                () => {
+
+                    if (
+                        introCancelled
+                    ) {
+
+                        return;
+
+                    }
+
+                    clearPreviewTheme();
+
+                    clearSinglePhotographyPreview();
+
+                    animateTitlesTo(
+                        null,
+                        () => {
+
+                            photographyField
+                                .classList
+                                .remove(
+                                    "active"
+                                );
+
+                            activeMode =
+                                null;
+
+                            introWait(
+                                INTRO_BETWEEN_PHOTO_FILM,
+                                introFilm
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
     );
-}
 
+}
 
 
 /* =====================================================
@@ -6408,16 +6468,21 @@ function introPhotography() {
    ===================================================== */
 
 function introFilm() {
-    if (introCancelled) return;
 
-    clearPreviewTheme();
-    clearSinglePhotographyPreview();
-    photographyField.classList.remove("active");
-    filmField.classList.remove("active");
-    activeMode = null;
-    animateTitlesTo(null);
+    if (
+        introCancelled
+    ) {
+
+        return;
+
+    }
+
+    startFilm(
+        null,
+        "auto"
+    );
+
 }
-
 
 
 function scheduleAutomaticIntroBoot() {
@@ -6695,48 +6760,88 @@ function canHover() {
 photographyLink.addEventListener(
     "mouseenter",
     () => {
-        if (!canHover()) return;
+        if (!canHover()) {
+            return;
+        }
+
         cancelAutomaticIntroForInteraction();
+
         hoverMode = "photography";
         animateTitlesTo("photography");
     }
 );
 
+
 photographyLink.addEventListener(
     "mouseleave",
     () => {
-        if (!canHover()) return;
+        if (!canHover()) {
+            return;
+        }
+
         setTimeout(() => {
-            if (photographyLink.matches(":hover") || filmLink.matches(":hover")) return;
-            if (hoverMode !== "photography") return;
+            if (
+                photographyLink.matches(":hover") ||
+                filmLink.matches(":hover")
+            ) {
+                return;
+            }
+
+            if (hoverMode !== "photography") {
+                return;
+            }
+
             hoverMode = null;
             animateTitlesTo(null);
         }, 0);
     }
 );
 
+
+/* =====================================================
+   DESKTOP FILM HOVER
+   ===================================================== */
+
 filmLink.addEventListener(
     "mouseenter",
     () => {
-        if (!canHover()) return;
+        if (!canHover()) {
+            return;
+        }
+
         cancelAutomaticIntroForInteraction();
+
         hoverMode = "film";
         animateTitlesTo("film");
     }
 );
 
+
 filmLink.addEventListener(
     "mouseleave",
     () => {
-        if (!canHover()) return;
+        if (!canHover()) {
+            return;
+        }
+
         setTimeout(() => {
-            if (filmLink.matches(":hover") || photographyLink.matches(":hover")) return;
-            if (hoverMode !== "film") return;
+            if (
+                filmLink.matches(":hover") ||
+                photographyLink.matches(":hover")
+            ) {
+                return;
+            }
+
+            if (hoverMode !== "film") {
+                return;
+            }
+
             hoverMode = null;
             animateTitlesTo(null);
         }, 0);
     }
 );
+
 
 /* =====================================================
    MOBILE SECTION NAVIGATION
@@ -7319,156 +7424,496 @@ logo.addEventListener(
 
 
 /* =====================================================
-   AYBAK END CARD — CENTERED TWO-LINE LOGO
+   AYBAK END CARD — TWO-STATE VERTICAL NAVIGATION
    ===================================================== */
 
-const landingAybakEndCard = document.getElementById("landing-aybak-end-card");
-const landingAybakLogo = document.getElementById("landing-aybak-logo");
-const landingAybakName = document.getElementById("landing-aybak-name");
-const landingAybakAybak = document.getElementById("landing-aybak-aybak");
+const landingAybakEndCard =
+    document.getElementById(
+        "landing-aybak-end-card"
+    );
 
-let landingAybakActive = false;
-let landingAybakWheelAccumulator = 0;
-let landingAybakWheelTimer = null;
-let landingAybakTouchStartX = null;
-let landingAybakTouchStartY = null;
-let landingAybakReturnTimer = null;
-let landingAybakLeaving = false;
+const landingAybakCanvas =
+    document.getElementById(
+        "landing-aybak-word"
+    );
 
-const LANDING_AYBAK_WHEEL_THRESHOLD = 48;
-const LANDING_AYBAK_SWIPE_THRESHOLD = 52;
-const LANDING_AYBAK_LEAVE_DURATION = 300;
-const LANDING_AYBAK_CLICK_HOLD_DESKTOP = 100;
-const LANDING_AYBAK_CLICK_HOLD_MOBILE = 420;
+let landingAybakActive =
+    false;
 
-function setLandingAybakLogoState(state) {
-    const clamped = Math.max(0, Math.min(5, state));
-    landingAybakName.textContent = clamped === 0 ? "Denizalp" : "denizalp";
-    const lower = ["a", "y", "b", "a", "k"];
-    const upper = ["A", "Y", "B", "A", "K"];
-    landingAybakAybak.textContent = lower.map((letter, index) => index < clamped ? upper[index] : letter).join("");
-}
+let landingAybakLight =
+    false;
 
-function animateLandingAybakLogoTo(target, callback = null) {
-    if (landingAybakLogo._timer) clearTimeout(landingAybakLogo._timer);
-    let state = landingAybakLogo._state ?? 0;
-    landingAybakLogo._target = target;
-    function step() {
-        if (state === landingAybakLogo._target) {
-            landingAybakLogo._state = state; landingAybakLogo._timer = null;
-            if (typeof callback === "function") callback();
-            return;
-        }
-        state += state < landingAybakLogo._target ? 1 : -1;
-        landingAybakLogo._state = state; setLandingAybakLogoState(state);
-        landingAybakLogo._timer = setTimeout(step, LOGO_STEP_DURATION);
-    }
-    step();
-}
+let landingAybakTouchStartX =
+    null;
 
-function clearLandingAybakReturnTimer() {
-    if (landingAybakReturnTimer !== null) { clearTimeout(landingAybakReturnTimer); landingAybakReturnTimer = null; }
-}
+let landingAybakTouchStartY =
+    null;
 
-function returnLandingAybakLogoAfterMobileHold() {
-    clearLandingAybakReturnTimer();
-    landingAybakReturnTimer = setTimeout(() => { animateLandingAybakLogoTo(0); landingAybakReturnTimer = null; }, LOGO_MOBILE_HOLD);
-}
+let landingAybakWheelAccumulator =
+    0;
 
-function fitLandingAybakLogo() {
-    setLandingAybakLogoState(landingAybakLogo._state ?? 0);
-}
+let landingAybakWheelTimer =
+    null;
 
-function setLandingAybakEndCard(active) {
-    const next = Boolean(active);
-    if (next === landingAybakActive) return;
-    if (next) {
-        cancelAutomaticIntroForInteraction(); clearIntroTimer(); cancelFilmAutoClose(); clearLandingAybakReturnTimer();
-        landingAybakLeaving = false;
-        document.body.classList.remove("landing-aybak-leaving"); document.documentElement.classList.remove("landing-aybak-leaving");
-        landingAybakActive = true;
-        document.body.classList.add("landing-aybak-active"); document.documentElement.classList.add("landing-aybak-active");
-        landingAybakEndCard.setAttribute("aria-hidden", "false"); setLandingAybakLogoState(landingAybakLogo._state ?? 0);
+const LANDING_AYBAK_WHEEL_THRESHOLD =
+    48;
+
+const LANDING_AYBAK_SWIPE_THRESHOLD =
+    52;
+
+
+async function fitLandingAybakWord() {
+
+    if (
+        !landingAybakCanvas ||
+        !landingAybakEndCard
+    ) {
         return;
     }
-    landingAybakActive = false;
-    document.body.classList.remove("landing-aybak-active"); document.documentElement.classList.remove("landing-aybak-active");
-    landingAybakEndCard.setAttribute("aria-hidden", "true");
-}
 
-function leaveLandingAybakOnDesktop() {
-    if (landingAybakLeaving) return;
-    landingAybakLeaving = true;
-    clearLandingAybakReturnTimer();
+    /*
+        AYBAK end-card only:
 
-    /* Keep the visible logo exactly as-is while the black surface fades. */
-    document.body.classList.add("landing-aybak-leaving");
-    document.documentElement.classList.add("landing-aybak-leaving");
+        - Acumin Pro Wide Semibold (600)
+        - native font kerning; no manual tracking / pair adjustments
+        - visible left edge of A aligns with the page's left text axis
+        - visible right edge of K aligns with the page's right text axis
+        - bottom visible edge uses the same optical margin as the page footer metadata
+        - the font size is recalculated from the actual viewport width,
+          so these alignments remain fixed on every device / orientation
+    */
 
-    window.setTimeout(() => {
-        setLandingAybakEndCard(false);
-        document.body.classList.remove("landing-aybak-leaving");
-        document.documentElement.classList.remove("landing-aybak-leaving");
-        landingAybakLeaving = false;
-        /* Reset only after the white page is already back. */
-        animateLandingAybakLogoTo(0);
-    }, LANDING_AYBAK_LEAVE_DURATION);
-}
-
-
-landingAybakLogo.addEventListener("mouseenter", () => {
-    if (!canHover() || landingAybakLeaving) return;
-    clearLandingAybakReturnTimer(); animateLandingAybakLogoTo(5);
-});
-
-landingAybakLogo.addEventListener("mouseleave", () => {
-    if (!canHover() || landingAybakLeaving) return;
-    animateLandingAybakLogoTo(0);
-});
-
-landingAybakLogo.addEventListener("click", event => {
-    event.preventDefault();
-    if (landingAybakLeaving) return;
-    clearLandingAybakReturnTimer();
-
-    /* Always let the click settle into the full uppercase state first. */
-    animateLandingAybakLogoTo(5, () => {
-        window.setTimeout(() => {
-            leaveLandingAybakOnDesktop();
-        }, canHover() ? LANDING_AYBAK_CLICK_HOLD_DESKTOP : LANDING_AYBAK_CLICK_HOLD_MOBILE);
-    });
-});
-
-window.addEventListener("wheel", event => {
-    if (event.ctrlKey) return;
-    landingAybakWheelAccumulator += event.deltaY;
-    if (landingAybakWheelTimer !== null) clearTimeout(landingAybakWheelTimer);
-    landingAybakWheelTimer = setTimeout(() => { landingAybakWheelAccumulator = 0; landingAybakWheelTimer = null; }, 140);
-    if (!landingAybakActive && landingAybakWheelAccumulator > LANDING_AYBAK_WHEEL_THRESHOLD) {
-        event.preventDefault(); landingAybakWheelAccumulator = 0; setLandingAybakEndCard(true);
-    } else if (landingAybakActive && landingAybakWheelAccumulator < -LANDING_AYBAK_WHEEL_THRESHOLD) {
-        event.preventDefault(); landingAybakWheelAccumulator = 0; if (canHover()) leaveLandingAybakOnDesktop();
+    if (
+        document.fonts &&
+        document.fonts.load
+    ) {
+        try {
+            await document.fonts.load(
+                '600 1000px "acumin-pro-wide"',
+                "AYBAK"
+            );
+            await document.fonts.ready;
+        }
+        catch (_) {
+            /* The fallback below still keeps the geometry intact. */
+        }
     }
-}, { passive: false });
 
-window.addEventListener("touchstart", event => {
-    const touch = event.touches[0]; landingAybakTouchStartX = touch ? touch.clientX : null; landingAybakTouchStartY = touch ? touch.clientY : null;
-}, { passive: true });
+    const w =
+        Math.max(
+            1,
+            landingAybakEndCard.clientWidth
+        );
 
-window.addEventListener("touchend", event => {
-    if (landingAybakTouchStartX === null || landingAybakTouchStartY === null) return;
-    const touch = event.changedTouches[0]; if (!touch) return;
-    const dx = touch.clientX - landingAybakTouchStartX; const dy = touch.clientY - landingAybakTouchStartY;
-    landingAybakTouchStartX = null; landingAybakTouchStartY = null;
-    if (Math.abs(dy) <= Math.abs(dx) || Math.abs(dy) < LANDING_AYBAK_SWIPE_THRESHOLD) return;
-    if (!landingAybakActive && dy < 0) setLandingAybakEndCard(true);
-    else if (landingAybakActive && dy > 0) leaveLandingAybakOnDesktop();
-}, { passive: true });
+    const h =
+        Math.max(
+            1,
+            landingAybakEndCard.clientHeight
+        );
 
-window.addEventListener("keydown", event => {
-    if (!landingAybakActive && event.code === "ArrowDown") { event.preventDefault(); setLandingAybakEndCard(true); }
-    else if (landingAybakActive && (event.code === "ArrowUp" || event.code === "Escape")) { event.preventDefault(); if (canHover()) leaveLandingAybakOnDesktop(); }
-});
+    const root =
+        getComputedStyle(
+            document.documentElement
+        );
+
+    const side =
+        parseFloat(
+            root.getPropertyValue(
+                "--page-x"
+            )
+        ) || 0;
+
+    const bottomGap =
+        parseFloat(
+            root.getPropertyValue(
+                "--page-bottom"
+            )
+        ) || 0;
+
+    const word =
+        "AYBAK";
+
+    const sampleSize =
+        1000;
+
+    const measureCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    const measureContext =
+        measureCanvas.getContext(
+            "2d"
+        );
+
+    measureContext.textBaseline =
+        "alphabetic";
+
+    measureContext.font =
+        `600 ${sampleSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
+
+    const sampleMetrics =
+        measureContext.measureText(
+            word
+        );
+
+    const sampleInkLeft =
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxLeft
+        )
+            ? sampleMetrics.actualBoundingBoxLeft
+            : 0;
+
+    const sampleInkRight =
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxRight
+        )
+            ? sampleMetrics.actualBoundingBoxRight
+            : sampleMetrics.width;
+
+    const sampleInkBottom =
+        Number.isFinite(
+            sampleMetrics.actualBoundingBoxDescent
+        )
+            ? sampleMetrics.actualBoundingBoxDescent
+            : 0;
+
+    const sampleInkWidth =
+        Math.max(
+            1,
+            sampleInkLeft +
+            sampleInkRight
+        );
+
+    const targetInkWidth =
+        Math.max(
+            1,
+            w -
+            side * 2
+        );
+
+    const fontSize =
+        targetInkWidth *
+        sampleSize /
+        sampleInkWidth;
+
+    const scale =
+        fontSize /
+        sampleSize;
+
+    /*
+        Canvas fillText() uses the text origin, not the visible glyph edge.
+        Offset the origin by actualBoundingBoxLeft so the visible A begins
+        exactly on the same left axis as "Denizalp Aybak".
+    */
+    const finalOriginX =
+        side +
+        sampleInkLeft *
+        scale;
+
+    /*
+        Place the visible bottom of the word exactly --page-bottom from the
+        viewport bottom. This matches the footer metadata's optical bottom margin
+        and prevents the word from sitting too low on portrait mobile.
+    */
+    const finalBaselineY =
+        h -
+        bottomGap -
+        sampleInkBottom *
+        scale;
+
+    const dpr =
+        Math.max(
+            1,
+            window.devicePixelRatio || 1
+        );
+
+    landingAybakCanvas.width =
+        Math.round(
+            w * dpr
+        );
+
+    landingAybakCanvas.height =
+        Math.round(
+            h * dpr
+        );
+
+    landingAybakCanvas.style.width =
+        `${w}px`;
+
+    landingAybakCanvas.style.height =
+        `${h}px`;
+
+    const ctx =
+        landingAybakCanvas.getContext(
+            "2d"
+        );
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    ctx.clearRect(
+        0,
+        0,
+        w,
+        h
+    );
+
+    ctx.textBaseline =
+        "alphabetic";
+
+    ctx.fillStyle =
+        "#fff";
+
+    ctx.font =
+        `600 ${fontSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
+
+    ctx.fillText(
+        word,
+        finalOriginX,
+        finalBaselineY
+    );
+
+}
+
+function setLandingAybakEndCard(
+    active
+) {
+
+    const next =
+        Boolean(
+            active
+        );
+
+    if (
+        next ===
+        landingAybakActive
+    ) {
+        return;
+    }
+
+    if (
+        next
+    ) {
+        /* Entering the AYBAK page is an explicit interaction and permanently
+           stops the automatic landing sequence. */
+        cancelAutomaticIntroForInteraction();
+        clearIntroTimer();
+        cancelFilmAutoClose();
+
+        /*
+            Idle white surface -> black AYBAK page / white word.
+            Photography/film black surface -> white AYBAK page / black word.
+        */
+        landingAybakLight =
+            false;
+
+        document.body.classList.toggle(
+            "landing-aybak-light",
+            landingAybakLight
+        );
+
+        document.documentElement.classList.toggle(
+            "landing-aybak-light",
+            landingAybakLight
+        );
+    }
+
+    landingAybakActive =
+        next;
+
+    document.body.classList.toggle(
+        "landing-aybak-active",
+        landingAybakActive
+    );
+
+    document.documentElement.classList.toggle(
+        "landing-aybak-active",
+        landingAybakActive
+    );
+
+    landingAybakEndCard.setAttribute(
+        "aria-hidden",
+        landingAybakActive
+            ? "false"
+            : "true"
+    );
+
+    if (
+        landingAybakActive
+    ) {
+        requestAnimationFrame(
+            fitLandingAybakWord
+        );
+    }
+
+}
+
+
+window.addEventListener(
+    "wheel",
+    event => {
+
+        if (
+            event.ctrlKey
+        ) {
+            return;
+        }
+
+        landingAybakWheelAccumulator +=
+            event.deltaY;
+
+        if (
+            landingAybakWheelTimer !==
+            null
+        ) {
+            clearTimeout(
+                landingAybakWheelTimer
+            );
+        }
+
+        landingAybakWheelTimer =
+            setTimeout(
+                () => {
+                    landingAybakWheelAccumulator = 0;
+                    landingAybakWheelTimer = null;
+                },
+                140
+            );
+
+        if (
+            !landingAybakActive &&
+            landingAybakWheelAccumulator >
+                LANDING_AYBAK_WHEEL_THRESHOLD
+        ) {
+            event.preventDefault();
+            landingAybakWheelAccumulator = 0;
+            setLandingAybakEndCard(
+                true
+            );
+        }
+        else if (
+            landingAybakActive &&
+            landingAybakWheelAccumulator <
+                -LANDING_AYBAK_WHEEL_THRESHOLD
+        ) {
+            event.preventDefault();
+            landingAybakWheelAccumulator = 0;
+            setLandingAybakEndCard(
+                false
+            );
+        }
+
+    },
+    { passive: false }
+);
+
+
+window.addEventListener(
+    "touchstart",
+    event => {
+        const touch =
+            event.touches[0];
+        landingAybakTouchStartX =
+            touch ? touch.clientX : null;
+        landingAybakTouchStartY =
+            touch ? touch.clientY : null;
+    },
+    { passive: true }
+);
+
+
+window.addEventListener(
+    "touchend",
+    event => {
+
+        if (
+            landingAybakTouchStartX === null ||
+            landingAybakTouchStartY === null
+        ) {
+            return;
+        }
+
+        const touch =
+            event.changedTouches[0];
+
+        if (
+            !touch
+        ) {
+            return;
+        }
+
+        const dx =
+            touch.clientX -
+            landingAybakTouchStartX;
+        const dy =
+            touch.clientY -
+            landingAybakTouchStartY;
+
+        landingAybakTouchStartX = null;
+        landingAybakTouchStartY = null;
+
+        if (
+            Math.abs(dy) <=
+            Math.abs(dx) ||
+            Math.abs(dy) <
+            LANDING_AYBAK_SWIPE_THRESHOLD
+        ) {
+            return;
+        }
+
+        if (
+            !landingAybakActive &&
+            dy < 0
+        ) {
+            setLandingAybakEndCard(
+                true
+            );
+        }
+        else if (
+            landingAybakActive &&
+            dy > 0
+        ) {
+            setLandingAybakEndCard(
+                false
+            );
+        }
+
+    },
+    { passive: true }
+);
+
+
+window.addEventListener(
+    "keydown",
+    event => {
+        if (
+            !landingAybakActive &&
+            event.code === "ArrowDown"
+        ) {
+            event.preventDefault();
+            setLandingAybakEndCard(true);
+        }
+        else if (
+            landingAybakActive &&
+            (
+                event.code === "ArrowUp" ||
+                event.code === "Escape"
+            )
+        ) {
+            event.preventDefault();
+            setLandingAybakEndCard(false);
+        }
+    }
+);
+
+
 
 /* =====================================================
    SCOPED INTERACTION CANCEL
@@ -7547,10 +7992,12 @@ window.addEventListener(
     "resize",
     () => {
 
+        syncNavigationWords();
+
         if (
             resizeTimer !==
             null
-        ) {
+        ){
 
             clearTimeout(
                 resizeTimer
@@ -7567,7 +8014,7 @@ window.addEventListener(
                     if (
                         landingAybakActive
                     ) {
-                        fitLandingAybakLogo();
+                        fitLandingAybakWord();
                     }
 
                     if (
@@ -7725,7 +8172,7 @@ function stabilizeLandingLayout() {
             }
 
             if (landingAybakActive) {
-                fitLandingAybakLogo();
+                fitLandingAybakWord();
             }
         });
     });
@@ -7757,6 +8204,8 @@ function init() {
     setLogoState(
         0
     );
+
+    syncNavigationWords();
 
     setWordCount(
         navItems.photography,
