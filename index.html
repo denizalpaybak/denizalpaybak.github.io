@@ -929,6 +929,45 @@ body,
     transition: color 400ms cubic-bezier(.22,.61,.36,1);
 }
 
+
+/* Landing navigation is typography only: no photo.jpg / film.mp4 preview surfaces. */
+.photography-field,
+.film-field,
+#fixed-photo-preview,
+#film-video {
+    display: none !important;
+}
+
+/* Central biography copy. */
+.central-copy {
+    position: fixed;
+    z-index: 20;
+    top: 50%;
+    left: 50%;
+    width: min(560px, calc(100vw - 48px));
+    max-height: calc(100vh - 48px);
+    overflow: visible;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.central-copy .opening,
+.central-copy .biography {
+    position: static;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    text-align: center;
+}
+
+.central-copy .opening {
+    margin-bottom: var(--major-gap);
+}
+
+.central-copy .biography p {
+    text-align: center;
+}
+
 /* =====================================================
    BLACK PREVIEW SURFACE
    ===================================================== */
@@ -1327,11 +1366,42 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         </button>
 
 
-        <!-- OPENING -->
+        <!-- CENTRAL COPY -->
 
-        <p class="opening">
-            born in 1997, he is an istanbul-based photographer and filmmaker.
-        </p>
+        <div class="central-copy" id="central-copy">
+
+            <!-- OPENING -->
+
+            <p class="opening">
+                born in 1997, he is an istanbul-based photographer and filmmaker.
+            </p>
+
+            <section
+                class="biography"
+                id="biography"
+            >
+
+                <p>
+                    having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
+                </p>
+
+                <p>
+                    his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
+                </p>
+
+                <p>
+                    editorial collaborators:<br>
+                    <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
+                </p>
+
+                <p>
+                    brand collaborators:<br>
+                    <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
+                </p>
+
+            </section>
+
+        </div>
 
 
         <!-- NAVIGATION -->
@@ -1423,43 +1493,17 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         </div>
 
 
-        <!-- BIOGRAPHY -->
+        <!-- PORTFOLIO -->
 
-        <section
-            class="biography"
-            id="biography"
-        >
-
-            <p>
-                having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
-            </p>
-
-            <p>
-                his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
-            </p>
-
-            <p>
-                editorial collaborators:<br>
-                <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
-            </p>
-
-            <p>
-                brand collaborators:<br>
-                <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
-            </p>
-
-
-            <p class="portfolio-download">
-                <a
-                    href="./denizalp-aybak-portfolio.pdf"
-                    id="portfolio-download"
-                    download="denizalp-aybak-portfolio.pdf"
-                >
-                    portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
-                </a>
-            </p>
-
-        </section>
+        <p class="portfolio-download">
+            <a
+                href="./denizalp-aybak-portfolio.pdf"
+                id="portfolio-download"
+                download="denizalp-aybak-portfolio.pdf"
+            >
+                portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
+            </a>
+        </p>
 
     </main>
 
@@ -7228,7 +7272,12 @@ landingAybakLogo.addEventListener("click", event => {
     event.preventDefault();
     if (!canHover()) {
         if (landingAybakLeaving) return;
-        clearLandingAybakReturnTimer(); animateLandingAybakLogoTo(5, returnLandingAybakLogoAfterMobileHold);
+        clearLandingAybakReturnTimer();
+        animateLandingAybakLogoTo(5, () => {
+            window.setTimeout(() => {
+                leaveLandingAybakOnDesktop();
+            }, 140);
+        });
         return;
     }
     leaveLandingAybakOnDesktop();
