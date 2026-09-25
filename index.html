@@ -920,6 +920,13 @@ body,
     text-align: right;
 }
 
+.portfolio-download,
+.portfolio-download a {
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+}
+
 .logo,
 .opening,
 .biography,
@@ -944,28 +951,41 @@ body,
     z-index: 20;
     top: 50%;
     left: 50%;
-    width: min(560px, calc(100vw - 48px));
-    max-height: calc(100vh - 48px);
+    width: min(680px, calc(100vw - 48px));
+    max-height: calc(100dvh - 40px);
     overflow: visible;
-    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translate3d(-50%, -50%, 0);
     text-align: center;
 }
 
 .central-copy .opening,
 .central-copy .biography {
-    position: static;
+    position: static !important;
+    inset: auto !important;
     width: 100%;
     max-width: none;
     margin: 0;
+    padding: 0;
+    transform: none !important;
     text-align: center;
 }
 
 .central-copy .opening {
-    margin-bottom: var(--major-gap);
+    margin: 0 0 var(--major-gap) 0;
+}
+
+.central-copy .biography {
+    display: block;
 }
 
 .central-copy .biography p {
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center !important;
 }
 
 /* =====================================================
@@ -1063,6 +1083,17 @@ body.preview-active .portfolio-download {
     max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom))) !important;
     object-fit: contain !important;
     transform: translate(-50%, -50%) !important;
+}
+
+/* Landing is typography-only: no photo.jpg / film.mp4 can be displayed. */
+.photography-field,
+.film-field,
+#fixed-photo-preview,
+#film-video,
+#scattered-stage {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 /* =====================================================
@@ -1327,7 +1358,6 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
 
         <img
             id="fixed-photo-preview"
-            src="./photo.jpg"
             alt=""
             aria-hidden="true"
         >
@@ -1449,7 +1479,6 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
 
                     <video
                         id="film-video"
-                        src="./film.mp4"
                         muted
                         playsinline
                         preload="auto"
@@ -6173,71 +6202,21 @@ function introLogo() {
    ===================================================== */
 
 function introPhotography() {
+    if (introCancelled || !introLogoCompleted) return;
 
-    if (
-        introCancelled ||
-        !introLogoCompleted
-    ) {
+    clearPreviewTheme();
+    clearSinglePhotographyPreview();
+    photographyField.classList.remove("active");
+    filmField.classList.remove("active");
+    activeMode = null;
+    animateTitlesTo(null);
 
-        return;
-
-    }
-
-    startPhotography(
-        () => {
-
-            if (
-                introCancelled
-            ) {
-
-                return;
-
-            }
-
-            introWait(
-                INTRO_PHOTO_HOLD,
-                () => {
-
-                    if (
-                        introCancelled
-                    ) {
-
-                        return;
-
-                    }
-
-                    clearPreviewTheme();
-
-                    clearSinglePhotographyPreview();
-
-                    animateTitlesTo(
-                        null,
-                        () => {
-
-                            photographyField
-                                .classList
-                                .remove(
-                                    "active"
-                                );
-
-                            activeMode =
-                                null;
-
-                            introWait(
-                                INTRO_BETWEEN_PHOTO_FILM,
-                                introFilm
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-        }
+    introWait(
+        INTRO_BETWEEN_PHOTO_FILM,
+        introFilm
     );
-
 }
+
 
 
 /* =====================================================
@@ -6245,21 +6224,16 @@ function introPhotography() {
    ===================================================== */
 
 function introFilm() {
+    if (introCancelled) return;
 
-    if (
-        introCancelled
-    ) {
-
-        return;
-
-    }
-
-    startFilm(
-        null,
-        "auto"
-    );
-
+    clearPreviewTheme();
+    clearSinglePhotographyPreview();
+    photographyField.classList.remove("active");
+    filmField.classList.remove("active");
+    activeMode = null;
+    animateTitlesTo(null);
 }
+
 
 
 function scheduleAutomaticIntroBoot() {
@@ -7180,6 +7154,8 @@ let landingAybakLeaving = false;
 const LANDING_AYBAK_WHEEL_THRESHOLD = 48;
 const LANDING_AYBAK_SWIPE_THRESHOLD = 52;
 const LANDING_AYBAK_LEAVE_DURATION = 300;
+const LANDING_AYBAK_CLICK_HOLD_DESKTOP = 100;
+const LANDING_AYBAK_CLICK_HOLD_MOBILE = 420;
 
 function setLandingAybakLogoState(state) {
     const clamped = Math.max(0, Math.min(5, state));
@@ -7241,22 +7217,20 @@ function leaveLandingAybakOnDesktop() {
     landingAybakLeaving = true;
     clearLandingAybakReturnTimer();
 
-    /*
-       The black surface starts closing immediately, exactly like its opening
-       duration. The logo returns to its default state at the same time, so
-       the close never becomes a second animation after the fade.
-    */
+    /* Keep the visible logo exactly as-is while the black surface fades. */
     document.body.classList.add("landing-aybak-leaving");
     document.documentElement.classList.add("landing-aybak-leaving");
-    animateLandingAybakLogoTo(0);
 
     window.setTimeout(() => {
         setLandingAybakEndCard(false);
         document.body.classList.remove("landing-aybak-leaving");
         document.documentElement.classList.remove("landing-aybak-leaving");
         landingAybakLeaving = false;
+        /* Reset only after the white page is already back. */
+        animateLandingAybakLogoTo(0);
     }, LANDING_AYBAK_LEAVE_DURATION);
 }
+
 
 landingAybakLogo.addEventListener("mouseenter", () => {
     if (!canHover() || landingAybakLeaving) return;
@@ -7270,17 +7244,15 @@ landingAybakLogo.addEventListener("mouseleave", () => {
 
 landingAybakLogo.addEventListener("click", event => {
     event.preventDefault();
-    if (!canHover()) {
-        if (landingAybakLeaving) return;
-        clearLandingAybakReturnTimer();
-        animateLandingAybakLogoTo(5, () => {
-            window.setTimeout(() => {
-                leaveLandingAybakOnDesktop();
-            }, 140);
-        });
-        return;
-    }
-    leaveLandingAybakOnDesktop();
+    if (landingAybakLeaving) return;
+    clearLandingAybakReturnTimer();
+
+    /* Always let the click settle into the full uppercase state first. */
+    animateLandingAybakLogoTo(5, () => {
+        window.setTimeout(() => {
+            leaveLandingAybakOnDesktop();
+        }, canHover() ? LANDING_AYBAK_CLICK_HOLD_DESKTOP : LANDING_AYBAK_CLICK_HOLD_MOBILE);
+    });
 });
 
 window.addEventListener("wheel", event => {
