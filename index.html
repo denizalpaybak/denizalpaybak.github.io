@@ -7284,15 +7284,24 @@ function setLandingAybakEndCard(active) {
 
 function leaveLandingAybakOnDesktop() {
     if (landingAybakLeaving) return;
-    landingAybakLeaving = true; clearLandingAybakReturnTimer();
-    animateLandingAybakLogoTo(0, () => {
-        document.body.classList.add("landing-aybak-leaving"); document.documentElement.classList.add("landing-aybak-leaving");
-        window.setTimeout(() => {
-            setLandingAybakEndCard(false);
-            document.body.classList.remove("landing-aybak-leaving"); document.documentElement.classList.remove("landing-aybak-leaving");
-            landingAybakLeaving = false;
-        }, LANDING_AYBAK_LEAVE_DURATION);
-    });
+    landingAybakLeaving = true;
+    clearLandingAybakReturnTimer();
+
+    /*
+       The black surface starts closing immediately, exactly like its opening
+       duration. The logo returns to its default state at the same time, so
+       the close never becomes a second animation after the fade.
+    */
+    document.body.classList.add("landing-aybak-leaving");
+    document.documentElement.classList.add("landing-aybak-leaving");
+    animateLandingAybakLogoTo(0);
+
+    window.setTimeout(() => {
+        setLandingAybakEndCard(false);
+        document.body.classList.remove("landing-aybak-leaving");
+        document.documentElement.classList.remove("landing-aybak-leaving");
+        landingAybakLeaving = false;
+    }, LANDING_AYBAK_LEAVE_DURATION);
 }
 
 landingAybakLogo.addEventListener("mouseenter", () => {
