@@ -1709,6 +1709,202 @@ body:not(.landing-aybak-active) .logo {
 }
 </style>
 
+
+<style id="final-landing-centered-bio-and-text-aybak">
+/* The biography sits directly at the viewport center; no block/justification treatment. */
+.opening {
+    display: none !important;
+}
+
+.biography {
+    position: fixed !important;
+    z-index: 5 !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: min(76vw, 620px) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+}
+
+.bio-primary,
+.bio-primary p {
+    width: 100% !important;
+    margin: 0 0 var(--major-gap) 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    white-space: normal !important;
+    word-spacing: normal !important;
+    letter-spacing: 0 !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+}
+
+.bio-primary p:last-child {
+    margin-bottom: 0 !important;
+}
+
+.bio-collaborators {
+    width: 100% !important;
+    margin: var(--major-gap) 0 0 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+.collaborator-group,
+.collaborator-heading,
+.collaborator-list {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+}
+
+.collaborator-group {
+    margin-bottom: var(--major-gap) !important;
+}
+
+.collaborator-group:last-child {
+    margin-bottom: 0 !important;
+}
+
+.collaborator-heading,
+.collaborator-list {
+    font: inherit !important;
+    line-height: inherit !important;
+}
+
+.portfolio-download {
+    position: fixed !important;
+    right: var(--page-x) !important;
+    bottom: var(--page-bottom) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 20 !important;
+    text-align: right !important;
+}
+
+.portfolio-download a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.30em !important;
+    color: #000 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.portfolio-download a:hover {
+    text-decoration: underline !important;
+}
+
+/* Revert the end-card itself to the clean text-based black page. */
+#landing-aybak-end-card {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    background: #000 !important;
+    opacity: 0 !important;
+    transform: translate3d(0,0,0) !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
+    touch-action: none !important;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    visibility: visible !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s !important;
+}
+
+body.landing-aybak-leaving,
+html.landing-aybak-leaving {
+    background: #fff !important;
+}
+
+body.landing-aybak-leaving #landing-aybak-end-card {
+    visibility: visible !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
+}
+
+#landing-aybak-logo {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: max-content !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-align: center !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+#landing-aybak-name,
+#landing-aybak-aybak {
+    display: block !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography {
+        width: min(88vw, 390px) !important;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography {
+        width: min(80vw, 540px) !important;
+    }
+}
+
+@media (orientation: landscape) and (min-width: 1001px) {
+    .biography {
+        width: min(46vw, 620px) !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -1906,9 +2102,16 @@ body:not(.landing-aybak-active) .logo {
         
     </main>
 
-    <div id="landing-aybak-end-card" aria-hidden="true">
-        <canvas id="landing-aybak-word" aria-label="AYBAK"></canvas>
-    </div>
+    <section id="landing-aybak-end-card" aria-hidden="true">
+        <button
+            id="landing-aybak-logo"
+            type="button"
+            aria-label="Denizalp Aybak"
+        >
+            <span id="landing-aybak-name">Denizalp</span>
+            <span id="landing-aybak-aybak">aybak</span>
+        </button>
+    </section>
 
 </div>
 
@@ -7583,7 +7786,7 @@ logo.addEventListener(
 
 
 /* =====================================================
-   AYBAK END CARD — TWO-STATE VERTICAL NAVIGATION
+   AYBAK END CARD — TEXT STATE + FAST FADE
    ===================================================== */
 
 const landingAybakEndCard =
@@ -7591,16 +7794,38 @@ const landingAybakEndCard =
         "landing-aybak-end-card"
     );
 
-const landingAybakCanvas =
+const landingAybakLogo =
     document.getElementById(
-        "landing-aybak-word"
+        "landing-aybak-logo"
+    );
+
+const landingAybakName =
+    document.getElementById(
+        "landing-aybak-name"
+    );
+
+const landingAybakAybak =
+    document.getElementById(
+        "landing-aybak-aybak"
     );
 
 let landingAybakActive =
     false;
 
-let landingAybakLight =
+let landingAybakLeaving =
     false;
+
+let landingAybakLogoState =
+    0;
+
+let landingAybakLogoTarget =
+    0;
+
+let landingAybakLogoTimer =
+    null;
+
+let landingAybakLeaveTimer =
+    null;
 
 let landingAybakTouchStartX =
     null;
@@ -7620,225 +7845,232 @@ const LANDING_AYBAK_WHEEL_THRESHOLD =
 const LANDING_AYBAK_SWIPE_THRESHOLD =
     52;
 
+const LANDING_AYBAK_FADE_DURATION =
+    420;
 
-async function fitLandingAybakWord() {
+const LANDING_AYBAK_PRELEAVE_HOLD =
+    120;
+
+const LANDING_AYBAK_MOBILE_HOLD =
+    520;
+
+function setLandingAybakLogoState(
+    state
+) {
+
+    landingAybakLogoState =
+        Math.max(
+            0,
+            Math.min(
+                5,
+                state
+            )
+        );
+
+    landingAybakName.textContent =
+        landingAybakLogoState === 0
+            ? "Denizalp"
+            : "denizalp";
+
+    const lower = [
+        "a",
+        "y",
+        "b",
+        "a",
+        "k"
+    ];
+
+    const upper = [
+        "A",
+        "Y",
+        "B",
+        "A",
+        "K"
+    ];
+
+    landingAybakAybak.textContent =
+        lower
+            .map(
+                (letter, index) =>
+                    index < landingAybakLogoState
+                        ? upper[index]
+                        : letter
+            )
+            .join("");
+}
+
+function animateLandingAybakLogoTo(
+    target,
+    callback = null
+) {
+
+    landingAybakLogoTarget =
+        target;
 
     if (
-        !landingAybakCanvas ||
-        !landingAybakEndCard
+        landingAybakLogoTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            landingAybakLogoTimer
+        );
+
+        landingAybakLogoTimer =
+            null;
+
+    }
+
+    function step() {
+
+        if (
+            landingAybakLogoState ===
+            landingAybakLogoTarget
+        ) {
+
+            landingAybakLogoTimer =
+                null;
+
+            if (
+                typeof callback ===
+                "function"
+            ) {
+
+                callback();
+            }
+
+            return;
+        }
+
+        landingAybakLogoState +=
+            landingAybakLogoState <
+            landingAybakLogoTarget
+                ? 1
+                : -1;
+
+        setLandingAybakLogoState(
+            landingAybakLogoState
+        );
+
+        landingAybakLogoTimer =
+            setTimeout(
+                step,
+                LOGO_STEP_DURATION
+            );
+    }
+
+    step();
+}
+
+function finishLandingAybakLeave() {
+
+    if (
+        landingAybakLeaveTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            landingAybakLeaveTimer
+        );
+
+        landingAybakLeaveTimer =
+            null;
+    }
+
+    document.body.classList.add(
+        "landing-aybak-leaving"
+    );
+
+    document.documentElement.classList.add(
+        "landing-aybak-leaving"
+    );
+
+    landingAybakLeaveTimer =
+        setTimeout(
+            () => {
+
+                landingAybakLeaveTimer =
+                    null;
+
+                landingAybakActive =
+                    false;
+
+                document.body.classList.remove(
+                    "landing-aybak-active"
+                );
+
+                document.documentElement.classList.remove(
+                    "landing-aybak-active"
+                );
+
+                landingAybakEndCard.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                document.body.classList.remove(
+                    "landing-aybak-leaving"
+                );
+
+                document.documentElement.classList.remove(
+                    "landing-aybak-leaving"
+                );
+
+                /* Reset only after the black page is gone. */
+                setLandingAybakLogoState(0);
+
+                landingAybakLeaving =
+                    false;
+
+            },
+            LANDING_AYBAK_FADE_DURATION
+        );
+}
+
+function leaveLandingAybak(prepareUppercase = true) {
+
+    if (
+        !landingAybakActive ||
+        landingAybakLeaving
     ) {
         return;
     }
 
-    /*
-        AYBAK end-card only:
-
-        - Acumin Pro Wide Semibold (600)
-        - native font kerning; no manual tracking / pair adjustments
-        - visible left edge of A aligns with the page's left text axis
-        - visible right edge of K aligns with the page's right text axis
-        - bottom visible edge uses the same optical margin as the page footer metadata
-        - the font size is recalculated from the actual viewport width,
-          so these alignments remain fixed on every device / orientation
-    */
+    landingAybakLeaving =
+        true;
 
     if (
-        document.fonts &&
-        document.fonts.load
+        prepareUppercase &&
+        landingAybakLogoState < 5
     ) {
-        try {
-            await document.fonts.load(
-                '600 1000px "acumin-pro-wide"',
-                "AYBAK"
-            );
-            await document.fonts.ready;
-        }
-        catch (_) {
-            /* The fallback below still keeps the geometry intact. */
-        }
+
+        animateLandingAybakLogoTo(
+            5,
+            () => {
+
+                landingAybakLeaveTimer =
+                    setTimeout(
+                        finishLandingAybakLeave,
+                        canHover()
+                            ? LANDING_AYBAK_PRELEAVE_HOLD
+                            : LANDING_AYBAK_MOBILE_HOLD
+                    );
+
+            }
+        );
+
+        return;
     }
 
-    const w =
-        Math.max(
-            1,
-            landingAybakEndCard.clientWidth
+    landingAybakLeaveTimer =
+        setTimeout(
+            finishLandingAybakLeave,
+            prepareUppercase
+                ? (canHover()
+                    ? LANDING_AYBAK_PRELEAVE_HOLD
+                    : LANDING_AYBAK_MOBILE_HOLD)
+                : 0
         );
-
-    const h =
-        Math.max(
-            1,
-            landingAybakEndCard.clientHeight
-        );
-
-    const root =
-        getComputedStyle(
-            document.documentElement
-        );
-
-    const side =
-        parseFloat(
-            root.getPropertyValue(
-                "--page-x"
-            )
-        ) || 0;
-
-    const bottomGap =
-        parseFloat(
-            root.getPropertyValue(
-                "--page-bottom"
-            )
-        ) || 0;
-
-    const word =
-        "AYBAK";
-
-    const sampleSize =
-        1000;
-
-    const measureCanvas =
-        document.createElement(
-            "canvas"
-        );
-
-    const measureContext =
-        measureCanvas.getContext(
-            "2d"
-        );
-
-    measureContext.textBaseline =
-        "alphabetic";
-
-    measureContext.font =
-        `600 ${sampleSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
-
-    const sampleMetrics =
-        measureContext.measureText(
-            word
-        );
-
-    const sampleInkLeft =
-        Number.isFinite(
-            sampleMetrics.actualBoundingBoxLeft
-        )
-            ? sampleMetrics.actualBoundingBoxLeft
-            : 0;
-
-    const sampleInkRight =
-        Number.isFinite(
-            sampleMetrics.actualBoundingBoxRight
-        )
-            ? sampleMetrics.actualBoundingBoxRight
-            : sampleMetrics.width;
-
-    const sampleInkBottom =
-        Number.isFinite(
-            sampleMetrics.actualBoundingBoxDescent
-        )
-            ? sampleMetrics.actualBoundingBoxDescent
-            : 0;
-
-    const sampleInkWidth =
-        Math.max(
-            1,
-            sampleInkLeft +
-            sampleInkRight
-        );
-
-    const targetInkWidth =
-        Math.max(
-            1,
-            w -
-            side * 2
-        );
-
-    const fontSize =
-        targetInkWidth *
-        sampleSize /
-        sampleInkWidth;
-
-    const scale =
-        fontSize /
-        sampleSize;
-
-    /*
-        Canvas fillText() uses the text origin, not the visible glyph edge.
-        Offset the origin by actualBoundingBoxLeft so the visible A begins
-        exactly on the same left axis as "Denizalp Aybak".
-    */
-    const finalOriginX =
-        side +
-        sampleInkLeft *
-        scale;
-
-    /*
-        Place the visible bottom of the word exactly --page-bottom from the
-        viewport bottom. This matches the footer metadata's optical bottom margin
-        and prevents the word from sitting too low on portrait mobile.
-    */
-    const finalBaselineY =
-        h -
-        bottomGap -
-        sampleInkBottom *
-        scale;
-
-    const dpr =
-        Math.max(
-            1,
-            window.devicePixelRatio || 1
-        );
-
-    landingAybakCanvas.width =
-        Math.round(
-            w * dpr
-        );
-
-    landingAybakCanvas.height =
-        Math.round(
-            h * dpr
-        );
-
-    landingAybakCanvas.style.width =
-        `${w}px`;
-
-    landingAybakCanvas.style.height =
-        `${h}px`;
-
-    const ctx =
-        landingAybakCanvas.getContext(
-            "2d"
-        );
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-    ctx.clearRect(
-        0,
-        0,
-        w,
-        h
-    );
-
-    ctx.textBaseline =
-        "alphabetic";
-
-    ctx.fillStyle =
-        "#fff";
-
-    ctx.font =
-        `600 ${fontSize}px "acumin-pro-wide", Arial, Helvetica, sans-serif`;
-
-    ctx.fillText(
-        word,
-        finalOriginX,
-        finalBaselineY
-    );
-
 }
 
 function setLandingAybakEndCard(
@@ -7858,62 +8090,99 @@ function setLandingAybakEndCard(
     }
 
     if (
-        next
+        !next
     ) {
-        /* Entering the AYBAK page is an explicit interaction and permanently
-           stops the automatic landing sequence. */
-        cancelAutomaticIntroForInteraction();
-        clearIntroTimer();
-        cancelFilmAutoClose();
-
-        /*
-            Idle white surface -> black AYBAK page / white word.
-            Photography/film black surface -> white AYBAK page / black word.
-        */
-        landingAybakLight =
-            false;
-
-        document.body.classList.toggle(
-            "landing-aybak-light",
-            landingAybakLight
-        );
-
-        document.documentElement.classList.toggle(
-            "landing-aybak-light",
-            landingAybakLight
-        );
+        leaveLandingAybak(false);
+        return;
     }
 
-    landingAybakActive =
-        next;
+    cancelAutomaticIntroForInteraction();
+    clearIntroTimer();
+    cancelFilmAutoClose();
 
-    document.body.classList.toggle(
-        "landing-aybak-active",
-        landingAybakActive
+    landingAybakLeaving =
+        false;
+
+    if (
+        landingAybakLeaveTimer !==
+        null
+    ) {
+        clearTimeout(
+            landingAybakLeaveTimer
+        );
+        landingAybakLeaveTimer =
+            null;
+    }
+
+    document.body.classList.remove(
+        "landing-aybak-leaving"
     );
 
-    document.documentElement.classList.toggle(
-        "landing-aybak-active",
-        landingAybakActive
+    document.documentElement.classList.remove(
+        "landing-aybak-leaving"
+    );
+
+    setLandingAybakLogoState(0);
+
+    landingAybakActive =
+        true;
+
+    document.body.classList.add(
+        "landing-aybak-active"
+    );
+
+    document.documentElement.classList.add(
+        "landing-aybak-active"
     );
 
     landingAybakEndCard.setAttribute(
         "aria-hidden",
-        landingAybakActive
-            ? "false"
-            : "true"
+        "false"
     );
-
-    if (
-        landingAybakActive
-    ) {
-        requestAnimationFrame(
-            fitLandingAybakWord
-        );
-    }
-
 }
 
+/* Desktop: the end-card itself has the same uppercase hover gesture. */
+landingAybakLogo.addEventListener(
+    "mouseenter",
+    () => {
+
+        if (
+            !canHover() ||
+            landingAybakLeaving
+        ) {
+            return;
+        }
+
+        animateLandingAybakLogoTo(5);
+    }
+);
+
+landingAybakLogo.addEventListener(
+    "mouseleave",
+    () => {
+
+        if (
+            !canHover() ||
+            landingAybakLeaving
+        ) {
+            return;
+        }
+
+        animateLandingAybakLogoTo(0);
+    }
+);
+
+/* Clicking always allows the uppercase state to complete before white. */
+landingAybakLogo.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        leaveLandingAybak(true);
+    }
+);
 
 window.addEventListener(
     "wheel",
