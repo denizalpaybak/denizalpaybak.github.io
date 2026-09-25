@@ -1337,6 +1337,71 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 <style id="final-aybak-monochrome-override">
 html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active #landing-aybak-end-card { background:#000 !important; }
 </style>
+
+<!-- USER FINAL LANDING ADJUSTMENTS -->
+<style id="user-final-landing-adjustments">
+    /* Remove the white-page identity block from the upper-left.
+       The photography navigation now occupies that exact role. */
+    .landing-grid > .logo {
+        display: none !important;
+    }
+
+    /* Keep the two navigation labels on the same top row, with
+       photography moved to the former logo position and film retained
+       at the upper-right. Their text/case animation remains unchanged. */
+    .navigation {
+        position: fixed !important;
+        top: var(--page-top) !important;
+        left: var(--page-x) !important;
+        right: var(--page-x) !important;
+        z-index: 20 !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+    }
+
+    .navigation #photography-link,
+    .navigation #film-link {
+        position: absolute !important;
+        top: 0 !important;
+        margin: 0 !important;
+    }
+
+    .navigation #photography-link {
+        left: 0 !important;
+        right: auto !important;
+    }
+
+    .navigation #film-link {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+    /* A small, deliberate breath before Editorial collaborators. */
+    .central-copy .biography p:nth-child(3) {
+        margin-top: 10px !important;
+    }
+
+    /* Ensure the complete biography remains a single centered typographic
+       block on every orientation. */
+    .central-copy {
+        box-sizing: border-box !important;
+        width: min(680px, calc(100vw - 2 * var(--page-x))) !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate3d(-50%, -50%, 0) !important;
+        text-align: center !important;
+    }
+
+    .central-copy .opening,
+    .central-copy .biography,
+    .central-copy .biography p {
+        width: 100% !important;
+        text-align: center !important;
+    }
+</style>
+
 </head>
 
 
@@ -1403,7 +1468,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
             <!-- OPENING -->
 
             <p class="opening">
-                born in 1997, he is an istanbul-based photographer and filmmaker.
+                denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
             </p>
 
             <section
