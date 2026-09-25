@@ -1400,6 +1400,125 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         width: 100% !important;
         text-align: center !important;
     }
+<style id="final-central-copy-typography">
+    /*
+       Final landing biography treatment:
+       one centered block, but with justified paragraph composition rather
+       than centered lines. The width is deliberately tuned per platform so
+       word spacing stays controlled and the block retains a calm proportion.
+    */
+    .central-copy {
+        box-sizing: border-box !important;
+        position: fixed !important;
+        z-index: 20 !important;
+        top: 50% !important;
+        left: 50% !important;
+        width: min(640px, 42vw) !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: translate3d(-50%, -50%, 0) !important;
+        display: block !important;
+        text-align: justify !important;
+        text-justify: inter-word !important;
+        text-align-last: left !important;
+    }
+
+    .central-copy .opening,
+    .central-copy .biography,
+    .central-copy .biography p {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        text-align: justify !important;
+        text-justify: inter-word !important;
+        text-align-last: left !important;
+        hyphens: auto;
+        overflow-wrap: normal;
+    }
+
+    .central-copy .opening {
+        position: static !important;
+        margin-top: 0 !important;
+        margin-bottom: var(--major-gap) !important;
+        padding: 0 !important;
+        transform: none !important;
+    }
+
+    .central-copy .biography {
+        position: static !important;
+        inset: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+    }
+
+    .central-copy .biography p {
+        margin-top: 0 !important;
+        margin-bottom: var(--major-gap) !important;
+    }
+
+    /* A fuller pause before the editorial credits. */
+    .central-copy .biography p:nth-child(3) {
+        margin-top: 28px !important;
+    }
+
+    /* Collaborator labels stay optically left-aligned within the justified
+       block so the short heading never gets stretched across the line. */
+    .central-copy .collab-label {
+        display: inline-block;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    @media (min-width: 1001px) {
+        .central-copy {
+            width: min(640px, 42vw) !important;
+        }
+    }
+
+    @media (min-width: 601px) and (max-width: 1000px) {
+        .central-copy {
+            width: min(560px, calc(100vw - 96px)) !important;
+        }
+    }
+
+    @media (orientation: landscape) and (max-width: 1000px) and (max-height: 650px) {
+        .central-copy {
+            width: min(520px, calc(100vw - 120px)) !important;
+        }
+
+        .central-copy .biography p:nth-child(3) {
+            margin-top: 24px !important;
+        }
+    }
+
+    @media (max-width: 600px) and (orientation: portrait) {
+        .central-copy {
+            width: min(340px, calc(100vw - 48px)) !important;
+        }
+
+        .central-copy .biography p:nth-child(3) {
+            margin-top: 24px !important;
+        }
+    }
+
+    /* Restore the portfolio as a normal clickable/downloadable footer link. */
+    .portfolio-download,
+    .portfolio-download a {
+        font-size: var(--font-size) !important;
+        font-weight: 400 !important;
+        line-height: var(--line-height) !important;
+    }
+
+    .portfolio-download a {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.30em;
+        pointer-events: auto !important;
+        cursor: pointer;
+    }
 </style>
 
 </head>
@@ -1485,12 +1604,12 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
                 </p>
 
                 <p>
-                    editorial collaborators:<br>
+                    <span class="collab-label">editorial collaborators:</span><br>
                     <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
                 </p>
 
                 <p>
-                    brand collaborators:<br>
+                    <span class="collab-label">brand collaborators:</span><br>
                     <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
                 </p>
 
@@ -1591,7 +1710,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
 
         <p class="portfolio-download">
             <a
-                href="./denizalp-aybak-portfolio.pdf"
+                href="https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/denizalp-aybak-portfolio.pdf"
                 id="portfolio-download"
                 download="denizalp-aybak-portfolio.pdf"
             >
