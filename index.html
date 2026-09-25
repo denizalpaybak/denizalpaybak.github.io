@@ -280,16 +280,18 @@ body {
    ===================================================== */
 
 .biography {
-    grid-column: 1;
-    grid-row: 5;
+    position: fixed;
 
-    align-self: start;
+    top: 50%;
+    left: 50%;
 
-    width: 100%;
+    width: min(530px, calc(100vw - 2 * var(--page-x)));
     max-width: 530px;
 
     margin: 0;
     padding: 0;
+
+    transform: translate(-50%, -50%);
 
     font-size: var(--font-size);
     font-weight: 400;
@@ -695,9 +697,7 @@ body {
     }
 
     .biography {
-        grid-column: 1;
-        grid-row: 5;
-
+        width: calc(100vw - 2 * var(--page-x));
         max-width: none;
     }
 
@@ -778,8 +778,12 @@ body {
         top: 15px;
     }
 
-    .opening,
+    .opening {
+        max-width: none;
+    }
+
     .biography {
+        width: calc(100vw - 2 * var(--page-x));
         max-width: none;
     }
 
@@ -1031,20 +1035,20 @@ body.preview-active .portfolio-download {
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; visibility: hidden; pointer-events: none;
     background: #000; opacity: 0; transform: translate3d(0,0,0);
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms;
+    transition: opacity 300ms linear, visibility 0s linear 300ms;
     touch-action: none;
 }
 
 body.landing-aybak-active #landing-aybak-end-card {
     visibility: visible; pointer-events: auto; opacity: 1; transform: translate3d(0,0,0);
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s;
+    transition: opacity 300ms linear, visibility 0s linear 0s;
 }
 
 body.landing-aybak-leaving, html.landing-aybak-leaving { background: #fff !important; }
 
 body.landing-aybak-leaving #landing-aybak-end-card {
     visibility: visible; pointer-events: none; opacity: 0;
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms;
+    transition: opacity 300ms linear, visibility 0s linear 300ms;
 }
 
 #landing-aybak-logo {
@@ -1326,7 +1330,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         <!-- OPENING -->
 
         <p class="opening">
-            is an istanbul-based fashion photographer and filmmaker.
+            born in 1997, he is an istanbul-based photographer and filmmaker.
         </p>
 
 
@@ -1339,7 +1343,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
                 id="photography-link"
             >
                 <span id="photography-text">
-                    PHOTOGRAPHY.
+                    photography.denizalpaybak.com
                 </span>
             </a>
 
@@ -1348,7 +1352,7 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
                 id="film-link"
             >
                 <span id="film-text">
-                    FILM.
+                    film.denizalpaybak.com
                 </span>
             </a>
 
@@ -1427,20 +1431,20 @@ html.landing-aybak-active, body.landing-aybak-active, body.landing-aybak-active 
         >
 
             <p>
-                having graduated top of his class in management at sabanci university, aybak approaches image-making with both strategic precision and artistic intuition.
+                having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
             </p>
 
             <p>
-                his work is built around atmosphere, with every creative decision <span class="bio-ending">made to evoke feeling.</span>
+                his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
             </p>
 
             <p>
-                selected publications:<br>
+                editorial collaborators:<br>
                 <span class="item">vogue türkiye</span>, <span class="item">harper’s bazaar türkiye</span>, <span class="item">elle türkiye</span>, <span class="item">l’officiel türkiye</span>
             </p>
 
             <p>
-                selected clients:<br>
+                brand collaborators:<br>
                 <span class="item">vakko</span>, <span class="item">bee goddess</span>, <span class="item">zeynep arcay</span>,<span class="mobile-client-break"><br></span> <span class="item">peugeot</span>, <span class="item">skechers</span>, <span class="item">lc waikiki</span>
             </p>
 
@@ -5063,38 +5067,49 @@ const navItems =
     {
 
         photography: {
-
-            word:
-                "PHOTOGRAPHY.DENIZALPAYBAK.COM",
-
-            baseCount:
-                "PHOTOGRAPHY.".length,
-
-            element:
-                photographyText,
-
-            count:
-                "PHOTOGRAPHY.".length
-
+            word: "photography.denizalpaybak.com",
+            baseCount: 0,
+            element: photographyText,
+            count: 0
         },
 
         film: {
-
-            word:
-                "FILM.DENIZALPAYBAK.COM",
-
-            baseCount:
-                "FILM.".length,
-
-            element:
-                filmText,
-
-            count:
-                "FILM.".length
-
+            word: "film.denizalpaybak.com",
+            baseCount: 0,
+            element: filmText,
+            count: 0
         }
 
     };
+
+function getLandingNavigationWord(mode) {
+    const portrait =
+        window.matchMedia("(max-width: 600px) and (orientation: portrait)").matches;
+
+    if (portrait) {
+        return mode === "photography" ? "photography." : "film.";
+    }
+
+    return mode === "photography"
+        ? "photography.denizalpaybak.com"
+        : "film.denizalpaybak.com";
+}
+
+function syncLandingNavigationWords() {
+    ["photography", "film"].forEach(mode => {
+        const item = navItems[mode];
+        const next = getLandingNavigationWord(mode);
+        if (item.word === next) return;
+        item.word = next;
+        item.baseCount = 0;
+        item.count = 0;
+        item.element.textContent = next;
+    });
+}
+
+syncLandingNavigationWords();
+window.addEventListener("resize", syncLandingNavigationWords, { passive: true });
+window.addEventListener("orientationchange", syncLandingNavigationWords, { passive: true });
 
 
 function renderCaseWord(
@@ -5113,7 +5128,14 @@ function renderCaseWord(
             )
         );
 
-    return word.slice(0, normalized);
+    return word
+        .split("")
+        .map((letter, index) =>
+            index < normalized
+                ? letter.toUpperCase()
+                : letter.toLowerCase()
+        )
+        .join("");
 
 }
 
@@ -6471,160 +6493,48 @@ function canHover() {
 photographyLink.addEventListener(
     "mouseenter",
     () => {
-
-        if (
-            !canHover()
-        ) {
-
-            return;
-
-        }
-
+        if (!canHover()) return;
         cancelAutomaticIntroForInteraction();
-
-        hoverMode =
-            "photography";
-
-        startPhotography();
-
+        hoverMode = "photography";
+        animateTitlesTo("photography");
     }
 );
-
 
 photographyLink.addEventListener(
     "mouseleave",
     () => {
-
-        if (
-            !canHover()
-        ) {
-
-            return;
-
-        }
-
-        setTimeout(
-            () => {
-
-                if (
-                    photographyLink.matches(
-                        ":hover"
-                    ) ||
-                    filmLink.matches(
-                        ":hover"
-                    )
-                ) {
-
-                    return;
-
-                }
-
-                if (
-                    hoverMode !==
-                    "photography"
-                ) {
-
-                    return;
-
-                }
-
-                hoverMode =
-                    null;
-
-                enterIdle();
-
-            },
-            0
-        );
-
+        if (!canHover()) return;
+        setTimeout(() => {
+            if (photographyLink.matches(":hover") || filmLink.matches(":hover")) return;
+            if (hoverMode !== "photography") return;
+            hoverMode = null;
+            animateTitlesTo(null);
+        }, 0);
     }
 );
-
-
-/* =====================================================
-   DESKTOP FILM HOVER
-   ===================================================== */
 
 filmLink.addEventListener(
     "mouseenter",
     () => {
-
-        if (
-            !canHover()
-        ) {
-
-            return;
-
-        }
-
+        if (!canHover()) return;
         cancelAutomaticIntroForInteraction();
-
-        hoverMode =
-            "film";
-
-        startFilm(
-            null,
-            "hover"
-        );
-
+        hoverMode = "film";
+        animateTitlesTo("film");
     }
 );
-
 
 filmLink.addEventListener(
     "mouseleave",
     () => {
-
-        if (
-            !canHover()
-        ) {
-
-            return;
-
-        }
-
-        setTimeout(
-            () => {
-
-                if (
-                    filmLink.matches(
-                        ":hover"
-                    ) ||
-                    photographyLink.matches(
-                        ":hover"
-                    )
-                ) {
-
-                    return;
-
-                }
-
-                if (
-                    hoverMode !==
-                    "film"
-                ) {
-
-                    return;
-
-                }
-
-                hoverMode =
-                    null;
-
-                filmPlaybackMode =
-                    "auto";
-
-                cancelFilmAutoClose();
-
-                enterIdle();
-
-            },
-            0
-        );
-
+        if (!canHover()) return;
+        setTimeout(() => {
+            if (filmLink.matches(":hover") || photographyLink.matches(":hover")) return;
+            if (hoverMode !== "film") return;
+            hoverMode = null;
+            animateTitlesTo(null);
+        }, 0);
     }
 );
-
 
 /* =====================================================
    MOBILE SECTION NAVIGATION
@@ -7225,7 +7135,7 @@ let landingAybakLeaving = false;
 
 const LANDING_AYBAK_WHEEL_THRESHOLD = 48;
 const LANDING_AYBAK_SWIPE_THRESHOLD = 52;
-const LANDING_AYBAK_LEAVE_DURATION = 420;
+const LANDING_AYBAK_LEAVE_DURATION = 300;
 
 function setLandingAybakLogoState(state) {
     const clamped = Math.max(0, Math.min(5, state));
