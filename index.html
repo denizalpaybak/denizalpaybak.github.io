@@ -2484,7 +2484,7 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     position: fixed !important;
     z-index: 5 !important;
     left: 50% !important;
-    top: var(--bio-center-y, 50vh) !important;
+    top: 50vh !important;
     transform: translate(-50%, -50%) !important;
 
     width: min(680px, 78vw) !important;
@@ -2653,6 +2653,12 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 
 .native-down-arrow {
     display: none !important;
+}
+
+/* Hover underlines for every footer link, on both sides. */
+.contact a:hover,
+.portfolio-download a:hover {
+    text-decoration: underline !important;
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
@@ -9214,12 +9220,6 @@ window.addEventListener(
                     mountPhotographyField();
 
                     if (
-                        landingAybakActive
-                    ) {
-                        fitLandingAybakWord();
-                    }
-
-                    if (
                         !photographyInitialReady
                     ) {
 
@@ -9371,10 +9371,6 @@ function stabilizeLandingLayout() {
 
             if (photographyInitialReady) {
                 randomizePhotographyLayout();
-            }
-
-            if (landingAybakActive) {
-                fitLandingAybakWord();
             }
         });
     });
@@ -9553,33 +9549,6 @@ window.addEventListener(
     });
 
     render(0);
-})();
-</script>
-
-
-<script id="final-bio-vertical-centering">
-(() => {
-    const bio = document.getElementById("biography");
-    const nav = document.querySelector(".navigation");
-    const contact = document.querySelector(".contact");
-    if (!bio || !nav || !contact) return;
-
-    function syncBioCenter() {
-        const navRect = nav.getBoundingClientRect();
-        const contactRect = contact.getBoundingClientRect();
-        const navBottom = navRect.top + Math.max(navRect.height, parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-size")) || 15);
-        const footerTop = contactRect.top;
-        const center = (navBottom + footerTop) / 2;
-        document.documentElement.style.setProperty("--bio-center-y", `${Math.round(center * 100) / 100}px`);
-    }
-
-    const run = () => requestAnimationFrame(() => requestAnimationFrame(syncBioCenter));
-    run();
-    window.addEventListener("resize", run, { passive: true });
-    window.addEventListener("orientationchange", run, { passive: true });
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(run);
-    }
 })();
 </script>
 
