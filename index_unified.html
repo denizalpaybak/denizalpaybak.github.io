@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Denizalp Aybak</title>
+<link rel="preconnect" href="https://library.denizalpaybak.com" crossorigin>
+<style>
+
+*{box-sizing:border-box}
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#fff;
+    color:#000;
+    font-family:Arial,Helvetica,sans-serif;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+}
+button{font:inherit}
+a{color:inherit;text-decoration:none}
+:root{
+    --font-size:clamp(12px, .88vw, 15px);
+    --line-height:1.15;
+    --side:48px;
+    --top:30px;
+    --bottom:24px;
+    --ui-z:40;
+    --preview-z:4;
+    --viewer-z:30;
+    --ease:cubic-bezier(.22,.61,.36,1);
+}
+.chrome{
+    color:#fff;
+    mix-blend-mode:difference;
+}
+.ui-link,.index-header,.index-cell,.info-copy,.footer-link,.logo-word{
+    color:#fff;
+    mix-blend-mode:difference;
+}
+button,.cell-hit,.index-header{
+    -webkit-tap-highlight-color:transparent;
+}
+button{appearance:none;-webkit-appearance:none;border:0;background:none;padding:0}
+#site{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:#fff;
+}
+#preview-layer{
+    position:fixed;
+    inset:0;
+    z-index:var(--preview-z);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 180ms ease;
+    overflow:hidden;
+}
+#preview-layer.visible{opacity:1}
+#preview-layer img,#preview-layer video{
+    display:block;
+    max-width:82vw;
+    max-height:74vh;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+}
+#preview-layer video{background:transparent}
+#preview-layer::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:transparent;
+    pointer-events:none;
+}
+
+/* GLOBAL HEADER */
+#top-left,#top-right{
+    position:fixed;
+    top:var(--top);
+    z-index:var(--ui-z);
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+#top-left{left:var(--side)}
+#top-right{right:var(--side)}
+.header-button{
+    position:relative;
+    display:block;
+    cursor:pointer;
+    white-space:nowrap;
+}
+#top-center{
+    position:fixed;
+    top:var(--top);
+    left:50%;
+    transform:translateX(-50%);
+    z-index:var(--ui-z);
+    width:max-content;
+    text-align:center;
+    cursor:default;
+}
+#logo-button{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:0;
+    cursor:pointer;
+}
+.logo-word{
+    display:block;
+    line-height:var(--line-height);
+    white-space:nowrap;
+}
+.logo-word + .logo-word{margin-top:-.02em}
+
+/* Morph letters */
+.morph{
+    display:inline-flex;
+    white-space:nowrap;
+    vertical-align:baseline;
+}
+.morph-char{
+    display:inline-grid;
+    width:max-content;
+    min-width:0;
+    position:relative;
+}
+.morph-char > span{
+    grid-area:1/1;
+    display:inline-block;
+    transition:opacity 220ms var(--ease),transform 220ms var(--ease);
+}
+.morph-lower{opacity:1;transform:translateY(0)}
+.morph-upper{opacity:0;transform:translateY(.12em)}
+.morph.is-upper .morph-lower{opacity:0;transform:translateY(-.12em)}
+.morph.is-upper .morph-upper{opacity:1;transform:translateY(0)}
+.morph-space{width:.28em}
+
+/* FOOTER */
+#footer-left,#footer-right{
+    position:fixed;
+    bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
+    z-index:var(--ui-z);
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+#footer-left{left:var(--side)}
+#footer-right{right:var(--side);text-align:right}
+.footer-link{display:inline-block;white-space:nowrap;cursor:pointer}
+
+/* INFO */
+#info-view{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:calc(var(--top) * 2 + 20px) var(--side);
+    background:#fff;
+}
+body.info-mode #info-view{display:flex}
+body.info-mode #index-view{display:none}
+.info-inner{
+    width:min(600px,76vw);
+    max-height:calc(100vh - 140px);
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+.info-p{
+    margin:0 0 1.15em;
+    padding:0;
+}
+.info-p:last-child{margin-bottom:0}
+.info-left{text-align:left}
+.info-right{text-align:right}
+
+/* INDEX */
+#index-view{
+    position:fixed;
+    inset:0;
+    z-index:8;
+    display:block;
+    background:transparent;
+}
+body.info-mode #index-view{display:none}
+#index-wrap{
+    position:absolute;
+    inset:calc(var(--top) + 50px) var(--side) calc(var(--bottom) + 18px);
+    overflow:hidden;
+}
+#index-table{
+    width:100%;
+    display:grid;
+    grid-auto-rows:minmax(0,auto);
+    align-content:start;
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+.index-grid{
+    display:grid;
+    grid-template-columns:minmax(0,2.25fr) minmax(80px,1fr) minmax(92px,.85fr) minmax(86px,.85fr);
+    column-gap:28px;
+    align-items:baseline;
+}
+#index-head{
+    position:sticky;
+    top:0;
+    z-index:2;
+    padding-bottom:1.1em;
+    background:transparent;
+}
+.index-header{
+    text-align:left;
+    cursor:pointer;
+    white-space:nowrap;
+}
+.index-row{
+    min-height:calc(var(--font-size) * var(--line-height));
+    position:relative;
+}
+.index-row::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:100%;
+    height:0;
+    pointer-events:none;
+}
+.index-cell{
+    position:relative;
+    display:block;
+    width:100%;
+    min-width:0;
+    text-align:left;
+    white-space:nowrap;
+    overflow:visible;
+    cursor:pointer;
+}
+.index-row.active .index-cell{cursor:pointer}
+.index-cell .morph{display:inline-flex}
+
+/* VIEWER */
+#viewer{
+    position:fixed;
+    inset:0;
+    z-index:var(--viewer-z);
+    display:none;
+    background:#fff;
+}
+body.viewer-open #viewer{display:block}
+#viewer-top-left,#viewer-top-right{
+    position:fixed;
+    top:var(--top);
+    z-index:50;
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+#viewer-top-left{left:var(--side)}
+#viewer-top-right{right:var(--side)}
+.viewer-link{
+    color:#fff;
+    mix-blend-mode:difference;
+    cursor:pointer;
+    white-space:nowrap;
+}
+#viewer-stage{
+    position:absolute;
+    inset:0;
+    padding:calc(var(--top) + 22px) var(--side) calc(var(--bottom) + 38px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+#viewer-stage img,#viewer-stage video{
+    display:block;
+    max-width:100%;
+    max-height:calc(100vh - 120px);
+    width:auto;
+    height:auto;
+    object-fit:contain;
+}
+#viewer-stage video{background:transparent}
+.viewer-photo-grid{
+    display:grid;
+    width:100%;
+    height:100%;
+    gap:7px;
+    place-items:center;
+    align-content:center;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    grid-auto-rows:minmax(0,1fr);
+    padding:16px 0;
+    overflow:auto;
+}
+.viewer-film-grid{
+    display:grid;
+    width:100%;
+    height:100%;
+    gap:5px;
+    place-items:center;
+    align-content:center;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-auto-rows:minmax(0,1fr);
+    padding:16px 0;
+    overflow:auto;
+}
+.viewer-grid-cell{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:0;
+    min-height:0;
+    cursor:pointer;
+    padding:0;
+}
+.viewer-grid-cell img{
+    max-width:100%;
+    max-height:100%;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    display:block;
+}
+.viewer-grid-cell video{
+    max-width:100%;
+    max-height:100%;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    display:block;
+    pointer-events:none;
+}
+#viewer-meta{
+    position:fixed;
+    left:var(--side);
+    right:var(--side);
+    bottom:var(--bottom);
+    z-index:60;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    font-size:var(--font-size);
+    line-height:var(--line-height);
+}
+.viewer-meta-left,.viewer-meta-right,.viewer-film-controls{
+    color:#fff;
+    mix-blend-mode:difference;
+}
+.viewer-meta-left{display:flex;flex-direction:column}
+.viewer-meta-right{display:flex;flex-direction:column;align-items:flex-end}
+.viewer-film-controls{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:0;
+    display:flex;
+    gap:20px;
+}
+.viewer-control{
+    cursor:pointer;
+    white-space:nowrap;
+    color:#fff;
+    mix-blend-mode:difference;
+}
+.viewer-control:hover{text-decoration:none}
+.viewer-note{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:#fff;
+    mix-blend-mode:difference;
+    display:none;
+}
+body.viewer-grid-mode .viewer-note{display:none}
+
+/* mobile */
+@media (max-width:700px){
+    :root{
+        --font-size:12px;
+        --side:20px;
+        --top:18px;
+        --bottom:17px;
+    }
+    #index-wrap{
+        inset:calc(var(--top) + 44px) var(--side) calc(var(--bottom) + 12px);
+    }
+    .index-grid{
+        grid-template-columns:minmax(0,2.25fr) minmax(64px,1fr) minmax(68px,.78fr) minmax(64px,.78fr);
+        column-gap:12px;
+    }
+    #index-head{padding-bottom:1em}
+    #viewer-stage{
+        padding:calc(var(--top) + 15px) var(--side) calc(var(--bottom) + 48px);
+    }
+    .viewer-photo-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:5px;
+    }
+    .viewer-film-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:4px;
+    }
+    .info-inner{
+        width:min(88vw,520px);
+        max-height:calc(100vh - 110px);
+    }
+}
+@media (max-width:430px){
+    #index-wrap{inset:calc(var(--top) + 40px) var(--side) calc(var(--bottom) + 8px)}
+    .index-grid{column-gap:9px}
+}
+@media (max-width:360px){
+    :root{--font-size:12px;--side:16px}
+    .index-grid{column-gap:7px}
+}
+
+/* when optional columns disappear */
+#index-table.hide-use .index-grid{
+    grid-template-columns:minmax(0,2.55fr) minmax(74px,1fr) minmax(76px,.86fr);
+}
+#index-table.hide-use .use-col{display:none}
+#index-table.hide-use-and-field .index-grid{
+    grid-template-columns:minmax(0,1.7fr) minmax(78px,.95fr);
+}
+#index-table.hide-use-and-field .use-col,
+#index-table.hide-use-and-field .field-col{display:none}
+
+/* KEEP EVERY PROJECT VALUE ON ONE LINE */
+.index-cell,.index-header{white-space:nowrap}
+
+/* future-ready hidden state */
+#viewer[data-viewer="photo"] .film-only{display:none}
+#viewer[data-viewer="film"] .photo-only{display:none}
+
+/* =====================================================
+   UNIFIED VIEWER HOST
+   The original photography and film viewer code is kept
+   in separate internal documents. No generic viewer is
+   used here.
+   ===================================================== */
+#viewer{
+    position:fixed;
+    inset:0;
+    z-index:var(--viewer-z);
+    display:none;
+    background:#fff;
+    overflow:hidden;
+}
+body.viewer-open #viewer{display:block}
+#viewer-frame{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+    background:#fff;
+}
+
+/* =====================================================
+   FINAL UNIFIED LOGO / VIEWER OVERRIDES
+   ===================================================== */
+#top-center{pointer-events:none}
+#logo-button{pointer-events:auto}
+#logo-name,#logo-aybak{
+    display:inline-flex;
+    position:relative;
+    min-height:var(--line-height);
+}
+.logo-morph-char{
+    display:inline-grid;
+    position:relative;
+    width:max-content;
+    min-width:0;
+}
+.logo-morph-char>span{
+    grid-area:1/1;
+    display:inline-block;
+    transition:opacity 180ms var(--ease),transform 180ms var(--ease);
+}
+.logo-morph-lower{opacity:1;transform:translateY(0)}
+.logo-morph-upper{opacity:0;transform:translateY(.10em)}
+#logo-name.is-upper .logo-morph-lower,
+#logo-aybak.is-upper .logo-morph-lower{opacity:0;transform:translateY(-.10em)}
+#logo-name.is-upper .logo-morph-upper,
+#logo-aybak.is-upper .logo-morph-upper{opacity:1;transform:translateY(0)}
+
+#viewer.viewer-visible{display:block}
+#viewer-frame{pointer-events:auto}
+
+@media (max-width:700px){
+    #top-center{top:var(--top)}
+}
+
+</style>
+</head>
+<body>
+<div id="site">
+
+    <div id="preview-layer" aria-hidden="true">
+        <img id="preview-image" alt="">
+        <video id="preview-video" muted playsinline loop preload="metadata"></video>
+    </div>
+
+    <div id="top-left" class="chrome">
+        <button id="index-button" class="header-button ui-link" type="button"></button>
+    </div>
+    <div id="top-center">
+        <button id="logo-button" type="button" aria-label="Denizalp Aybak">
+            <span id="logo-name" class="logo-word"></span>
+            <span id="logo-aybak" class="logo-word"></span>
+        </button>
+    </div>
+    <div id="top-right" class="chrome">
+        <button id="info-button" class="header-button ui-link" type="button"></button>
+    </div>
+
+    <div id="index-view">
+        <div id="index-wrap">
+            <div id="index-table">
+                <div id="index-head" class="index-grid">
+                    <button class="index-header morph-host title-col" data-sort="title" type="button"></button>
+                    <button class="index-header morph-host date-col" data-sort="date" type="button"></button>
+                    <button class="index-header morph-host field-col" data-sort="field" type="button"></button>
+                    <button class="index-header morph-host use-col" data-sort="use" type="button"></button>
+                </div>
+                <div id="index-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <section id="info-view" aria-hidden="true">
+        <div class="info-inner info-copy chrome">
+            <p class="info-p info-left">denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.</p>
+            <p class="info-p info-right">having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.</p>
+            <p class="info-p info-left">his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.</p>
+            <p class="info-p info-right">editorial collaborators include: vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</p>
+            <p class="info-p info-left">brand collaborators include: vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</p>
+        </div>
+    </section>
+    <section id="viewer" aria-hidden="true">
+        <iframe id="viewer-frame" title="Project viewer" src="about:blank"></iframe>
+    </section>
+
+
+    <div id="footer-left" class="chrome">
+        <a class="footer-link" href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
+        <a class="footer-link" href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+    </div>
+    <div id="footer-right" class="chrome">
+        <a class="footer-link" href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
+        <a class="footer-link" href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
+    </div>
+</div>
+
+<script>
+const DATA_URL = "./projects.json";
+const PHOTO_VIEWER_URL = "./photo-viewer.html";
+const FILM_VIEWER_URL = "./film-viewer.html";
+
+const PHOTO_FULL_BASE = "https://library.denizalpaybak.com/photos/";
+const PHOTO_THUMB_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
+const FILM_PREVIEW_BASE = "https://library.denizalpaybak.com/film-previews/";
+
+const LOGO_HOLD = 650;
+const MOBILE_MIN_FONT = 12;
+const MORPH_DURATION = 230;
+
+let projects = [];
+let infoMode = false;
+let sortKey = "date";
+let sortDir = "desc";
+let selectedId = null;
+let previewTimer = null;
+let mobileColumnResizeRaf = null;
+let viewerProject = null;
+
+const body = document.body;
+const indexButton = document.getElementById("index-button");
+const infoButton = document.getElementById("info-button");
+const logoButton = document.getElementById("logo-button");
+const logoName = document.getElementById("logo-name");
+const logoAybak = document.getElementById("logo-aybak");
+const indexTable = document.getElementById("index-table");
+const indexBody = document.getElementById("index-body");
+const previewLayer = document.getElementById("preview-layer");
+const previewImage = document.getElementById("preview-image");
+const previewVideo = document.getElementById("preview-video");
+const infoView = document.getElementById("info-view");
+const viewer = document.getElementById("viewer");
+const viewerFrame = document.getElementById("viewer-frame");
+
+function hasHover(){
+    return window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+}
+
+function escapeHtml(value){
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+}
+
+/* Generic UI morph used by INDEX / INFO / column headers. */
+function morphHtml(text){
+    const value=String(text ?? "");
+    const parts=[];
+    for(const ch of value){
+        if(ch===" "){
+            parts.push('<span class="morph-char morph-space" aria-hidden="true"><span class="morph-lower">&nbsp;</span><span class="morph-upper">&nbsp;</span></span>');
+        }else{
+            parts.push(
+                '<span class="morph-char" aria-hidden="true"><span class="morph-lower">'+
+                escapeHtml(ch.toLowerCase())+
+                '</span><span class="morph-upper">'+
+                escapeHtml(ch.toUpperCase())+
+                '</span></span>'
+            );
+        }
+    }
+    return parts.join("");
+}
+
+function setMorphHost(el,text,upper=false){
+    el.innerHTML='<span class="morph '+(upper?'is-upper':'')+'">'+morphHtml(text)+'</span>';
+}
+
+function setMorphState(el,upper){
+    const morph=el.querySelector(".morph");
+    if(morph) morph.classList.toggle("is-upper",Boolean(upper));
+}
+
+function headerState(){
+    setMorphHost(indexButton,"index",!infoMode);
+    setMorphHost(infoButton,"info",infoMode);
+}
+
+function formatField(field){
+    if(window.matchMedia("(max-width:700px)").matches && field==="photography") return "photo";
+    return String(field||"").toLowerCase();
+}
+
+function projectForSort(a,b,key,dir){
+    let va,vb;
+    if(key==="date"){
+        va=a.sortDate||"";
+        vb=b.sortDate||"";
+    }else{
+        va=String(a[key]||"").toLowerCase();
+        vb=String(b[key]||"").toLowerCase();
+    }
+    const cmp=va.localeCompare(vb,"tr",{numeric:true,sensitivity:"base"});
+    return dir==="asc"?cmp:-cmp;
+}
+
+function sortedProjects(){
+    return projects.slice().sort((a,b)=>{
+        const c=projectForSort(a,b,sortKey,sortDir);
+        if(c!==0) return c;
+        return String(a.id).localeCompare(String(b.id));
+    });
+}
+
+/* =====================================================
+   INDEX PREVIEW
+   ===================================================== */
+
+function showPreview(project){
+    clearTimeout(previewTimer);
+    previewImage.removeAttribute("src");
+    previewVideo.pause();
+    previewVideo.removeAttribute("src");
+    previewVideo.load();
+
+    if(project.viewer==="photo"){
+        const file=project.coverOverride || project.images?.[0];
+        if(!file) return;
+        previewImage.src=PHOTO_FULL_BASE+encodeURIComponent(file);
+        previewImage.style.display="block";
+        previewVideo.style.display="none";
+    }else{
+        const file=project.coverOverride || project.videos?.[0];
+        if(!file) return;
+        previewVideo.src=FILM_PREVIEW_BASE+encodeURIComponent(file.replace(/\.mp4$/i,"_preview.mp4"));
+        previewVideo.style.display="block";
+        previewImage.style.display="none";
+        previewVideo.play().catch(()=>{});
+    }
+    previewLayer.classList.add("visible");
+}
+
+function hidePreview(delay=70){
+    clearTimeout(previewTimer);
+    previewTimer=setTimeout(()=>{
+        previewLayer.classList.remove("visible");
+        previewVideo.pause();
+        previewVideo.removeAttribute("src");
+        previewVideo.load();
+        previewImage.removeAttribute("src");
+    },delay);
+}
+
+/* =====================================================
+   INDEX
+   ===================================================== */
+
+let indexRows=[];
+
+function createCell(project,key,displayValue){
+    const button=document.createElement("button");
+    button.type="button";
+    button.className=`index-cell ${key}-col`;
+
+    const host=document.createElement("span");
+    host.className="morph-host";
+    host.dataset.raw=displayValue;
+    setMorphHost(host,displayValue,false);
+
+    button.appendChild(host);
+    return {button,host};
+}
+
+function setRowActive(rowState,active){
+    rowState.active=active;
+    rowState.cells.forEach(cell=>setMorphState(cell.host,active));
+}
+
+function selectProject(project){
+    selectedId=project.id;
+    const row=indexRows.find(r=>r.project.id===project.id);
+    if(row){
+        indexRows.forEach(r=>setRowActive(r,false));
+        setRowActive(row,true);
+    }
+    showPreview(project);
+}
+
+function buildIndex(){
+    indexBody.innerHTML="";
+    indexRows=[];
+
+    for(const project of sortedProjects()){
+        const row=document.createElement("div");
+        row.className="index-row index-grid";
+
+        const cells=[];
+        for(const key of ["title","date","field","use"]){
+            const value=key==="field" ? formatField(project.field) : String(project[key]||"");
+            const {button,host}=createCell(project,key,value);
+            cells.push({button,host,key});
+            row.appendChild(button);
+        }
+
+        const state={project,row,cells,active:false};
+        indexRows.push(state);
+
+        row.addEventListener("mouseenter",()=>{
+            if(hasHover()) selectProject(project);
+        });
+
+        row.addEventListener("mouseleave",()=>{
+            if(hasHover()){
+                setRowActive(state,false);
+                if(selectedId===project.id) selectedId=null;
+                hidePreview();
+            }
+        });
+
+        for(const cell of cells){
+            cell.button.addEventListener("focus",()=>{
+                if(hasHover()) selectProject(project);
+            });
+
+            cell.button.addEventListener("click",(event)=>{
+                event.stopPropagation();
+
+                if(hasHover()){
+                    openViewer(project);
+                    return;
+                }
+
+                /*
+                   Mobile:
+                   first tap = preview
+                   second tap = project / VIEW ALL
+                */
+                if(selectedId===project.id){
+                    openViewer(project);
+                }else{
+                    selectProject(project);
+                }
+            });
+        }
+
+        indexBody.appendChild(row);
+    }
+
+    requestAnimationFrame(fitMobileColumns);
+}
+
+function fitMobileColumns(){
+    cancelAnimationFrame(mobileColumnResizeRaf);
+    mobileColumnResizeRaf=requestAnimationFrame(()=>{
+        const narrow=window.matchMedia("(max-width:700px)").matches;
+        indexTable.classList.remove("hide-use","hide-use-and-field");
+        if(!narrow) return;
+
+        const fits=()=>indexTable.scrollWidth<=indexTable.clientWidth+1;
+
+        if(!fits()) indexTable.classList.add("hide-use");
+        if(!fits()) indexTable.classList.add("hide-use-and-field");
+    });
+}
+
+function setupHeaders(){
+    document.querySelectorAll(".index-header").forEach(header=>{
+        const key=header.dataset.sort;
+        setMorphHost(header,key,key===sortKey);
+
+        header.addEventListener("click",()=>{
+            if(sortKey===key){
+                sortDir=sortDir==="desc"?"asc":"desc";
+            }else{
+                sortKey=key;
+                sortDir="desc";
+            }
+
+            document.querySelectorAll(".index-header").forEach(h=>{
+                const k=h.dataset.sort;
+                setMorphHost(h,k,k===sortKey);
+            });
+
+            buildIndex();
+        });
+    });
+}
+
+/* =====================================================
+   INFO / HEADER
+   ===================================================== */
+
+function setInfoMode(next){
+    infoMode=Boolean(next);
+    body.classList.toggle("info-mode",infoMode);
+    infoView.setAttribute("aria-hidden",String(!infoMode));
+    if(infoMode){
+        hidePreview(0);
+        closeViewer();
+    }
+    headerState();
+}
+
+indexButton.addEventListener("click",()=>{
+    closeViewer();
+    setInfoMode(false);
+});
+
+infoButton.addEventListener("click",()=>{
+    closeViewer();
+    setInfoMode(true);
+});
+
+/* =====================================================
+   CENTRAL LOGO — LETTER BY LETTER
+   ===================================================== */
+
+function buildLogoWord(host,lower,upper){
+    host.innerHTML="";
+    [...lower].forEach((char,i)=>{
+        const cell=document.createElement("span");
+        cell.className="logo-morph-char";
+        cell.dataset.index=i;
+
+        const lo=document.createElement("span");
+        lo.className="logo-morph-lower";
+        lo.textContent=char;
+
+        const up=document.createElement("span");
+        up.className="logo-morph-upper";
+        up.textContent=upper[i];
+
+        cell.append(lo,up);
+        host.appendChild(cell);
+    });
+}
+
+let logoUpper=false;
+let logoTimer=null;
+
+function setLogoUpper(next){
+    logoUpper=Boolean(next);
+    logoName.classList.toggle("is-upper",logoUpper);
+    logoAybak.classList.toggle("is-upper",logoUpper);
+
+    [logoName,logoAybak].forEach(host=>{
+        host.querySelectorAll(".logo-morph-char").forEach((cell,i)=>{
+            cell.style.transitionDelay=logoUpper ? `${i*55}ms` : `${(4-i)*55}ms`;
+        });
+    });
+}
+
+buildLogoWord(logoName,"Denizalp","denizalp");
+buildLogoWord(logoAybak,"aybak","AYBAK");
+setLogoUpper(false);
+
+logoButton.addEventListener("mouseenter",()=>{
+    if(hasHover()) setLogoUpper(true);
+});
+logoButton.addEventListener("mouseleave",()=>{
+    if(hasHover()) setLogoUpper(false);
+});
+logoButton.addEventListener("click",event=>{
+    event.preventDefault();
+    if(hasHover()) return;
+    clearTimeout(logoTimer);
+    setLogoUpper(true);
+    logoTimer=setTimeout(()=>setLogoUpper(false),LOGO_HOLD);
+});
+
+/* =====================================================
+   VIEWER ROUTING
+   The original photo and film viewer systems remain
+   separate internal documents. The unified INDEX only
+   decides which one to open.
+   ===================================================== */
+
+function sourceProjectId(project){
+    return project.sourceId || project.id.replace(/-(photo|film)$/,"");
+}
+
+function openViewer(project){
+    viewerProject=project;
+    hidePreview(0);
+
+    const page=project.viewer==="film" ? FILM_VIEWER_URL : PHOTO_VIEWER_URL;
+    const param=project.viewer==="film" ? "project" : "project";
+
+    viewerFrame.src=page+"?"+param+"="+encodeURIComponent(sourceProjectId(project))+"&view=all";
+    viewer.classList.add("viewer-visible");
+    body.classList.add("viewer-open");
+    viewer.setAttribute("aria-hidden","false");
+}
+
+function closeViewer(){
+    if(!body.classList.contains("viewer-open")) return;
+
+    body.classList.remove("viewer-open");
+    viewer.classList.remove("viewer-visible");
+    viewer.setAttribute("aria-hidden","true");
+
+    /*
+       Replacing the iframe source stops any active film immediately.
+       The original viewer source is loaded fresh on the next open.
+    */
+    viewerFrame.src="about:blank";
+    viewerProject=null;
+}
+
+/* =====================================================
+   DATA
+   ===================================================== */
+
+async function loadProjects(){
+    try{
+        const response=await fetch(DATA_URL,{cache:"no-store"});
+        if(!response.ok) throw new Error("projects.json HTTP "+response.status);
+        projects=await response.json();
+
+        buildIndex();
+        setupHeaders();
+        headerState();
+    }catch(error){
+        console.error("Unified index data failed to load:",error);
+    }
+}
+
+window.addEventListener("resize",()=>{
+    fitMobileColumns();
+});
+
+loadProjects();
+
+</script>
+</body>
+</html>
