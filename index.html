@@ -9465,51 +9465,61 @@ window.addEventListener("resize", () => {
        FINAL INDEX / INFO RESPONSIVE SYSTEM
        ===================================================== */
 
-    /* Keep the index as a centered composition on every viewport. */
+    :root {
+        --landing-index-side-space: var(--page-x);
+    }
+
+    /*
+       The list is centered as a whole. On desktop its horizontal
+       breathing room follows the width of the longest bottom-corner
+       label, while the actual list keeps the full remaining width.
+       This prevents the index from becoming artificially narrow.
+    */
     #landing-index-view {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 0 var(--page-x) !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
     }
 
     .landing-index-scroll {
-        width: min(1080px, 100%) !important;
-        max-width: 100% !important;
+        width: calc(100% - (2 * var(--landing-index-side-space))) !important;
+        max-width: none !important;
         height: auto !important;
-        max-height: calc(100vh - (2 * var(--page-top))) !important;
+        max-height: calc(100dvh - (2 * var(--page-top))) !important;
+        margin: 0 auto !important;
         flex: 0 1 auto !important;
     }
 
     .landing-index-grid {
-        width: max-content !important;
+        width: 100% !important;
         min-width: 0 !important;
-        max-width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        justify-content: center !important;
+        max-width: none !important;
+        margin: 0 !important;
+        justify-content: stretch !important;
         grid-template-columns:
-            max-content
-            max-content
-            max-content
-            max-content !important;
-        column-gap: clamp(18px, 3vw, 56px) !important;
+            minmax(0, 2.25fr)
+            minmax(0, 1.05fr)
+            minmax(0, 0.95fr)
+            minmax(0, 0.95fr) !important;
+        column-gap: clamp(22px, 3.2vw, 64px) !important;
         row-gap: 0 !important;
     }
 
     .landing-index-header,
     .landing-index-row {
-        width: max-content !important;
+        width: 100% !important;
         min-width: 0 !important;
-        justify-content: start !important;
+        justify-content: stretch !important;
     }
 
-    /* One blank text line between the filter header and first project. */
+    /* One blank text line between the filters and the first project. */
     .landing-index-header {
         margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
     }
 
-    /* Never wrap index cells. Overflow is handled by the responsive fitter. */
+    /* Never let a project name wrap to a second line. */
     .landing-index-cell,
     .landing-index-header-cell {
         white-space: nowrap !important;
@@ -9518,12 +9528,12 @@ window.addEventListener("resize", () => {
         hyphens: none !important;
     }
 
-    /* Hide USE as a real grid column when the fitter decides it is needed. */
+    /* Real column removal: USE disappears rather than wrapping. */
     body.landing-index-hide-use .landing-index-grid {
         grid-template-columns:
-            max-content
-            max-content
-            max-content !important;
+            minmax(0, 2.25fr)
+            minmax(0, 1.05fr)
+            minmax(0, 0.95fr) !important;
     }
 
     body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
@@ -9531,25 +9541,76 @@ window.addEventListener("resize", () => {
         display: none !important;
     }
 
-    /* Small screens use the compact field label: PHOTO / FILM. */
+    /* Short field label on small / tablet viewports. */
     @media (max-width: 1100px) {
         .landing-index-grid {
-            column-gap: clamp(12px, 2.6vw, 28px) !important;
+            column-gap: clamp(14px, 2.6vw, 30px) !important;
+        }
+
+        .landing-index-scroll {
+            width: calc(100% - (2 * var(--page-x))) !important;
         }
     }
 
-    /* Portrait is intentionally more conservative: USE starts hidden. */
     @media (max-width: 1100px) and (orientation: portrait) {
-        body.landing-index-mode #landing-index-view {
-            padding-left: var(--page-x) !important;
-            padding-right: var(--page-x) !important;
+        .landing-index-grid {
+            column-gap: clamp(10px, 2.8vw, 22px) !important;
         }
     }
 
-    /* INFO keeps the same paragraph rhythm, but with two blank text lines. */
+    /* Two-line paragraph gaps on INFO. */
     body.landing-info-mode .bio-paragraph-gap,
     body.landing-info-mode .biography .bio-paragraph-gap {
         margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+    }
+
+    /* =====================================================
+       TEXT / PREVIEW NEGATIVE INTERSECTION
+       ===================================================== */
+
+    .landing-index-cell {
+        position: relative !important;
+        mix-blend-mode: normal !important;
+    }
+
+    .landing-index-row:hover .landing-index-cell,
+    .landing-index-row.is-focus .landing-index-cell {
+        mix-blend-mode: normal !important;
+    }
+
+    .landing-index-text {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: max-content;
+        max-width: none;
+        pointer-events: none;
+    }
+
+    .landing-index-difference-text {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: auto;
+        bottom: auto;
+        height: calc(var(--font-size) * var(--line-height));
+        z-index: 2;
+        display: block;
+        width: max-content;
+        max-width: none;
+        color: #fff;
+        font-size: inherit;
+        line-height: inherit;
+        pointer-events: none;
+        white-space: nowrap;
+        mix-blend-mode: difference;
+        clip-path: inset(0 100% 0 0);
+        -webkit-clip-path: inset(0 100% 0 0);
+        will-change: clip-path;
+    }
+
+    .landing-index-cell > span:not(.landing-index-difference-text) {
+        pointer-events: none;
     }
 </style>
 
@@ -9585,7 +9646,7 @@ window.addEventListener("resize", () => {
 
 <div id="landing-index-preview" aria-hidden="true">
     <img id="landing-index-preview-image" alt="" />
-    <video id="landing-index-preview-video" muted playsinline loop preload="metadata"></video>
+    <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
 </div>
 
 <script id="landing-index-info-script">
@@ -9733,7 +9794,7 @@ window.addEventListener("resize", () => {
        CASE MORPH
        ===================================================== */
 
-    function createCaseMorph(element, initial = "") {
+    function createCaseMorph(element, initial = "", mirrorElement = null) {
         const base = String(initial).toLowerCase();
         const positions = Array.from(base).map((character, index) => {
             const isLetter = character.toLowerCase() !== character.toUpperCase();
@@ -9746,9 +9807,13 @@ window.addEventListener("resize", () => {
 
         function render() {
             const active = new Set(positions.slice(0, state));
-            element.textContent = Array.from(base).map((character, index) =>
+            const text = Array.from(base).map((character, index) =>
                 active.has(index) ? character.toUpperCase() : character.toLowerCase()
             ).join("");
+            element.textContent = text;
+            if (mirrorElement) {
+                mirrorElement.textContent = text;
+            }
         }
 
         function animate(nextTarget, duration) {
@@ -9801,6 +9866,8 @@ window.addEventListener("resize", () => {
     let sortDirection = "desc";
     let allRecords = [];
     let rowStates = [];
+    let activePreviewRow = null;
+    let activeDifferenceFrame = null;
 
     let previewRecord = null;
     let indexFieldShort = false;
@@ -9864,12 +9931,95 @@ window.addEventListener("resize", () => {
         return allRecords.slice().sort(compareRecords);
     }
 
+    function clearDifferenceLayers() {
+        if (activeDifferenceFrame !== null) {
+            cancelAnimationFrame(activeDifferenceFrame);
+            activeDifferenceFrame = null;
+        }
+
+        rowStates.forEach(state => {
+            state.differenceSpans?.forEach(span => {
+                span.style.clipPath = "inset(0 100% 0 0)";
+                span.style.webkitClipPath = "inset(0 100% 0 0)";
+            });
+        });
+
+        activePreviewRow = null;
+    }
+
+    function getVisiblePreviewRect() {
+        const target = previewRecord?.field === "FILM"
+            ? previewVideo
+            : previewImage;
+
+        if (!target) return null;
+
+        const rect = target.getBoundingClientRect();
+        if (!rect.width || !rect.height) return null;
+
+        const styles = getComputedStyle(target);
+        if (styles.visibility === "hidden" || styles.display === "none" || parseFloat(styles.opacity || "1") === 0) {
+            return null;
+        }
+
+        return rect;
+    }
+
+    function updateDifferenceLayers() {
+        activeDifferenceFrame = null;
+
+        if (!previewRecord || !activePreviewRow) {
+            clearDifferenceLayers();
+            return;
+        }
+
+        const previewRect = getVisiblePreviewRect();
+        if (!previewRect) {
+            activePreviewRow.differenceSpans?.forEach(span => {
+                span.style.clipPath = "inset(0 100% 0 0)";
+                span.style.webkitClipPath = "inset(0 100% 0 0)";
+            });
+            return;
+        }
+
+        activePreviewRow.differenceSpans?.forEach(span => {
+            const textRect = span.previousElementSibling?.getBoundingClientRect?.();
+            if (!textRect || !textRect.width || !textRect.height) return;
+
+            const left = Math.max(textRect.left, previewRect.left);
+            const top = Math.max(textRect.top, previewRect.top);
+            const right = Math.min(textRect.right, previewRect.right);
+            const bottom = Math.min(textRect.bottom, previewRect.bottom);
+
+            if (right <= left || bottom <= top) {
+                span.style.clipPath = "inset(0 100% 0 0)";
+                span.style.webkitClipPath = "inset(0 100% 0 0)";
+                return;
+            }
+
+            const topInset = Math.max(0, top - textRect.top);
+            const rightInset = Math.max(0, textRect.right - right);
+            const bottomInset = Math.max(0, textRect.bottom - bottom);
+            const leftInset = Math.max(0, left - textRect.left);
+
+            span.style.clipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
+            span.style.webkitClipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
+        });
+    }
+
+    function queueDifferenceLayerUpdate() {
+        if (activeDifferenceFrame !== null) return;
+        activeDifferenceFrame = requestAnimationFrame(updateDifferenceLayers);
+    }
+
     function clearPreview() {
+        clearDifferenceLayers();
         previewRecord = null;
         indexPreview.classList.remove("visible", "is-film");
         indexPreview.setAttribute("aria-hidden", "true");
         previewVideo.pause();
         previewVideo.removeAttribute("src");
+        previewVideo.removeAttribute("poster");
         previewVideo.load();
         previewImage.removeAttribute("src");
     }
@@ -9881,6 +10031,8 @@ window.addEventListener("resize", () => {
             return;
         }
 
+        /* Mirrors the photography site's INDEX preview logic:
+           the source filename is converted to its lightweight .webp thumbnail. */
         const filename = project.cover || project.images[0];
         const dotIndex = filename.lastIndexOf(".");
         const thumb = dotIndex > 0
@@ -9890,11 +10042,13 @@ window.addEventListener("resize", () => {
 
         previewVideo.pause();
         previewVideo.removeAttribute("src");
+        previewVideo.removeAttribute("poster");
         previewVideo.load();
         previewImage.src = src;
         indexPreview.classList.remove("is-film");
         indexPreview.classList.add("visible");
         indexPreview.setAttribute("aria-hidden", "false");
+        queueDifferenceLayerUpdate();
     }
 
     function setFilmPreview(record) {
@@ -9904,19 +10058,27 @@ window.addEventListener("resize", () => {
             return;
         }
 
+        /* Mirrors the film site's own INDEX / VIEW ALL preview URL:
+           master filename -> /film-previews/<name>_preview.mp4.
+           These files are the lightweight six-second web previews. */
         const filename = project.videos[0];
-        const src = FILM_PREVIEW_BASE + encodeURIComponent(filename);
+        const previewFilename = filename.replace(/\.mp4$/i, "_preview.mp4");
+        const src = FILM_PREVIEW_BASE + encodeURIComponent(previewFilename);
 
         previewImage.removeAttribute("src");
         previewVideo.dataset.filename = filename;
         previewVideo.src = src;
         previewVideo.currentTime = 0;
         previewVideo.muted = true;
+        previewVideo.defaultMuted = true;
+        previewVideo.playsInline = true;
         previewVideo.loop = true;
+        previewVideo.preload = "auto";
         previewVideo.load();
         previewVideo.play().catch(() => {});
         indexPreview.classList.add("visible", "is-film");
         indexPreview.setAttribute("aria-hidden", "false");
+        queueDifferenceLayerUpdate();
     }
 
     function selectPreview(record) {
@@ -9926,7 +10088,13 @@ window.addEventListener("resize", () => {
         } else {
             setPhotoPreview(record);
         }
+        queueDifferenceLayerUpdate();
     }
+
+    previewImage.addEventListener("load", queueDifferenceLayerUpdate);
+    previewVideo.addEventListener("loadedmetadata", queueDifferenceLayerUpdate);
+    previewVideo.addEventListener("loadeddata", queueDifferenceLayerUpdate);
+    previewVideo.addEventListener("canplay", queueDifferenceLayerUpdate);
 
 
     function getDisplayField(record) {
@@ -9942,6 +10110,40 @@ window.addEventListener("resize", () => {
 
     function isIndexPortraitViewport() {
         return isIndexFitViewport() && window.matchMedia("(orientation: portrait)").matches;
+    }
+
+    function updateLandingIndexSideSpace() {
+        const root = document.documentElement;
+        const pageX = parseFloat(
+            getComputedStyle(root).getPropertyValue("--page-x")
+        ) || 0;
+
+        const isDesktop = window.innerWidth > 700;
+        if (!isDesktop) {
+            root.style.setProperty(
+                "--landing-index-side-space",
+                `${pageX}px`
+            );
+            return;
+        }
+
+        const labels = Array.from(
+            document.querySelectorAll(".contact a")
+        );
+
+        const longestLabel = labels.reduce(
+            (max, element) => Math.max(max, element.getBoundingClientRect().width),
+            0
+        );
+
+        const sideSpace = Math.ceil(
+            Math.max(pageX, longestLabel)
+        );
+
+        root.style.setProperty(
+            "--landing-index-side-space",
+            `${sideSpace}px`
+        );
     }
 
     function readCssBaseFontSize() {
@@ -9965,15 +10167,24 @@ window.addEventListener("resize", () => {
     function indexContentFitsViewport() {
         if (!indexGrid || !indexScroll) return true;
 
-        const available = Math.max(
-            1,
-            indexScroll.clientWidth
+        const available = Math.max(1, indexScroll.clientWidth);
+        const scrollOverflow = indexGrid.scrollWidth > available + 1;
+
+        if (scrollOverflow) return false;
+
+        const visibleCells = indexGrid.querySelectorAll(
+            ".landing-index-header-cell, .landing-index-cell"
         );
 
-        return indexGrid.scrollWidth <= available + 1;
+        return Array.from(visibleCells).every(cell => {
+            if (getComputedStyle(cell).display === "none") return true;
+            return cell.scrollWidth <= cell.clientWidth + 1;
+        });
     }
 
     function applyLandingIndexResponsiveLayout(forceRender = false) {
+        updateLandingIndexSideSpace();
+
         const compact = isIndexFitViewport();
         const portrait = isIndexPortraitViewport();
         const nextFieldShort = compact;
@@ -10047,7 +10258,14 @@ window.addEventListener("resize", () => {
             );
         }
 
+        const hideUseChanged = hideUse !== indexResponsiveHideUse;
         indexResponsiveHideUse = hideUse;
+
+        if (!forceRender && hideUseChanged) {
+            renderRows();
+        }
+
+        queueDifferenceLayerUpdate();
     }
 
     function createRow(record) {
@@ -10060,22 +10278,37 @@ window.addEventListener("resize", () => {
         row.setAttribute("aria-label", `${record.title}, ${record.date}, ${record.field}, ${record.use}`);
 
         const values = [record.title, record.date, getDisplayField(record), record.use];
-        const cases = values.map((value, index) => {
+        const cases = [];
+        const differenceSpans = [];
+
+        values.forEach(value => {
             const cell = document.createElement("div");
             cell.className = "landing-index-cell";
+
             const span = document.createElement("span");
-            span.textContent = value;
+            span.className = "landing-index-text";
+
+            const difference = document.createElement("span");
+            difference.className = "landing-index-difference-text";
+            difference.setAttribute("aria-hidden", "true");
+
             cell.appendChild(span);
+            cell.appendChild(difference);
             row.appendChild(cell);
-            return createCaseMorph(span, value);
+
+            cases.push(createCaseMorph(span, value, difference));
+            differenceSpans.push(difference);
         });
 
-        rowStates.push({ row, record, cases });
+        const state = { row, record, cases, differenceSpans };
+        rowStates.push(state);
 
         const enter = () => {
             row.classList.add("is-focus");
+            activePreviewRow = state;
             cases.forEach(controller => controller.upper());
             selectPreview(record);
+            queueDifferenceLayerUpdate();
         };
 
         const leave = () => {
@@ -10300,6 +10533,7 @@ window.addEventListener("resize", () => {
     allRecords = buildRecords();
     syncHeaderState(0);
     renderRows();
+    updateLandingIndexSideSpace();
     requestAnimationFrame(() => applyLandingIndexResponsiveLayout(false));
     loadData().catch(error => {
         console.error("Landing INDEX data load failed:", error);
@@ -10315,15 +10549,30 @@ window.addEventListener("resize", () => {
 
     window.addEventListener(
         "resize",
-        queueLandingIndexResponsiveLayout,
+        () => {
+            updateLandingIndexSideSpace();
+            queueLandingIndexResponsiveLayout();
+            queueDifferenceLayerUpdate();
+        },
         { passive: true }
     );
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+            updateLandingIndexSideSpace();
+            queueDifferenceLayerUpdate();
+        });
+    }
 
     window.addEventListener(
         "orientationchange",
         () => {
             setTimeout(
-                queueLandingIndexResponsiveLayout,
+                () => {
+                    updateLandingIndexSideSpace();
+                    queueLandingIndexResponsiveLayout();
+                    queueDifferenceLayerUpdate();
+                },
                 100
             );
         },
