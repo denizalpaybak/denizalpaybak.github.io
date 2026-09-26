@@ -1732,13 +1732,13 @@ body:not(.landing-aybak-active) .logo {
     letter-spacing: 0 !important;
     word-spacing: 0 !important;
     text-align: center !important;
-    text-transform: none !important;
+    text-transform: uppercase !important;
 }
 
 .bio-primary,
 .bio-primary p {
     width: 100% !important;
-    margin: 0 0 var(--major-gap) 0 !important;
+    margin: 0 0 calc(var(--major-gap) * 1.15) 0 !important;
     padding: 0 !important;
     font: inherit !important;
     line-height: inherit !important;
@@ -1750,17 +1750,24 @@ body:not(.landing-aybak-active) .logo {
     hyphens: none !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
+    text-wrap: balance !important;
 }
 
 .bio-primary p:last-child {
     margin-bottom: 0 !important;
 }
 
+.keep-phrase {
+    display: inline-block !important;
+    white-space: nowrap !important;
+}
+
 .bio-collaborators {
     width: 100% !important;
-    margin: var(--major-gap) 0 0 0 !important;
+    margin: calc(var(--major-gap) * 1.15) 0 0 0 !important;
     padding: 0 !important;
     text-align: center !important;
+    text-transform: uppercase !important;
 }
 
 .collaborator-group,
@@ -1770,7 +1777,7 @@ body:not(.landing-aybak-active) .logo {
     margin-right: 0 !important;
     padding: 0 !important;
     text-align: center !important;
-    text-transform: none !important;
+    text-transform: uppercase !important;
 }
 
 .collaborator-group {
@@ -2061,30 +2068,30 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 >
     <div class="bio-primary">
         <p>
-            denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
+            DENIZALP AYBAK (B. 1997) IS A PHOTOGRAPHER AND FILMMAKER, <span class="keep-phrase">BASED IN ISTANBUL AND AVAILABLE INTERNATIONALLY.</span>
         </p>
 
         <p>
-            having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
+            HAVING GRADUATED TOP OF HIS CLASS IN MANAGEMENT AT SABANCI UNIVERSITY, HE BRINGS A STRATEGIC APPROACH TO IMAGE-MAKING, <span class="keep-phrase">CONSIDERING BOTH THE WORK ITSELF AND THE WORLD IT BELONGS TO.</span>
         </p>
 
         <p>
-            his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
+            HIS WORK CREATES ATMOSPHERE THROUGH CONTRAST: LIGHT THAT FEELS DARK, BEAUTY THAT APPEARS DISTANT, <span class="keep-phrase">STILLNESS THAT CARRIES TENSION, AND PRECISION THAT EMERGES FROM SPONTANEITY.</span>
         </p>
     </div>
 
     <div class="bio-collaborators">
         <div class="collaborator-group">
-            <p class="collaborator-heading">editorial collaborators:</p>
+            <p class="collaborator-heading">EDITORIAL COLLABORATORS:</p>
             <p class="collaborator-list">
-                vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
+                VOGUE TÜRKİYE, HARPER’S BAZAAR TÜRKİYE, ELLE TÜRKİYE, L’OFFICIEL TÜRKİYE
             </p>
         </div>
 
         <div class="collaborator-group">
-            <p class="collaborator-heading">brand collaborators:</p>
+            <p class="collaborator-heading">BRAND COLLABORATORS:</p>
             <p class="collaborator-list">
-                vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
+                VAKKO, BEE GODDESS, ZEYNEP ARCAY, PEUGEOT, SKECHERS, LC WAIKIKI
             </p>
         </div>
     </div>
@@ -5712,6 +5719,7 @@ const navItems =
             desktopWord: "photography.denizalpaybak.com",
             mobileWord: "photography.",
             word: "photography.denizalpaybak.com",
+            caseLength: "photography.".length,
             baseCount: 0,
             element: photographyText,
             count: 0
@@ -5721,6 +5729,7 @@ const navItems =
             desktopWord: "film.denizalpaybak.com",
             mobileWord: "film.",
             word: "film.denizalpaybak.com",
+            caseLength: "film.".length,
             baseCount: 0,
             element: filmText,
             count: 0
@@ -5740,8 +5749,11 @@ function syncNavigationWords() {
 
     [navItems.photography, navItems.film].forEach(item => {
         item.word = portrait ? item.mobileWord : item.desktopWord;
+        item.caseLength = item.mobileWord === item.word
+            ? item.word.length
+            : item.mobileWord.length;
         item.baseCount = 0;
-        item.count = Math.min(item.count, item.word.length);
+        item.count = Math.min(item.count, item.caseLength);
         item.element.textContent = item.word;
     });
 }
@@ -5755,14 +5767,18 @@ function renderCaseWord(
         Math.max(
             0,
             Math.min(
-                item.word.length,
+                item.caseLength,
                 Math.round(count)
             )
         );
 
+    const prefix = item.word.slice(0, item.caseLength);
+    const suffix = item.word.slice(item.caseLength);
+
     return (
-        item.word.slice(0, normalized).toUpperCase() +
-        item.word.slice(normalized)
+        prefix.slice(0, normalized).toUpperCase() +
+        prefix.slice(normalized) +
+        suffix
     );
 }
 
@@ -5843,13 +5859,13 @@ function animateTitlesTo(
     const photoTarget =
         mode ===
         "photography"
-            ? photography.word.length
+            ? photography.caseLength
             : photography.baseCount;
 
     const filmTarget =
         mode ===
         "film"
-            ? film.word.length
+            ? film.caseLength
             : film.baseCount;
 
     const started =
