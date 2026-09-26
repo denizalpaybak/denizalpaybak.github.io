@@ -9132,5 +9132,959 @@ window.addEventListener("resize", () => {
 });
 
 </script>
+
+
+<!-- =====================================================
+     LANDING INDEX / INFO SYSTEM
+     Added as the final UI layer so the existing landing preview /
+     AYBAK systems remain intact underneath it.
+     ===================================================== -->
+<style id="landing-index-info-system">
+    /* Existing photography / film top navigation is no longer visible. */
+    body > .page > .landing-grid > .media-field,
+    .photography-field,
+    .film-field,
+    .navigation {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* The old central copy becomes the INFO page content. */
+    #biography {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: opacity 260ms cubic-bezier(.22,.61,.36,1),
+                    visibility 0s linear 260ms !important;
+    }
+
+    body.landing-info-mode #biography {
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transition: opacity 260ms cubic-bezier(.22,.61,.36,1),
+                    visibility 0s linear 0s !important;
+    }
+
+    /* New top navigation. */
+    #landing-section-nav {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483646;
+        pointer-events: none;
+    }
+
+    #landing-section-nav button {
+        position: absolute;
+        top: var(--page-top);
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        color: #000;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: var(--font-size);
+        font-weight: 400;
+        line-height: var(--line-height);
+        letter-spacing: 0;
+        white-space: nowrap;
+        cursor: pointer;
+        pointer-events: auto;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #landing-section-index {
+        left: var(--page-x);
+        text-align: left;
+    }
+
+    #landing-section-info {
+        right: var(--page-x);
+        text-align: right;
+    }
+
+    #landing-section-nav button:focus-visible {
+        outline: 1px solid currentColor;
+        outline-offset: 3px;
+    }
+
+    /* =================================================
+       INDEX VIEW
+       ================================================= */
+
+    #landing-index-view {
+        position: fixed;
+        inset: 0;
+        z-index: 25;
+        padding:
+            calc(var(--page-top) + 48px)
+            var(--page-x)
+            var(--page-bottom);
+        visibility: visible;
+        opacity: 1;
+        transition:
+            opacity 260ms cubic-bezier(.22,.61,.36,1),
+            visibility 0s linear 0s;
+    }
+
+    body.landing-info-mode #landing-index-view {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+            opacity 260ms cubic-bezier(.22,.61,.36,1),
+            visibility 0s linear 260ms;
+    }
+
+    .landing-index-scroll {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+    }
+
+    .landing-index-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .landing-index-grid {
+        --landing-index-columns:
+            minmax(0, 2.15fr)
+            minmax(96px, 1fr)
+            minmax(120px, 1.15fr)
+            minmax(100px, 0.95fr);
+        position: relative;
+        display: grid;
+        grid-template-columns: var(--landing-index-columns);
+        width: 100%;
+        align-items: baseline;
+        column-gap: clamp(18px, 3vw, 56px);
+    }
+
+    .landing-index-header,
+    .landing-index-row {
+        display: grid;
+        grid-template-columns: var(--landing-index-columns);
+        grid-column: 1 / -1;
+        column-gap: inherit;
+        align-items: baseline;
+    }
+
+    .landing-index-header-cell {
+        position: relative;
+        z-index: 40;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #000;
+        font: inherit;
+        font-size: var(--font-size);
+        line-height: var(--line-height);
+        text-align: left;
+        white-space: nowrap;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .landing-index-header-cell:last-child {
+        text-align: right;
+    }
+
+    .landing-index-header-cell:focus-visible {
+        outline: 1px solid currentColor;
+        outline-offset: 3px;
+    }
+
+    .landing-index-cell {
+        position: relative;
+        z-index: 30;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+        color: #000;
+        font-size: var(--font-size);
+        font-weight: 400;
+        line-height: var(--line-height);
+        white-space: nowrap;
+        overflow: visible;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: none;
+    }
+
+    .landing-index-row:hover .landing-index-cell,
+    .landing-index-row.is-focus .landing-index-cell {
+        mix-blend-mode: difference;
+    }
+
+    .landing-index-row > .landing-index-cell:last-child {
+        text-align: right;
+    }
+
+    .landing-index-row {
+        min-height: calc(var(--font-size) * var(--line-height));
+        cursor: pointer;
+    }
+
+    .landing-index-row::before,
+    .landing-index-row::after {
+        content: none;
+    }
+
+    /* =================================================
+       PREVIEW BEHIND TEXT
+       ================================================= */
+
+    #landing-index-preview {
+        position: fixed;
+        z-index: 20;
+        left: 50%;
+        top: 50%;
+        width: min(74vw, 980px);
+        height: min(72vh, 780px);
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            opacity 150ms ease,
+            visibility 0s linear 150ms;
+    }
+
+    #landing-index-preview.visible {
+        opacity: 1;
+        visibility: visible;
+        transition:
+            opacity 150ms ease,
+            visibility 0s linear 0s;
+    }
+
+    #landing-index-preview img,
+    #landing-index-preview video {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        background: transparent;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    #landing-index-preview.is-film video {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .landing-index-empty {
+        grid-column: 1 / -1;
+        padding-top: 8px;
+        color: #000;
+    }
+
+    @media (max-width: 700px) {
+        #landing-section-nav button {
+            top: var(--page-top);
+        }
+
+        #landing-index-view {
+            padding:
+                calc(var(--page-top) + 44px)
+                var(--page-x)
+                var(--page-bottom);
+        }
+
+        .landing-index-grid {
+            --landing-index-columns:
+                minmax(0, 1.8fr)
+                minmax(78px, 0.9fr)
+                minmax(88px, 0.95fr)
+                minmax(78px, 0.8fr);
+            column-gap: 14px;
+        }
+
+        .landing-index-cell,
+        .landing-index-header-cell {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        #landing-index-preview {
+            width: 76vw;
+            height: 46vh;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .landing-index-grid {
+            --landing-index-columns:
+                minmax(0, 1.65fr)
+                minmax(60px, 0.8fr)
+                minmax(72px, 0.85fr)
+                minmax(66px, 0.75fr);
+            column-gap: 10px;
+        }
+
+        #landing-index-preview {
+            width: 70vw;
+            height: 42vh;
+        }
+    }
+
+    body.landing-aybak-active #landing-section-nav {
+        z-index: 2147483647;
+    }
+
+    body.landing-aybak-active #landing-section-nav button {
+        color: #fff !important;
+        mix-blend-mode: normal !important;
+    }
+</style>
+
+<nav id="landing-section-nav" aria-label="Landing sections">
+    <button id="landing-section-index" type="button" aria-pressed="true">
+        <span id="landing-section-index-text">index</span>
+    </button>
+    <button id="landing-section-info" type="button" aria-pressed="false">
+        <span id="landing-section-info-text">info</span>
+    </button>
+</nav>
+
+<section id="landing-index-view" aria-label="Index">
+    <div class="landing-index-scroll" id="landing-index-scroll">
+        <div class="landing-index-grid" id="landing-index-grid">
+            <div class="landing-index-header">
+                <button class="landing-index-header-cell" data-sort-key="title" type="button">
+                    <span>title</span>
+                </button>
+                <button class="landing-index-header-cell" data-sort-key="date" type="button">
+                    <span>date</span>
+                </button>
+                <button class="landing-index-header-cell" data-sort-key="field" type="button">
+                    <span>field</span>
+                </button>
+                <button class="landing-index-header-cell" data-sort-key="use" type="button">
+                    <span>use</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="landing-index-preview" aria-hidden="true">
+    <img id="landing-index-preview-image" alt="" />
+    <video id="landing-index-preview-video" muted playsinline loop preload="metadata"></video>
+</div>
+
+<script id="landing-index-info-script">
+(() => {
+    "use strict";
+
+    /* =====================================================
+       CONFIG
+       ===================================================== */
+
+    const LANDING_INDEX_JSON_URL = "./landing-index.json";
+
+    const PHOTOGRAPHY_JSON_URL =
+        "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
+
+    /* The Film site already exposes its own films.json at this stable path. */
+    const FILM_JSON_URL = "https://film.denizalpaybak.com/films.json";
+
+    const PHOTO_THUMB_BASE =
+        "https://library.denizalpaybak.com/photo-thumbnails/";
+
+    const FILM_PREVIEW_BASE =
+        "https://library.denizalpaybak.com/film-previews/";
+
+    const SECTION_MORPH_DURATION = 400;
+    const ROW_MORPH_DURATION = 340;
+
+    const PHOTO_FALLBACK = {"vogue-260213":{"title":"Vogue Türkiye","date":"March 2026","images":["vogue_260213_01.jpg","vogue_260213_02.jpg","vogue_260213_0926_alt.jpg","vogue_260213_1327.jpg","vogue_260213_0197.jpg","vogue_260213_0235_alt.jpg","vogue_260213_0419_alt.jpg","vogue_260213_1101.jpg","vogue_260213_0881.jpg","vogue_260213_1922.jpg","vogue_260213_05312.jpg"],"coverOverride":""},"harpersbazaar-260625":{"title":"Harper's Bazaar Türkiye","date":"July 2026","images":["harpersbazaar_260625_0554.jpg","harpersbazaar_260625_0578_alt.jpg","harpersbazaar_260625_0733.jpg","harpersbazaar_260625_0775.jpg","harpersbazaar_260625_0818.jpg","harpersbazaar_260625_0856_alt.jpg","harpersbazaar_260625_0970.jpg","harpersbazaar_260625_1037.jpg","harpersbazaar_260625_1040.jpg","harpersbazaar_260625_1454_alt.jpg","harpersbazaar_260625_0357.jpg","harpersbazaar_260625_0506.jpg"],"coverOverride":""},"lofficiel-250130-cover":{"title":"L'Officiel Türkiye","date":"February 2025 Digital Cover","images":["lofficiel_250130_cover.jpg"],"coverOverride":""},"lofficiel-250130":{"title":"L'Officiel Türkiye","date":"February 2025","images":["lofficiel_250130_1246.jpg","lofficiel_250130_layout_1.jpg","lofficiel_250130_layout_4.jpg","lofficiel_250130_layout_5.jpg"],"coverOverride":""},"lofficiel-241106-cover":{"title":"L'Officiel Türkiye","date":"November 2024 Digital Cover","images":["lofficiel_241106_cover.jpg"],"coverOverride":""},"lofficiel-241106":{"title":"L'Officiel Türkiye","date":"November 2024","images":["lofficiel_241106_0131_retouched.jpg","lofficiel_241106_0376.jpg","lofficiel_241106_0928.jpg"],"coverOverride":""},"beegoddess-fw24":{"title":"Bee Goddess","date":"F/W 2024","images":["beegoddess_full_1.jpg","beegoddess_full_2.jpg"],"coverOverride":""},"lofficiel-260116":{"title":"L'Officiel Türkiye","date":"February 2026","images":["lofficiel_260116_0984.jpg","lofficiel_260116_1608.jpg"],"coverOverride":""},"manc-231124":{"title":"MANC","date":"Resort 2024","images":["manc_231124_01.jpg"],"coverOverride":""},"mudo-home-fw24":{"title":"Mudo Home","date":"F/W 2024","images":["mudo_home_1.jpg","mudo_home_5.jpg"],"coverOverride":""},"lofficiel-251213-cover":{"title":"L'Officiel Türkiye","date":"January 2026 Digital Cover","images":["lofficiel_251213_1647_retouched_3.jpg","lofficiel_251213_1900_ig.jpg"],"coverOverride":"lofficiel_251213_1647_retouched_3.jpg"},"vakko-fw24":{"title":"Vakko","date":"F/W 2024","images":["vakko_2.jpg","vakko_3.jpg","vakko_5.jpg"],"coverOverride":""},"qp-250421":{"title":"Q-P Magazine","date":"June 2025","images":["qp_250421_01.jpg"],"coverOverride":""},"elle-250919":{"title":"ELLE Türkiye","date":"October 2025","images":["elle_250919_01.jpg","elle_250919_02.jpg","elle_250919_03.jpg","elle_250919_04.jpg","elle_250919_05.jpg"],"coverOverride":""},"work-in-progress":{"title":"Work-in-Progress","date":"Personal","images":["denizalp_aybak_01.jpg","denizalp_aybak_02.jpg","denizalp_aybak_03.jpg","denizalp_aybak_04.jpg","denizalp_aybak_05.jpg","denizalp_aybak_06.jpg","denizalp_aybak_07.jpg","denizalp_aybak_08.jpg","denizalp_aybak_09.jpg"],"coverOverride":""}};
+    const FILM_FALLBACK = {"vogue-260113":{"title":"vogue türkiye x peugeot","date":"february 2026","videos":["vogue_260113_film.mp4","vogue_260113_teaser_1.mp4","vogue_260113_teaser_3.mp4"],"coverOverride":""},"zeyneparcay-251217":{"title":"zeynep arcay","date":"fall 2026","videos":["zeyneparcay_251217_1.mp4","zeyneparcay_251217_2.mp4","zeyneparcay_251217_3.mp4","zeyneparcay_251217_4.mp4"],"coverOverride":""},"nulook-251031":{"title":"nu-look magazine","date":"december 2025 (issue #07)","videos":["nulook_251031_4.mp4","nulook_251031_5.mp4"],"coverOverride":""},"vogue-260213":{"title":"vogue türkiye","date":"march 2026","videos":["vogue_260213_1.mp4","vogue_260213_2.mp4","vogue_260213_3.mp4","vogue_260213_4.mp4"],"coverOverride":""},"zeyneparcay-250529":{"title":"zeynep arcay","date":"resort 2026","videos":["zeyneparcay_250529_1.mp4","zeyneparcay_250529_2.mp4","zeyneparcay_250529_3.mp4"],"coverOverride":""},"nulook-240919":{"title":"nu-look magazine","date":"december 2024 (issue #04)","videos":["nulook_240919_3.mp4","nulook_240919_4.mp4","nulook_240919_5.mp4","nulook_240919_6.mp4"],"coverOverride":""},"lofficiel-241106":{"title":"l’officiel türkiye","date":"november 2024","videos":["lofficiel_241106.mp4"],"coverOverride":""},"nulook-250206":{"title":"nu-look magazine","date":"april 2025 (issue #05)","videos":["nulook_250206_1.mp4","nulook_250206_2.mp4","nulook_250206_3.mp4"],"coverOverride":""},"sober-210323":{"title":"sober magazine","date":"may 2024 (issue #02)","videos":["sober_210323_video_1.mp4","sober_210323_video_2.mp4","sober_210323_video_3.mp4"],"coverOverride":"sober_210323_video_1.mp4"}};
+    const META_FALLBACK = [{"id":"vogue-260213","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-03"},{"id":"harpersbazaar-260625","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-07"},{"id":"lofficiel-250130-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02"},{"id":"lofficiel-250130","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02"},{"id":"lofficiel-241106-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11"},{"id":"lofficiel-241106","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11"},{"id":"beegoddess-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"lofficiel-260116","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-02"},{"id":"manc-231124","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-05"},{"id":"mudo-home-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"lofficiel-251213-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-01"},{"id":"vakko-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"qp-250421","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-06"},{"id":"elle-250919","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-10"},{"id":"work-in-progress","field":"PHOTOGRAPHY","use":"PERSONAL","sortDate":""},{"id":"vogue-260113","field":"FILM","use":"CAMPAIGN","sortDate":"2026-02"},{"id":"zeyneparcay-251217","field":"FILM","use":"CAMPAIGN","sortDate":"2026-09"},{"id":"nulook-251031","field":"FILM","use":"EDITORIAL","sortDate":"2025-12"},{"id":"vogue-260213","field":"FILM","use":"EDITORIAL","sortDate":"2026-03"},{"id":"zeyneparcay-250529","field":"FILM","use":"CAMPAIGN","sortDate":"2026-05"},{"id":"nulook-240919","field":"FILM","use":"EDITORIAL","sortDate":"2024-12"},{"id":"lofficiel-241106","field":"FILM","use":"EDITORIAL","sortDate":"2024-11"},{"id":"nulook-250206","field":"FILM","use":"EDITORIAL","sortDate":"2025-04"},{"id":"sober-210323","field":"FILM","use":"EDITORIAL","sortDate":"2024-05"}];
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const body = document.body;
+    const indexView = document.getElementById("landing-index-view");
+    const indexScroll = document.getElementById("landing-index-scroll");
+    const indexGrid = document.getElementById("landing-index-grid");
+    const indexPreview = document.getElementById("landing-index-preview");
+    const previewImage = document.getElementById("landing-index-preview-image");
+    const previewVideo = document.getElementById("landing-index-preview-video");
+    const indexButton = document.getElementById("landing-section-index");
+    const infoButton = document.getElementById("landing-section-info");
+    const indexText = document.getElementById("landing-section-index-text");
+    const infoText = document.getElementById("landing-section-info-text");
+
+    const headerButtons = Array.from(
+        document.querySelectorAll(".landing-index-header-cell")
+    );
+
+    /* =====================================================
+       FALLBACK DATA
+       ===================================================== */
+
+    function arrayData(data) {
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.projects)) return data.projects;
+        if (data && typeof data === "object") {
+            return Object.values(data).filter(Boolean);
+        }
+        return [];
+    }
+
+    function normalizePhotoProject(project) {
+        const normalized = {
+            ...project,
+            title: String(project?.title || "").replace(/q-p/gi, "q–p"),
+            images: Array.isArray(project?.images) ? project.images.slice() : []
+        };
+
+        const originalImages = normalized.images.slice();
+        if (!originalImages.length) return normalized;
+
+        let startIndex = 0;
+
+        if (normalized.coverOverride) {
+            const overrideIndex = originalImages.indexOf(normalized.coverOverride);
+            startIndex = overrideIndex >= 0
+                ? overrideIndex
+                : Math.floor(Math.random() * originalImages.length);
+        } else {
+            startIndex = Math.floor(Math.random() * originalImages.length);
+        }
+
+        normalized.images = [
+            ...originalImages.slice(startIndex),
+            ...originalImages.slice(0, startIndex)
+        ];
+        normalized.originalImages = originalImages;
+        normalized.cover = normalized.images[0];
+        return normalized;
+    }
+
+    function normalizeFilmProject(project) {
+        const normalized = {
+            ...project,
+            title: String(project?.title || "").replace(/nu-look/gi, "nu–look"),
+            videos: Array.isArray(project?.videos) ? project.videos.slice() : []
+        };
+
+        const originalVideos = normalized.videos.slice();
+        if (!originalVideos.length) return normalized;
+
+        let startIndex = 0;
+
+        if (normalized.coverOverride) {
+            const overrideIndex = originalVideos.indexOf(normalized.coverOverride);
+            startIndex = overrideIndex >= 0
+                ? overrideIndex
+                : Math.floor(Math.random() * originalVideos.length);
+        } else {
+            startIndex = Math.floor(Math.random() * originalVideos.length);
+        }
+
+        normalized.videos = [
+            ...originalVideos.slice(startIndex),
+            ...originalVideos.slice(0, startIndex)
+        ];
+        normalized.originalVideos = originalVideos;
+        return normalized;
+    }
+
+    function photoMap(data) {
+        const map = new Map();
+        arrayData(data).forEach(project => {
+            if (project?.id) map.set(project.id, normalizePhotoProject(project));
+        });
+        return map;
+    }
+
+    function filmMap(data) {
+        const map = new Map();
+        arrayData(data).forEach(project => {
+            if (project?.id) map.set(project.id, normalizeFilmProject(project));
+        });
+        return map;
+    }
+
+    let metadata = META_FALLBACK.slice();
+    let photoProjects = photoMap(PHOTO_FALLBACK);
+    let filmProjects = filmMap(FILM_FALLBACK);
+
+    /* =====================================================
+       CASE MORPH
+       ===================================================== */
+
+    function createCaseMorph(element, initial = "") {
+        const base = String(initial).toLowerCase();
+        const positions = Array.from(base).map((character, index) => {
+            const isLetter = character.toLowerCase() !== character.toUpperCase();
+            return isLetter ? index : -1;
+        }).filter(index => index >= 0);
+
+        let state = 0;
+        let target = 0;
+        let frame = null;
+
+        function render() {
+            const active = new Set(positions.slice(0, state));
+            element.textContent = Array.from(base).map((character, index) =>
+                active.has(index) ? character.toUpperCase() : character.toLowerCase()
+            ).join("");
+        }
+
+        function animate(nextTarget, duration) {
+            target = Math.max(0, Math.min(positions.length, nextTarget));
+            if (frame !== null) cancelAnimationFrame(frame);
+
+            const startState = state;
+            if (startState === target) {
+                render();
+                return;
+            }
+
+            const started = performance.now();
+
+            function tick(now) {
+                const progress = Math.min(1, (now - started) / duration);
+                state = Math.round(startState + (target - startState) * progress);
+                render();
+                if (progress < 1) {
+                    frame = requestAnimationFrame(tick);
+                } else {
+                    state = target;
+                    frame = null;
+                    render();
+                }
+            }
+
+            frame = requestAnimationFrame(tick);
+        }
+
+        render();
+
+        return {
+            upper() { animate(positions.length, ROW_MORPH_DURATION); },
+            lower() { animate(0, ROW_MORPH_DURATION); },
+            setUpper(duration = SECTION_MORPH_DURATION) { animate(positions.length, duration); },
+            setLower(duration = SECTION_MORPH_DURATION) { animate(0, duration); }
+        };
+    }
+
+    const indexMorph = createCaseMorph(indexText, "index");
+    const infoMorph = createCaseMorph(infoText, "info");
+
+    /* =====================================================
+       INDEX STATE
+       ===================================================== */
+
+    let sectionMode = "index";
+    let sortKey = "date";
+    let sortDirection = "desc";
+    let allRecords = [];
+    let rowStates = [];
+    let previewRecord = null;
+
+    function normalized(value) {
+        return String(value ?? "").trim().toLowerCase();
+    }
+
+    function metaKey(record) {
+        return `${record.field}::${record.id}`;
+    }
+
+    function sourceForRecord(record) {
+        return record.field === "FILM"
+            ? filmProjects.get(record.id)
+            : photoProjects.get(record.id);
+    }
+
+    function buildRecords() {
+        const merged = metadata.map((item, index) => {
+            const source = sourceForRecord(item);
+            return {
+                ...item,
+                title: normalized(source?.title || item.title || item.id),
+                date: normalized(source?.date || item.date || item.sortDate || ""),
+                field: normalized(item.field),
+                use: normalized(item.use),
+                sortDate: String(item.sortDate || ""),
+                originalIndex: index,
+                source
+            };
+        });
+
+        return merged;
+    }
+
+    function compareRecords(a, b) {
+        let av;
+        let bv;
+
+        if (sortKey === "date") {
+            av = a.sortDate;
+            bv = b.sortDate;
+
+            const aBlank = !av;
+            const bBlank = !bv;
+            if (aBlank !== bBlank) return aBlank ? 1 : -1;
+        } else {
+            av = normalized(a[sortKey]);
+            bv = normalized(b[sortKey]);
+        }
+
+        if (av < bv) return sortDirection === "asc" ? -1 : 1;
+        if (av > bv) return sortDirection === "asc" ? 1 : -1;
+        return a.originalIndex - b.originalIndex;
+    }
+
+    function sortedRecords() {
+        return allRecords.slice().sort(compareRecords);
+    }
+
+    function clearPreview() {
+        previewRecord = null;
+        indexPreview.classList.remove("visible", "is-film");
+        indexPreview.setAttribute("aria-hidden", "true");
+        previewVideo.pause();
+        previewVideo.removeAttribute("src");
+        previewVideo.load();
+        previewImage.removeAttribute("src");
+    }
+
+    function setPhotoPreview(record) {
+        const project = record.source;
+        if (!project?.images?.length) {
+            clearPreview();
+            return;
+        }
+
+        const filename = project.cover || project.images[0];
+        const dotIndex = filename.lastIndexOf(".");
+        const thumb = dotIndex > 0
+            ? filename.slice(0, dotIndex) + ".webp"
+            : filename + ".webp";
+        const src = PHOTO_THUMB_BASE + encodeURIComponent(thumb);
+
+        previewVideo.pause();
+        previewVideo.removeAttribute("src");
+        previewVideo.load();
+        previewImage.src = src;
+        indexPreview.classList.remove("is-film");
+        indexPreview.classList.add("visible");
+        indexPreview.setAttribute("aria-hidden", "false");
+    }
+
+    function setFilmPreview(record) {
+        const project = record.source;
+        if (!project?.videos?.length) {
+            clearPreview();
+            return;
+        }
+
+        const filename = project.videos[0];
+        const src = FILM_PREVIEW_BASE + encodeURIComponent(filename);
+
+        previewImage.removeAttribute("src");
+        previewVideo.dataset.filename = filename;
+        previewVideo.src = src;
+        previewVideo.currentTime = 0;
+        previewVideo.muted = true;
+        previewVideo.loop = true;
+        previewVideo.load();
+        previewVideo.play().catch(() => {});
+        indexPreview.classList.add("visible", "is-film");
+        indexPreview.setAttribute("aria-hidden", "false");
+    }
+
+    function selectPreview(record) {
+        previewRecord = record;
+        if (record.field === "FILM") {
+            setFilmPreview(record);
+        } else {
+            setPhotoPreview(record);
+        }
+    }
+
+    function createRow(record) {
+        const row = document.createElement("div");
+        row.className = "landing-index-row";
+        row.dataset.id = record.id;
+        row.dataset.field = record.field;
+        row.tabIndex = 0;
+        row.setAttribute("role", "link");
+        row.setAttribute("aria-label", `${record.title}, ${record.date}, ${record.field}, ${record.use}`);
+
+        const values = [record.title, record.date, record.field, record.use];
+        const cases = values.map((value, index) => {
+            const cell = document.createElement("div");
+            cell.className = "landing-index-cell";
+            const span = document.createElement("span");
+            span.textContent = value;
+            cell.appendChild(span);
+            row.appendChild(cell);
+            return createCaseMorph(span, value);
+        });
+
+        rowStates.push({ row, record, cases });
+
+        const enter = () => {
+            row.classList.add("is-focus");
+            cases.forEach(controller => controller.upper());
+            selectPreview(record);
+        };
+
+        const leave = () => {
+            row.classList.remove("is-focus");
+            cases.forEach(controller => controller.lower());
+            if (previewRecord === record) clearPreview();
+        };
+
+        row.addEventListener("mouseenter", enter);
+        row.addEventListener("mouseleave", leave);
+        row.addEventListener("focus", enter);
+        row.addEventListener("blur", leave);
+
+        row.addEventListener("click", event => {
+            event.preventDefault();
+            openRecord(record);
+        });
+
+        row.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openRecord(record);
+            }
+        });
+
+        return row;
+    }
+
+    function renderRows() {
+        rowStates = [];
+        indexGrid.querySelectorAll(".landing-index-row, .landing-index-empty").forEach(node => node.remove());
+
+        const records = sortedRecords();
+        if (!records.length) {
+            const empty = document.createElement("div");
+            empty.className = "landing-index-empty";
+            empty.textContent = "index unavailable";
+            indexGrid.appendChild(empty);
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        records.forEach(record => fragment.appendChild(createRow(record)));
+        indexGrid.appendChild(fragment);
+    }
+
+    function syncHeaderState(duration = SECTION_MORPH_DURATION) {
+        headerButtons.forEach(button => {
+            const key = button.dataset.sortKey;
+            const span = button.querySelector("span");
+            if (!span) return;
+
+            const active = key === sortKey;
+            const controller = button.__caseController;
+            if (controller) {
+                active ? controller.setUpper(duration) : controller.setLower(duration);
+            }
+
+            button.setAttribute("aria-sort", active
+                ? (sortDirection === "asc" ? "ascending" : "descending")
+                : "none"
+            );
+        });
+    }
+
+    function handleSort(key) {
+        if (key === sortKey) {
+            sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        } else {
+            sortKey = key;
+            sortDirection = "asc";
+        }
+        clearPreview();
+        syncHeaderState();
+        renderRows();
+    }
+
+    function openRecord(record) {
+        clearPreview();
+        const encodedId = encodeURIComponent(record.id);
+        const base = record.field === "FILM"
+            ? "https://film.denizalpaybak.com/"
+            : "https://photography.denizalpaybak.com/";
+        window.location.href = `${base}?project=${encodedId}&view=all`;
+    }
+
+    headerButtons.forEach(button => {
+        const span = button.querySelector("span");
+        button.__caseController = createCaseMorph(span, button.dataset.sortKey);
+        button.addEventListener("click", () => handleSort(button.dataset.sortKey));
+    });
+
+    /* =====================================================
+       SECTION SWITCH
+       ===================================================== */
+
+    function setSectionMode(nextMode, animate = true) {
+        if (nextMode === sectionMode && animate) return;
+
+        sectionMode = nextMode;
+
+        if (nextMode === "info") {
+            infoButton.setAttribute("aria-pressed", "true");
+            indexButton.setAttribute("aria-pressed", "false");
+            clearPreview();
+            infoMorph.setUpper(animate ? SECTION_MORPH_DURATION : 0);
+            indexMorph.setLower(animate ? SECTION_MORPH_DURATION : 0);
+            body.classList.remove("landing-index-mode");
+            body.classList.add("landing-info-mode");
+            document.documentElement.classList.remove("landing-index-mode");
+            document.documentElement.classList.add("landing-info-mode");
+            return;
+        }
+
+        infoButton.setAttribute("aria-pressed", "false");
+        indexButton.setAttribute("aria-pressed", "true");
+        infoMorph.setLower(animate ? SECTION_MORPH_DURATION : 0);
+        indexMorph.setUpper(animate ? SECTION_MORPH_DURATION : 0);
+        body.classList.remove("landing-info-mode");
+        body.classList.add("landing-index-mode");
+        document.documentElement.classList.remove("landing-info-mode");
+        document.documentElement.classList.add("landing-index-mode");
+    }
+
+    indexButton.addEventListener("click", () => setSectionMode("index", true));
+    infoButton.addEventListener("click", () => setSectionMode("info", true));
+
+    /* =====================================================
+       PREVENT THE OLD LANDING GESTURES FROM STEALING INDEX SCROLL
+       ===================================================== */
+
+    [indexScroll].forEach(element => {
+        ["wheel", "touchstart", "touchmove", "touchend", "pointerdown"].forEach(type => {
+            element.addEventListener(type, event => {
+                event.stopPropagation();
+            }, { passive: type === "wheel" ? false : true });
+        });
+    });
+
+    /* =====================================================
+       LOAD DATA
+       ===================================================== */
+
+    async function fetchJson(url) {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) throw new Error(`${url}: ${response.status}`);
+        return response.json();
+    }
+
+    async function loadData() {
+        const [metaResult, photoResult, filmResult] = await Promise.allSettled([
+            fetchJson(LANDING_INDEX_JSON_URL),
+            fetchJson(PHOTOGRAPHY_JSON_URL),
+            fetchJson(FILM_JSON_URL)
+        ]);
+
+        if (metaResult.status === "fulfilled") {
+            const nextMeta = arrayData(metaResult.value);
+            if (nextMeta.length) metadata = nextMeta;
+        }
+
+        if (photoResult.status === "fulfilled") {
+            const nextPhotos = photoMap(photoResult.value);
+            if (nextPhotos.size) photoProjects = nextPhotos;
+        }
+
+        if (filmResult.status === "fulfilled") {
+            const nextFilms = filmMap(filmResult.value);
+            if (nextFilms.size) filmProjects = nextFilms;
+        }
+
+        allRecords = buildRecords();
+        syncHeaderState(0);
+        renderRows();
+    }
+
+    /* =====================================================
+       INITIAL STATE / DISABLE THE OLD PREVIEW AUTOMATION
+       ===================================================== */
+
+    try {
+        if (typeof cancelAutomaticIntroForInteraction === "function") {
+            cancelAutomaticIntroForInteraction();
+        }
+        if (typeof clearIntroTimer === "function") {
+            clearIntroTimer();
+        }
+        if (typeof cancelFilmAutoClose === "function") {
+            cancelFilmAutoClose();
+        }
+        if (typeof cancelPhotoSequence === "function") {
+            cancelPhotoSequence();
+        }
+        if (typeof clearPreviewTheme === "function") {
+            clearPreviewTheme();
+        }
+        if (typeof clearSinglePhotographyPreview === "function") {
+            clearSinglePhotographyPreview();
+        }
+        if (typeof filmVideo !== "undefined" && filmVideo) {
+            filmVideo.pause();
+        }
+        if (typeof photographyField !== "undefined" && photographyField) {
+            photographyField.classList.remove("active");
+        }
+        if (typeof filmField !== "undefined" && filmField) {
+            filmField.classList.remove("active");
+        }
+    } catch (error) {
+        console.warn("Landing preview cleanup skipped:", error);
+    }
+
+    body.classList.add("landing-index-mode");
+    document.documentElement.classList.add("landing-index-mode");
+    body.classList.remove("landing-info-mode");
+    document.documentElement.classList.remove("landing-info-mode");
+
+    indexMorph.setUpper(0);
+    infoMorph.setLower(0);
+
+    allRecords = buildRecords();
+    syncHeaderState(0);
+    renderRows();
+    loadData().catch(error => {
+        console.error("Landing INDEX data load failed:", error);
+    });
+})();
+</script>
+
 </body>
 </html>
