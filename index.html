@@ -9570,8 +9570,8 @@ window.addEventListener("resize", () => {
     }
 
     .landing-index-scroll {
-        width: min(1000px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
-        max-width: 1000px !important;
+        width: min(1120px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+        max-width: 1120px !important;
         height: auto !important;
         max-height: calc(100dvh - (2 * var(--page-top))) !important;
         margin: 0 auto !important;
@@ -9585,11 +9585,11 @@ window.addEventListener("resize", () => {
         margin: 0 !important;
         justify-content: stretch !important;
         grid-template-columns:
-            minmax(0, 1.25fr)
+            minmax(0, 1.55fr)
+            minmax(0, 0.85fr)
             minmax(0, 0.95fr)
-            minmax(0, 1.00fr)
-            minmax(0, 0.90fr) !important;
-        column-gap: clamp(18px, 1.7vw, 28px) !important;
+            minmax(0, 0.75fr) !important;
+        column-gap: clamp(14px, 1.2vw, 22px) !important;
         row-gap: 0 !important;
     }
 
@@ -9667,22 +9667,32 @@ window.addEventListener("resize", () => {
        Intersection visibility is then controlled by masks.
        ===================================================== */
 
+    /* Normal rows sit behind the preview. Only the header and hovered row
+       are promoted above it. */
     .landing-index-row {
         position: relative !important;
-        z-index: 10 !important;
+        z-index: 1 !important;
     }
 
     .landing-index-header {
         position: relative !important;
-        z-index: 20 !important;
+        z-index: 30 !important;
     }
 
     .landing-index-row.is-focus {
-        z-index: 20 !important;
+        z-index: 30 !important;
+    }
+
+    .landing-index-cell {
+        z-index: auto !important;
+    }
+
+    .landing-index-header-cell {
+        z-index: auto !important;
     }
 
     #landing-index-preview {
-        z-index: 5 !important;
+        z-index: 10 !important;
         left: var(--landing-index-preview-center-x, 50%);
         top: var(--landing-index-preview-top, 50%);
         width: var(--landing-index-preview-width, min(32vw, 560px));
@@ -9690,8 +9700,16 @@ window.addEventListener("resize", () => {
     }
 
     #landing-index-preview.is-film {
-        width: var(--landing-index-preview-width, min(48vw, 780px));
-        height: var(--landing-index-preview-height, min(48vh, 520px));
+        width: var(--landing-index-preview-width, min(52vw, 820px));
+        height: var(--landing-index-preview-height, min(52vh, 560px));
+    }
+
+    #landing-index-preview.is-film video {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        object-fit: contain !important;
     }
 
     /* =====================================================
@@ -10280,17 +10298,34 @@ window.addEventListener("resize", () => {
         }
 
         /*
-           The preview is BELOW all text. Therefore every lowercase text
-           element is simply masked out where it intersects the media.
-           Only uppercase elements receive the white/difference duplicate.
+           STACKING MODEL:
+           - normal project rows are physically BELOW the preview
+           - the header row and hovered project row are ABOVE the preview
+           - only those two promoted rows receive intersection masking
+           - lowercase text disappears only at the actual overlap
+           - uppercase text gets a white/difference duplicate only there
         */
+
         rowStates.forEach(state => {
+            const isActive = state === activePreviewRow;
             state.differenceSpans?.forEach(setDifferenceHidden);
+
             state.cases?.forEach(controller => {
-                applyBaseTextOutsideMask(controller?.element, previewRect);
+                if (isActive) {
+                    clipDifferenceToPreview(
+                        controller?.element?.nextElementSibling,
+                        controller?.element,
+                        previewRect
+                    );
+                } else {
+                    resetBaseTextMask(controller?.element);
+                }
             });
         });
 
+        /* The entire header row stays above the preview. Each header is
+           masked only at the intersection; only the active uppercase
+           header receives the difference duplicate. */
         headerButtons.forEach(button => {
             const textElement = button.querySelector(".landing-index-text");
             const difference = button.querySelector(".landing-index-difference-text");
@@ -10298,7 +10333,6 @@ window.addEventListener("resize", () => {
             setDifferenceHidden(difference);
         });
 
-        /* The currently active sort heading is uppercase. */
         const activeHeader = headerButtons.find(
             button => button.dataset.sortKey === sortKey
         );
@@ -10310,14 +10344,6 @@ window.addEventListener("resize", () => {
                 textElement,
                 previewRect
             );
-        }
-
-        /* The hovered row is uppercase. Only its intersecting glyphs invert. */
-        if (activePreviewRow) {
-            activePreviewRow.differenceSpans?.forEach(span => {
-                const textElement = span.previousElementSibling;
-                clipDifferenceToPreview(span, textElement, previewRect);
-            });
         }
     }
 
@@ -10348,11 +10374,11 @@ window.addEventListener("resize", () => {
             /* Give landscape video more width so it carries similar visual weight
                to a portrait photograph. */
             width = compactViewport
-                ? Math.min(window.innerWidth * 0.92, 760)
-                : Math.min(window.innerWidth * 0.46, 780);
+                ? Math.min(window.innerWidth * 0.94, 820)
+                : Math.min(window.innerWidth * 0.52, 840);
             height = compactViewport
-                ? Math.min(window.innerHeight * 0.44, 430)
-                : Math.min(window.innerHeight * 0.48, 520);
+                ? Math.min(window.innerHeight * 0.48, 500)
+                : Math.min(window.innerHeight * 0.52, 560);
         } else {
             width = compactViewport
                 ? Math.min(window.innerWidth * 0.78, 560)
