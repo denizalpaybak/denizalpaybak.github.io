@@ -1016,6 +1016,91 @@ body.preview-active .portfolio-download {
 }
 
 /* =====================================================
+   AYBAK END CARD — ONLY THE WORD
+   ===================================================== */
+
+#landing-aybak-end-card {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    background: rgba(0,0,0,0);
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 460ms;
+    touch-action: none;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+        background-color 460ms cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear 0s;
+}
+
+html.landing-aybak-active:not(.landing-aybak-light),
+body.landing-aybak-active:not(.landing-aybak-light),
+body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
+    background: #000;
+}
+
+html.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light,
+body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
+    background: #fff;
+}
+
+#landing-aybak-word {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 170ms ease;
+    pointer-events: none;
+}
+
+body.landing-aybak-active #landing-aybak-word {
+    opacity: 1;
+    transition-delay: 255ms;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .landing-grid {
+        grid-template-columns: minmax(0,1fr);
+        grid-template-rows: auto auto auto minmax(0,1fr);
+    }
+
+    .biography {
+        max-width: min(100%, 530px);
+    }
+
+    .film-field {
+        padding:
+            var(--page-top)
+            var(--page-x)
+            var(--page-bottom);
+    }
+
+    .film-link {
+        width: min(
+            calc(100vw - 2 * var(--page-x)),
+            calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
+        );
+    }
+
+    #scattered-stage.single-photo-mode .project-photo.single-photo-visible {
+        max-width: calc(100vw - 2 * var(--page-x)) !important;
+        max-height: 62vh !important;
+    }
+}
+
+
+
+/* =====================================================
    FIXED PHOTOGRAPHY PREVIEW
    ===================================================== */
 
@@ -1229,27 +1314,21 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 
 <style id="final-clean-landing-system">
 /* =====================================================
-   FINAL LANDING SYSTEM
+   CLEAN LANDING SYSTEM
+   One final source of truth for the landing composition,
+   footer/corner labels and AYBAK end-card.
    ===================================================== */
 
-/* Hide the old landing logo; the corner navigation is the visible top UI. */
+/* The old top-left landing logo is no longer part of the visible landing page. */
 .logo {
     display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
 }
 
-/* Fixed corner UI lives outside the landing-grid stacking context. */
-.navigation,
-.contact,
-.portfolio-download {
-    position: fixed !important;
-    z-index: 20001 !important;
-}
-
+/* Top navigation: photography left / film right. */
 .navigation {
+    position: fixed !important;
     inset: 0 !important;
+    z-index: 20000 !important;
     width: 100% !important;
     height: 100% !important;
     margin: 0 !important;
@@ -1287,7 +1366,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     text-align: right !important;
 }
 
-/* Central biography. */
+/* The central biography is one normal centered composition. */
 .biography {
     position: fixed !important;
     z-index: 5 !important;
@@ -1305,65 +1384,108 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     line-height: var(--line-height) !important;
     letter-spacing: 0 !important;
     word-spacing: 0 !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    text-transform: none !important;
     white-space: normal !important;
+    text-wrap: wrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     hyphens: none !important;
-    text-transform: none !important;
 }
 
-/* Every rendered line occupies the same full text axis. */
-#biography-flow {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.bio-render-line,
-.bio-collab-heading,
-.bio-collab-row {
+.biography .bio-line {
     display: block !important;
     width: 100% !important;
+    min-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     font: inherit !important;
     line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
+    text-align: center !important;
+    text-align-last: center !important;
     text-transform: none !important;
-    hyphens: none !important;
-    word-break: normal !important;
+    white-space: normal !important;
+    text-wrap: wrap !important;
     overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
 }
 
-.bio-align-left { text-align: left !important; }
-.bio-align-right { text-align: right !important; }
-.bio-align-center { text-align: center !important; }
-
-.bio-collab-heading {
-    margin: 0 !important;
+.biography .bio-line + .bio-line {
+    margin-top: var(--major-gap) !important;
 }
 
-.bio-collab-row .bio-name {
+/* The punctuation-defined breaks above are intentional. */
+.biography br {
+    line-height: inherit !important;
+}
+
+/* The middle name is permanently lowercase and non-interactive. */
+.biography .bio-identity,
+.biography .bio-identity-name,
+.biography .bio-identity-aybak {
+    display: inline !important;
+    white-space: nowrap !important;
+    text-transform: none !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* Collaborator headings stay on their own line. */
+.biography .collaborator-heading {
     display: inline-block !important;
     white-space: nowrap !important;
+    vertical-align: baseline !important;
+}
+
+/* Balanced collaborator rows:
+   editorial = 2 + 2 when wrapping,
+   brand     = 3 + 3 when wrapping.
+   When both grouped rows fit, they remain on one line. */
+.collaborator-rows {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    column-gap: 0.55em !important;
+    row-gap: 0 !important;
+    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.bio-collab-row .bio-name + .bio-name {
-    margin-left: 0.34em !important;
+.collaborator-row {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    gap: 0.55em !important;
+    white-space: nowrap !important;
 }
 
-/* Footer. */
+.client-name {
+    display: inline !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+/* Keep the two collaborator sections in the same centered copy block. */
+.biography .collaborator-line {
+    margin-top: var(--major-gap) !important;
+}
+
+/* Footer: left = models / portfolio, right = email / Instagram. */
 .contact {
+    position: fixed !important;
+    z-index: 20000 !important;
     left: 0 !important;
     right: 0 !important;
-    bottom: var(--page-bottom) !important;
+    bottom: var(--page-top) !important;
     width: 100% !important;
-    height: calc((var(--font-size) * var(--line-height)) * 2) !important;
+    height: calc(var(--font-size) * var(--line-height) * 2) !important;
     margin: 0 !important;
     padding: 0 !important;
     display: block !important;
@@ -1376,6 +1498,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     margin: 0 !important;
     padding: 0 !important;
     color: #000 !important;
+    font-family: inherit !important;
     font-size: var(--font-size) !important;
     font-weight: 400 !important;
     line-height: var(--line-height) !important;
@@ -1384,7 +1507,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     pointer-events: auto !important;
 }
 
-.contact a:first-child {
+.contact a:nth-child(1) {
     right: var(--page-x) !important;
     bottom: calc(var(--font-size) * var(--line-height)) !important;
     text-align: right !important;
@@ -1403,9 +1526,11 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 }
 
 .portfolio-download {
+    position: fixed !important;
+    z-index: 20000 !important;
     left: var(--page-x) !important;
     right: auto !important;
-    bottom: var(--page-bottom) !important;
+    bottom: var(--page-top) !important;
     width: max-content !important;
     height: calc(var(--font-size) * var(--line-height)) !important;
     margin: 0 !important;
@@ -1434,10 +1559,23 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     text-decoration: underline !important;
 }
 
-/* =====================================================
-   AYBAK END CARD
-   ===================================================== */
+.native-down-arrow {
+    display: none !important;
+}
 
+/* Prevent the old landing logo from flashing during the return to white. */
+body:not(.landing-aybak-active) .logo,
+body.landing-aybak-leaving .logo,
+html.landing-aybak-leaving .logo {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* =====================================================
+   BLACK AYBAK END CARD
+   ===================================================== */
 #landing-aybak-end-card {
     position: fixed !important;
     inset: 0 !important;
@@ -1452,9 +1590,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     background: #000 !important;
     opacity: 0 !important;
     transform: none !important;
-    transition:
-        opacity 300ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 300ms !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
     touch-action: none !important;
 }
 
@@ -1462,47 +1598,40 @@ body.landing-aybak-active #landing-aybak-end-card {
     visibility: visible !important;
     pointer-events: auto !important;
     opacity: 1 !important;
-    transition:
-        opacity 300ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 0s !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s !important;
+}
+
+body.landing-aybak-leaving,
+html.landing-aybak-leaving {
+    background: #fff !important;
 }
 
 body.landing-aybak-leaving #landing-aybak-end-card {
     visibility: visible !important;
     pointer-events: none !important;
     opacity: 0 !important;
-    transition:
-        opacity 300ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 300ms !important;
+    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
 }
 
-html.landing-aybak-active,
-body.landing-aybak-active {
-    background: #000 !important;
-}
-
-html.landing-aybak-leaving,
-body.landing-aybak-leaving {
-    background: #fff !important;
-}
-
-/* Keep the corner UI above the black surface. */
+/* Four corner labels sit above the black end card. */
 body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
 body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
 body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
     visibility: visible !important;
     opacity: 1 !important;
-    z-index: 20001 !important;
+    z-index: 20000 !important;
+    pointer-events: auto !important;
 }
 
 body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
 body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
 body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
     color: #fff !important;
-    visibility: visible !important;
     opacity: 1 !important;
+    visibility: visible !important;
     mix-blend-mode: normal !important;
     filter: none !important;
+    text-shadow: none !important;
 }
 
 body.landing-aybak-leaving .navigation a,
@@ -1511,16 +1640,15 @@ body.landing-aybak-leaving .portfolio-download a {
     color: #000 !important;
 }
 
-/* The wordmark itself is an ordinary button: no inline-grid, no artificial letter spacing. */
+/* End-card logo: two text lines with a visible stepped case morph. */
 #landing-aybak-logo {
     position: relative !important;
-    z-index: 3 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     width: max-content !important;
-    min-width: 80px !important;
+    min-width: 0 !important;
     height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1535,41 +1663,99 @@ body.landing-aybak-leaving .portfolio-download a {
     font-size: var(--font-size) !important;
     font-weight: 400 !important;
     line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
     text-align: center !important;
+    -webkit-tap-highlight-color: transparent !important;
     user-select: none !important;
     -webkit-user-select: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    pointer-events: auto !important;
 }
 
-.landing-aybak-word {
-    display: block !important;
-    width: max-content !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
+#landing-aybak-name,
+#landing-aybak-aybak {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: center !important;
     white-space: nowrap !important;
-    text-align: center !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
 }
 
-.landing-aybak-char {
-    display: inline-block !important;
+#landing-aybak-name {
+    position: relative !important;
+    width: max-content !important;
+}
+
+.landing-aybak-name-case {
+    grid-area: 1 / 1 !important;
+    display: block !important;
+    transition: opacity 110ms ease, transform 110ms ease !important;
+}
+
+#landing-aybak-name {
+    display: grid !important;
+}
+
+.landing-aybak-name-upper,
+.landing-aybak-letter-lower {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.landing-aybak-name-lower,
+.landing-aybak-letter-upper {
+    opacity: 0;
+    transform: translateY(0.12em);
+}
+
+#landing-aybak-name.is-lower .landing-aybak-name-upper {
+    opacity: 0;
+    transform: translateY(-0.12em);
+}
+
+#landing-aybak-name.is-lower .landing-aybak-name-lower {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.landing-aybak-letter {
+    display: inline-grid !important;
+    place-items: center !important;
+    position: relative !important;
+}
+
+.landing-aybak-letter > span {
+    grid-area: 1 / 1 !important;
+    display: block !important;
+    transition: opacity 110ms ease, transform 110ms ease !important;
+}
+
+.landing-aybak-letter.is-upper .landing-aybak-letter-lower {
+    opacity: 0;
+    transform: translateY(-0.12em);
+}
+
+.landing-aybak-letter.is-upper .landing-aybak-letter-upper {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* iOS landscape: extend the black surface through safe-area gutters. */
+html.landing-aybak-active,
+body.landing-aybak-active {
+    background: #000 !important;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    left: calc(-1 * env(safe-area-inset-left)) !important;
+    right: calc(-1 * env(safe-area-inset-right)) !important;
+    top: calc(-1 * env(safe-area-inset-top)) !important;
+    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
     width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: pre !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    vertical-align: baseline !important;
+    height: auto !important;
+    background: #000 !important;
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
     .biography {
-        width: min(92vw, 430px) !important;
+        width: min(90vw, 390px) !important;
     }
 }
 
@@ -1581,19 +1767,149 @@ body.landing-aybak-leaving .portfolio-download a {
 
 @media (orientation: landscape) and (min-width: 1001px) {
     .biography {
-        width: min(720px, 72vw) !important;
+        width: min(720px, 66vw) !important;
     }
 }
 </style>
-<style id="final-aybak-safe-area">
-@media (max-width: 1000px) and (orientation: landscape) {
-    body.landing-aybak-active #landing-aybak-end-card {
-        inset:
-            calc(-1 * env(safe-area-inset-top))
-            calc(-1 * env(safe-area-inset-right))
-            calc(-1 * env(safe-area-inset-bottom))
-            calc(-1 * env(safe-area-inset-left)) !important;
+
+<style id="final-central-bio-flow-fix">
+/* =====================================================
+   FINAL CENTRAL BIOGRAPHY FLOW
+   ===================================================== */
+.biography#biography {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(720px, 78vw) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 5 !important;
+    display: block !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-transform: none !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+}
+
+#biography-flow {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.bio-flow-line {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+.bio-flow-line.align-left {
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.bio-flow-line.align-right {
+    text-align: right !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.bio-flow-line.align-center {
+    text-align: center !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Collaborator rows remain atomic: names never break internally. */
+.bio-collaborator-line {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: baseline !important;
+    gap: 0.55em !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+}
+
+.bio-collaborator-name {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+/* The heading is one punctuation-defined line of the global sequence. */
+.bio-collaborator-heading {
+    display: block !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography#biography {
+        width: 90vw !important;
+        max-width: 90vw !important;
     }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography#biography {
+        width: 82vw !important;
+        max-width: 82vw !important;
+    }
+}
+
+@media (orientation: landscape) and (min-width: 1001px) {
+    .biography#biography {
+        width: min(720px, 72vw) !important;
+        max-width: min(720px, 72vw) !important;
+    }
+}
+
+/* =====================================================
+   FINAL AYBAK END CARD INTERACTION
+   ===================================================== */
+#landing-aybak-end-card {
+    z-index: 10000 !important;
+}
+
+#landing-aybak-logo {
+    position: relative !important;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+}
+
+#landing-aybak-name,
+#landing-aybak-aybak {
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+}
+
+/* Keep the end-card logo free of any inherited pointer blocking. */
+body.landing-aybak-active #landing-aybak-logo,
+body.landing-aybak-active #landing-aybak-logo * {
+    pointer-events: auto !important;
 }
 </style>
 
@@ -1605,105 +1921,68 @@ body.landing-aybak-leaving .portfolio-download a {
 <img alt="" aria-hidden="true" id="fixed-photo-preview" src="./photo.jpg"/>
 </div>
 <main class="landing-grid" id="landing-grid">
-
-    <!-- LOGO (hidden on the landing surface; retained for existing intro code) -->
-    <button
-        class="logo"
-        id="logo"
-        type="button"
-        aria-label="Denizalp Aybak"
-    >
-        <span class="logo-name" id="logo-name">Denizalp</span>
-        <span class="logo-aybak">
-            <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
-        </span>
-    </button>
-
-    <!-- MEDIA -->
-    <div class="media-field" id="media-field">
-        <div class="film-field" id="film-field">
-            <a
-                class="film-link"
-                href="https://film.denizalpaybak.com/"
-                aria-label="Film"
-            >
-                <video
-                    id="film-video"
-                    src="./film.mp4"
-                    muted
-                    playsinline
-                    preload="auto"
-                ></video>
-            </a>
-        </div>
-    </div>
-
-    <!-- CENTRAL BIOGRAPHY -->
-    <section class="biography" id="biography">
-        <div id="biography-flow" aria-live="off"></div>
-    </section>
-
-</main>
-
-<!-- FIXED CORNER UI -->
-<nav class="navigation" aria-label="Primary">
-    <a
-        href="https://photography.denizalpaybak.com/"
-        id="photography-link"
-    >
-        <span id="photography-text">PHOTOGRAPHY.</span>
-    </a>
-
-    <a
-        href="https://film.denizalpaybak.com/"
-        id="film-link"
-    >
-        <span id="film-text">FILM.</span>
-    </a>
-</nav>
-
-<div class="contact">
-    <a
-        href="mailto:d@denizalpaybak.com"
-        target="_blank"
-        rel="noopener"
-    >d@denizalpaybak.com</a>
-
-    <a
-        href="https://www.instagram.com/denizalpaybak/"
-        target="_blank"
-        rel="noopener"
-    >instagram @denizalpaybak</a>
-
-    <a
-        href="https://models.com/people/denizalp-aybak"
-        target="_blank"
-        rel="noopener"
-    >models.com</a>
+<!-- LOGO -->
+<button aria-label="Denizalp Aybak" class="logo" id="logo" type="button">
+<span class="logo-name" id="logo-name">
+                Denizalp
+            </span>
+<span class="logo-aybak">
+<span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
+</span>
+</button>
+<!-- MEDIA -->
+<div class="media-field" id="media-field">
+<div class="film-field" id="film-field">
+<a aria-label="Film" class="film-link" href="https://film.denizalpaybak.com/">
+<video id="film-video" muted="" playsinline="" preload="auto" src="./film.mp4"></video>
+</a>
 </div>
-
+</div>
+<!-- BIOGRAPHY -->
+<section class="biography" id="biography">
+    <div id="biography-flow" aria-live="off"></div>
+</section>
+<!-- FIXED CORNER UI: kept outside the landing-grid stacking context -->
+<nav class="navigation">
+<a href="https://photography.denizalpaybak.com/" id="photography-link">
+<span id="photography-text">
+                    PHOTOGRAPHY.
+                </span>
+</a>
+<a href="https://film.denizalpaybak.com/" id="film-link">
+<span id="film-text">
+                    FILM.
+                </span>
+</a>
+</nav>
+<div class="contact">
+<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">
+                d@denizalpaybak.com
+            </a>
+<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">
+                instagram @denizalpaybak
+            </a>
+<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">
+                models.com
+            </a>
+</div>
 <p class="portfolio-download">
-    <a
-        href="./denizalp-aybak-portfolio.pdf"
-        id="portfolio-download"
-        download="denizalp-aybak-portfolio.pdf"
-    >portfolio.pdf</a>
+<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">
+                    portfolio.pdf
+                </a>
 </p>
-
-<!-- AYBAK END CARD -->
-<section
-    id="landing-aybak-end-card"
-    aria-hidden="true"
->
-    <button
-        id="landing-aybak-logo"
-        type="button"
-        aria-label="Denizalp Aybak"
-    >
-        <span id="landing-aybak-name" class="landing-aybak-word"></span>
-        <span id="landing-aybak-aybak" class="landing-aybak-word"></span>
-    </button>
-</section></div>
+<section aria-hidden="true" id="landing-aybak-end-card">
+<button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
+<span aria-hidden="true" id="landing-aybak-name">
+<span class="landing-aybak-name-case landing-aybak-name-upper">Denizalp</span>
+<span class="landing-aybak-name-case landing-aybak-name-lower">denizalp</span>
+</span>
+<span aria-hidden="true" id="landing-aybak-aybak">
+<span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">a</span><span class="landing-aybak-letter-upper">A</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">y</span><span class="landing-aybak-letter-upper">Y</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">b</span><span class="landing-aybak-letter-upper">B</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">a</span><span class="landing-aybak-letter-upper">A</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">k</span><span class="landing-aybak-letter-upper">K</span></span>
+</span>
+</button>
+</section>
+</main></div>
 <script>
 
 /* =====================================================
@@ -1871,6 +2150,206 @@ const biography =
     document.getElementById(
         "biography"
     );
+
+
+/* =====================================================
+   FINAL CENTRAL BIOGRAPHY BUILDER
+   ===================================================== */
+
+const BIO_FLOW_SEGMENTS = [
+    { type: "text", text: "denizalp aybak (b. 1997) is a photographer and filmmaker," },
+    { type: "text", text: "based in istanbul and available internationally." },
+    { type: "text", text: "having graduated top of his class in management at sabanci university," },
+    { type: "text", text: "he brings a strategic approach to image-making," },
+    { type: "text", text: "considering both the work itself and the world it belongs to." },
+    { type: "text", text: "his work creates atmosphere through contrast:" },
+    { type: "text", text: "light that feels dark," },
+    { type: "text", text: "beauty that appears distant," },
+    { type: "text", text: "stillness that carries tension," },
+    { type: "text", text: "and precision that emerges from spontaneity." },
+    { type: "text", text: "editorial collaborators include:" },
+    {
+        type: "clients",
+        names: [
+            "vogue türkiye",
+            "harper’s bazaar türkiye",
+            "elle türkiye",
+            "l’officiel türkiye"
+        ],
+        groupSize: 2
+    },
+    { type: "text", text: "brand collaborators include:" },
+    {
+        type: "clients",
+        names: [
+            "vakko",
+            "bee goddess",
+            "zeynep arcay",
+            "peugeot",
+            "skechers",
+            "lc waikiki"
+        ],
+        groupSize: 3
+    }
+];
+
+let biographyFlowMeasure = null;
+
+function getBiographyMeasureElement() {
+    if (biographyFlowMeasure) {
+        return biographyFlowMeasure;
+    }
+
+    const probe = document.createElement("span");
+    probe.style.position = "fixed";
+    probe.style.left = "-100000px";
+    probe.style.top = "-100000px";
+    probe.style.visibility = "hidden";
+    probe.style.pointerEvents = "none";
+    probe.style.whiteSpace = "nowrap";
+    probe.style.fontFamily = "inherit";
+    probe.style.fontSize = getComputedStyle(biography).fontSize;
+    probe.style.fontWeight = getComputedStyle(biography).fontWeight;
+    probe.style.lineHeight = getComputedStyle(biography).lineHeight;
+    probe.style.letterSpacing = getComputedStyle(biography).letterSpacing;
+    probe.style.wordSpacing = getComputedStyle(biography).wordSpacing;
+    document.body.appendChild(probe);
+    biographyFlowMeasure = probe;
+    return probe;
+}
+
+function measureBioText(text) {
+    const probe = getBiographyMeasureElement();
+    probe.textContent = text;
+    return probe.getBoundingClientRect().width;
+}
+
+function splitWordsToBalancedLines(text, maxWidth) {
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+
+    if (measureBioText(text) <= maxWidth) {
+        return [text.trim()];
+    }
+
+    const lines = [];
+    let current = [];
+
+    for (const word of words) {
+        const candidate = current.length ? `${current.join(" ")} ${word}` : word;
+        if (current.length && measureBioText(candidate) > maxWidth) {
+            lines.push(current.join(" "));
+            current = [word];
+        } else {
+            current.push(word);
+        }
+    }
+    if (current.length) lines.push(current.join(" "));
+
+    /* Never leave a one-word tail when moving one or more preceding words can balance it. */
+    while (lines.length > 1 && lines[lines.length - 1].split(/\s+/).length === 1) {
+        const last = lines[lines.length - 1];
+        const previousWords = lines[lines.length - 2].split(/\s+/);
+        if (previousWords.length <= 1) break;
+
+        let moved = false;
+        for (let take = 1; take < previousWords.length; take += 1) {
+            const candidatePrev = previousWords.slice(0, previousWords.length - take).join(" ");
+            const candidateLast = previousWords.slice(previousWords.length - take).concat(last).join(" ");
+            if (
+                candidatePrev &&
+                measureBioText(candidateLast) <= maxWidth
+            ) {
+                lines[lines.length - 2] = candidatePrev;
+                lines[lines.length - 1] = candidateLast;
+                moved = true;
+                break;
+            }
+        }
+        if (!moved) break;
+    }
+
+    return lines;
+}
+
+function alignmentClass(lineIndex) {
+    const mod = lineIndex % 3;
+    if (mod === 0) return "align-left";
+    if (mod === 1) return "align-right";
+    return "align-center";
+}
+
+function appendBioTextLines(container, text, state) {
+    const width = Math.max(1, biography.clientWidth);
+    const lines = splitWordsToBalancedLines(text, width);
+
+    for (const lineText of lines) {
+        const line = document.createElement("div");
+        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+        line.textContent = lineText;
+        container.appendChild(line);
+        state.index += 1;
+    }
+}
+
+function appendClientLines(container, names, groupSize, state) {
+    const width = Math.max(1, biography.clientWidth);
+
+    const full = names.join(", ");
+    if (measureBioText(full) <= width) {
+        const line = document.createElement("div");
+        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+        line.textContent = full;
+        container.appendChild(line);
+        state.index += 1;
+        return;
+    }
+
+    /* Requested balanced client grouping: editorial 2+2, brand 3+3. */
+    const groups = [];
+    for (let i = 0; i < names.length; i += groupSize) {
+        groups.push(names.slice(i, i + groupSize).join(", "));
+    }
+
+    for (const group of groups) {
+        const lines = splitWordsToBalancedLines(group, width);
+        for (const lineText of lines) {
+            const line = document.createElement("div");
+            line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+            line.textContent = lineText;
+            container.appendChild(line);
+            state.index += 1;
+        }
+    }
+}
+
+function buildBiographyFlow() {
+    if (!biography) return;
+
+    const flow = document.getElementById("biography-flow");
+    if (!flow) return;
+
+    const measure = getBiographyMeasureElement();
+    measure.style.fontSize = getComputedStyle(biography).fontSize;
+    measure.style.fontWeight = getComputedStyle(biography).fontWeight;
+    measure.style.lineHeight = getComputedStyle(biography).lineHeight;
+    measure.style.letterSpacing = getComputedStyle(biography).letterSpacing;
+    measure.style.wordSpacing = getComputedStyle(biography).wordSpacing;
+
+    flow.innerHTML = "";
+    const state = { index: 0 };
+
+    for (const segment of BIO_FLOW_SEGMENTS) {
+        if (segment.type === "text") {
+            appendBioTextLines(flow, segment.text, state);
+        } else {
+            appendClientLines(flow, segment.names, segment.groupSize, state);
+        }
+    }
+}
+
+/* Build before any layout calculation that depends on biography geometry. */
+buildBiographyFlow();
 
 const mediaField =
     document.getElementById(
@@ -7383,163 +7862,133 @@ logo.addEventListener(
 
 
 /* =====================================================
-   AYBAK END CARD — CLEAN WORDMARK SYSTEM
+   AYBAK END CARD — TEXT STATE + FAST FADE
    ===================================================== */
 
 const landingAybakEndCard =
-    document.getElementById("landing-aybak-end-card");
+    document.getElementById(
+        "landing-aybak-end-card"
+    );
 
 const landingAybakLogo =
-    document.getElementById("landing-aybak-logo");
+    document.getElementById(
+        "landing-aybak-logo"
+    );
 
 const landingAybakName =
-    document.getElementById("landing-aybak-name");
+    document.getElementById(
+        "landing-aybak-name"
+    );
 
 const landingAybakAybak =
-    document.getElementById("landing-aybak-aybak");
-
-const LANDING_AYBAK_NAME_INITIAL =
-    "Denizalp";
-
-const LANDING_AYBAK_NAME_FINAL =
-    "denizalp";
-
-const LANDING_AYBAK_SURNAME_INITIAL =
-    "aybak";
-
-const LANDING_AYBAK_SURNAME_FINAL =
-    "AYBAK";
-
-/* 0 = Denizalp / aybak
-   1 = denizalp / aybak
-   2 = denizalp / Aybak
-   3 = denizalp / AYbak
-   4 = denizalp / AYBak
-   5 = denizalp / AYBAk
-   6 = denizalp / AYBAK */
-
-const LANDING_AYBAK_MAX_STATE = 6;
-
-let landingAybakLogoState = 0;
-let landingAybakLogoTarget = 0;
-let landingAybakLogoTimer = null;
-
-function buildLandingAybakWord(
-    container,
-    text
-) {
-    container.replaceChildren();
-
-    Array.from(text).forEach(
-        character => {
-            const span =
-                document.createElement("span");
-
-            span.className =
-                "landing-aybak-char";
-
-            span.textContent =
-                character;
-
-            container.appendChild(
-                span
-            );
-        }
+    document.getElementById(
+        "landing-aybak-aybak"
     );
-}
 
-buildLandingAybakWord(
-    landingAybakName,
-    LANDING_AYBAK_NAME_INITIAL
-);
+let landingAybakActive =
+    false;
 
-buildLandingAybakWord(
-    landingAybakAybak,
-    LANDING_AYBAK_SURNAME_INITIAL
-);
+let landingAybakLeaving =
+    false;
+
+let landingAybakLogoState =
+    0;
+
+let landingAybakLogoTarget =
+    0;
+
+let landingAybakLogoTimer =
+    null;
+
+let landingAybakLeaveTimer =
+    null;
+
+let landingAybakTouchStartX =
+    null;
+
+let landingAybakTouchStartY =
+    null;
+
+let landingAybakWheelAccumulator =
+    0;
+
+let landingAybakWheelTimer =
+    null;
+
+const LANDING_AYBAK_WHEEL_THRESHOLD =
+    48;
+
+const LANDING_AYBAK_SWIPE_THRESHOLD =
+    52;
+
+const LANDING_AYBAK_FADE_DURATION =
+    420;
+
+const LANDING_AYBAK_PRELEAVE_HOLD =
+    120;
+
+const LANDING_AYBAK_MOBILE_HOLD =
+    520;
 
 function setLandingAybakLogoState(
     state
 ) {
+
     landingAybakLogoState =
         Math.max(
             0,
             Math.min(
-                LANDING_AYBAK_MAX_STATE,
+                5,
                 state
             )
         );
 
-    const nameChars =
-        landingAybakName.querySelectorAll(
-            ".landing-aybak-char"
-        );
-
-    const surnameChars =
-        landingAybakAybak.querySelectorAll(
-            ".landing-aybak-char"
-        );
-
-    nameChars.forEach(
-        (
-            character,
-            index
-        ) => {
-            character.textContent =
-                index === 0 &&
-                landingAybakLogoState >= 1
-                    ? "d"
-                    : LANDING_AYBAK_NAME_INITIAL[index];
-        }
+    landingAybakName.classList.toggle(
+        "is-lower",
+        landingAybakLogoState > 0
     );
 
-    surnameChars.forEach(
-        (
-            character,
-            index
-        ) => {
-            character.textContent =
-                index < landingAybakLogoState - 1
-                    ? LANDING_AYBAK_SURNAME_FINAL[index]
-                    : LANDING_AYBAK_SURNAME_INITIAL[index];
+    document.querySelectorAll(
+        ".landing-aybak-letter"
+    ).forEach(
+        (letter, index) => {
+            letter.classList.toggle(
+                "is-upper",
+                index < landingAybakLogoState
+            );
         }
     );
-}
-
-function stopLandingAybakLogoAnimation() {
-    if (
-        landingAybakLogoTimer !==
-        null
-    ) {
-        clearTimeout(
-            landingAybakLogoTimer
-        );
-
-        landingAybakLogoTimer =
-            null;
-    }
 }
 
 function animateLandingAybakLogoTo(
     target,
     callback = null
 ) {
+
     landingAybakLogoTarget =
-        Math.max(
-            0,
-            Math.min(
-                LANDING_AYBAK_MAX_STATE,
-                target
-            )
+        target;
+
+    if (
+        landingAybakLogoTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            landingAybakLogoTimer
         );
 
-    stopLandingAybakLogoAnimation();
+        landingAybakLogoTimer =
+            null;
+
+    }
 
     function step() {
+
         if (
             landingAybakLogoState ===
             landingAybakLogoTarget
         ) {
+
             landingAybakLogoTimer =
                 null;
 
@@ -7547,6 +7996,7 @@ function animateLandingAybakLogoTo(
                 typeof callback ===
                 "function"
             ) {
+
                 callback();
             }
 
@@ -7574,6 +8024,20 @@ function animateLandingAybakLogoTo(
 }
 
 function finishLandingAybakLeave() {
+
+    if (
+        landingAybakLeaveTimer !==
+        null
+    ) {
+
+        clearTimeout(
+            landingAybakLeaveTimer
+        );
+
+        landingAybakLeaveTimer =
+            null;
+    }
+
     document.body.classList.add(
         "landing-aybak-leaving"
     );
@@ -7582,42 +8046,50 @@ function finishLandingAybakLeave() {
         "landing-aybak-leaving"
     );
 
-    window.setTimeout(
-        () => {
-            landingAybakActive =
-                false;
+    landingAybakLeaveTimer =
+        setTimeout(
+            () => {
 
-            document.body.classList.remove(
-                "landing-aybak-active"
-            );
+                landingAybakLeaveTimer =
+                    null;
 
-            document.documentElement.classList.remove(
-                "landing-aybak-active"
-            );
+                landingAybakActive =
+                    false;
 
-            document.body.classList.remove(
-                "landing-aybak-leaving"
-            );
+                document.body.classList.remove(
+                    "landing-aybak-active"
+                );
 
-            document.documentElement.classList.remove(
-                "landing-aybak-leaving"
-            );
+                document.documentElement.classList.remove(
+                    "landing-aybak-active"
+                );
 
-            landingAybakEndCard.setAttribute(
-                "aria-hidden",
-                "true"
-            );
+                landingAybakEndCard.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
 
-            setLandingAybakLogoState(0);
-            stopLandingAybakLogoAnimation();
-        },
-        LANDING_AYBAK_FADE_DURATION
-    );
+                document.body.classList.remove(
+                    "landing-aybak-leaving"
+                );
+
+                document.documentElement.classList.remove(
+                    "landing-aybak-leaving"
+                );
+
+                /* Reset only after the black page is gone. */
+                setLandingAybakLogoState(0);
+
+                landingAybakLeaving =
+                    false;
+
+            },
+            LANDING_AYBAK_FADE_DURATION
+        );
 }
 
-function leaveLandingAybak(
-    prepareUppercase = true
-) {
+function leaveLandingAybak(prepareUppercase = true) {
+
     if (
         !landingAybakActive ||
         landingAybakLeaving
@@ -7630,41 +8102,46 @@ function leaveLandingAybak(
 
     if (
         prepareUppercase &&
-        landingAybakLogoState <
-        LANDING_AYBAK_MAX_STATE
+        landingAybakLogoState < 5
     ) {
+
         animateLandingAybakLogoTo(
-            LANDING_AYBAK_MAX_STATE,
+            5,
             () => {
-                window.setTimeout(
-                    finishLandingAybakLeave,
-                    canHover()
-                        ? LANDING_AYBAK_PRELEAVE_HOLD
-                        : LANDING_AYBAK_MOBILE_HOLD
-                );
+
+                landingAybakLeaveTimer =
+                    setTimeout(
+                        finishLandingAybakLeave,
+                        canHover()
+                            ? LANDING_AYBAK_PRELEAVE_HOLD
+                            : LANDING_AYBAK_MOBILE_HOLD
+                    );
+
             }
         );
 
         return;
     }
 
-    window.setTimeout(
-        finishLandingAybakLeave,
-        prepareUppercase
-            ? (
-                canHover()
+    landingAybakLeaveTimer =
+        setTimeout(
+            finishLandingAybakLeave,
+            prepareUppercase
+                ? (canHover()
                     ? LANDING_AYBAK_PRELEAVE_HOLD
-                    : LANDING_AYBAK_MOBILE_HOLD
-            )
-            : 0
-    );
+                    : LANDING_AYBAK_MOBILE_HOLD)
+                : 0
+        );
 }
 
 function setLandingAybakEndCard(
     active
 ) {
+
     const next =
-        Boolean(active);
+        Boolean(
+            active
+        );
 
     if (
         next ===
@@ -7673,7 +8150,9 @@ function setLandingAybakEndCard(
         return;
     }
 
-    if (!next) {
+    if (
+        !next
+    ) {
         leaveLandingAybak(false);
         return;
     }
@@ -7685,6 +8164,17 @@ function setLandingAybakEndCard(
     landingAybakLeaving =
         false;
 
+    if (
+        landingAybakLeaveTimer !==
+        null
+    ) {
+        clearTimeout(
+            landingAybakLeaveTimer
+        );
+        landingAybakLeaveTimer =
+            null;
+    }
+
     document.body.classList.remove(
         "landing-aybak-leaving"
     );
@@ -7693,7 +8183,6 @@ function setLandingAybakEndCard(
         "landing-aybak-leaving"
     );
 
-    stopLandingAybakLogoAnimation();
     setLandingAybakLogoState(0);
 
     landingAybakActive =
@@ -7713,9 +8202,11 @@ function setLandingAybakEndCard(
     );
 }
 
+/* Desktop: the end-card itself has the same uppercase hover gesture. */
 landingAybakLogo.addEventListener(
     "mouseenter",
     () => {
+
         if (
             !canHover() ||
             landingAybakLeaving
@@ -7723,15 +8214,14 @@ landingAybakLogo.addEventListener(
             return;
         }
 
-        animateLandingAybakLogoTo(
-            LANDING_AYBAK_MAX_STATE
-        );
+        animateLandingAybakLogoTo(5);
     }
 );
 
 landingAybakLogo.addEventListener(
     "mouseleave",
     () => {
+
         if (
             !canHover() ||
             landingAybakLeaving
@@ -7743,47 +8233,25 @@ landingAybakLogo.addEventListener(
     }
 );
 
+/* Clicking always allows the uppercase state to complete before white. */
 landingAybakLogo.addEventListener(
     "click",
     event => {
+
         event.preventDefault();
         event.stopPropagation();
 
-        if (
-            landingAybakLeaving
-        ) {
-            return;
-        }
-
-        /*
-            Mobile:
-            reach denizalp / AYBAK,
-            hold it briefly,
-            then return to the white landing page.
-        */
         leaveLandingAybak(true);
     }
 );
 
-setLandingAybakLogoState(0);
-
-
-/* =====================================================
-   AYBAK END CARD — ENTRY / EXIT GESTURES
-   ===================================================== */
-
-let landingAybakWheelAccumulator = 0;
-let landingAybakWheelTimer = null;
-let landingAybakTouchStartX = null;
-let landingAybakTouchStartY = null;
-
-const LANDING_AYBAK_WHEEL_THRESHOLD = 48;
-const LANDING_AYBAK_SWIPE_THRESHOLD = 52;
-
 window.addEventListener(
     "wheel",
     event => {
-        if (event.ctrlKey) {
+
+        if (
+            event.ctrlKey
+        ) {
             return;
         }
 
@@ -7815,50 +8283,48 @@ window.addEventListener(
         ) {
             event.preventDefault();
             landingAybakWheelAccumulator = 0;
-            setLandingAybakEndCard(true);
-            return;
+            setLandingAybakEndCard(
+                true
+            );
         }
-
-        if (
+        else if (
             landingAybakActive &&
             landingAybakWheelAccumulator <
                 -LANDING_AYBAK_WHEEL_THRESHOLD
         ) {
             event.preventDefault();
             landingAybakWheelAccumulator = 0;
-            setLandingAybakEndCard(false);
+            setLandingAybakEndCard(
+                false
+            );
         }
+
     },
     { passive: false }
 );
+
 
 window.addEventListener(
     "touchstart",
     event => {
         const touch =
             event.touches[0];
-
         landingAybakTouchStartX =
-            touch
-                ? touch.clientX
-                : null;
-
+            touch ? touch.clientX : null;
         landingAybakTouchStartY =
-            touch
-                ? touch.clientY
-                : null;
+            touch ? touch.clientY : null;
     },
     { passive: true }
 );
 
+
 window.addEventListener(
     "touchend",
     event => {
+
         if (
-            landingAybakTouchStartX ===
-                null ||
-            landingAybakTouchStartY ===
-                null
+            landingAybakTouchStartX === null ||
+            landingAybakTouchStartY === null
         ) {
             return;
         }
@@ -7866,17 +8332,16 @@ window.addEventListener(
         const touch =
             event.changedTouches[0];
 
-        if (!touch) {
-            landingAybakTouchStartX = null;
-            landingAybakTouchStartY = null;
+        if (
+            !touch
+        ) {
             return;
         }
 
-        const deltaX =
+        const dx =
             touch.clientX -
             landingAybakTouchStartX;
-
-        const deltaY =
+        const dy =
             touch.clientY -
             landingAybakTouchStartY;
 
@@ -7884,31 +8349,35 @@ window.addEventListener(
         landingAybakTouchStartY = null;
 
         if (
-            Math.abs(deltaY) <=
-                Math.abs(deltaX) ||
-            Math.abs(deltaY) <
-                LANDING_AYBAK_SWIPE_THRESHOLD
+            Math.abs(dy) <=
+            Math.abs(dx) ||
+            Math.abs(dy) <
+            LANDING_AYBAK_SWIPE_THRESHOLD
         ) {
             return;
         }
 
         if (
             !landingAybakActive &&
-            deltaY < 0
+            dy < 0
         ) {
-            setLandingAybakEndCard(true);
-            return;
+            setLandingAybakEndCard(
+                true
+            );
+        }
+        else if (
+            landingAybakActive &&
+            dy > 0
+        ) {
+            setLandingAybakEndCard(
+                false
+            );
         }
 
-        if (
-            landingAybakActive &&
-            deltaY > 0
-        ) {
-            setLandingAybakEndCard(false);
-        }
     },
     { passive: true }
 );
+
 
 window.addEventListener(
     "keydown",
@@ -7919,10 +8388,8 @@ window.addEventListener(
         ) {
             event.preventDefault();
             setLandingAybakEndCard(true);
-            return;
         }
-
-        if (
+        else if (
             landingAybakActive &&
             (
                 event.code === "ArrowUp" ||
@@ -7936,639 +8403,6 @@ window.addEventListener(
 );
 
 
-/* =====================================================
-   CENTRAL BIOGRAPHY — PUNCTUATION LINES + DYNAMIC WRAPPING
-   ===================================================== */
-
-const landingBiography =
-    document.getElementById("biography");
-
-const biographyFlow =
-    document.getElementById("landingBiography-flow");
-
-const BIO_SEGMENTS = [
-    "denizalp aybak (b. 1997) is a photographer and filmmaker,",
-    "based in istanbul and available internationally.",
-    "having graduated top of his class in management at sabanci university,",
-    "he brings a strategic approach to image-making,",
-    "considering both the work itself and the world it belongs to.",
-    "his work creates atmosphere through contrast:",
-    "light that feels dark,",
-    "beauty that appears distant,",
-    "stillness that carries tension,",
-    "and precision that emerges from spontaneity.",
-    "editorial collaborators include:"
-];
-
-const EDITORIAL_NAMES = [
-    "vogue türkiye,",
-    "harper’s bazaar türkiye,",
-    "elle türkiye,",
-    "l’officiel türkiye"
-];
-
-const BRAND_NAMES = [
-    "vakko,",
-    "bee goddess,",
-    "zeynep arcay,",
-    "peugeot,",
-    "skechers,",
-    "lc waikiki"
-];
-
-function makeMeasureContext() {
-    const canvas =
-        document.createElement("canvas");
-
-    const context =
-        canvas.getContext("2d");
-
-    return context;
-}
-
-function getBiographyFontString() {
-    const style =
-        window.getComputedStyle(
-            landingBiography
-        );
-
-    return [
-        style.fontStyle,
-        style.fontVariant,
-        style.fontWeight,
-        style.fontSize,
-        style.fontFamily
-    ].join(" ");
-}
-
-function measureBiographyText(
-    text,
-    context
-) {
-    context.font =
-        getBiographyFontString();
-
-    return context.measureText(
-        text
-    ).width;
-}
-
-function createWordTokens(
-    text
-) {
-    /*
-        Keep "sabanci university" together.
-        Other words, including image-making, remain intact;
-        CSS/JS never inserts hyphens.
-    */
-    const placeholder =
-        "__SABANCI_UNIVERSITY__";
-
-    const protectedText =
-        text.replace(
-            /sabanci[ \u00a0]+university/g,
-            placeholder
-        );
-
-    return protectedText
-        .trim()
-        .split(/\s+/)
-        .map(
-            token =>
-                token === placeholder
-                    ? "sabanci\u00a0university"
-                    : token
-        );
-}
-
-function balancedWrap(
-    text,
-    maxWidth,
-    context
-) {
-    const words =
-        createWordTokens(
-            text
-        );
-
-    if (
-        words.length === 0
-    ) {
-        return [];
-    }
-
-    const widthOf =
-        (
-            start,
-            end
-        ) =>
-            measureBiographyText(
-                words
-                    .slice(
-                        start,
-                        end
-                    )
-                    .join(" "),
-                context
-            );
-
-    if (
-        widthOf(
-            0,
-            words.length
-        ) <= maxWidth
-    ) {
-        return [text];
-    }
-
-    /*
-        Find the smallest number of visual lines that can contain
-        the text, then choose the most balanced partition for that
-        line count. One-word tail lines receive a strong penalty.
-    */
-    let minimumLines = 1;
-
-    while (
-        minimumLines <
-            words.length
-    ) {
-        const greedyLines = [];
-
-        let cursor = 0;
-
-        while (
-            cursor <
-            words.length
-        ) {
-            let end =
-                cursor + 1;
-
-            while (
-                end <=
-                    words.length &&
-                widthOf(
-                    cursor,
-                    end
-                ) <= maxWidth
-            ) {
-                end += 1;
-            }
-
-            const lastFit =
-                Math.max(
-                    cursor + 1,
-                    end - 1
-                );
-
-            greedyLines.push(
-                words.slice(
-                    cursor,
-                    lastFit
-                )
-            );
-
-            cursor =
-                lastFit;
-        }
-
-        if (
-            greedyLines.length <=
-            minimumLines
-        ) {
-            break;
-        }
-
-        minimumLines += 1;
-    }
-
-    const targetAverage =
-        widthOf(
-            0,
-            words.length
-        ) /
-        minimumLines;
-
-    const memo =
-        new Map();
-
-    function solve(
-        start,
-        linesLeft
-    ) {
-        const key =
-            `${start}:${linesLeft}`;
-
-        if (
-            memo.has(key)
-        ) {
-            return memo.get(key);
-        }
-
-        if (
-            linesLeft === 1
-        ) {
-            const lineWidth =
-                widthOf(
-                    start,
-                    words.length
-                );
-
-            if (
-                lineWidth >
-                maxWidth
-            ) {
-                return null;
-            }
-
-            const cost =
-                Math.pow(
-                    lineWidth -
-                        targetAverage,
-                    2
-                ) +
-                (
-                    words.length -
-                        start ===
-                    1
-                        ? 150000
-                        : 0
-                );
-
-            const result = {
-                cost,
-                lines: [
-                    words
-                        .slice(
-                            start
-                        )
-                        .join(" ")
-                ]
-            };
-
-            memo.set(
-                key,
-                result
-            );
-
-            return result;
-        }
-
-        let best =
-            null;
-
-        for (
-            let end =
-                start + 1;
-            end <=
-                words.length -
-                    (linesLeft - 1);
-            end += 1
-        ) {
-            const lineWidth =
-                widthOf(
-                    start,
-                    end
-                );
-
-            if (
-                lineWidth >
-                maxWidth
-            ) {
-                break;
-            }
-
-            const remaining =
-                solve(
-                    end,
-                    linesLeft - 1
-                );
-
-            if (
-                !remaining
-            ) {
-                continue;
-            }
-
-            const singleWordPenalty =
-                end -
-                    start ===
-                1
-                    ? 150000
-                    : 0;
-
-            const candidate = {
-                cost:
-                    Math.pow(
-                        lineWidth -
-                            targetAverage,
-                        2
-                    ) +
-                    singleWordPenalty +
-                    remaining.cost,
-                lines: [
-                    words
-                        .slice(
-                            start,
-                            end
-                        )
-                        .join(" "),
-                    ...remaining.lines
-                ]
-            };
-
-            if (
-                !best ||
-                candidate.cost <
-                    best.cost
-            ) {
-                best =
-                    candidate;
-            }
-        }
-
-        memo.set(
-            key,
-            best
-        );
-
-        return best;
-    }
-
-    let solved =
-        solve(
-            0,
-            minimumLines
-        );
-
-    if (!solved) {
-        solved = {
-            lines: [
-                words.join(" ")
-            ]
-        };
-    }
-
-    return solved.lines;
-}
-
-function alignmentClass(
-    lineIndex
-) {
-    const mod =
-        lineIndex %
-        3;
-
-    if (
-        mod === 0
-    ) {
-        return "bio-align-left";
-    }
-
-    if (
-        mod === 1
-    ) {
-        return "bio-align-right";
-    }
-
-    return "bio-align-center";
-}
-
-function appendBioLine(
-    text,
-    lineIndex
-) {
-    const line =
-        document.createElement("div");
-
-    line.className =
-        `bio-render-line ${alignmentClass(lineIndex)}`;
-
-    line.textContent =
-        text;
-
-    biographyFlow.appendChild(
-        line
-    );
-}
-
-function appendWrappedBioSegment(
-    text,
-    context,
-    lineIndex
-) {
-    const width =
-        landingBiography.clientWidth;
-
-    const lines =
-        balancedWrap(
-            text,
-            Math.max(
-                1,
-                width
-            ),
-            context
-        );
-
-    lines.forEach(
-        lineText => {
-            appendBioLine(
-                lineText,
-                lineIndex.value
-            );
-
-            lineIndex.value +=
-                1;
-        }
-    );
-}
-
-function appendCollaboratorGroup(
-    heading,
-    names,
-    context,
-    lineIndex
-) {
-    const headingElement =
-        document.createElement(
-            "div"
-        );
-
-    headingElement.className =
-        `bio-collab-heading ${alignmentClass(lineIndex.value)}`;
-
-    headingElement.textContent =
-        heading;
-
-    biographyFlow.appendChild(
-        headingElement
-    );
-
-    lineIndex.value +=
-        1;
-
-    const maxWidth =
-        landingBiography.clientWidth;
-
-    const fullText =
-        names.join(" ");
-
-    const fullWidth =
-        measureBiographyText(
-            fullText,
-            context
-        );
-
-    const rows =
-        fullWidth <=
-        maxWidth
-            ? [names]
-            : names.length === 4
-                ? [
-                    names.slice(
-                        0,
-                        2
-                    ),
-                    names.slice(
-                        2
-                    )
-                ]
-                : [
-                    names.slice(
-                        0,
-                        3
-                    ),
-                    names.slice(
-                        3
-                    )
-                ];
-
-    rows.forEach(
-        rowNames => {
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-            row.className =
-                `bio-collab-row ${alignmentClass(lineIndex.value)}`;
-
-            rowNames.forEach(
-                name => {
-                    const nameSpan =
-                        document.createElement(
-                            "span"
-                        );
-
-                    nameSpan.className =
-                        "bio-name";
-
-                    nameSpan.textContent =
-                        name;
-
-                    row.appendChild(
-                        nameSpan
-                    );
-                }
-            );
-
-            biographyFlow.appendChild(
-                row
-            );
-
-            lineIndex.value +=
-                1;
-        }
-    );
-}
-
-function layoutBiography() {
-    if (
-        !biographyFlow ||
-        !landingBiography
-    ) {
-        return;
-    }
-
-    biographyFlow.replaceChildren();
-
-    const context =
-        makeMeasureContext();
-
-    const lineIndex = {
-        value: 0
-    };
-
-    BIO_SEGMENTS.slice(
-        0,
-        10
-    ).forEach(
-        segment => {
-            appendWrappedBioSegment(
-                segment,
-                context,
-                lineIndex
-            );
-        }
-    );
-
-    appendCollaboratorGroup(
-        BIO_SEGMENTS[10],
-        EDITORIAL_NAMES,
-        context,
-        lineIndex
-    );
-
-    appendCollaboratorGroup(
-        "brand collaborators include:",
-        BRAND_NAMES,
-        context,
-        lineIndex
-    );
-}
-
-let biographyLayoutTimer =
-    null;
-
-function scheduleBiographyLayout() {
-    if (
-        biographyLayoutTimer !==
-        null
-    ) {
-        cancelAnimationFrame(
-            biographyLayoutTimer
-        );
-    }
-
-    biographyLayoutTimer =
-        requestAnimationFrame(
-            () => {
-                biographyLayoutTimer =
-                    null;
-
-                layoutBiography();
-            }
-        );
-}
-
-function initializeBiographyLayout() {
-    if (
-        document.fonts &&
-        document.fonts.ready
-    ) {
-        document.fonts.ready.then(
-            scheduleBiographyLayout
-        );
-    }
-
-    scheduleBiographyLayout();
-}
-
-initializeBiographyLayout();
-
-window.addEventListener(
-    "resize",
-    scheduleBiographyLayout
-);
 
 /* =====================================================
    SCOPED INTERACTION CANCEL
@@ -8912,6 +8746,15 @@ window.addEventListener(
         once: true
     }
 );
+
+
+
+window.addEventListener("resize", () => {
+    clearTimeout(window.__bioFlowResizeTimer);
+    window.__bioFlowResizeTimer = setTimeout(() => {
+        buildBiographyFlow();
+    }, 80);
+});
 
 </script>
 </body>
