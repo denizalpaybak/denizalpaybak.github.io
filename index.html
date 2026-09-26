@@ -2484,7 +2484,7 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     position: fixed !important;
     z-index: 5 !important;
     left: 50% !important;
-    top: 50vh !important;
+    top: calc(50vh - 10px) !important;
     transform: translate(-50%, -50%) !important;
 
     width: min(680px, 78vw) !important;
@@ -2664,12 +2664,14 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 @media (max-width: 600px) and (orientation: portrait) {
     .biography {
         width: min(90vw, 430px) !important;
+        top: calc(50vh - 26px) !important;
     }
 }
 
 @media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
     .biography {
         width: min(84vw, 620px) !important;
+        top: calc(50vh - 16px) !important;
     }
 }
 
@@ -2677,6 +2679,34 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     .biography {
         width: min(680px, 66vw) !important;
     }
+}
+</style>
+
+<style id="final-aybak-corner-labels">
+/* =====================================================
+   CORNER LABELS STAY VISIBLE ON THE BLACK AYBAK SCREEN
+   ===================================================== */
+
+/* Sit above the opaque end-card so the four corner labels
+   remain visible instead of being covered by it. */
+.navigation,
+.contact,
+.portfolio-download {
+    z-index: 10001 !important;
+}
+
+/* White while the black screen is fully shown; the moment the
+   leaving transition starts (page is turning back to white),
+   drop back to black so both crossfade together. */
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
+    color: #fff !important;
+}
+
+.contact a,
+.portfolio-download a {
+    transition: color 400ms cubic-bezier(.22,.61,.36,1);
 }
 </style>
 
@@ -2852,12 +2882,12 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 
     <p class="bio-line collaborator-line">
         <span class="collaborator-heading">editorial collaborators:</span>
-        vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
+        <span class="keep">vogue türkiye,</span> <span class="keep">harper’s bazaar türkiye,</span> <span class="keep">elle türkiye,</span> <span class="keep">l’officiel türkiye</span>
     </p>
 
     <p class="bio-line collaborator-line">
         <span class="collaborator-heading">brand collaborators:</span>
-        vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
+        <span class="keep">vakko,</span> <span class="keep">bee goddess,</span> <span class="keep">zeynep arcay,</span> <span class="keep">peugeot,</span> <span class="keep">skechers,</span> <span class="keep">lc waikiki</span>
     </p>
 </section>
 
@@ -9470,7 +9500,12 @@ window.addEventListener(
 
 
 <script id="final-bio-identity-morph">
-/* Same stepped morph as the black AYBAK end-card. */
+/*
+    The middle "Denizalp aybak" / "denizalp AYBAK" morph is now fully
+    automatic: it is never triggered by hover or click. It loops forever,
+    holding briefly at each finished state (all-lowercase, all-uppercase)
+    before stepping to the next one.
+*/
 (() => {
     const identity = document.getElementById("bio-identity");
     if (!identity) return;
@@ -9480,14 +9515,13 @@ window.addEventListener(
     if (!name || !aybak) return;
 
     const STEP = 80;
-    const MOBILE_HOLD = 900;
+    const HOLD_LOWERCASE = 1700;
+    const HOLD_UPPERCASE = 900;
+
     let state = 0;
     let target = 0;
-    let timer = null;
-    let restoreTimer = null;
-
-    const canHover = () =>
-        window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    let stepTimer = null;
+    let holdTimer = null;
 
     function render(next) {
         state = Math.max(0, Math.min(5, next));
@@ -9497,58 +9531,38 @@ window.addEventListener(
         aybak.textContent = lower.map((letter, i) => i < state ? upper[i] : letter).join("");
     }
 
-    function animateTo(next, done = null) {
+    function animateTo(next, done) {
         target = next;
-        if (timer !== null) {
-            clearTimeout(timer);
-            timer = null;
+        if (stepTimer !== null) {
+            clearTimeout(stepTimer);
+            stepTimer = null;
         }
 
         function step() {
             if (state === target) {
-                timer = null;
+                stepTimer = null;
                 if (typeof done === "function") done();
                 return;
             }
             state += state < target ? 1 : -1;
             render(state);
-            timer = window.setTimeout(step, STEP);
+            stepTimer = window.setTimeout(step, STEP);
         }
         step();
     }
 
-    identity.addEventListener("mouseenter", () => {
-        if (!canHover()) return;
-        animateTo(5);
-    });
-
-    identity.addEventListener("mouseleave", () => {
-        if (!canHover()) return;
-        animateTo(0);
-    });
-
-    function mobileActivate(event) {
-        if (canHover()) return;
-        event.preventDefault();
-        if (restoreTimer !== null) {
-            clearTimeout(restoreTimer);
-            restoreTimer = null;
-        }
+    function cycle() {
         animateTo(5, () => {
-            restoreTimer = window.setTimeout(() => {
-                restoreTimer = null;
-                animateTo(0);
-            }, MOBILE_HOLD);
+            holdTimer = window.setTimeout(() => {
+                animateTo(0, () => {
+                    holdTimer = window.setTimeout(cycle, HOLD_LOWERCASE);
+                });
+            }, HOLD_UPPERCASE);
         });
     }
 
-    identity.addEventListener("click", mobileActivate);
-    identity.addEventListener("keydown", event => {
-        if (event.key !== "Enter" && event.key !== " ") return;
-        mobileActivate(event);
-    });
-
     render(0);
+    holdTimer = window.setTimeout(cycle, HOLD_LOWERCASE);
 })();
 </script>
 
