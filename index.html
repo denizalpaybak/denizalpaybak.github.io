@@ -2339,6 +2339,139 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 }
 </style>
 
+
+<style id="final-clean-centered-bio-footer">
+/* Definitive landing typography/footer layout */
+.biography {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(760px, 78vw) !important;
+    max-width: calc(100vw - 40px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    text-transform: none !important;
+    text-wrap: wrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+.bio-primary,
+.bio-collaborators {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+.bio-primary p,
+.collaborator-group,
+.collaborator-heading,
+.collaborator-list {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    text-wrap: wrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
+
+.bio-primary p {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.bio-primary p + p {
+    margin-top: var(--major-gap) !important;
+}
+
+.bio-collaborators {
+    margin-top: var(--major-gap) !important;
+}
+
+.collaborator-group + .collaborator-group {
+    margin-top: var(--major-gap) !important;
+}
+
+/* The identity itself uses the same stepped case morph as the black AYBAK screen. */
+.bio-identity {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    white-space: nowrap !important;
+    vertical-align: baseline !important;
+    cursor: pointer !important;
+}
+
+.bio-identity-name,
+.bio-identity-aybak {
+    display: inline !important;
+    white-space: nowrap !important;
+}
+
+/* Footer: left = models.com / portfolio.pdf; right = email / Instagram. */
+.contact a:nth-child(1) {
+    left: auto !important;
+    right: var(--page-x) !important;
+    bottom: calc(var(--font-size) * var(--line-height)) !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(2) {
+    left: auto !important;
+    right: var(--page-x) !important;
+    bottom: 0 !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(3) {
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: calc(var(--font-size) * var(--line-height)) !important;
+    text-align: left !important;
+}
+
+.portfolio-download {
+    position: fixed !important;
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: 0 !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.portfolio-download a {
+    display: inline-block !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography {
+        width: 88vw !important;
+        max-width: 88vw !important;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography {
+        width: 82vw !important;
+        max-width: 82vw !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -9145,7 +9278,7 @@ window.addEventListener(
 
 
 <script id="final-bio-identity-morph">
-/* Center-copy identity: initial "Denizalp aybak" -> hover/tap "denizalp AYBAK". */
+/* Same stepped morph as the black AYBAK end-card. */
 (() => {
     const identity = document.getElementById("bio-identity");
     if (!identity) return;
@@ -9154,55 +9287,76 @@ window.addEventListener(
     const aybak = identity.querySelector(".bio-identity-aybak");
     if (!name || !aybak) return;
 
+    const STEP = 80;
+    const MOBILE_HOLD = 900;
+    let state = 0;
+    let target = 0;
     let timer = null;
-    let active = false;
+    let restoreTimer = null;
 
-    const canHover = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const canHover = () =>
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-    const setState = (alternate) => {
-        active = alternate;
-        name.textContent = alternate ? "denizalp" : "Denizalp";
-        aybak.textContent = alternate ? "AYBAK" : "aybak";
-    };
+    function render(next) {
+        state = Math.max(0, Math.min(5, next));
+        name.textContent = state === 0 ? "Denizalp" : "denizalp";
+        const lower = ["a", "y", "b", "a", "k"];
+        const upper = ["A", "Y", "B", "A", "K"];
+        aybak.textContent = lower.map((letter, i) => i < state ? upper[i] : letter).join("");
+    }
 
-    const showAlternate = () => {
+    function animateTo(next, done = null) {
+        target = next;
         if (timer !== null) {
             clearTimeout(timer);
             timer = null;
         }
-        setState(true);
-    };
 
-    const restore = () => {
-        if (timer !== null) {
-            clearTimeout(timer);
-            timer = null;
+        function step() {
+            if (state === target) {
+                timer = null;
+                if (typeof done === "function") done();
+                return;
+            }
+            state += state < target ? 1 : -1;
+            render(state);
+            timer = window.setTimeout(step, STEP);
         }
-        setState(false);
-    };
+        step();
+    }
 
     identity.addEventListener("mouseenter", () => {
-        if (canHover()) showAlternate();
+        if (!canHover()) return;
+        animateTo(5);
     });
 
     identity.addEventListener("mouseleave", () => {
-        if (canHover()) restore();
+        if (!canHover()) return;
+        animateTo(0);
     });
 
-    identity.addEventListener("click", (event) => {
+    function mobileActivate(event) {
         if (canHover()) return;
         event.preventDefault();
-        showAlternate();
-        timer = window.setTimeout(restore, 900);
-    });
+        if (restoreTimer !== null) {
+            clearTimeout(restoreTimer);
+            restoreTimer = null;
+        }
+        animateTo(5, () => {
+            restoreTimer = window.setTimeout(() => {
+                restoreTimer = null;
+                animateTo(0);
+            }, MOBILE_HOLD);
+        });
+    }
 
-    identity.addEventListener("keydown", (event) => {
+    identity.addEventListener("click", mobileActivate);
+    identity.addEventListener("keydown", event => {
         if (event.key !== "Enter" && event.key !== " ") return;
-        event.preventDefault();
-        if (canHover()) return;
-        showAlternate();
-        timer = window.setTimeout(restore, 900);
+        mobileActivate(event);
     });
+
+    render(0);
 })();
 </script>
 
