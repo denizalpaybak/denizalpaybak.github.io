@@ -2008,81 +2008,567 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
 }
 </style>
 
-<style id="landing-index-final-balance-stack-fix">
-    /* =====================================================
-       FINAL INDEX BALANCE + STACKING
-       ===================================================== */
+<style id="landing-index-recovery-final">
+/* =====================================================
+   RECOVERY FINAL — INDEX GEOMETRY + STACKING
+   This is the only final override layer. The existing JS
+   and data/preview logic from the stable backup are kept.
+   ===================================================== */
 
-    /* The entire text table sits above the media preview.
-       The preview remains visually behind the table, while the
-       difference layer inside the table can still react to it. */
-    #landing-index-scroll {
-        position: relative !important;
-        z-index: 30 !important;
+/* ---- DESKTOP GEOMETRY ---- */
+#landing-index-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: calc(var(--page-top) + 32px) var(--page-x) var(--page-bottom) !important;
+}
+
+#landing-index-view .landing-index-scroll {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.landing-index-grid {
+    --landing-index-columns:
+        max-content
+        max-content
+        minmax(150px, 1fr)
+        minmax(130px, 1fr) !important;
+
+    width: min(
+        980px,
+        calc(
+            100vw -
+            2 * var(--landing-index-side-space, var(--page-x))
+        )
+    ) !important;
+
+    max-width: 980px !important;
+    margin: 0 auto !important;
+    column-gap: 28px !important;
+    row-gap: 0 !important;
+}
+
+.landing-index-header,
+.landing-index-row {
+    grid-template-columns: var(--landing-index-columns) !important;
+    column-gap: inherit !important;
+}
+
+/* One text-line breathing space between filters and first project. */
+.landing-index-header {
+    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+}
+
+/* TITLE + DATE sit close; FIELD + USE occupy the right half. */
+.landing-index-header-cell:nth-child(1),
+.landing-index-row > .landing-index-cell:nth-child(1),
+.landing-index-header-cell:nth-child(2),
+.landing-index-row > .landing-index-cell:nth-child(2) {
+    text-align: left !important;
+}
+
+.landing-index-header-cell:nth-child(3),
+.landing-index-row > .landing-index-cell:nth-child(3),
+.landing-index-header-cell:nth-child(4),
+.landing-index-row > .landing-index-cell:nth-child(4) {
+    text-align: right !important;
+}
+
+/* ---- CRITICAL STACKING ----
+   base rows < preview < header + hovered row
+*/
+.landing-index-grid {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.landing-index-header {
+    position: relative !important;
+    z-index: 30 !important;
+}
+
+.landing-index-header-cell {
+    position: relative !important;
+    z-index: 31 !important;
+}
+
+.landing-index-row {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.landing-index-row .landing-index-cell {
+    position: relative !important;
+    z-index: 6 !important;
+    mix-blend-mode: normal !important;
+}
+
+.landing-index-row:hover,
+.landing-index-row.is-focus {
+    position: relative !important;
+    z-index: 30 !important;
+}
+
+.landing-index-row:hover .landing-index-cell,
+.landing-index-row.is-focus .landing-index-cell {
+    z-index: 31 !important;
+    mix-blend-mode: normal !important;
+}
+
+/* Preview is deliberately between normal rows and active/header text. */
+#landing-index-preview {
+    z-index: 20 !important;
+}
+
+/* Existing difference text is the ONLY blending layer. */
+.landing-index-text {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    color: #000 !important;
+    mix-blend-mode: normal !important;
+}
+
+.landing-index-difference-text {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 2 !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    color: #fff !important;
+    background: transparent !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    white-space: nowrap !important;
+    mix-blend-mode: difference !important;
+    pointer-events: none !important;
+    clip-path: inset(0 100% 0 0) !important;
+    -webkit-clip-path: inset(0 100% 0 0) !important;
+}
+
+/* The active row itself must NOT blend as a whole. */
+.landing-index-row:hover .landing-index-cell,
+.landing-index-row.is-focus .landing-index-cell {
+    mix-blend-mode: normal !important;
+}
+
+/* ---- INFO ---- */
+#biography .bio-paragraph-gap {
+    margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+}
+
+/* ---- MOBILE / TABLET ---- */
+@media (max-width: 1000px) {
+    .landing-index-grid {
+        width: min(
+            920px,
+            calc(
+                100vw -
+                2 * var(--landing-index-side-space, var(--page-x))
+            )
+        ) !important;
+        column-gap: 18px !important;
     }
+}
 
+/* Portrait: USE disappears first. */
+@media (max-width: 1000px) and (orientation: portrait) {
+    body.landing-index-hide-use .landing-index-grid,
+    .landing-index-grid {
+        --landing-index-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr) !important;
+    }
+}
+
+body.landing-index-hide-use .landing-index-grid {
+    --landing-index-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr) !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+    display: none !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
+    text-align: left !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
+    text-align: center !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
+    text-align: right !important;
+}
+
+@media (max-width: 700px) {
+    .landing-index-grid {
+        column-gap: 14px !important;
+    }
     #landing-index-preview {
-        z-index: 5 !important;
+        width: 86vw !important;
+        height: 56vh !important;
+    }
+    #landing-index-preview.is-film video {
+        width: 86vw !important;
+        max-width: 86vw !important;
+        max-height: 58vh !important;
+    }
+}
+
+@media (max-width: 450px) {
+    .landing-index-grid {
+        column-gap: 10px !important;
+    }
+    #landing-index-preview {
+        width: 92vw !important;
+        height: 52vh !important;
+    }
+    #landing-index-preview.is-film video {
+        width: 92vw !important;
+        max-width: 92vw !important;
+    }
+}
+</style>
+
+<style id="landing-index-authoritative-final">
+/* =====================================================
+   AUTHORITATIVE INDEX SYSTEM
+   One geometry, one stacking model, one text composite.
+   ===================================================== */
+
+#landing-index-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: var(--page-top) var(--page-x) var(--page-bottom) !important;
+    overflow: hidden !important;
+}
+
+#landing-index-view .landing-index-scroll {
+    position: relative !important;
+    z-index: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+.landing-index-grid {
+    --landing-index-columns:
+        max-content
+        max-content
+        minmax(180px, 1fr)
+        minmax(140px, 1fr);
+
+    position: relative !important;
+    z-index: auto !important;
+    display: grid !important;
+    grid-template-columns: var(--landing-index-columns) !important;
+    width: min(1040px, calc(100vw - (2 * var(--landing-index-side-space, var(--page-x))))) !important;
+    max-width: 1040px !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    column-gap: 20px !important;
+    row-gap: 0 !important;
+    align-items: baseline !important;
+}
+
+.landing-index-header,
+.landing-index-row {
+    display: grid !important;
+    grid-template-columns: var(--landing-index-columns) !important;
+    grid-column: 1 / -1 !important;
+    column-gap: inherit !important;
+    align-items: baseline !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+.landing-index-header {
+    position: relative !important;
+    z-index: 40 !important;
+    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+}
+
+.landing-index-row {
+    position: relative !important;
+    z-index: 1 !important;
+    min-height: calc(var(--font-size) * var(--line-height)) !important;
+}
+
+.landing-index-row.is-focus,
+.landing-index-row:hover {
+    z-index: 40 !important;
+}
+
+.landing-index-header-cell,
+.landing-index-cell {
+    position: relative !important;
+    z-index: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    font-size: var(--font-size) !important;
+    line-height: var(--line-height) !important;
+    font-weight: 400 !important;
+}
+
+.landing-index-header-cell {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    color: #000 !important;
+    font: inherit !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.landing-index-header-cell:nth-child(3),
+.landing-index-header-cell:nth-child(4),
+.landing-index-row > .landing-index-cell:nth-child(3),
+.landing-index-row > .landing-index-cell:nth-child(4) {
+    text-align: right !important;
+}
+
+.landing-index-row > .landing-index-cell:nth-child(1),
+.landing-index-row > .landing-index-cell:nth-child(2) {
+    text-align: left !important;
+}
+
+.landing-index-row .landing-index-cell {
+    mix-blend-mode: normal !important;
+}
+
+/* Hide the legacy per-cell difference layer completely. */
+.landing-index-difference-text {
+    display: none !important;
+}
+
+/* Source text used by the composite overlay. */
+.landing-index-text {
+    position: relative !important;
+    z-index: auto !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    pointer-events: none !important;
+    color: #000 !important;
+}
+
+.landing-index-text.is-composite-hidden,
+.landing-index-header-cell span.is-composite-hidden {
+    visibility: hidden !important;
+}
+
+/* =====================================================
+   PREVIEW STAGE
+   ===================================================== */
+
+#landing-index-preview-stage {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 20 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
+#landing-index-preview-stage.visible {
+    visibility: visible !important;
+}
+
+#landing-index-preview {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: min(62vw, 980px) !important;
+    height: min(58vh, 680px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: none !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+}
+
+#landing-index-preview img,
+#landing-index-preview video {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+#landing-index-preview.is-film video {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+}
+
+#landing-index-preview-stage:not(.visible) #landing-index-preview {
+    visibility: hidden !important;
+}
+
+/* All active/header text is rendered here so difference blends directly
+   against the preview image/video inside the SAME stacking context. */
+#landing-index-composite-layer {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 30 !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+}
+
+.landing-index-composite-text {
+    position: absolute !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.landing-index-composite-text.diff {
+    color: #fff !important;
+    mix-blend-mode: difference !important;
+    z-index: 3 !important;
+}
+
+.landing-index-composite-text.outside {
+    z-index: 2 !important;
+    mix-blend-mode: normal !important;
+}
+
+/* =====================================================
+   MOBILE / TABLET
+   ===================================================== */
+
+@media (max-width: 1100px) {
+    .landing-index-grid {
+        width: calc(100vw - (2 * var(--landing-index-side-space, var(--page-x)))) !important;
+        max-width: none !important;
+        column-gap: 16px !important;
+    }
+}
+
+@media (max-width: 1100px) and (orientation: portrait) {
+    .landing-index-grid,
+    body.landing-index-hide-use .landing-index-grid {
+        --landing-index-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr) !important;
+        column-gap: 12px !important;
+    }
+}
+
+body.landing-index-hide-use .landing-index-grid {
+    --landing-index-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr) !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+    display: none !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
+    text-align: left !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
+    text-align: center !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
+    text-align: right !important;
+}
+
+@media (max-width: 700px) {
+    #landing-index-preview {
+        width: 92vw !important;
+        height: 56vh !important;
     }
 
-    /* Desktop: natural column widths keep TITLE / DATE close,
-       while the whole index remains compact and centered. */
-    @media (min-width: 1101px) {
-        .landing-index-scroll {
-            width: min(820px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
-            max-width: 820px !important;
-        }
+    #landing-index-preview.is-film video {
+        width: 92vw !important;
+        max-width: 92vw !important;
+        height: 56vh !important;
+        max-height: 56vh !important;
+    }
+}
 
-        .landing-index-grid {
-            grid-template-columns: max-content max-content max-content max-content !important;
-            justify-content: center !important;
-            column-gap: clamp(30px, 2.2vw, 44px) !important;
-        }
-
-        .landing-index-header-cell,
-        .landing-index-cell {
-            justify-self: stretch !important;
-        }
-
-        .landing-index-header-cell:nth-child(1),
-        .landing-index-row > .landing-index-cell:nth-child(1),
-        .landing-index-header-cell:nth-child(2),
-        .landing-index-row > .landing-index-cell:nth-child(2) {
-            text-align: left !important;
-        }
-
-        .landing-index-header-cell:nth-child(3),
-        .landing-index-row > .landing-index-cell:nth-child(3),
-        .landing-index-header-cell:nth-child(4),
-        .landing-index-row > .landing-index-cell:nth-child(4) {
-            text-align: right !important;
-        }
+@media (max-width: 450px) {
+    #landing-index-preview {
+        width: 96vw !important;
+        height: 52vh !important;
     }
 
-    /* When USE is removed, the remaining three columns should truly
-       occupy the available line as left / center / right, without a
-       phantom fourth-column gap. */
-    @media (max-width: 1100px) {
-        body.landing-index-hide-use .landing-index-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) !important;
-            column-gap: clamp(12px, 2.4vw, 24px) !important;
-        }
-
-        body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
-        body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
-            text-align: left !important;
-        }
-
-        body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
-        body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
-            text-align: center !important;
-        }
-
-        body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
-        body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
-            text-align: right !important;
-        }
+    #landing-index-preview.is-film video {
+        width: 96vw !important;
+        max-width: 96vw !important;
+        height: 52vh !important;
+        max-height: 52vh !important;
     }
+}
 </style>
 
 </head>
@@ -9402,6 +9888,11 @@ window.addEventListener("resize", () => {
         transition: none;
     }
 
+    .landing-index-row:hover .landing-index-cell,
+    .landing-index-row.is-focus .landing-index-cell {
+        mix-blend-mode: difference;
+    }
+
     .landing-index-row > .landing-index-cell:last-child {
         text-align: right;
     }
@@ -9462,13 +9953,10 @@ window.addEventListener("resize", () => {
     }
 
     #landing-index-preview.is-film video {
-        display: block;
-        width: auto;
+        width: 100%;
         height: auto;
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain;
-        object-position: center center;
     }
 
     .landing-index-empty {
@@ -9505,13 +9993,8 @@ window.addEventListener("resize", () => {
         }
 
         #landing-index-preview {
-            width: 78vw;
-            height: 50vh;
-        }
-
-        #landing-index-preview.is-film {
-            width: 92vw;
-            height: 44vh;
+            width: 76vw;
+            height: 46vh;
         }
     }
 
@@ -9526,12 +10009,7 @@ window.addEventListener("resize", () => {
         }
 
         #landing-index-preview {
-            width: 72vw;
-            height: 44vh;
-        }
-
-        #landing-index-preview.is-film {
-            width: 92vw;
+            width: 70vw;
             height: 42vh;
         }
     }
@@ -9556,12 +10034,12 @@ window.addEventListener("resize", () => {
     }
 
     /*
-       Desktop: keep the index intentionally compact and centered.
-       The side allowance is derived from the longest corner label.
-       Mobile/tablet: use the available safe width.
+       The list is centered as a whole. On desktop its horizontal
+       breathing room follows the width of the longest bottom-corner
+       label, while the actual list keeps the full remaining width.
+       This prevents the index from becoming artificially narrow.
     */
     #landing-index-view {
-        z-index: auto !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -9570,8 +10048,8 @@ window.addEventListener("resize", () => {
     }
 
     .landing-index-scroll {
-        width: min(1120px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
-        max-width: 1120px !important;
+        width: calc(100% - (2 * var(--landing-index-side-space))) !important;
+        max-width: none !important;
         height: auto !important;
         max-height: calc(100dvh - (2 * var(--page-top))) !important;
         margin: 0 auto !important;
@@ -9585,11 +10063,11 @@ window.addEventListener("resize", () => {
         margin: 0 !important;
         justify-content: stretch !important;
         grid-template-columns:
-            minmax(0, 1.55fr)
-            minmax(0, 0.85fr)
+            minmax(0, 2.25fr)
+            minmax(0, 1.05fr)
             minmax(0, 0.95fr)
-            minmax(0, 0.75fr) !important;
-        column-gap: clamp(14px, 1.2vw, 22px) !important;
+            minmax(0, 0.95fr) !important;
+        column-gap: clamp(22px, 3.2vw, 64px) !important;
         row-gap: 0 !important;
     }
 
@@ -9600,14 +10078,12 @@ window.addEventListener("resize", () => {
         justify-content: stretch !important;
     }
 
-    /* One blank text line between filters and first project. */
+    /* One blank text line between the filters and the first project. */
     .landing-index-header {
         margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
-        position: relative !important;
-        z-index: 70 !important;
     }
 
-    /* Never wrap project metadata onto a second line. */
+    /* Never let a project name wrap to a second line. */
     .landing-index-cell,
     .landing-index-header-cell {
         white-space: nowrap !important;
@@ -9616,27 +10092,12 @@ window.addEventListener("resize", () => {
         hyphens: none !important;
     }
 
-    /* Desktop: left pair flush-left, right pair flush-right. */
-    .landing-index-header-cell:nth-child(1),
-    .landing-index-header-cell:nth-child(2),
-    .landing-index-row > .landing-index-cell:nth-child(1),
-    .landing-index-row > .landing-index-cell:nth-child(2) {
-        text-align: left !important;
-    }
-
-    .landing-index-header-cell:nth-child(3),
-    .landing-index-header-cell:nth-child(4),
-    .landing-index-row > .landing-index-cell:nth-child(3),
-    .landing-index-row > .landing-index-cell:nth-child(4) {
-        text-align: right !important;
-    }
-
-    /* Real column removal: USE disappears instead of wrapping. */
+    /* Real column removal: USE disappears rather than wrapping. */
     body.landing-index-hide-use .landing-index-grid {
         grid-template-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr) !important;
+            minmax(0, 2.25fr)
+            minmax(0, 1.05fr)
+            minmax(0, 0.95fr) !important;
     }
 
     body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
@@ -9644,89 +10105,40 @@ window.addEventListener("resize", () => {
         display: none !important;
     }
 
-    /* Phone / tablet 3-column alignment: left / center / right. */
-    body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
-    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
-        text-align: left !important;
+    /* Short field label on small / tablet viewports. */
+    @media (max-width: 1100px) {
+        .landing-index-grid {
+            column-gap: clamp(14px, 2.6vw, 30px) !important;
+        }
+
+        .landing-index-scroll {
+            width: calc(100% - (2 * var(--page-x))) !important;
+        }
     }
 
-    body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
-    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
-        text-align: center !important;
+    @media (max-width: 1100px) and (orientation: portrait) {
+        .landing-index-grid {
+            column-gap: clamp(10px, 2.8vw, 22px) !important;
+        }
     }
 
-    body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
-    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
-        text-align: right !important;
+    /* Two-line paragraph gaps on INFO. */
+    body.landing-info-mode .bio-paragraph-gap,
+    body.landing-info-mode .biography .bio-paragraph-gap {
+        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
     }
 
     /* =====================================================
-       PREVIEW STACKING
-
-       The preview is BELOW ALL INDEX TEXT.
-       Intersection visibility is then controlled by masks.
+       TEXT / PREVIEW NEGATIVE INTERSECTION
        ===================================================== */
-
-    /* Normal rows sit behind the preview. Only the header and hovered row
-       are promoted above it. */
-    .landing-index-row {
-        position: relative !important;
-        z-index: 1 !important;
-    }
-
-    .landing-index-header {
-        position: relative !important;
-        z-index: 30 !important;
-    }
-
-    .landing-index-row.is-focus {
-        z-index: 30 !important;
-    }
 
     .landing-index-cell {
-        z-index: auto !important;
-    }
-
-    .landing-index-header-cell {
-        z-index: auto !important;
-    }
-
-    #landing-index-preview {
-        z-index: 10 !important;
-        left: var(--landing-index-preview-center-x, 50%);
-        top: var(--landing-index-preview-top, 50%);
-        width: var(--landing-index-preview-width, min(32vw, 560px));
-        height: var(--landing-index-preview-height, min(62vh, 620px));
-    }
-
-    #landing-index-preview.is-film {
-        width: var(--landing-index-preview-width, min(52vw, 820px));
-        height: var(--landing-index-preview-height, min(52vh, 560px));
-    }
-
-    #landing-index-preview.is-film video {
-        width: 100% !important;
-        height: 100% !important;
-        max-width: none !important;
-        max-height: none !important;
-        object-fit: contain !important;
-    }
-
-    /* =====================================================
-       TEXT / TRUE IMAGE-NEGATIVE INTERSECTION
-
-       Base black text is masked OUT where it intersects the preview.
-       A white duplicate exists ONLY inside that intersection and uses
-       mix-blend-mode:difference, which produces the actual negative of
-       the underlying image/video:
-
-           white preview -> black text
-           black preview  -> white text
-       ===================================================== */
-
-    .landing-index-cell,
-    .landing-index-header-cell {
         position: relative !important;
+        mix-blend-mode: normal !important;
+    }
+
+    .landing-index-row:hover .landing-index-cell,
+    .landing-index-row.is-focus .landing-index-cell {
         mix-blend-mode: normal !important;
     }
 
@@ -9737,8 +10149,6 @@ window.addEventListener("resize", () => {
         width: max-content;
         max-width: none;
         pointer-events: none;
-        -webkit-mask-image: none;
-        mask-image: none;
     }
 
     .landing-index-difference-text {
@@ -9752,57 +10162,19 @@ window.addEventListener("resize", () => {
         display: block;
         width: max-content;
         max-width: none;
-        color: #fff !important;
+        color: #fff;
         font-size: inherit;
         line-height: inherit;
         pointer-events: none;
         white-space: nowrap;
-        mix-blend-mode: difference !important;
+        mix-blend-mode: difference;
         clip-path: inset(0 100% 0 0);
         -webkit-clip-path: inset(0 100% 0 0);
         will-change: clip-path;
     }
 
-    .landing-index-cell > span:not(.landing-index-difference-text),
-    .landing-index-header-cell > span:not(.landing-index-difference-text) {
+    .landing-index-cell > span:not(.landing-index-difference-text) {
         pointer-events: none;
-    }
-
-    /* =====================================================
-       TABLET / PHONE
-       ===================================================== */
-
-    @media (max-width: 1100px) {
-        .landing-index-scroll {
-            width: calc(100% - (2 * var(--page-x))) !important;
-            max-width: none !important;
-        }
-
-        .landing-index-grid {
-            column-gap: clamp(12px, 2.4vw, 24px) !important;
-        }
-    }
-
-    /* Hide USE in portrait first; landscape keeps it only when all rows fit. */
-    @media (max-width: 1100px) and (orientation: portrait) {
-        .landing-index-grid {
-            column-gap: clamp(8px, 2.4vw, 18px) !important;
-        }
-    }
-
-    /* Two blank text lines between INFO paragraphs. */
-    body.landing-info-mode .bio-paragraph-gap,
-    body.landing-info-mode .biography .bio-paragraph-gap {
-        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
-    }
-
-    body.landing-aybak-active #landing-section-nav {
-        z-index: 2147483647;
-    }
-
-    body.landing-aybak-active #landing-section-nav button {
-        color: #fff !important;
-        mix-blend-mode: normal !important;
     }
 </style>
 
@@ -9820,32 +10192,28 @@ window.addEventListener("resize", () => {
         <div class="landing-index-grid" id="landing-index-grid">
             <div class="landing-index-header">
                 <button class="landing-index-header-cell" data-sort-key="title" type="button">
-                    <span class="landing-index-text">title</span>
-                    <span class="landing-index-difference-text" aria-hidden="true"></span>
+                    <span>title</span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="date" type="button">
-                    <span class="landing-index-text">date</span>
-                    <span class="landing-index-difference-text" aria-hidden="true"></span>
+                    <span>date</span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="field" type="button">
-                    <span class="landing-index-text">field</span>
-                    <span class="landing-index-difference-text" aria-hidden="true"></span>
+                    <span>field</span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="use" type="button">
-                    <span class="landing-index-text">use</span>
-                    <span class="landing-index-difference-text" aria-hidden="true"></span>
+                    <span>use</span>
                 </button>
             </div>
         </div>
-        <div id="landing-index-preview" aria-hidden="true">
+    </div>
+    <div id="landing-index-preview-stage" aria-hidden="true">
+        <div id="landing-index-preview">
             <img id="landing-index-preview-image" alt="" />
             <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
         </div>
-        <div id="landing-index-text-overlay" aria-hidden="true"></div>
+        <div id="landing-index-composite-layer" aria-hidden="true"></div>
     </div>
 </section>
-
-
 
 <script id="landing-index-info-script">
 (() => {
@@ -9884,7 +10252,9 @@ window.addEventListener("resize", () => {
     const indexView = document.getElementById("landing-index-view");
     const indexScroll = document.getElementById("landing-index-scroll");
     const indexGrid = document.getElementById("landing-index-grid");
+    const indexPreviewStage = document.getElementById("landing-index-preview-stage");
     const indexPreview = document.getElementById("landing-index-preview");
+    const indexCompositeLayer = document.getElementById("landing-index-composite-layer");
     const previewImage = document.getElementById("landing-index-preview-image");
     const previewVideo = document.getElementById("landing-index-preview-video");
     const indexButton = document.getElementById("landing-section-index");
@@ -10012,6 +10382,9 @@ window.addEventListener("resize", () => {
             if (mirrorElement) {
                 mirrorElement.textContent = text;
             }
+            if (previewRecord && typeof queueCompositeLayerUpdate === "function") {
+                queueCompositeLayerUpdate();
+            }
         }
 
         function animate(nextTarget, duration) {
@@ -10045,7 +10418,6 @@ window.addEventListener("resize", () => {
         render();
 
         return {
-            element,
             upper() { animate(positions.length, ROW_MORPH_DURATION); },
             lower() { animate(0, ROW_MORPH_DURATION); },
             setUpper(duration = SECTION_MORPH_DURATION) { animate(positions.length, duration); },
@@ -10066,8 +10438,8 @@ window.addEventListener("resize", () => {
     let allRecords = [];
     let rowStates = [];
     let activePreviewRow = null;
-    let activePreviewColumnIndex = 0;
-    let activeDifferenceFrame = null;
+    let activePreviewCell = null;
+    let activeCompositeFrame = null;
 
     let previewRecord = null;
     let indexFieldShort = false;
@@ -10131,117 +10503,32 @@ window.addEventListener("resize", () => {
         return allRecords.slice().sort(compareRecords);
     }
 
-    function setDifferenceHidden(span) {
-        if (!span) return;
-        span.style.clipPath = "inset(0 100% 0 0)";
-        span.style.webkitClipPath = "inset(0 100% 0 0)";
-    }
 
-    function resetBaseTextMask(textElement) {
-        if (!textElement) return;
-        textElement.style.maskImage = "none";
-        textElement.style.webkitMaskImage = "none";
-        textElement.style.maskSize = "auto";
-        textElement.style.webkitMaskSize = "auto";
-        textElement.style.maskRepeat = "no-repeat";
-        textElement.style.webkitMaskRepeat = "no-repeat";
-    }
+    function clearCompositeLayer() {
+        if (activeCompositeFrame !== null) {
+            cancelAnimationFrame(activeCompositeFrame);
+            activeCompositeFrame = null;
+        }
 
-    function clearDifferenceLayers() {
-        if (activeDifferenceFrame !== null) {
-            cancelAnimationFrame(activeDifferenceFrame);
-            activeDifferenceFrame = null;
+        if (indexCompositeLayer) {
+            indexCompositeLayer.replaceChildren();
         }
 
         rowStates.forEach(state => {
-            state.differenceSpans?.forEach(setDifferenceHidden);
-            state.cases?.forEach(controller => {
-                resetBaseTextMask(controller?.element);
+            state.row.querySelectorAll(".landing-index-text").forEach(span => {
+                span.classList.remove("is-composite-hidden");
+                span.style.visibility = "";
             });
+            state.row.classList.remove("is-focus");
         });
 
         headerButtons.forEach(button => {
-            button.querySelectorAll(".landing-index-difference-text")
-                .forEach(setDifferenceHidden);
-            resetBaseTextMask(button.querySelector(".landing-index-text"));
+            const span = button.querySelector("span");
+            if (span) {
+                span.classList.remove("is-composite-hidden");
+                span.style.visibility = "";
+            }
         });
-
-        activePreviewRow = null;
-    }
-
-    function applyBaseTextOutsideMask(textElement, previewRect) {
-        if (!textElement || !previewRect) return;
-
-        const textRect = textElement.getBoundingClientRect();
-        if (!textRect.width || !textRect.height) {
-            resetBaseTextMask(textElement);
-            return;
-        }
-
-        const left = Math.max(textRect.left, previewRect.left);
-        const right = Math.min(textRect.right, previewRect.right);
-        const top = Math.max(textRect.top, previewRect.top);
-        const bottom = Math.min(textRect.bottom, previewRect.bottom);
-
-        if (right <= left || bottom <= top) {
-            resetBaseTextMask(textElement);
-            return;
-        }
-
-        const leftPercent = Math.max(0, Math.min(100, ((left - textRect.left) / textRect.width) * 100));
-        const rightPercent = Math.max(0, Math.min(100, ((right - textRect.left) / textRect.width) * 100));
-
-        /*
-           White = visible, transparent = hidden.
-           Only the literal rectangle where the preview overlaps
-           the text is removed from the base text.
-        */
-        const mask =
-            `linear-gradient(to right, #fff 0%, #fff ${leftPercent}%, transparent ${leftPercent}%, transparent ${rightPercent}%, #fff ${rightPercent}%, #fff 100%)`;
-
-        textElement.style.maskImage = mask;
-        textElement.style.webkitMaskImage = mask;
-        textElement.style.maskSize = "100% 100%";
-        textElement.style.webkitMaskSize = "100% 100%";
-        textElement.style.maskRepeat = "no-repeat";
-        textElement.style.webkitMaskRepeat = "no-repeat";
-    }
-
-
-    function clipDifferenceToPreview(span, textElement, previewRect) {
-        if (!span || !textElement || !previewRect) {
-            setDifferenceHidden(span);
-            resetBaseTextMask(textElement);
-            return;
-        }
-
-        const textRect = textElement.getBoundingClientRect();
-        if (!textRect.width || !textRect.height) {
-            setDifferenceHidden(span);
-            resetBaseTextMask(textElement);
-            return;
-        }
-
-        const left = Math.max(textRect.left, previewRect.left);
-        const top = Math.max(textRect.top, previewRect.top);
-        const right = Math.min(textRect.right, previewRect.right);
-        const bottom = Math.min(textRect.bottom, previewRect.bottom);
-
-        if (right <= left || bottom <= top) {
-            setDifferenceHidden(span);
-            resetBaseTextMask(textElement);
-            return;
-        }
-
-        const topInset = Math.max(0, top - textRect.top);
-        const rightInset = Math.max(0, textRect.right - right);
-        const bottomInset = Math.max(0, textRect.bottom - bottom);
-        const leftInset = Math.max(0, left - textRect.left);
-
-        span.style.clipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
-        span.style.webkitClipPath = span.style.clipPath;
-
-        applyBaseTextOutsideMask(textElement, previewRect);
     }
 
     function getVisiblePreviewRect() {
@@ -10266,69 +10553,265 @@ window.addEventListener("resize", () => {
         return rect;
     }
 
-    function resetDifferenceAppearance(textElement) {
-        if (!textElement) return;
-        textElement.style.color = "";
-        textElement.style.mixBlendMode = "";
-        textElement.style.webkitMixBlendMode = "";
-        resetBaseTextMask(textElement);
+    function clampNumber(value, min, max) {
+        return Math.max(min, Math.min(max, value));
     }
 
-    function updateDifferenceLayers() {
-        activeDifferenceFrame = null;
-        /* Final clean overlay controller below owns all intersection/blend rendering. */
+    function isUppercaseContent(text) {
+        const value = String(text || "");
+        const letters = value.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g);
+        if (!letters || !letters.length) return false;
+        return letters.every(letter => letter === letter.toUpperCase());
     }
 
-    function queueDifferenceLayerUpdate() {
-        if (activeDifferenceFrame !== null) return;
-        activeDifferenceFrame = requestAnimationFrame(updateDifferenceLayers);
+    function copyTypography(source, target) {
+        const style = getComputedStyle(source);
+
+        target.style.fontFamily = style.fontFamily;
+        target.style.fontSize = style.fontSize;
+        target.style.fontWeight = style.fontWeight;
+        target.style.fontStyle = style.fontStyle;
+        target.style.lineHeight = style.lineHeight;
+        target.style.letterSpacing = style.letterSpacing;
+        target.style.wordSpacing = style.wordSpacing;
+        target.style.textTransform = "none";
     }
 
-    function positionPreviewInColumn(columnIndex = activePreviewColumnIndex) {
-        if (!activePreviewRow) return;
-        const cells = activePreviewRow.row.children;
-        const cell = cells[columnIndex] || cells[0];
-        if (!cell) return;
-        const cellRect = cell.getBoundingClientRect();
-        const scrollRect = indexScroll.getBoundingClientRect();
-        if (!cellRect.width || !scrollRect.width) return;
-        const isFilm = normalized(activePreviewRow.record?.field) === "film";
-        const compactViewport = window.innerWidth <= 1100;
-        const centerX = cellRect.left - scrollRect.left + cellRect.width / 2;
-        const centerY = window.innerHeight / 2 - scrollRect.top;
-        let width, height;
-        if (isFilm) {
-            width = compactViewport ? Math.min(window.innerWidth * 0.92, 900) : Math.min(window.innerWidth * 0.50, 840);
-            height = Math.min(width * 9 / 16, compactViewport ? Math.min(window.innerHeight * 0.50, 520) : Math.min(window.innerHeight * 0.58, 560));
-        } else {
-            width = compactViewport ? Math.min(window.innerWidth * 0.78, 560) : Math.min(window.innerWidth * 0.32, 560);
-            height = compactViewport ? Math.min(window.innerHeight * 0.50, 620) : Math.min(window.innerHeight * 0.62, 620);
+    function createCompositeText(source, previewRect) {
+        const text = source.textContent || "";
+        const rect = source.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) return null;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "landing-index-composite-text";
+        wrapper.style.left = `${rect.left}px`;
+        wrapper.style.top = `${rect.top}px`;
+        wrapper.style.width = `${rect.width}px`;
+        wrapper.style.height = `${rect.height}px`;
+        copyTypography(source, wrapper);
+
+        const textUpper = isUppercaseContent(text);
+
+        const left = clampNumber(
+            previewRect ? previewRect.left - rect.left : -1,
+            0,
+            rect.width
+        );
+        const right = clampNumber(
+            previewRect ? previewRect.right - rect.left : rect.width,
+            0,
+            rect.width
+        );
+        const top = clampNumber(
+            previewRect ? previewRect.top - rect.top : -1,
+            0,
+            rect.height
+        );
+        const bottom = clampNumber(
+            previewRect ? previewRect.bottom - rect.top : rect.height,
+            0,
+            rect.height
+        );
+
+        const intersects =
+            previewRect &&
+            right > left &&
+            bottom > top &&
+            previewRect.right > rect.left &&
+            previewRect.left < rect.right &&
+            previewRect.bottom > rect.top &&
+            previewRect.top < rect.bottom;
+
+        function addPiece(
+            clipPath,
+            mode = "outside"
+        ) {
+            const piece = document.createElement("span");
+            piece.className =
+                `landing-index-composite-text ${mode}`;
+
+            piece.textContent = text;
+            piece.style.position = "absolute";
+            piece.style.left = "0";
+            piece.style.top = "0";
+            piece.style.width = "100%";
+            piece.style.height = "100%";
+            piece.style.margin = "0";
+            piece.style.padding = "0";
+            piece.style.clipPath = clipPath;
+            piece.style.webkitClipPath = clipPath;
+            copyTypography(source, piece);
+            wrapper.appendChild(piece);
         }
-        document.documentElement.style.setProperty("--landing-index-preview-center-x", `${centerX}px`);
-        document.documentElement.style.setProperty("--landing-index-preview-top", `${centerY}px`);
-        document.documentElement.style.setProperty("--landing-index-preview-width", `${width}px`);
-        document.documentElement.style.setProperty("--landing-index-preview-height", `${height}px`);
+
+        if (!intersects) {
+            addPiece("inset(0 0 0 0)", "outside");
+            return wrapper;
+        }
+
+        const leftPx = left;
+        const rightPx = right;
+        const topPx = top;
+        const bottomPx = bottom;
+
+        /* Outside pieces: keep only the regions not covered by preview. */
+        if (topPx > 0.5) {
+            addPiece(
+                `inset(0 0 ${Math.max(0, rect.height - topPx)}px 0)`,
+                "outside"
+            );
+        }
+
+        if (bottomPx < rect.height - 0.5) {
+            addPiece(
+                `inset(${Math.max(0, bottomPx)}px 0 0 0)`,
+                "outside"
+            );
+        }
+
+        if (leftPx > 0.5 && bottomPx > topPx) {
+            addPiece(
+                `inset(${topPx}px ${Math.max(0, rect.width - leftPx)}px ${Math.max(0, rect.height - bottomPx)}px 0)`,
+                "outside"
+            );
+        }
+
+        if (rightPx < rect.width - 0.5 && bottomPx > topPx) {
+            addPiece(
+                `inset(${topPx}px 0 ${Math.max(0, rect.height - bottomPx)}px ${Math.max(0, rightPx)}px)`,
+                "outside"
+            );
+        }
+
+        /*
+           Uppercase text gets ONLY the intersection rendered as white
+           difference text. Because this layer is inside the same stage
+           as the media, the result is the preview's actual inverse.
+           Lowercase text intentionally has no inside piece, so it
+           disappears wherever the preview overlaps it.
+        */
+        if (textUpper) {
+            addPiece(
+                `inset(${topPx}px ${Math.max(0, rect.width - rightPx)}px ${Math.max(0, rect.height - bottomPx)}px ${leftPx}px)`,
+                "diff"
+            );
+        }
+
+        return wrapper;
+    }
+
+    function positionPreviewForCell(cell) {
+        if (!cell || !indexPreviewStage) return;
+
+        const cellRect = cell.getBoundingClientRect();
+        const pageTop =
+            parseFloat(
+                getComputedStyle(document.documentElement)
+                    .getPropertyValue("--page-top")
+            ) || 0;
+        const pageBottom =
+            parseFloat(
+                getComputedStyle(document.documentElement)
+                    .getPropertyValue("--page-bottom")
+            ) || 0;
+
+        const centerX = cellRect.left + cellRect.width / 2;
+        const centerY =
+            pageTop +
+            (window.innerHeight - pageTop - pageBottom) / 2;
+
+        const width = indexPreview.offsetWidth;
+        const height = indexPreview.offsetHeight;
+
+        indexPreview.style.left = `${centerX - width / 2}px`;
+        indexPreview.style.top = `${centerY - height / 2}px`;
+    }
+
+    function renderCompositeLayer() {
+        activeCompositeFrame = null;
+
+        if (
+            sectionMode !== "index" ||
+            !previewRecord ||
+            !activePreviewRow ||
+            !indexPreviewStage.classList.contains("visible")
+        ) {
+            return;
+        }
+
+        const previewRect = getVisiblePreviewRect();
+        if (!previewRect || !indexCompositeLayer) {
+            return;
+        }
+
+        indexCompositeLayer.replaceChildren();
+
+        /* Header always stays above preview. */
+        headerButtons.forEach(button => {
+            const span = button.querySelector("span");
+            if (!span) return;
+
+            span.classList.add("is-composite-hidden");
+
+            const composite = createCompositeText(
+                span,
+                previewRect
+            );
+
+            if (composite) {
+                indexCompositeLayer.appendChild(composite);
+            }
+        });
+
+        /* Only hovered row stays above preview. */
+        activePreviewRow.row
+            .querySelectorAll(".landing-index-text")
+            .forEach(span => {
+                span.classList.add("is-composite-hidden");
+
+                const composite = createCompositeText(
+                    span,
+                    previewRect
+                );
+
+                if (composite) {
+                    indexCompositeLayer.appendChild(composite);
+                }
+            });
+
+        /*
+           The source row itself remains visually present in the grid
+           only for hit-testing/clicking. The composite copy is the
+           visible text layer.
+        */
+    }
+
+    function queueCompositeLayerUpdate() {
+        if (activeCompositeFrame !== null) return;
+
+        activeCompositeFrame =
+            requestAnimationFrame(renderCompositeLayer);
     }
 
     function clearPreview() {
-        clearDifferenceLayers();
+        clearCompositeLayer();
+
         previewRecord = null;
-        previewVideo.dataset.previewToken = "";
-        indexPreview.classList.remove("visible", "is-film");
-        indexPreview.setAttribute("aria-hidden", "true");
+        activePreviewRow = null;
+        activePreviewCell = null;
+
+        if (indexPreviewStage) {
+            indexPreviewStage.classList.remove("visible");
+            indexPreviewStage.setAttribute("aria-hidden", "true");
+        }
+
+        indexPreview.classList.remove("is-film");
         previewVideo.pause();
         previewVideo.removeAttribute("src");
         previewVideo.removeAttribute("poster");
         previewVideo.load();
         previewImage.removeAttribute("src");
-        activePreviewColumnIndex = 0;
-    }
-
-    function encodePath(pathname) {
-        return pathname
-            .split("/")
-            .map(segment => encodeURIComponent(segment))
-            .join("/");
     }
 
     function setPhotoPreview(record) {
@@ -10338,169 +10821,127 @@ window.addEventListener("resize", () => {
             return;
         }
 
-        /* Photography INDEX source: lightweight .webp thumbnail. */
-        const filename = project.cover || project.images[0];
-        const dotIndex = filename.lastIndexOf(".");
-        const thumb = dotIndex > 0
-            ? filename.slice(0, dotIndex) + ".webp"
-            : filename + ".webp";
-        const src = PHOTO_THUMB_BASE + encodePath(thumb);
+        const filename =
+            project.cover ||
+            project.images[0];
+
+        const dotIndex =
+            filename.lastIndexOf(".");
+
+        const thumb =
+            dotIndex > 0
+                ? filename.slice(0, dotIndex) + ".webp"
+                : filename + ".webp";
+
+        const src =
+            PHOTO_THUMB_BASE +
+            encodeURIComponent(thumb);
 
         previewVideo.pause();
         previewVideo.removeAttribute("src");
         previewVideo.removeAttribute("poster");
         previewVideo.load();
+
         previewImage.src = src;
+
         indexPreview.classList.remove("is-film");
-        indexPreview.classList.add("visible");
-        indexPreview.setAttribute("aria-hidden", "false");
+
+        if (indexPreviewStage) {
+            indexPreviewStage.classList.add("visible");
+            indexPreviewStage.setAttribute("aria-hidden", "false");
+        }
+
         requestAnimationFrame(() => {
-            positionPreviewInColumn();
-            queueDifferenceLayerUpdate();
+            positionPreviewForCell(activePreviewCell);
+            queueCompositeLayerUpdate();
         });
     }
 
     function setFilmPreview(record) {
         const project = record.source;
-        const videos = Array.isArray(project?.originalVideos) && project.originalVideos.length
-            ? project.originalVideos.slice()
-            : (Array.isArray(project?.videos) ? project.videos.slice() : []);
 
-        if (!videos.length) {
+        if (!project?.videos?.length) {
             clearPreview();
             return;
         }
 
-        const previewToken = `${record.field}:${record.id}:${Date.now()}:${Math.random()}`;
-        previewVideo.dataset.previewToken = previewToken;
+        const filename =
+            project.videos[0];
+
+        const previewFilename =
+            filename.replace(
+                /\.mp4$/i,
+                "_preview.mp4"
+            );
+
+        const src =
+            FILM_PREVIEW_BASE +
+            encodeURIComponent(previewFilename);
 
         previewImage.removeAttribute("src");
-        previewVideo.pause();
-        previewVideo.removeAttribute("src");
-        previewVideo.removeAttribute("poster");
-        previewVideo.removeAttribute("data-using-fallback");
-        previewVideo.load();
 
+        previewVideo.dataset.filename = filename;
+        previewVideo.src = src;
+        previewVideo.currentTime = 0;
         previewVideo.muted = true;
         previewVideo.defaultMuted = true;
         previewVideo.playsInline = true;
-        previewVideo.setAttribute("playsinline", "");
-        previewVideo.setAttribute("muted", "");
-        previewVideo.autoplay = true;
         previewVideo.loop = true;
-        previewVideo.controls = false;
-        previewVideo.preload = "metadata";
-        previewVideo.disablePictureInPicture = true;
+        previewVideo.preload = "auto";
+        previewVideo.load();
 
-        const encodeVideoPath = value =>
-            String(value || "")
-                .split("/")
-                .map(segment => encodeURIComponent(segment))
-                .join("/");
+        previewVideo.play().catch(() => {});
 
-        const previewUrlFor = filename => {
-            const previewFilename = String(filename).replace(/\.mp4$/i, "_preview.mp4");
-            return FILM_PREVIEW_BASE + encodeVideoPath(previewFilename);
-        };
+        indexPreview.classList.add("is-film");
 
-        const posterUrlFor = filename => {
-            const posterFilename = String(filename).replace(/\.mp4$/i, "_poster.jpg");
-            return "https://library.denizalpaybak.com/film-posters/" + encodeVideoPath(posterFilename);
-        };
+        if (indexPreviewStage) {
+            indexPreviewStage.classList.add("visible");
+            indexPreviewStage.setAttribute("aria-hidden", "false");
+        }
 
-        const masterUrlFor = filename =>
-            "https://library.denizalpaybak.com/films/" + encodeVideoPath(filename);
-
-        let candidateIndex = 0;
-        let fallbackTried = false;
-
-        const activate = () => {
-            if (previewVideo.dataset.previewToken !== previewToken) return;
-            indexPreview.classList.add("visible", "is-film");
-            indexPreview.setAttribute("aria-hidden", "false");
-            positionPreviewInColumn();
-            queueDifferenceLayerUpdate();
-            previewVideo.play().catch(() => {});
-        };
-
-        const tryCandidate = () => {
-            if (previewVideo.dataset.previewToken !== previewToken) return;
-
-            if (candidateIndex >= videos.length) {
-                /* Final safety fallback: same master video path used by Film. */
-                if (!fallbackTried) {
-                    fallbackTried = true;
-                    const filename = String(videos[0] || "");
-                    previewVideo.dataset.usingFallback = "1";
-                    previewVideo.poster = posterUrlFor(filename);
-                    previewVideo.src = masterUrlFor(filename);
-                    previewVideo.currentTime = 0;
-                    previewVideo.load();
-                    activate();
-                    return;
-                }
-
-                activate();
-                return;
-            }
-
-            const filename = String(videos[candidateIndex++] || "");
-            if (!filename) {
-                tryCandidate();
-                return;
-            }
-
-            previewVideo.poster = posterUrlFor(filename);
-            previewVideo.src = previewUrlFor(filename);
-            previewVideo.currentTime = 0;
-
-            previewVideo.onloadstart = () => {};
-            previewVideo.onloadedmetadata = () => {
-                if (previewVideo.dataset.previewToken !== previewToken) return;
-                activate();
-            };
-            previewVideo.onloadeddata = () => {
-                if (previewVideo.dataset.previewToken !== previewToken) return;
-                activate();
-            };
-            previewVideo.oncanplay = () => {
-                if (previewVideo.dataset.previewToken !== previewToken) return;
-                activate();
-            };
-            previewVideo.onerror = () => {
-                if (previewVideo.dataset.previewToken !== previewToken) return;
-                tryCandidate();
-            };
-
-            indexPreview.classList.add("visible", "is-film");
-            indexPreview.setAttribute("aria-hidden", "false");
-            previewVideo.load();
-            requestAnimationFrame(() => {
-                if (previewVideo.dataset.previewToken !== previewToken) return;
-                positionPreviewInColumn();
-                queueDifferenceLayerUpdate();
-                previewVideo.play().catch(() => {});
-            });
-        };
-
-        tryCandidate();
+        requestAnimationFrame(() => {
+            positionPreviewForCell(activePreviewCell);
+            queueCompositeLayerUpdate();
+        });
     }
 
     function selectPreview(record) {
         previewRecord = record;
+
         if (normalized(record.field) === "film") {
             setFilmPreview(record);
         } else {
             setPhotoPreview(record);
         }
-        queueDifferenceLayerUpdate();
+
+        queueCompositeLayerUpdate();
     }
 
-    previewImage.addEventListener("load", queueDifferenceLayerUpdate);
-    previewVideo.addEventListener("loadedmetadata", queueDifferenceLayerUpdate);
-    previewVideo.addEventListener("loadeddata", queueDifferenceLayerUpdate);
-    previewVideo.addEventListener("canplay", queueDifferenceLayerUpdate);
+    function refreshPreviewLayout() {
+        if (!previewRecord || !activePreviewCell) return;
+        positionPreviewForCell(activePreviewCell);
+        queueCompositeLayerUpdate();
+    }
 
+    previewImage.addEventListener("load", () => {
+        positionPreviewForCell(activePreviewCell);
+        queueCompositeLayerUpdate();
+    });
+
+    previewVideo.addEventListener("loadedmetadata", () => {
+        positionPreviewForCell(activePreviewCell);
+        queueCompositeLayerUpdate();
+    });
+
+    previewVideo.addEventListener("loadeddata", () => {
+        positionPreviewForCell(activePreviewCell);
+        queueCompositeLayerUpdate();
+    });
+
+    previewVideo.addEventListener("canplay", () => {
+        positionPreviewForCell(activePreviewCell);
+        queueCompositeLayerUpdate();
+    });
 
     function getDisplayField(record) {
         if (indexFieldShort && normalized(record.field) === "photography") {
@@ -10542,7 +10983,7 @@ window.addEventListener("resize", () => {
         );
 
         const sideSpace = Math.ceil(
-            Math.max(pageX, longestLabel + 2)
+            Math.max(pageX, longestLabel)
         );
 
         root.style.setProperty(
@@ -10592,8 +11033,7 @@ window.addEventListener("resize", () => {
 
         const compact = isIndexFitViewport();
         const portrait = isIndexPortraitViewport();
-        const phoneLayout = isPhoneLayout();
-        const nextFieldShort = phoneLayout;
+        const nextFieldShort = compact;
 
         const fieldChanged =
             nextFieldShort !== indexFieldShort;
@@ -10639,7 +11079,7 @@ window.addEventListener("resize", () => {
 
             /* If three columns still do not fit, shrink the global type. */
             if (!indexContentFitsViewport()) {
-                const minimumFontSize = 9;
+                const minimumFontSize = 10;
                 let candidate = baseFontSize;
 
                 while (
@@ -10674,6 +11114,7 @@ window.addEventListener("resize", () => {
         queueDifferenceLayerUpdate();
     }
 
+
     function createRow(record) {
         const row = document.createElement("div");
         row.className = "landing-index-row";
@@ -10681,11 +11122,21 @@ window.addEventListener("resize", () => {
         row.dataset.field = record.field;
         row.tabIndex = 0;
         row.setAttribute("role", "link");
-        row.setAttribute("aria-label", `${record.title}, ${record.date}, ${record.field}, ${record.use}`);
+        row.setAttribute(
+            "aria-label",
+            `${record.title}, ${record.date}, ${record.field}, ${record.use}`
+        );
 
-        const values = [record.title, record.date, getDisplayField(record), record.use];
+        const values = [
+            record.title,
+            record.date,
+            getDisplayField(record),
+            record.use
+        ];
+
         const cases = [];
         const differenceSpans = [];
+        const cells = [];
 
         values.forEach(value => {
             const cell = document.createElement("div");
@@ -10702,56 +11153,124 @@ window.addEventListener("resize", () => {
             cell.appendChild(difference);
             row.appendChild(cell);
 
-            cases.push(createCaseMorph(span, value, difference));
+            cells.push(cell);
+            cases.push(
+                createCaseMorph(
+                    span,
+                    value,
+                    difference
+                )
+            );
             differenceSpans.push(difference);
         });
 
-        const state = { row, record, cases, differenceSpans };
+        const state = {
+            row,
+            record,
+            cases,
+            differenceSpans,
+            cells
+        };
+
         rowStates.push(state);
 
-        const enter = () => {
+        let entered = false;
+
+        const activate = cell => {
+            entered = true;
+
             row.classList.add("is-focus");
             activePreviewRow = state;
-            activePreviewColumnIndex = 0;
-            cases.forEach(controller => controller.upper());
+            activePreviewCell =
+                cell ||
+                activePreviewCell ||
+                cells[0] ||
+                null;
+
+            cases.forEach(
+                controller => controller.upper()
+            );
+
             selectPreview(record);
-            requestAnimationFrame(() => {
-                positionPreviewInColumn();
-                queueDifferenceLayerUpdate();
-            });
+            refreshPreviewLayout();
+            queueCompositeLayerUpdate();
         };
 
         const leave = () => {
+            if (!entered) return;
+
+            entered = false;
+
             row.classList.remove("is-focus");
-            cases.forEach(controller => controller.lower());
-            if (previewRecord === record) clearPreview();
+
+            cases.forEach(
+                controller => controller.lower()
+            );
+
+            if (previewRecord === record) {
+                clearPreview();
+            }
         };
 
-        Array.from(row.children).forEach((cell, columnIndex) => {
-            cell.addEventListener("mouseenter", () => {
-                if (!activePreviewRow || activePreviewRow !== state) return;
-                activePreviewColumnIndex = columnIndex;
-                positionPreviewInColumn(columnIndex);
-                queueDifferenceLayerUpdate();
-            });
+        row.addEventListener(
+            "mouseenter",
+            event => {
+                const targetCell =
+                    event.target?.closest?.(
+                        ".landing-index-cell"
+                    );
+
+                activate(
+                    targetCell &&
+                    row.contains(targetCell)
+                        ? targetCell
+                        : cells[0]
+                );
+            }
+        );
+
+        row.addEventListener(
+            "mouseleave",
+            leave
+        );
+
+        cells.forEach(cell => {
+            cell.addEventListener(
+                "mouseenter",
+                () => activate(cell)
+            );
         });
 
-        row.addEventListener("mouseenter", enter);
-        row.addEventListener("mouseleave", leave);
-        row.addEventListener("focus", enter);
-        row.addEventListener("blur", leave);
+        row.addEventListener(
+            "focus",
+            () => activate(cells[0])
+        );
 
-        row.addEventListener("click", event => {
-            event.preventDefault();
-            openRecord(record);
-        });
+        row.addEventListener(
+            "blur",
+            leave
+        );
 
-        row.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
+        row.addEventListener(
+            "click",
+            event => {
                 event.preventDefault();
                 openRecord(record);
             }
-        });
+        );
+
+        row.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+                    event.preventDefault();
+                    openRecord(record);
+                }
+            }
+        );
 
         return row;
     }
@@ -10781,7 +11300,6 @@ window.addEventListener("resize", () => {
             if (!span) return;
 
             const active = key === sortKey;
-            button.dataset.sortActive = active ? "true" : "false";
             const controller = button.__caseController;
             if (controller) {
                 active ? controller.setUpper(duration) : controller.setLower(duration);
@@ -10809,16 +11327,15 @@ window.addEventListener("resize", () => {
     function openRecord(record) {
         clearPreview();
         const encodedId = encodeURIComponent(record.id);
-        const base = normalized(record.field) === "film"
+        const base = record.field === "FILM"
             ? "https://film.denizalpaybak.com/"
             : "https://photography.denizalpaybak.com/";
         window.location.href = `${base}?project=${encodedId}&view=all`;
     }
 
     headerButtons.forEach(button => {
-        const span = button.querySelector(".landing-index-text");
-        const difference = button.querySelector(".landing-index-difference-text");
-        button.__caseController = createCaseMorph(span, button.dataset.sortKey, difference);
+        const span = button.querySelector("span");
+        button.__caseController = createCaseMorph(span, button.dataset.sortKey);
         button.addEventListener("click", () => handleSort(button.dataset.sortKey));
     });
 
@@ -10849,7 +11366,23 @@ window.addEventListener("resize", () => {
         infoMorph.setLower(animate ? SECTION_MORPH_DURATION : 0);
         indexMorph.setUpper(animate ? SECTION_MORPH_DURATION : 0);
         body.classList.remove("landing-info-mode");
-        body.classList.add("landing-index-mode");
+        window.addEventListener("resize", () => {
+        if (sectionMode !== "index") return;
+        applyLandingIndexResponsiveLayout(false);
+        refreshPreviewLayout();
+        queueCompositeLayerUpdate();
+    });
+
+    window.addEventListener("orientationchange", () => {
+        setTimeout(() => {
+            if (sectionMode !== "index") return;
+            applyLandingIndexResponsiveLayout(false);
+            refreshPreviewLayout();
+            queueCompositeLayerUpdate();
+        }, 120);
+    });
+
+    body.classList.add("landing-index-mode");
         document.documentElement.classList.remove("landing-info-mode");
         document.documentElement.classList.add("landing-index-mode");
     }
@@ -10973,7 +11506,6 @@ window.addEventListener("resize", () => {
         () => {
             updateLandingIndexSideSpace();
             queueLandingIndexResponsiveLayout();
-            positionPreviewInColumn();
             queueDifferenceLayerUpdate();
         },
         { passive: true }
@@ -10982,7 +11514,6 @@ window.addEventListener("resize", () => {
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => {
             updateLandingIndexSideSpace();
-            positionPreviewInColumn();
             queueDifferenceLayerUpdate();
         });
     }
@@ -10994,7 +11525,6 @@ window.addEventListener("resize", () => {
                 () => {
                     updateLandingIndexSideSpace();
                     queueLandingIndexResponsiveLayout();
-                    positionPreviewInColumn();
                     queueDifferenceLayerUpdate();
                 },
                 100
@@ -11002,278 +11532,6 @@ window.addEventListener("resize", () => {
         },
         { passive: true }
     );
-})();
-</script>
-
-
-
-<style id="landing-index-clean-final">
-/* Clean, single-source INDEX geometry and stacking model. */
-#landing-index-view{
-  position:fixed !important;
-  inset:0 !important;
-  z-index:2147483645 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:0 !important;
-  overflow:hidden !important;
-  pointer-events:none !important;
-}
-#landing-index-view > .landing-index-scroll{
-  position:relative !important;
-  z-index:auto !important;
-  width:min(1040px,calc(100% - (2 * var(--landing-index-side-space)))) !important;
-  max-width:1040px !important;
-  height:auto !important;
-  max-height:calc(100dvh - (2 * var(--page-top))) !important;
-  margin:0 auto !important;
-  overflow:visible !important;
-  pointer-events:auto !important;
-}
-.landing-index-grid{
-  position:relative !important;
-  z-index:auto !important;
-  width:100% !important;
-  display:grid !important;
-  grid-template-columns:max-content max-content minmax(0,1fr) max-content !important;
-  column-gap:24px !important;
-  row-gap:0 !important;
-  align-items:baseline !important;
-  overflow:visible !important;
-}
-.landing-index-header,.landing-index-row{
-  position:relative !important;
-  width:100% !important;
-  min-width:0 !important;
-  grid-column:1 / -1 !important;
-  grid-template-columns:inherit !important;
-  column-gap:inherit !important;
-  align-items:baseline !important;
-  overflow:visible !important;
-}
-.landing-index-header{
-  z-index:30 !important;
-  margin-bottom:calc(var(--font-size) * var(--line-height)) !important;
-}
-.landing-index-row{ z-index:1 !important; }
-.landing-index-row.is-focus{ z-index:30 !important; }
-.landing-index-cell,.landing-index-header-cell{
-  position:relative !important;
-  min-width:0 !important;
-  overflow:visible !important;
-  white-space:nowrap !important;
-  overflow-wrap:normal !important;
-  word-break:normal !important;
-  hyphens:none !important;
-}
-.landing-index-cell:nth-child(1),.landing-index-header-cell:nth-child(1),
-.landing-index-cell:nth-child(2),.landing-index-header-cell:nth-child(2){
-  justify-self:start !important;
-  justify-content:flex-start !important;
-  text-align:left !important;
-}
-.landing-index-cell:nth-child(3),.landing-index-header-cell:nth-child(3),
-.landing-index-cell:nth-child(4),.landing-index-header-cell:nth-child(4){
-  justify-self:stretch !important;
-  justify-content:flex-end !important;
-  text-align:right !important;
-}
-.landing-index-text{
-  position:relative !important;
-  z-index:1 !important;
-  display:block !important;
-  width:max-content !important;
-  max-width:none !important;
-  pointer-events:none !important;
-  color:#000 !important;
-  mix-blend-mode:normal !important;
-  -webkit-mix-blend-mode:normal !important;
-}
-/* Preview is BELOW the text plane except where ordinary rows are naturally above it. */
-#landing-index-preview{
-  position:absolute !important;
-  z-index:10 !important;
-  pointer-events:none !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  left:var(--landing-index-preview-center-x,50%) !important;
-  top:var(--landing-index-preview-top,50%) !important;
-  width:var(--landing-index-preview-width,560px) !important;
-  height:var(--landing-index-preview-height,620px) !important;
-  transform:translate(-50%,-50%) !important;
-  opacity:0 !important;
-  visibility:hidden !important;
-}
-#landing-index-preview.visible{opacity:1 !important;visibility:visible !important;}
-#landing-index-preview img{
-  display:block !important;
-  width:auto !important;
-  height:auto !important;
-  max-width:100% !important;
-  max-height:100% !important;
-  object-fit:contain !important;
-}
-#landing-index-preview.is-film{width:var(--landing-index-preview-width,840px) !important;height:var(--landing-index-preview-height,560px) !important;}
-#landing-index-preview.is-film video{
-  display:block !important;
-  width:100% !important;
-  height:100% !important;
-  object-fit:contain !important;
-  object-position:center center !important;
-}
-/* Difference spans live inside the same cell as their source, so there is no coordinate drift. */
-.landing-index-difference-text{
-  position:absolute !important;
-  left:0 !important;
-  top:0 !important;
-  width:100% !important;
-  height:100% !important;
-  display:block !important;
-  pointer-events:none !important;
-  white-space:nowrap !important;
-  color:#fff !important;
-  mix-blend-mode:difference !important;
-  -webkit-mix-blend-mode:difference !important;
-  clip-path:inset(0 100% 0 0) !important;
-  -webkit-clip-path:inset(0 100% 0 0) !important;
-  z-index:3 !important;
-}
-/* Use removal: real 3-column layout. */
-body.landing-index-hide-use .landing-index-grid,
-body.landing-index-hide-use .landing-index-header,
-body.landing-index-hide-use .landing-index-row{
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) !important;
-  column-gap:12px !important;
-}
-body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4){display:none !important;}
-body.landing-index-hide-use .landing-index-cell:nth-child(1),body.landing-index-hide-use .landing-index-header-cell:nth-child(1){justify-self:start !important;justify-content:flex-start !important;text-align:left !important;}
-body.landing-index-hide-use .landing-index-cell:nth-child(2),body.landing-index-hide-use .landing-index-header-cell:nth-child(2){justify-self:stretch !important;justify-content:center !important;text-align:center !important;}
-body.landing-index-hide-use .landing-index-cell:nth-child(3),body.landing-index-hide-use .landing-index-header-cell:nth-child(3){justify-self:end !important;justify-content:flex-end !important;text-align:right !important;}
-@media(max-width:1100px){
-  #landing-index-view > .landing-index-scroll{width:calc(100% - (2 * var(--page-x))) !important;max-width:none !important;}
-  .landing-index-grid{column-gap:14px !important;}
-  #landing-index-preview.is-film{width:min(92vw,900px) !important;height:min(50vh,520px) !important;}
-  #landing-index-preview:not(.is-film){width:min(78vw,560px) !important;height:min(54vh,620px) !important;}
-}
-@media(max-width:700px){.landing-index-grid{column-gap:10px !important;}}
-</style>
-<script id="landing-index-clean-final-js">
-(function(){
-  "use strict";
-  const scroll=document.getElementById("landing-index-scroll");
-  const grid=document.getElementById("landing-index-grid");
-  const preview=document.getElementById("landing-index-preview");
-  const previewImage=document.getElementById("landing-index-preview-image");
-  const previewVideo=document.getElementById("landing-index-preview-video");
-  if(!scroll||!grid||!preview||!previewImage||!previewVideo) return;
-
-  function resetMask(el){
-    if(!el) return;
-    el.style.maskImage="none"; el.style.webkitMaskImage="none";
-    el.style.maskSize="auto"; el.style.webkitMaskSize="auto";
-    el.style.maskRepeat="no-repeat"; el.style.webkitMaskRepeat="no-repeat";
-  }
-  function hideSpan(span){
-    if(!span) return;
-    span.style.clipPath="inset(0 100% 0 0)";
-    span.style.webkitClipPath=span.style.clipPath;
-  }
-  function clipToOverlap(span,base,pr){
-    if(!span||!base||!pr){hideSpan(span);return;}
-    const r=base.getBoundingClientRect();
-    const l=Math.max(r.left,pr.left), rr=Math.min(r.right,pr.right);
-    const t=Math.max(r.top,pr.top), b=Math.min(r.bottom,pr.bottom);
-    if(rr<=l||b<=t){hideSpan(span);resetMask(base);return;}
-    const left=l-r.left, right=r.right-rr, top=t-r.top, bottom=r.bottom-b;
-    span.style.clipPath=`inset(${top}px ${right}px ${bottom}px ${left}px)`;
-    span.style.webkitClipPath=span.style.clipPath;
-    const lp=((l-r.left)/r.width)*100, rp=((rr-r.left)/r.width)*100;
-    const mask=`linear-gradient(to right,#000 0%,#000 ${lp}%,transparent ${lp}%,transparent ${rp}%,#000 ${rp}%,#000 100%)`;
-    base.style.maskImage=mask; base.style.webkitMaskImage=mask;
-    base.style.maskSize="100% 100%"; base.style.webkitMaskSize="100% 100%";
-    base.style.maskRepeat="no-repeat"; base.style.webkitMaskRepeat="no-repeat";
-  }
-  function previewRect(){
-    const media=preview.classList.contains("is-film")?previewVideo:previewImage;
-    if(!media) return null;
-    const r=media.getBoundingClientRect();
-    if(!r.width||!r.height) return null;
-    const cs=getComputedStyle(media);
-    if(cs.visibility==="hidden"||cs.display==="none"||parseFloat(cs.opacity||"1")===0) return null;
-    return r;
-  }
-  function clearAll(){
-    grid.querySelectorAll(".landing-index-text").forEach(resetMask);
-    grid.querySelectorAll(".landing-index-difference-text").forEach(hideSpan);
-  }
-  function sync(){
-    clearAll();
-    const visible=preview.classList.contains("visible");
-    if(!visible) return;
-    const pr=previewRect();
-    if(!pr) return;
-    const activeRow=grid.querySelector(".landing-index-row.is-focus");
-    const activeHeader=grid.querySelector('.landing-index-header-cell[data-sort-active="true"]');
-    /* Only the header and hovered row are promoted above the preview. */
-    grid.querySelectorAll(".landing-index-header .landing-index-text").forEach(el=>{
-      const cell=el.closest(".landing-index-header-cell");
-      const diff=cell?.querySelector(".landing-index-difference-text");
-      if(cell===activeHeader) clipToOverlap(diff,el,pr);
-    });
-    /* Non-active headers: hide only their overlap, no difference layer. */
-    grid.querySelectorAll('.landing-index-header-cell:not([data-sort-active="true"]) .landing-index-text').forEach(el=>{
-      const r=el.getBoundingClientRect();
-      const l=Math.max(r.left,pr.left), rr=Math.min(r.right,pr.right);
-      if(rr>l){
-        const lp=((l-r.left)/r.width)*100,rp=((rr-r.left)/r.width)*100;
-        const mask=`linear-gradient(to right,#000 0%,#000 ${lp}%,transparent ${lp}%,transparent ${rp}%,#000 ${rp}%,#000 100%)`;
-        el.style.maskImage=mask;el.style.webkitMaskImage=mask;el.style.maskSize="100% 100%";el.style.webkitMaskSize="100% 100%";el.style.maskRepeat="no-repeat";el.style.webkitMaskRepeat="no-repeat";
-      }
-    });
-    if(activeHeader){
-      const base=activeHeader.querySelector(".landing-index-text"),diff=activeHeader.querySelector(".landing-index-difference-text");
-      clipToOverlap(diff,base,pr);
-    }
-    if(activeRow){
-      activeRow.querySelectorAll(".landing-index-cell").forEach(cell=>{
-        const base=cell.querySelector(".landing-index-text"),diff=cell.querySelector(".landing-index-difference-text");
-        clipToOverlap(diff,base,pr);
-      });
-    }
-  }
-  function position(){
-    const row=grid.querySelector(".landing-index-row.is-focus");
-    if(!row) return;
-    const colIndex=window.__landingIndexActiveColumnIndex||0;
-    const cell=row.children[colIndex]||row.children[0];
-    if(!cell) return;
-    const cr=cell.getBoundingClientRect(), sr=scroll.getBoundingClientRect();
-    const compact=window.innerWidth<=1100;
-    const isFilm=preview.classList.contains("is-film");
-    const cx=cr.left-sr.left+cr.width/2;
-    const cy=window.innerHeight/2-sr.top;
-    let w,h;
-    if(isFilm){w=compact?Math.min(window.innerWidth*.92,900):Math.min(window.innerWidth*.50,840);h=Math.min(w*9/16,compact?Math.min(window.innerHeight*.50,520):Math.min(window.innerHeight*.58,560));}
-    else{w=compact?Math.min(window.innerWidth*.78,560):Math.min(window.innerWidth*.32,560);h=compact?Math.min(window.innerHeight*.50,620):Math.min(window.innerHeight*.62,620);}
-    document.documentElement.style.setProperty("--landing-index-preview-center-x",cx+"px");
-    document.documentElement.style.setProperty("--landing-index-preview-top",cy+"px");
-    document.documentElement.style.setProperty("--landing-index-preview-width",w+"px");
-    document.documentElement.style.setProperty("--landing-index-preview-height",h+"px");
-  }
-  let raf=0;
-  function queue(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;position();sync();});}
-  grid.addEventListener("mouseenter",e=>{
-    const cell=e.target.closest(".landing-index-row .landing-index-cell");
-    if(cell){window.__landingIndexActiveColumnIndex=Array.prototype.indexOf.call(cell.parentElement.children,cell);queue();}
-  },true);
-  grid.addEventListener("mouseleave",()=>{window.__landingIndexActiveColumnIndex=0;queue();},true);
-  window.addEventListener("resize",queue,{passive:true});
-  window.addEventListener("orientationchange",()=>setTimeout(queue,100),{passive:true});
-  const mo=new MutationObserver(queue); mo.observe(grid,{subtree:true,childList:true,attributes:true,characterData:true,attributeFilter:["class","data-sort-active"]});
-  queue();
 })();
 </script>
 
