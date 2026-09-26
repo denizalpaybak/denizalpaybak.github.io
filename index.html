@@ -1373,7 +1373,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: min(720px, 78vw) !important;
+    width: min(600px, 70vw) !important;
     max-width: calc(100vw - (2 * var(--page-x))) !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1831,8 +1831,10 @@ body.landing-aybak-active #landing-aybak-end-card {
 .bio-flow-line.align-right {
     justify-content: flex-end !important;
 }
-.bio-flow-line.align-center {
-    justify-content: center !important;
+
+/* There is deliberately NO centered state: every visual line alternates left / right. */
+.bio-flow-line {
+    text-align: initial !important;
 }
 
 /* Collaborator rows remain atomic: names never break internally. */
@@ -1863,8 +1865,8 @@ body.landing-aybak-active #landing-aybak-end-card {
 
 @media (max-width: 600px) and (orientation: portrait) {
     .biography#biography {
-        width: 90vw !important;
-        max-width: 90vw !important;
+        width: 86vw !important;
+        max-width: 86vw !important;
     }
 }
 
@@ -1877,8 +1879,8 @@ body.landing-aybak-active #landing-aybak-end-card {
 
 @media (orientation: landscape) and (min-width: 1001px) {
     .biography#biography {
-        width: min(720px, 72vw) !important;
-        max-width: min(720px, 72vw) !important;
+        width: min(600px, 68vw) !important;
+        max-width: min(600px, 68vw) !important;
     }
 }
 
@@ -1909,6 +1911,86 @@ body.landing-aybak-active #landing-aybak-logo * {
 }
 </style>
 
+
+<style id="aybak-final-hit-target">
+#landing-aybak-end-card {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483640 !important;
+    isolation: isolate !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    pointer-events: auto !important;
+}
+
+#landing-aybak-logo {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2147483647 !important;
+    display: flex !important;
+    width: auto !important;
+    min-width: 120px !important;
+    min-height: 56px !important;
+    margin: 0 !important;
+    padding: 12px 20px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+}
+
+#landing-aybak-name,
+#landing-aybak-aybak {
+    pointer-events: none !important;
+}
+
+.landing-aybak-letter {
+    display: inline-block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+}
+
+@media (max-width: 600px) {
+    #landing-aybak-logo {
+        min-width: 140px !important;
+        min-height: 64px !important;
+    }
+}
+</style>
+
+<style id="aybak-corner-text-top-layer">
+/* Keep the landing corner labels above the full-screen AYBAK hit surface. */
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
+    position: fixed !important;
+    z-index: 2147483646 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
+    color: #fff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    text-shadow: none !important;
+}
+</style>
 </head>
 <body>
 <div class="page" id="page">
@@ -1938,7 +2020,8 @@ body.landing-aybak-active #landing-aybak-logo * {
 <section class="biography" id="biography">
     <div id="biography-flow" aria-live="off"></div>
 </section>
-<!-- FIXED CORNER UI: kept outside the landing-grid stacking context -->
+</main>
+<!-- FIXED CORNER UI: intentionally outside the landing-grid stacking context -->
 <nav class="navigation">
 <a href="https://photography.denizalpaybak.com/" id="photography-link">
 <span id="photography-text">
@@ -1973,8 +2056,178 @@ body.landing-aybak-active #landing-aybak-logo * {
 <span aria-hidden="true" id="landing-aybak-aybak"><span class="landing-aybak-letter" id="landing-aybak-letter-a">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-y">y</span><span class="landing-aybak-letter" id="landing-aybak-letter-b">b</span><span class="landing-aybak-letter" id="landing-aybak-letter-a2">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-k">k</span></span>
 </button>
 </section>
-</main></div>
+</div>
 <script>
+/* =====================================================
+   AYBAK END-CARD FALLBACK INTERACTION
+
+   This runs before the main landing script so the centered AYBAK
+   remains interactive even if another part of the landing script
+   encounters a runtime error. Pointer movement/clicks are checked
+   at document level as well as directly on the button, avoiding any
+   stacking/pointer-events conflict with the surrounding landing UI.
+   ===================================================== */
+(() => {
+    const card = document.getElementById("landing-aybak-end-card");
+    const logo = document.getElementById("landing-aybak-logo");
+    const name = document.getElementById("landing-aybak-name");
+    const word = document.getElementById("landing-aybak-aybak");
+
+    if (!card || !logo || !name || !word) {
+        return;
+    }
+
+    const letters = Array.from(
+        word.querySelectorAll(".landing-aybak-letter")
+    );
+
+    const lower = ["a", "y", "b", "a", "k"];
+    const upper = ["A", "Y", "B", "A", "K"];
+
+    let state = 0;
+    let target = 0;
+    let timer = null;
+    let finishTimer = null;
+    let pointerInside = false;
+    let finishing = false;
+
+    function isDesktopPointer() {
+        return window.matchMedia(
+            "(hover: hover) and (pointer: fine)"
+        ).matches;
+    }
+
+    function active() {
+        return document.body.classList.contains(
+            "landing-aybak-active"
+        );
+    }
+
+    function render(next) {
+        state = Math.max(0, Math.min(5, next));
+        name.textContent = state === 0 ? "Denizalp" : "denizalp";
+
+        letters.forEach((letter, index) => {
+            letter.textContent = index < state
+                ? upper[index]
+                : lower[index];
+        });
+    }
+
+    function animate(next) {
+        target = Math.max(0, Math.min(5, next));
+
+        if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+
+        const step = () => {
+            if (state === target) {
+                timer = null;
+                return;
+            }
+
+            render(state < target ? state + 1 : state - 1);
+            timer = setTimeout(step, 80);
+        };
+
+        step();
+    }
+
+    function rectContains(x, y) {
+        const rect = logo.getBoundingClientRect();
+        return (
+            x >= rect.left &&
+            x <= rect.right &&
+            y >= rect.top &&
+            y <= rect.bottom
+        );
+    }
+
+    function finish() {
+        if (finishing) return;
+        finishing = true;
+
+        if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+
+        if (finishTimer !== null) {
+            clearTimeout(finishTimer);
+            finishTimer = null;
+        }
+
+        document.body.classList.add("landing-aybak-leaving");
+        document.documentElement.classList.add("landing-aybak-leaving");
+
+        /* Let the uppercase state hold before the black card fades. */
+        finishTimer = setTimeout(() => {
+            document.body.classList.remove("landing-aybak-active");
+            document.documentElement.classList.remove("landing-aybak-active");
+            document.body.classList.remove("landing-aybak-leaving");
+            document.documentElement.classList.remove("landing-aybak-leaving");
+            card.setAttribute("aria-hidden", "true");
+            render(0);
+            finishing = false;
+            finishTimer = null;
+        }, 620);
+    }
+
+    logo.addEventListener("pointerenter", () => {
+        pointerInside = true;
+        if (active() && !finishing && isDesktopPointer()) {
+            animate(5);
+        }
+    });
+
+    logo.addEventListener("pointerleave", () => {
+        pointerInside = false;
+        if (active() && !finishing && isDesktopPointer()) {
+            animate(0);
+        }
+    });
+
+    logo.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!active() || finishing) return;
+
+        animate(5);
+        if (finishTimer !== null) {
+            clearTimeout(finishTimer);
+        }
+        finishTimer = setTimeout(finish, 520);
+    });
+
+    document.addEventListener("pointermove", event => {
+        if (!active() || finishing || !isDesktopPointer()) return;
+
+        const inside = rectContains(event.clientX, event.clientY);
+
+        if (inside === pointerInside) return;
+        pointerInside = inside;
+
+        animate(inside ? 5 : 0);
+    }, true);
+
+    document.addEventListener("click", event => {
+        if (!active() || finishing || event.target === logo) return;
+        if (!rectContains(event.clientX, event.clientY)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        animate(5);
+        if (finishTimer !== null) {
+            clearTimeout(finishTimer);
+        }
+        finishTimer = setTimeout(finish, 520);
+    }, true);
+
+    render(0);
+})();
 
 /* =====================================================
    DATA
@@ -2223,51 +2476,108 @@ function splitWordsToBalancedLines(text, maxWidth) {
         return [text.trim()];
     }
 
-    const lines = [];
-    let current = [];
+    /*
+       Find the fewest lines that fit, then choose the most balanced
+       partition for that line count. This prevents a short tail such as
+       “sabanci university,” from being stranded on its own while still
+       respecting the real measured width of the typography.
+    */
+    const n = words.length;
+    const rangeWidth = Array.from({ length: n }, () => Array(n).fill(0));
 
-    for (const word of words) {
-        const candidate = current.length ? `${current.join(" ")} ${word}` : word;
-        if (current.length && measureBioText(candidate) > maxWidth) {
-            lines.push(current.join(" "));
-            current = [word];
-        } else {
-            current.push(word);
+    for (let i = 0; i < n; i += 1) {
+        let value = "";
+        for (let j = i; j < n; j += 1) {
+            value = value ? `${value} ${words[j]}` : words[j];
+            rangeWidth[i][j] = measureBioText(value);
         }
     }
-    if (current.length) lines.push(current.join(" "));
 
-    /* Never leave a one-word tail when moving one or more preceding words can balance it. */
-    while (lines.length > 1 && lines[lines.length - 1].split(/\s+/).length === 1) {
-        const last = lines[lines.length - 1];
-        const previousWords = lines[lines.length - 2].split(/\s+/);
-        if (previousWords.length <= 1) break;
+    const memo = new Map();
 
-        let moved = false;
-        for (let take = 1; take < previousWords.length; take += 1) {
-            const candidatePrev = previousWords.slice(0, previousWords.length - take).join(" ");
-            const candidateLast = previousWords.slice(previousWords.length - take).concat(last).join(" ");
+    function bestFrom(start, linesLeft) {
+        const key = `${start}|${linesLeft}`;
+        if (memo.has(key)) return memo.get(key);
+
+        if (start === n) {
+            const empty = linesLeft === 0 ? { score: 0, lines: [] } : null;
+            memo.set(key, empty);
+            return empty;
+        }
+
+        if (linesLeft <= 0 || n - start < linesLeft) {
+            memo.set(key, null);
+            return null;
+        }
+
+        let best = null;
+
+        for (let end = start; end < n; end += 1) {
+            const width = rangeWidth[start][end];
+            if (width > maxWidth) break;
+
+            const tail = bestFrom(end + 1, linesLeft - 1);
+            if (!tail) continue;
+
+            const lineText = words.slice(start, end + 1).join(" ");
+            const wordCount = end - start + 1;
+            /* Never strand a two-word tail when a longer balanced tail is possible. */
             if (
-                candidatePrev &&
-                measureBioText(candidateLast) <= maxWidth
+                end === n - 1 &&
+                wordCount <= 2 &&
+                start > 0
             ) {
-                lines[lines.length - 2] = candidatePrev;
-                lines[lines.length - 1] = candidateLast;
-                moved = true;
-                break;
+                continue;
+            }
+
+            const shortLinePenalty = wordCount === 1 ? 2500 : 0;
+            const shortTailPenalty = (end === n - 1 && wordCount <= 2) ? 4500 : 0;
+
+            const score =
+                (maxWidth - width) * (maxWidth - width) * 0.015 +
+                shortLinePenalty +
+                shortTailPenalty +
+                tail.score;
+
+            const candidate = {
+                score,
+                lines: [lineText, ...tail.lines],
+                widths: [width, ...(tail.widths || [])]
+            };
+
+            if (!best || candidate.score < best.score) {
+                best = candidate;
             }
         }
-        if (!moved) break;
+
+        memo.set(key, best);
+        return best;
     }
 
-    return lines;
+    for (let lineCount = 2; lineCount <= n; lineCount += 1) {
+        memo.clear();
+        const result = bestFrom(0, lineCount);
+        if (result) return result.lines;
+    }
+
+    return [text.trim()];
 }
 
 function alignmentClass(lineIndex) {
-    const mod = lineIndex % 3;
-    if (mod === 0) return "align-left";
-    if (mod === 1) return "align-right";
-    return "align-center";
+    return lineIndex % 2 === 0
+        ? "align-left"
+        : "align-right";
+}
+
+function applyBioLineAlignment(line, lineIndex) {
+    const isLeft = lineIndex % 2 === 0;
+    line.classList.remove("align-left", "align-right", "align-center");
+    line.classList.add(isLeft ? "align-left" : "align-right");
+    line.style.setProperty(
+        "justify-content",
+        isLeft ? "flex-start" : "flex-end",
+        "important"
+    );
 }
 
 function appendBioTextLines(container, text, state) {
@@ -2277,10 +2587,13 @@ function appendBioTextLines(container, text, state) {
     for (const lineText of lines) {
         const line = document.createElement("div");
         line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        const text = document.createElement("span");
-        text.className = "bio-flow-text";
-        text.textContent = lineText;
-        line.appendChild(text);
+        applyBioLineAlignment(line, state.index);
+
+        const textNode = document.createElement("span");
+        textNode.className = "bio-flow-text";
+        textNode.textContent = lineText;
+        line.appendChild(textNode);
+
         container.appendChild(line);
         state.index += 1;
     }
@@ -2293,6 +2606,7 @@ function appendClientLines(container, names, groupSize, state) {
     if (measureBioText(full) <= width) {
         const line = document.createElement("div");
         line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+        applyBioLineAlignment(line, state.index);
         const text = document.createElement("span");
         text.className = "bio-flow-text";
         text.textContent = full;
@@ -2311,6 +2625,7 @@ function appendClientLines(container, names, groupSize, state) {
     for (const group of groups) {
         const line = document.createElement("div");
         line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+        applyBioLineAlignment(line, state.index);
         const text = document.createElement("span");
         text.className = "bio-flow-text";
         text.textContent = group;
