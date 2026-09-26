@@ -9470,10 +9470,8 @@ window.addEventListener("resize", () => {
     }
 
     /*
-       The list is centered as a whole. On desktop its horizontal
-       breathing room follows the width of the longest bottom-corner
-       label, while the actual list keeps the full remaining width.
-       This prevents the index from becoming artificially narrow.
+       The index occupies the full safe width between the longest
+       bottom-corner labels. It is centered vertically and horizontally.
     */
     #landing-index-view {
         display: flex !important;
@@ -9499,11 +9497,11 @@ window.addEventListener("resize", () => {
         margin: 0 !important;
         justify-content: stretch !important;
         grid-template-columns:
-            minmax(0, 2.25fr)
-            minmax(0, 1.05fr)
-            minmax(0, 0.95fr)
-            minmax(0, 0.95fr) !important;
-        column-gap: clamp(22px, 3.2vw, 64px) !important;
+            minmax(0, 1.50fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr) !important;
+        column-gap: clamp(28px, 2.8vw, 48px) !important;
         row-gap: 0 !important;
     }
 
@@ -9517,6 +9515,8 @@ window.addEventListener("resize", () => {
     /* One blank text line between the filters and the first project. */
     .landing-index-header {
         margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+        position: relative;
+        z-index: 70 !important;
     }
 
     /* Never let a project name wrap to a second line. */
@@ -9528,12 +9528,17 @@ window.addEventListener("resize", () => {
         hyphens: none !important;
     }
 
+    /* Header labels use the same left edge as each column's content. */
+    .landing-index-header-cell {
+        text-align: left !important;
+    }
+
     /* Real column removal: USE disappears rather than wrapping. */
     body.landing-index-hide-use .landing-index-grid {
         grid-template-columns:
-            minmax(0, 2.25fr)
-            minmax(0, 1.05fr)
-            minmax(0, 0.95fr) !important;
+            minmax(0, 1.50fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr) !important;
     }
 
     body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
@@ -9541,40 +9546,41 @@ window.addEventListener("resize", () => {
         display: none !important;
     }
 
-    /* Short field label on small / tablet viewports. */
-    @media (max-width: 1100px) {
-        .landing-index-grid {
-            column-gap: clamp(14px, 2.6vw, 30px) !important;
-        }
+    /* =====================================================
+       PREVIEW STACKING
 
-        .landing-index-scroll {
-            width: calc(100% - (2 * var(--page-x))) !important;
-        }
+       Header + hovered row sit above the preview.
+       The preview sits above every other project row.
+       ===================================================== */
+
+    .landing-index-row {
+        position: relative !important;
+        z-index: 30 !important;
     }
 
-    @media (max-width: 1100px) and (orientation: portrait) {
-        .landing-index-grid {
-            column-gap: clamp(10px, 2.8vw, 22px) !important;
-        }
+    .landing-index-row.is-focus {
+        z-index: 60 !important;
     }
 
-    /* Two-line paragraph gaps on INFO. */
-    body.landing-info-mode .bio-paragraph-gap,
-    body.landing-info-mode .biography .bio-paragraph-gap {
-        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+    #landing-index-preview {
+        z-index: 40 !important;
+    }
+
+    /* The preview is centered inside whichever column is being hovered. */
+    #landing-index-preview {
+        left: var(--landing-index-preview-center-x, 50%);
+        top: 50%;
+        width: var(--landing-index-preview-width, min(30vw, 520px));
+        height: var(--landing-index-preview-height, min(58vh, 620px));
     }
 
     /* =====================================================
        TEXT / PREVIEW NEGATIVE INTERSECTION
        ===================================================== */
 
-    .landing-index-cell {
+    .landing-index-cell,
+    .landing-index-header-cell {
         position: relative !important;
-        mix-blend-mode: normal !important;
-    }
-
-    .landing-index-row:hover .landing-index-cell,
-    .landing-index-row.is-focus .landing-index-cell {
         mix-blend-mode: normal !important;
     }
 
@@ -9598,19 +9604,55 @@ window.addEventListener("resize", () => {
         display: block;
         width: max-content;
         max-width: none;
-        color: #fff;
+        color: #fff !important;
         font-size: inherit;
         line-height: inherit;
         pointer-events: none;
         white-space: nowrap;
-        mix-blend-mode: difference;
+        mix-blend-mode: difference !important;
         clip-path: inset(0 100% 0 0);
         -webkit-clip-path: inset(0 100% 0 0);
         will-change: clip-path;
     }
 
-    .landing-index-cell > span:not(.landing-index-difference-text) {
+    .landing-index-cell > span:not(.landing-index-difference-text),
+    .landing-index-header-cell > span:not(.landing-index-difference-text) {
         pointer-events: none;
+    }
+
+    /* =====================================================
+       SMALL / TABLET VIEWPORTS
+       ===================================================== */
+
+    @media (max-width: 1100px) {
+        .landing-index-grid {
+            column-gap: clamp(14px, 2.6vw, 30px) !important;
+        }
+
+        .landing-index-scroll {
+            width: calc(100% - (2 * var(--page-x))) !important;
+        }
+    }
+
+    @media (max-width: 1100px) and (orientation: portrait) {
+        .landing-index-grid {
+            column-gap: clamp(10px, 2.8vw, 22px) !important;
+        }
+    }
+
+    /* Two blank text lines between INFO paragraphs. */
+    body.landing-info-mode .bio-paragraph-gap,
+    body.landing-info-mode .biography .bio-paragraph-gap {
+        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+    }
+
+    body.landing-aybak-active #landing-section-nav {
+        z-index: 2147483647;
+    }
+
+    body.landing-aybak-active #landing-section-nav button {
+        color: #fff !important;
+        mix-blend-mode: normal !important;
     }
 </style>
 
@@ -9628,16 +9670,20 @@ window.addEventListener("resize", () => {
         <div class="landing-index-grid" id="landing-index-grid">
             <div class="landing-index-header">
                 <button class="landing-index-header-cell" data-sort-key="title" type="button">
-                    <span>title</span>
+                    <span class="landing-index-text">title</span>
+                    <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="date" type="button">
-                    <span>date</span>
+                    <span class="landing-index-text">date</span>
+                    <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="field" type="button">
-                    <span>field</span>
+                    <span class="landing-index-text">field</span>
+                    <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
                 <button class="landing-index-header-cell" data-sort-key="use" type="button">
-                    <span>use</span>
+                    <span class="landing-index-text">use</span>
+                    <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
             </div>
         </div>
@@ -9867,6 +9913,7 @@ window.addEventListener("resize", () => {
     let allRecords = [];
     let rowStates = [];
     let activePreviewRow = null;
+    let activePreviewColumnIndex = 0;
     let activeDifferenceFrame = null;
 
     let previewRecord = null;
@@ -9931,6 +9978,12 @@ window.addEventListener("resize", () => {
         return allRecords.slice().sort(compareRecords);
     }
 
+    function setDifferenceHidden(span) {
+        if (!span) return;
+        span.style.clipPath = "inset(0 100% 0 0)";
+        span.style.webkitClipPath = "inset(0 100% 0 0)";
+    }
+
     function clearDifferenceLayers() {
         if (activeDifferenceFrame !== null) {
             cancelAnimationFrame(activeDifferenceFrame);
@@ -9938,13 +9991,46 @@ window.addEventListener("resize", () => {
         }
 
         rowStates.forEach(state => {
-            state.differenceSpans?.forEach(span => {
-                span.style.clipPath = "inset(0 100% 0 0)";
-                span.style.webkitClipPath = "inset(0 100% 0 0)";
-            });
+            state.differenceSpans?.forEach(setDifferenceHidden);
+        });
+
+        headerButtons.forEach(button => {
+            button.querySelectorAll(".landing-index-difference-text")
+                .forEach(setDifferenceHidden);
         });
 
         activePreviewRow = null;
+    }
+
+    function clipDifferenceToPreview(span, textElement, previewRect) {
+        if (!span || !textElement || !previewRect) {
+            setDifferenceHidden(span);
+            return;
+        }
+
+        const textRect = textElement.getBoundingClientRect();
+        if (!textRect.width || !textRect.height) {
+            setDifferenceHidden(span);
+            return;
+        }
+
+        const left = Math.max(textRect.left, previewRect.left);
+        const top = Math.max(textRect.top, previewRect.top);
+        const right = Math.min(textRect.right, previewRect.right);
+        const bottom = Math.min(textRect.bottom, previewRect.bottom);
+
+        if (right <= left || bottom <= top) {
+            setDifferenceHidden(span);
+            return;
+        }
+
+        const topInset = Math.max(0, top - textRect.top);
+        const rightInset = Math.max(0, textRect.right - right);
+        const bottomInset = Math.max(0, textRect.bottom - bottom);
+        const leftInset = Math.max(0, left - textRect.left);
+
+        span.style.clipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
+        span.style.webkitClipPath = span.style.clipPath;
     }
 
     function getVisiblePreviewRect() {
@@ -9958,7 +10044,11 @@ window.addEventListener("resize", () => {
         if (!rect.width || !rect.height) return null;
 
         const styles = getComputedStyle(target);
-        if (styles.visibility === "hidden" || styles.display === "none" || parseFloat(styles.opacity || "1") === 0) {
+        if (
+            styles.visibility === "hidden" ||
+            styles.display === "none" ||
+            parseFloat(styles.opacity || "1") === 0
+        ) {
             return null;
         }
 
@@ -9975,41 +10065,67 @@ window.addEventListener("resize", () => {
 
         const previewRect = getVisiblePreviewRect();
         if (!previewRect) {
-            activePreviewRow.differenceSpans?.forEach(span => {
-                span.style.clipPath = "inset(0 100% 0 0)";
-                span.style.webkitClipPath = "inset(0 100% 0 0)";
+            rowStates.forEach(state => {
+                state.differenceSpans?.forEach(setDifferenceHidden);
+            });
+            headerButtons.forEach(button => {
+                button.querySelectorAll(".landing-index-difference-text")
+                    .forEach(setDifferenceHidden);
             });
             return;
         }
 
+        /* Header row: always above the preview. */
+        headerButtons.forEach(button => {
+            const textElement = button.querySelector(".landing-index-text");
+            const difference = button.querySelector(".landing-index-difference-text");
+            clipDifferenceToPreview(difference, textElement, previewRect);
+        });
+
+        /* Hovered row: always above the preview. */
         activePreviewRow.differenceSpans?.forEach(span => {
-            const textRect = span.previousElementSibling?.getBoundingClientRect?.();
-            if (!textRect || !textRect.width || !textRect.height) return;
-
-            const left = Math.max(textRect.left, previewRect.left);
-            const top = Math.max(textRect.top, previewRect.top);
-            const right = Math.min(textRect.right, previewRect.right);
-            const bottom = Math.min(textRect.bottom, previewRect.bottom);
-
-            if (right <= left || bottom <= top) {
-                span.style.clipPath = "inset(0 100% 0 0)";
-                span.style.webkitClipPath = "inset(0 100% 0 0)";
-                return;
-            }
-
-            const topInset = Math.max(0, top - textRect.top);
-            const rightInset = Math.max(0, textRect.right - right);
-            const bottomInset = Math.max(0, textRect.bottom - bottom);
-            const leftInset = Math.max(0, left - textRect.left);
-
-            span.style.clipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
-            span.style.webkitClipPath = `inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`;
+            const textElement = span.previousElementSibling;
+            clipDifferenceToPreview(span, textElement, previewRect);
         });
     }
 
     function queueDifferenceLayerUpdate() {
         if (activeDifferenceFrame !== null) return;
         activeDifferenceFrame = requestAnimationFrame(updateDifferenceLayers);
+    }
+
+    function positionPreviewInColumn(columnIndex = activePreviewColumnIndex) {
+        if (!activePreviewRow) return;
+
+        const cells = activePreviewRow.row.children;
+        const cell = cells[columnIndex] || cells[0];
+        if (!cell) return;
+
+        const rect = cell.getBoundingClientRect();
+        if (!rect.width) return;
+
+        const centerX = rect.left + rect.width / 2;
+        const width = Math.min(
+            Math.max(220, rect.width * 0.96),
+            Math.min(window.innerWidth * 0.42, 560)
+        );
+        const height = Math.min(
+            Math.max(180, window.innerHeight * 0.58),
+            620
+        );
+
+        document.documentElement.style.setProperty(
+            "--landing-index-preview-center-x",
+            `${centerX}px`
+        );
+        document.documentElement.style.setProperty(
+            "--landing-index-preview-width",
+            `${width}px`
+        );
+        document.documentElement.style.setProperty(
+            "--landing-index-preview-height",
+            `${height}px`
+        );
     }
 
     function clearPreview() {
@@ -10022,6 +10138,14 @@ window.addEventListener("resize", () => {
         previewVideo.removeAttribute("poster");
         previewVideo.load();
         previewImage.removeAttribute("src");
+        activePreviewColumnIndex = 0;
+    }
+
+    function encodePath(pathname) {
+        return pathname
+            .split("/")
+            .map(segment => encodeURIComponent(segment))
+            .join("/");
     }
 
     function setPhotoPreview(record) {
@@ -10031,14 +10155,13 @@ window.addEventListener("resize", () => {
             return;
         }
 
-        /* Mirrors the photography site's INDEX preview logic:
-           the source filename is converted to its lightweight .webp thumbnail. */
+        /* Photography INDEX source: lightweight .webp thumbnail. */
         const filename = project.cover || project.images[0];
         const dotIndex = filename.lastIndexOf(".");
         const thumb = dotIndex > 0
             ? filename.slice(0, dotIndex) + ".webp"
             : filename + ".webp";
-        const src = PHOTO_THUMB_BASE + encodeURIComponent(thumb);
+        const src = PHOTO_THUMB_BASE + encodePath(thumb);
 
         previewVideo.pause();
         previewVideo.removeAttribute("src");
@@ -10048,37 +10171,63 @@ window.addEventListener("resize", () => {
         indexPreview.classList.remove("is-film");
         indexPreview.classList.add("visible");
         indexPreview.setAttribute("aria-hidden", "false");
-        queueDifferenceLayerUpdate();
+        requestAnimationFrame(() => {
+            positionPreviewInColumn();
+            queueDifferenceLayerUpdate();
+        });
     }
 
     function setFilmPreview(record) {
         const project = record.source;
-        if (!project?.videos?.length) {
+        const videos = Array.isArray(project?.videos) && project.videos.length
+            ? project.videos
+            : project?.originalVideos;
+
+        if (!videos?.length) {
             clearPreview();
             return;
         }
 
-        /* Mirrors the film site's own INDEX / VIEW ALL preview URL:
-           master filename -> /film-previews/<name>_preview.mp4.
-           These files are the lightweight six-second web previews. */
-        const filename = project.videos[0];
-        const previewFilename = filename.replace(/\.mp4$/i, "_preview.mp4");
-        const src = FILM_PREVIEW_BASE + encodeURIComponent(previewFilename);
+        /* Exact same derivation as the Film site's INDEX:
+           films/<master>.mp4 -> film-previews/<master>_preview.mp4.
+           These are the dedicated lightweight ~6-second previews. */
+        const filename = videos[0];
+        const previewFilename = /_preview\.mp4$/i.test(filename)
+            ? filename
+            : filename.replace(/\.mp4$/i, "_preview.mp4");
+        const src = FILM_PREVIEW_BASE + encodePath(previewFilename);
 
         previewImage.removeAttribute("src");
+        previewVideo.pause();
+        previewVideo.removeAttribute("src");
+        previewVideo.removeAttribute("poster");
         previewVideo.dataset.filename = filename;
-        previewVideo.src = src;
-        previewVideo.currentTime = 0;
         previewVideo.muted = true;
         previewVideo.defaultMuted = true;
         previewVideo.playsInline = true;
+        previewVideo.autoplay = true;
         previewVideo.loop = true;
+        previewVideo.controls = false;
         previewVideo.preload = "auto";
+        previewVideo.src = src;
         previewVideo.load();
-        previewVideo.play().catch(() => {});
+
+        const startPlayback = () => {
+            previewVideo.currentTime = 0;
+            previewVideo.play().catch(() => {});
+            positionPreviewInColumn();
+            queueDifferenceLayerUpdate();
+        };
+
+        previewVideo.addEventListener("loadeddata", startPlayback, { once: true });
+        previewVideo.addEventListener("canplay", startPlayback, { once: true });
+
         indexPreview.classList.add("visible", "is-film");
         indexPreview.setAttribute("aria-hidden", "false");
-        queueDifferenceLayerUpdate();
+        requestAnimationFrame(() => {
+            positionPreviewInColumn();
+            queueDifferenceLayerUpdate();
+        });
     }
 
     function selectPreview(record) {
@@ -10306,9 +10455,13 @@ window.addEventListener("resize", () => {
         const enter = () => {
             row.classList.add("is-focus");
             activePreviewRow = state;
+            activePreviewColumnIndex = 0;
             cases.forEach(controller => controller.upper());
             selectPreview(record);
-            queueDifferenceLayerUpdate();
+            requestAnimationFrame(() => {
+                positionPreviewInColumn();
+                queueDifferenceLayerUpdate();
+            });
         };
 
         const leave = () => {
@@ -10316,6 +10469,15 @@ window.addEventListener("resize", () => {
             cases.forEach(controller => controller.lower());
             if (previewRecord === record) clearPreview();
         };
+
+        Array.from(row.children).forEach((cell, columnIndex) => {
+            cell.addEventListener("mouseenter", () => {
+                if (!activePreviewRow || activePreviewRow !== state) return;
+                activePreviewColumnIndex = columnIndex;
+                positionPreviewInColumn(columnIndex);
+                queueDifferenceLayerUpdate();
+            });
+        });
 
         row.addEventListener("mouseenter", enter);
         row.addEventListener("mouseleave", leave);
@@ -10396,8 +10558,9 @@ window.addEventListener("resize", () => {
     }
 
     headerButtons.forEach(button => {
-        const span = button.querySelector("span");
-        button.__caseController = createCaseMorph(span, button.dataset.sortKey);
+        const span = button.querySelector(".landing-index-text");
+        const difference = button.querySelector(".landing-index-difference-text");
+        button.__caseController = createCaseMorph(span, button.dataset.sortKey, difference);
         button.addEventListener("click", () => handleSort(button.dataset.sortKey));
     });
 
@@ -10552,6 +10715,7 @@ window.addEventListener("resize", () => {
         () => {
             updateLandingIndexSideSpace();
             queueLandingIndexResponsiveLayout();
+            positionPreviewInColumn();
             queueDifferenceLayerUpdate();
         },
         { passive: true }
@@ -10560,6 +10724,7 @@ window.addEventListener("resize", () => {
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => {
             updateLandingIndexSideSpace();
+            positionPreviewInColumn();
             queueDifferenceLayerUpdate();
         });
     }
@@ -10571,6 +10736,7 @@ window.addEventListener("resize", () => {
                 () => {
                     updateLandingIndexSideSpace();
                     queueLandingIndexResponsiveLayout();
+                    positionPreviewInColumn();
                     queueDifferenceLayerUpdate();
                 },
                 100
