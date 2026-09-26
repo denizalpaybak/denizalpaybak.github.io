@@ -9836,10 +9836,10 @@ window.addEventListener("resize", () => {
                     <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
             </div>
-            <div id="landing-index-preview" aria-hidden="true">
-                <img id="landing-index-preview-image" alt="" />
-                <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
-            </div>
+        </div>
+        <div id="landing-index-preview" aria-hidden="true">
+            <img id="landing-index-preview-image" alt="" />
+            <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
         </div>
     </div>
 </section>
@@ -10539,15 +10539,15 @@ window.addEventListener("resize", () => {
         if (!cell) return;
 
         const cellRect = cell.getBoundingClientRect();
-        const gridRect = indexGrid.getBoundingClientRect();
-        if (!cellRect.width || !gridRect.width) return;
+        const scrollRect = indexScroll.getBoundingClientRect();
+        if (!cellRect.width || !scrollRect.width) return;
 
         const isFilm = normalized(activePreviewRow.record?.field) === "film";
         const compactViewport = window.innerWidth <= 1100;
 
         const centerXViewport = cellRect.left + cellRect.width / 2;
-        const centerX = centerXViewport - gridRect.left;
-        const centerY = (window.innerHeight / 2) - gridRect.top;
+        const centerX = centerXViewport - scrollRect.left;
+        const centerY = (window.innerHeight / 2) - scrollRect.top;
 
         let width;
         let height;
@@ -11501,5 +11501,313 @@ body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
     }
 }
 </style>
+
+<style id="landing-index-authoritative-final">
+/* =====================================================
+   AUTHORITATIVE INDEX LAYOUT + STACKING
+   ===================================================== */
+
+#landing-index-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483645 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+}
+
+#landing-index-view > .landing-index-scroll {
+    position: relative !important;
+    z-index: 1 !important;
+    width: min(900px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+    max-width: 900px !important;
+    height: auto !important;
+    max-height: calc(100dvh - (2 * var(--page-top))) !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+}
+
+/* The grid is ONLY the text plane. The preview is now a sibling. */
+.landing-index-grid {
+    position: relative !important;
+    z-index: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: max-content max-content minmax(120px, 1fr) max-content !important;
+    column-gap: clamp(28px, 3vw, 54px) !important;
+    row-gap: 0 !important;
+    justify-content: stretch !important;
+    align-items: baseline !important;
+}
+
+.landing-index-header,
+.landing-index-row {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-column: 1 / -1 !important;
+    grid-template-columns: inherit !important;
+    column-gap: inherit !important;
+    align-items: baseline !important;
+}
+
+.landing-index-header {
+    z-index: 40 !important;
+    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+}
+
+.landing-index-row {
+    z-index: 1 !important;
+    min-height: calc(var(--font-size) * var(--line-height)) !important;
+}
+
+.landing-index-row.is-focus {
+    z-index: 40 !important;
+}
+
+.landing-index-cell,
+.landing-index-header-cell {
+    position: relative !important;
+    z-index: auto !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+/* Left group: TITLE / DATE. Right group: FIELD / USE. */
+.landing-index-cell:nth-child(1),
+.landing-index-header-cell:nth-child(1),
+.landing-index-cell:nth-child(2),
+.landing-index-header-cell:nth-child(2) {
+    text-align: left !important;
+    justify-self: start !important;
+    justify-content: flex-start !important;
+}
+
+.landing-index-cell:nth-child(3),
+.landing-index-header-cell:nth-child(3),
+.landing-index-cell:nth-child(4),
+.landing-index-header-cell:nth-child(4) {
+    text-align: right !important;
+    justify-self: stretch !important;
+    justify-content: flex-end !important;
+}
+
+/* The preview is between ordinary rows and promoted text. */
+#landing-index-preview {
+    position: absolute !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    left: var(--landing-index-preview-center-x, 50%) !important;
+    top: var(--landing-index-preview-top, 50%) !important;
+    width: var(--landing-index-preview-width, min(34vw, 560px)) !important;
+    height: var(--landing-index-preview-height, min(60vh, 620px)) !important;
+    transform: translate(-50%, -50%) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#landing-index-preview.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#landing-index-preview img {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+}
+
+#landing-index-preview.is-film {
+    width: var(--landing-index-preview-width, min(54vw, 900px)) !important;
+    height: var(--landing-index-preview-height, min(54vh, 580px)) !important;
+}
+
+#landing-index-preview.is-film video {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+}
+
+/* All text stays normal unless it is the promoted row/header. */
+.landing-index-text {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    pointer-events: none !important;
+}
+
+/* Promoted uppercase text creates the true image negative. */
+.landing-index-row.is-focus .landing-index-text,
+.landing-index-header .landing-index-header-cell[data-sort-active="true"] .landing-index-text {
+    color: #fff !important;
+    mix-blend-mode: difference !important;
+    -webkit-mix-blend-mode: difference !important;
+}
+
+/* Non-active lowercase header words remain above the preview, but their
+   exact geometric overlap is hidden by the runtime mask. */
+.landing-index-difference-text {
+    display: none !important;
+}
+
+/* Three-column version when USE is removed: LEFT / CENTER / RIGHT. */
+body.landing-index-hide-use .landing-index-grid {
+    grid-template-columns: max-content minmax(0, 1fr) max-content !important;
+    column-gap: 0 !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+    display: none !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1) {
+    justify-self: start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2) {
+    justify-self: stretch !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
+    justify-self: end !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+@media (max-width: 1100px) {
+    #landing-index-view > .landing-index-scroll {
+        width: calc(100% - (2 * var(--page-x))) !important;
+        max-width: none !important;
+    }
+
+    .landing-index-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+        column-gap: clamp(12px, 2.4vw, 22px) !important;
+    }
+}
+
+@media (max-width: 1100px) and (orientation: portrait) {
+    .landing-index-grid {
+        column-gap: clamp(8px, 2.4vw, 18px) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    #landing-index-view > .landing-index-scroll {
+        width: calc(100% - (2 * var(--page-x))) !important;
+    }
+}
+</style>
+
+
+<script id="landing-index-authoritative-js-fix">
+(function () {
+    function applyFinalIndexLayering() {
+        const scroll = document.getElementById("landing-index-scroll");
+        const grid = document.getElementById("landing-index-grid");
+        const preview = document.getElementById("landing-index-preview");
+        if (!scroll || !grid || !preview) return;
+
+        /* Ensure the preview is a sibling of the text grid. */
+        if (preview.parentElement !== scroll) {
+            scroll.appendChild(preview);
+        }
+
+        /* Remove stale per-element blend state from ordinary rows. */
+        grid.querySelectorAll(".landing-index-row:not(.is-focus) .landing-index-text").forEach(el => {
+            el.style.mixBlendMode = "";
+            el.style.webkitMixBlendMode = "";
+            el.style.color = "";
+        });
+    }
+
+    function preciseHeaderMask() {
+        const preview = document.getElementById("landing-index-preview");
+        if (!preview || !preview.classList.contains("visible")) return;
+        const target = preview.querySelector("img, video");
+        if (!target) return;
+        const pr = target.getBoundingClientRect();
+        if (!pr.width || !pr.height) return;
+
+        document.querySelectorAll(".landing-index-header-cell").forEach(cell => {
+            const text = cell.querySelector(".landing-index-text");
+            if (!text) return;
+            const active = cell.dataset.sortActive === "true";
+            if (active) {
+                text.style.maskImage = "none";
+                text.style.webkitMaskImage = "none";
+                return;
+            }
+
+            const r = text.getBoundingClientRect();
+            const l = Math.max(r.left, pr.left);
+            const rr = Math.min(r.right, pr.right);
+            const t = Math.max(r.top, pr.top);
+            const b = Math.min(r.bottom, pr.bottom);
+            if (rr <= l || b <= t) {
+                text.style.maskImage = "none";
+                text.style.webkitMaskImage = "none";
+                return;
+            }
+
+            const lp = ((l-r.left)/r.width)*100;
+            const rp = ((rr-r.left)/r.width)*100;
+            const mask = `linear-gradient(to right, #fff 0%, #fff ${lp}%, transparent ${lp}%, transparent ${rp}%, #fff ${rp}%, #fff 100%)`;
+            text.style.maskImage = mask;
+            text.style.webkitMaskImage = mask;
+            text.style.maskSize = "100% 100%";
+            text.style.webkitMaskSize = "100% 100%";
+            text.style.maskRepeat = "no-repeat";
+            text.style.webkitMaskRepeat = "no-repeat";
+        });
+    }
+
+    applyFinalIndexLayering();
+
+    const observer = new MutationObserver(() => {
+        applyFinalIndexLayering();
+        requestAnimationFrame(preciseHeaderMask);
+    });
+    const view = document.getElementById("landing-index-view");
+    if (view) observer.observe(view, {subtree:true, childList:true, attributes:true, attributeFilter:["class","data-sort-active"]});
+
+    window.addEventListener("resize", () => requestAnimationFrame(preciseHeaderMask), {passive:true});
+    window.addEventListener("orientationchange", () => setTimeout(preciseHeaderMask, 100), {passive:true});
+    document.addEventListener("mousemove", () => requestAnimationFrame(preciseHeaderMask), {passive:true});
+    document.addEventListener("mouseover", () => requestAnimationFrame(preciseHeaderMask), {passive:true});
+})();
+</script>
+
 </body>
 </html>
