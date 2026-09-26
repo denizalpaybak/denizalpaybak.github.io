@@ -1315,13 +1315,14 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 <style id="final-clean-landing-system">
 /* =====================================================
    CLEAN LANDING SYSTEM
-   One final source of truth for the landing composition,
-   footer/corner labels and AYBAK end-card.
    ===================================================== */
 
-/* The old top-left landing logo is no longer part of the visible landing page. */
+/* The old top-left landing logo is retired visually. */
 .logo {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* Top navigation: photography left / film right. */
@@ -1366,7 +1367,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     text-align: right !important;
 }
 
-/* The central biography is one normal centered composition. */
+/* Central biography. */
 .biography {
     position: fixed !important;
     z-index: 5 !important;
@@ -1384,11 +1385,8 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     line-height: var(--line-height) !important;
     letter-spacing: 0 !important;
     word-spacing: 0 !important;
-    text-align: center !important;
-    text-align-last: center !important;
     text-transform: none !important;
     white-space: normal !important;
-    text-wrap: wrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     hyphens: none !important;
@@ -1401,11 +1399,8 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     padding: 0 !important;
     font: inherit !important;
     line-height: inherit !important;
-    text-align: center !important;
-    text-align-last: center !important;
     text-transform: none !important;
     white-space: normal !important;
-    text-wrap: wrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     hyphens: none !important;
@@ -1415,33 +1410,85 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     margin-top: var(--major-gap) !important;
 }
 
-/* The punctuation-defined breaks above are intentional. */
-.biography br {
-    line-height: inherit !important;
+/* Each punctuation-defined segment is one typographic line. */
+.biography .bio-segment {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
 }
 
-/* The middle name is permanently lowercase and non-interactive. */
-.biography .bio-identity,
-.biography .bio-identity-name,
-.biography .bio-identity-aybak {
-    display: inline !important;
-    white-space: nowrap !important;
-    text-transform: none !important;
-    pointer-events: none !important;
-    cursor: default !important;
+/* 1 line: centered. */
+.biography .bio-line[data-line-count="1"] .bio-segment {
+    text-align: center !important;
 }
 
-/* Collaborator headings stay on their own line. */
+/* 2 lines: left / right. */
+.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(1) {
+    text-align: left !important;
+}
+.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(2) {
+    text-align: right !important;
+}
+
+/* 3 lines: center / left / right. */
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(1) {
+    text-align: center !important;
+}
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(2) {
+    text-align: left !important;
+}
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(3) {
+    text-align: right !important;
+}
+
+/* 4 lines: left / right / left / right. */
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(1),
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(3) {
+    text-align: left !important;
+}
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(2),
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(4) {
+    text-align: right !important;
+}
+
+/* 5 lines: center / left / right / left / right. */
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(1) {
+    text-align: center !important;
+}
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(2),
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(4) {
+    text-align: left !important;
+}
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(3),
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(5) {
+    text-align: right !important;
+}
+
+/* Collaborator headings remain centered and independent of paragraph alignment. */
+.biography .collaborator-line {
+    text-align: center !important;
+}
+
 .biography .collaborator-heading {
-    display: inline-block !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
     white-space: nowrap !important;
-    vertical-align: baseline !important;
 }
 
-/* Balanced collaborator rows:
-   editorial = 2 + 2 when wrapping,
-   brand     = 3 + 3 when wrapping.
-   When both grouped rows fit, they remain on one line. */
+/*
+   Collaborators:
+   editorial is grouped 2 + 2;
+   brand is grouped 3 + 3.
+   The two groups stay on one line when both fit; otherwise they wrap together.
+*/
 .collaborator-rows {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -1471,12 +1518,11 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     hyphens: none !important;
 }
 
-/* Keep the two collaborator sections in the same centered copy block. */
 .biography .collaborator-line {
     margin-top: var(--major-gap) !important;
 }
 
-/* Footer: left = models / portfolio, right = email / Instagram. */
+/* Footer / corner metadata. */
 .contact {
     position: fixed !important;
     z-index: 20000 !important;
@@ -1558,11 +1604,7 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     text-decoration: underline !important;
 }
 
-.native-down-arrow {
-    display: none !important;
-}
-
-/* Prevent the old landing logo from flashing during the return to white. */
+/* The old visible landing logo can never flash during a transition. */
 body:not(.landing-aybak-active) .logo,
 body.landing-aybak-leaving .logo,
 html.landing-aybak-leaving .logo {
@@ -1612,7 +1654,7 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
 }
 
-/* Four corner labels sit above the black end card. */
+/* Corner labels stay above the black surface. */
 body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
 body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
 body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
@@ -1639,7 +1681,7 @@ body.landing-aybak-leaving .portfolio-download a {
     color: #000 !important;
 }
 
-/* End-card logo: two text lines with a visible stepped case morph. */
+/* End-card wordmark: exact two centered lines. */
 #landing-aybak-logo {
     display: flex !important;
     flex-direction: column !important;
@@ -1668,73 +1710,51 @@ body.landing-aybak-leaving .portfolio-download a {
 
 #landing-aybak-name,
 #landing-aybak-aybak {
-    display: flex !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    white-space: nowrap !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-#landing-aybak-name {
-    position: relative !important;
-    width: max-content !important;
-}
-
-.landing-aybak-name-case {
-    grid-area: 1 / 1 !important;
     display: block !important;
-    transition: opacity 110ms ease, transform 110ms ease !important;
-}
-
-#landing-aybak-name {
-    display: grid !important;
-}
-
-.landing-aybak-name-upper,
-.landing-aybak-letter-lower {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.landing-aybak-name-lower,
-.landing-aybak-letter-upper {
-    opacity: 0;
-    transform: translateY(0.12em);
-}
-
-#landing-aybak-name.is-lower .landing-aybak-name-upper {
-    opacity: 0;
-    transform: translateY(-0.12em);
-}
-
-#landing-aybak-name.is-lower .landing-aybak-name-lower {
-    opacity: 1;
-    transform: translateY(0);
+    width: max-content !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
 }
 
 .landing-aybak-letter {
     display: inline-grid !important;
     place-items: center !important;
     position: relative !important;
+    vertical-align: baseline !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .landing-aybak-letter > span {
     grid-area: 1 / 1 !important;
     display: block !important;
-    transition: opacity 110ms ease, transform 110ms ease !important;
+    transition: opacity 90ms ease, transform 90ms ease !important;
 }
 
-.landing-aybak-letter.is-upper .landing-aybak-letter-lower {
+.landing-aybak-letter .lower,
+.landing-aybak-letter .upper {
+    line-height: inherit !important;
+}
+
+.landing-aybak-letter .upper {
+    opacity: 0;
+    transform: translateY(0.12em);
+}
+
+.landing-aybak-letter.is-upper .lower {
     opacity: 0;
     transform: translateY(-0.12em);
 }
 
-.landing-aybak-letter.is-upper .landing-aybak-letter-upper {
+.landing-aybak-letter.is-upper .upper {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* iOS landscape: extend the black surface through safe-area gutters. */
+/* Safe-area fill for iOS landscape. */
 html.landing-aybak-active,
 body.landing-aybak-active {
     background: #000 !important;
@@ -1752,7 +1772,7 @@ body.landing-aybak-active #landing-aybak-end-card {
 
 @media (max-width: 600px) and (orientation: portrait) {
     .biography {
-        width: min(90vw, 390px) !important;
+        width: min(92vw, 430px) !important;
     }
 }
 
@@ -1764,7 +1784,7 @@ body.landing-aybak-active #landing-aybak-end-card {
 
 @media (orientation: landscape) and (min-width: 1001px) {
     .biography {
-        width: min(720px, 66vw) !important;
+        width: min(720px, 72vw) !important;
     }
 }
 </style></head>
@@ -1794,24 +1814,24 @@ body.landing-aybak-active #landing-aybak-end-card {
 </div>
 <!-- BIOGRAPHY -->
 <section class="biography" id="biography">
-<p class="bio-line bio-identity-line">
-        denizalp aybak (b. 1997) is a photographer and filmmaker,<br/>
-        based in istanbul and available internationally.
-    </p>
-<p class="bio-line">
-        having graduated top of his class in management at sabanci university,<br/>
-        he brings a strategic approach to image-making,<br/>
-        considering both the work itself and the world it belongs to.
-    </p>
-<p class="bio-line">
-        his work creates atmosphere through contrast:<br/>
-        light that feels dark,<br/>
-        beauty that appears distant,<br/>
-        stillness that carries tension,<br/>
-        and precision that emerges from spontaneity.
-    </p>
+<p class="bio-line bio-identity-line" data-line-count="2">
+<span class="bio-segment">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
+<span class="bio-segment">based in istanbul and available internationally.</span>
+</p>
+<p class="bio-line" data-line-count="3">
+<span class="bio-segment">having graduated top of his class in management at sabanci university,</span>
+<span class="bio-segment">he brings a strategic approach to image-making,</span>
+<span class="bio-segment">considering both the work itself and the world it belongs to.</span>
+</p>
+<p class="bio-line" data-line-count="5">
+<span class="bio-segment">his work creates atmosphere through contrast:</span>
+<span class="bio-segment">light that feels dark,</span>
+<span class="bio-segment">beauty that appears distant,</span>
+<span class="bio-segment">stillness that carries tension,</span>
+<span class="bio-segment">and precision that emerges from spontaneity.</span>
+</p>
 <p class="bio-line collaborator-line">
-<span class="collaborator-heading">editorial collaborators include:</span><br/>
+<span class="collaborator-heading">editorial collaborators include:</span>
 <span class="collaborator-rows editorial-rows">
 <span class="collaborator-row">
 <span class="client-name">vogue türkiye,</span>
@@ -1824,7 +1844,7 @@ body.landing-aybak-active #landing-aybak-end-card {
 </span>
 </p>
 <p class="bio-line collaborator-line">
-<span class="collaborator-heading">brand collaborators include:</span><br/>
+<span class="collaborator-heading">brand collaborators include:</span>
 <span class="collaborator-rows brand-rows">
 <span class="collaborator-row">
 <span class="client-name">vakko,</span>
@@ -1870,27 +1890,9 @@ body.landing-aybak-active #landing-aybak-end-card {
 </p>
 <section aria-hidden="true" id="landing-aybak-end-card">
 <button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
-<span aria-hidden="true" id="landing-aybak-name">
-<span class="landing-aybak-name-case landing-aybak-name-upper">Denizalp</span>
-<span class="landing-aybak-name-case landing-aybak-name-lower">denizalp</span>
-</span>
+<span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
 <span aria-hidden="true" id="landing-aybak-aybak">
-<span class="landing-aybak-letter">
-<span class="landing-aybak-letter-lower">a</span>
-<span class="landing-aybak-letter-upper">A</span>
-</span><span class="landing-aybak-letter">
-<span class="landing-aybak-letter-lower">y</span>
-<span class="landing-aybak-letter-upper">Y</span>
-</span><span class="landing-aybak-letter">
-<span class="landing-aybak-letter-lower">b</span>
-<span class="landing-aybak-letter-upper">B</span>
-</span><span class="landing-aybak-letter">
-<span class="landing-aybak-letter-lower">a</span>
-<span class="landing-aybak-letter-upper">A</span>
-</span><span class="landing-aybak-letter">
-<span class="landing-aybak-letter-lower">k</span>
-<span class="landing-aybak-letter-upper">K</span>
-</span>
+<span class="landing-aybak-letter"><span class="lower">a</span><span class="upper">A</span></span><span class="landing-aybak-letter"><span class="lower">y</span><span class="upper">Y</span></span><span class="landing-aybak-letter"><span class="lower">b</span><span class="upper">B</span></span><span class="landing-aybak-letter"><span class="lower">a</span><span class="upper">A</span></span><span class="landing-aybak-letter"><span class="lower">k</span><span class="upper">K</span></span>
 </span>
 </button>
 </section>
@@ -7655,10 +7657,10 @@ function setLandingAybakLogoState(
             )
         );
 
-    landingAybakName.classList.toggle(
-        "is-lower",
-        landingAybakLogoState > 0
-    );
+    landingAybakName.textContent =
+        landingAybakLogoState === 0
+            ? "Denizalp"
+            : "denizalp";
 
     document.querySelectorAll(
         ".landing-aybak-letter"
@@ -7678,7 +7680,13 @@ function animateLandingAybakLogoTo(
 ) {
 
     landingAybakLogoTarget =
-        target;
+        Math.max(
+            0,
+            Math.min(
+                5,
+                target
+            )
+        );
 
     if (
         landingAybakLogoTimer !==
@@ -7691,7 +7699,6 @@ function animateLandingAybakLogoTo(
 
         landingAybakLogoTimer =
             null;
-
     }
 
     function step() {
@@ -7708,7 +7715,6 @@ function animateLandingAybakLogoTo(
                 typeof callback ===
                 "function"
             ) {
-
                 callback();
             }
 
@@ -7741,11 +7747,9 @@ function finishLandingAybakLeave() {
         landingAybakLeaveTimer !==
         null
     ) {
-
         clearTimeout(
             landingAybakLeaveTimer
         );
-
         landingAybakLeaveTimer =
             null;
     }
@@ -7789,7 +7793,6 @@ function finishLandingAybakLeave() {
                     "landing-aybak-leaving"
                 );
 
-                /* Reset only after the black page is gone. */
                 setLandingAybakLogoState(0);
 
                 landingAybakLeaving =
@@ -7800,7 +7803,9 @@ function finishLandingAybakLeave() {
         );
 }
 
-function leaveLandingAybak(prepareUppercase = true) {
+function leaveLandingAybak(
+    prepareUppercase = true
+) {
 
     if (
         !landingAybakActive ||
@@ -7820,7 +7825,6 @@ function leaveLandingAybak(prepareUppercase = true) {
         animateLandingAybakLogoTo(
             5,
             () => {
-
                 landingAybakLeaveTimer =
                     setTimeout(
                         finishLandingAybakLeave,
@@ -7828,7 +7832,6 @@ function leaveLandingAybak(prepareUppercase = true) {
                             ? LANDING_AYBAK_PRELEAVE_HOLD
                             : LANDING_AYBAK_MOBILE_HOLD
                     );
-
             }
         );
 
@@ -7839,9 +7842,11 @@ function leaveLandingAybak(prepareUppercase = true) {
         setTimeout(
             finishLandingAybakLeave,
             prepareUppercase
-                ? (canHover()
-                    ? LANDING_AYBAK_PRELEAVE_HOLD
-                    : LANDING_AYBAK_MOBILE_HOLD)
+                ? (
+                    canHover()
+                        ? LANDING_AYBAK_PRELEAVE_HOLD
+                        : LANDING_AYBAK_MOBILE_HOLD
+                )
                 : 0
         );
 }
@@ -7851,9 +7856,7 @@ function setLandingAybakEndCard(
 ) {
 
     const next =
-        Boolean(
-            active
-        );
+        Boolean(active);
 
     if (
         next ===
@@ -7862,9 +7865,7 @@ function setLandingAybakEndCard(
         return;
     }
 
-    if (
-        !next
-    ) {
+    if (!next) {
         leaveLandingAybak(false);
         return;
     }
@@ -7914,7 +7915,7 @@ function setLandingAybakEndCard(
     );
 }
 
-/* Desktop: the end-card itself has the same uppercase hover gesture. */
+/* Desktop: hover the centered wordmark to morph into denizalp AYBAK. */
 landingAybakLogo.addEventListener(
     "mouseenter",
     () => {
@@ -7945,7 +7946,7 @@ landingAybakLogo.addEventListener(
     }
 );
 
-/* Clicking always allows the uppercase state to complete before white. */
+/* Mobile tap — complete the uppercase state, hold it briefly, then fade white. */
 landingAybakLogo.addEventListener(
     "click",
     event => {
