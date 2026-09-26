@@ -12110,3 +12110,242 @@ body.landing-index-preview-visible
 
 </body>
 </html>
+<style id="landing-index-final-geometry-and-layer-fix">
+/* FINAL OVERRIDES — one authoritative geometry/layer model */
+#landing-index-view > .landing-index-scroll {
+  width: min(1000px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+  max-width: 1000px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.landing-index-grid,
+.landing-index-header,
+.landing-index-row {
+  width: 100% !important;
+  grid-template-columns: 250px 250px minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap: 14px !important;
+  align-items: baseline !important;
+}
+
+.landing-index-cell:nth-child(1),
+.landing-index-header-cell:nth-child(1),
+.landing-index-cell:nth-child(2),
+.landing-index-header-cell:nth-child(2) {
+  justify-self: start !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+.landing-index-cell:nth-child(3),
+.landing-index-header-cell:nth-child(3),
+.landing-index-cell:nth-child(4),
+.landing-index-header-cell:nth-child(4) {
+  justify-self: stretch !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+body.landing-index-hide-use .landing-index-grid,
+body.landing-index-hide-use .landing-index-header,
+body.landing-index-hide-use .landing-index-row {
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap: 12px !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1) {
+  justify-self: start !important; justify-content:flex-start !important; text-align:left !important;
+}
+body.landing-index-hide-use .landing-index-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2) {
+  justify-self: stretch !important; justify-content:center !important; text-align:center !important;
+}
+body.landing-index-hide-use .landing-index-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
+  justify-self: end !important; justify-content:flex-end !important; text-align:right !important;
+}
+
+/* Preview is a fixed media plane. It never participates in text layout. */
+#landing-index-preview {
+  position: fixed !important;
+  z-index: 20 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Text plane is above the media. The clones are the ONLY text that can blend. */
+#landing-index-text-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100 !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+  visibility: hidden !important;
+}
+body.landing-index-preview-visible #landing-index-text-overlay { visibility:visible !important; }
+
+/* Original promoted text is hidden while the fixed clones are active. */
+body.landing-index-preview-visible .landing-index-header .landing-index-text,
+body.landing-index-preview-visible .landing-index-row.is-focus .landing-index-text {
+  color: transparent !important;
+  mix-blend-mode: normal !important;
+  -webkit-mix-blend-mode: normal !important;
+}
+
+.landing-index-overlay-text {
+  position: fixed !important;
+  display: block !important;
+  width: max-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  font-family: inherit;
+}
+
+.landing-index-overlay-text.is-difference {
+  color: #fff !important;
+  mix-blend-mode: difference !important;
+  -webkit-mix-blend-mode: difference !important;
+}
+
+.landing-index-overlay-text.is-normal {
+  color: #000 !important;
+  mix-blend-mode: normal !important;
+  -webkit-mix-blend-mode: normal !important;
+}
+
+@media (max-width:1100px) {
+  #landing-index-view > .landing-index-scroll { width:calc(100% - (2 * var(--page-x))) !important; max-width:none !important; }
+  .landing-index-grid,.landing-index-header,.landing-index-row { column-gap:10px !important; }
+}
+
+@media (max-width:700px) {
+  .landing-index-grid,.landing-index-header,.landing-index-row { column-gap:8px !important; }
+}
+</style>
+
+<script id="landing-index-final-layer-controller">
+(function(){
+  "use strict";
+  const view=document.getElementById("landing-index-view");
+  const scroll=document.getElementById("landing-index-scroll");
+  const grid=document.getElementById("landing-index-grid");
+  const preview=document.getElementById("landing-index-preview");
+  const overlay=document.getElementById("landing-index-text-overlay");
+  if(!view||!scroll||!grid||!preview||!overlay) return;
+
+  let raf=0;
+  let activeCellIndex=0;
+
+  function typography(src,dst){
+    const cs=getComputedStyle(src);
+    ["fontFamily","fontSize","fontWeight","fontStyle","lineHeight","letterSpacing","wordSpacing","fontKerning","fontFeatureSettings","fontVariant","fontStretch"].forEach(k=>dst.style[k]=cs[k]);
+  }
+
+  function previewRect(){
+    const media=preview.querySelector("video, img");
+    if(!media) return null;
+    const r=media.getBoundingClientRect();
+    if(!r.width||!r.height) return null;
+    return r;
+  }
+
+  function overlap(r,p){
+    const l=Math.max(r.left,p.left), t=Math.max(r.top,p.top), rr=Math.min(r.right,p.right), b=Math.min(r.bottom,p.bottom);
+    return rr>l && b>t ? {left:l,right:rr,top:t,bottom:b}:null;
+  }
+
+  function makeClone(src, mode){
+    const r=src.getBoundingClientRect();
+    if(!r.width||!r.height) return;
+    const c=document.createElement("span");
+    c.className="landing-index-overlay-text "+(mode==="difference"?"is-difference":"is-normal");
+    c.textContent=src.textContent||"";
+    typography(src,c);
+    c.style.left=r.left+"px";
+    c.style.top=r.top+"px";
+    c.style.width=r.width+"px";
+    c.style.height=r.height+"px";
+
+    const p=previewRect();
+    if(mode==="normal" && p){
+      const o=overlap(r,p);
+      if(o){
+        const a=((o.left-r.left)/r.width)*100;
+        const b=((o.right-r.left)/r.width)*100;
+        c.style.webkitMaskImage=`linear-gradient(to right,#000 0%,#000 ${a}%,transparent ${a}%,transparent ${b}%,#000 ${b}%,#000 100%)`;
+        c.style.maskImage=c.style.webkitMaskImage;
+      }
+    }
+    overlay.appendChild(c);
+  }
+
+  function resetBase(){
+    document.querySelectorAll(".landing-index-header .landing-index-text,.landing-index-row .landing-index-text").forEach(el=>{
+      el.style.color="";
+      el.style.mixBlendMode="";
+      el.style.webkitMixBlendMode="";
+    });
+  }
+
+  function positionPreview(){
+    const row=grid.querySelector(".landing-index-row.is-focus");
+    if(!row) return;
+    const cell=row.children[activeCellIndex]||row.children[0];
+    if(!cell) return;
+    const r=cell.getBoundingClientRect();
+    const cx=r.left+r.width/2;
+    const cy=window.innerHeight/2;
+    preview.style.left=cx+"px";
+    preview.style.top=cy+"px";
+  }
+
+  function sync(){
+    raf=0;
+    const visible=preview.classList.contains("visible") && !!grid.querySelector(".landing-index-row.is-focus");
+    document.body.classList.toggle("landing-index-preview-visible",visible);
+    overlay.replaceChildren();
+    resetBase();
+    if(!visible) return;
+
+    positionPreview();
+    const p=previewRect();
+    if(!p) return;
+
+    const activeHeader=grid.querySelector('.landing-index-header-cell[data-sort-active="true"] .landing-index-text');
+    if(activeHeader) makeClone(activeHeader,"difference");
+
+    const activeRow=grid.querySelector(".landing-index-row.is-focus");
+    if(activeRow){
+      activeRow.querySelectorAll(".landing-index-cell .landing-index-text").forEach(el=>makeClone(el,"difference"));
+    }
+
+    /* Non-active header words remain black, but disappear exactly under media. */
+    grid.querySelectorAll('.landing-index-header-cell:not([data-sort-active="true"]) .landing-index-text').forEach(el=>makeClone(el,"normal"));
+  }
+
+  function queue(){ if(!raf) raf=requestAnimationFrame(sync); }
+
+  grid.addEventListener("mouseover",e=>{
+    const cell=e.target.closest(".landing-index-row .landing-index-cell");
+    if(cell){
+      activeCellIndex=Array.prototype.indexOf.call(cell.parentElement.children,cell);
+      queue();
+    }
+  },true);
+
+  window.addEventListener("resize",()=>{ positionPreview(); queue(); },{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(()=>{positionPreview();queue();},100),{passive:true});
+
+  const mo=new MutationObserver(queue);
+  mo.observe(view,{subtree:true,childList:true,attributes:true,characterData:true,attributeFilter:["class","data-sort-active"]});
+
+  /* Explicit cleanup fixes the stuck-white-header bug. */
+  const oldClear=window.__landingIndexOverlaySync;
+  window.__landingIndexOverlaySync=queue;
+  queue();
+})();
+</script>
