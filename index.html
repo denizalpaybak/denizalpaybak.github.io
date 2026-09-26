@@ -9324,11 +9324,6 @@ window.addEventListener("resize", () => {
         transition: none;
     }
 
-    .landing-index-row:hover .landing-index-cell,
-    .landing-index-row.is-focus .landing-index-cell {
-        mix-blend-mode: difference;
-    }
-
     .landing-index-row > .landing-index-cell:last-child {
         text-align: right;
     }
@@ -9389,10 +9384,13 @@ window.addEventListener("resize", () => {
     }
 
     #landing-index-preview.is-film video {
+        display: block;
         width: 100%;
-        height: auto;
+        height: 100%;
         max-width: 100%;
         max-height: 100%;
+        object-fit: contain;
+        object-position: center center;
     }
 
     .landing-index-empty {
@@ -9474,6 +9472,7 @@ window.addEventListener("resize", () => {
        bottom-corner labels. It is centered vertically and horizontally.
     */
     #landing-index-view {
+        z-index: auto !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -9560,6 +9559,11 @@ window.addEventListener("resize", () => {
 
     .landing-index-row.is-focus {
         z-index: 60 !important;
+    }
+
+    .landing-index-header {
+        position: relative !important;
+        z-index: 70 !important;
     }
 
     #landing-index-preview {
@@ -10188,29 +10192,41 @@ window.addEventListener("resize", () => {
             return;
         }
 
-        /* Exact same derivation as the Film site's INDEX:
-           films/<master>.mp4 -> film-previews/<master>_preview.mp4.
-           These are the dedicated lightweight ~6-second previews. */
-        const filename = videos[0];
+        /*
+           Use exactly the same preview derivation as the live Film site:
+
+             films/<master>.mp4
+                 -> film-previews/<master>_preview.mp4
+
+           The files in /film-previews/ are the dedicated short web
+           previews; films.json itself keeps only the master filenames.
+        */
+        const filename = String(videos[0] || '');
         const previewFilename = /_preview\.mp4$/i.test(filename)
             ? filename
-            : filename.replace(/\.mp4$/i, "_preview.mp4");
+            : filename.replace(/\.mp4$/i, '_preview.mp4');
         const src = FILM_PREVIEW_BASE + encodePath(previewFilename);
 
-        previewImage.removeAttribute("src");
+        const posterFilename = filename.replace(/\.mp4$/i, '_poster.jpg');
+        const posterSrc =
+            'https://library.denizalpaybak.com/film-posters/' +
+            encodePath(posterFilename);
+
+        previewImage.removeAttribute('src');
         previewVideo.pause();
-        previewVideo.removeAttribute("src");
-        previewVideo.removeAttribute("poster");
+        previewVideo.removeAttribute('src');
+        previewVideo.load();
+
         previewVideo.dataset.filename = filename;
         previewVideo.muted = true;
         previewVideo.defaultMuted = true;
         previewVideo.playsInline = true;
+        previewVideo.setAttribute('playsinline', '');
         previewVideo.autoplay = true;
         previewVideo.loop = true;
         previewVideo.controls = false;
-        previewVideo.preload = "auto";
-        previewVideo.src = src;
-        previewVideo.load();
+        previewVideo.preload = 'auto';
+        previewVideo.poster = posterSrc;
 
         const startPlayback = () => {
             previewVideo.currentTime = 0;
@@ -10219,14 +10235,25 @@ window.addEventListener("resize", () => {
             queueDifferenceLayerUpdate();
         };
 
-        previewVideo.addEventListener("loadeddata", startPlayback, { once: true });
-        previewVideo.addEventListener("canplay", startPlayback, { once: true });
+        const onLoadedMetadata = () => {
+            positionPreviewInColumn();
+            queueDifferenceLayerUpdate();
+            previewVideo.play().catch(() => {});
+        };
 
-        indexPreview.classList.add("visible", "is-film");
-        indexPreview.setAttribute("aria-hidden", "false");
+        previewVideo.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+        previewVideo.addEventListener('loadeddata', startPlayback, { once: true });
+        previewVideo.addEventListener('canplay', startPlayback, { once: true });
+
+        previewVideo.src = src;
+        indexPreview.classList.add('visible', 'is-film');
+        indexPreview.setAttribute('aria-hidden', 'false');
+        previewVideo.load();
+
         requestAnimationFrame(() => {
             positionPreviewInColumn();
             queueDifferenceLayerUpdate();
+            previewVideo.play().catch(() => {});
         });
     }
 
