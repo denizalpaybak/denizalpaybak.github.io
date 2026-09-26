@@ -9460,6 +9460,99 @@ window.addEventListener("resize", () => {
     }
 </style>
 
+<style id="landing-index-responsive-final">
+    /* =====================================================
+       FINAL INDEX / INFO RESPONSIVE SYSTEM
+       ===================================================== */
+
+    /* Keep the index as a centered composition on every viewport. */
+    #landing-index-view {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 var(--page-x) !important;
+    }
+
+    .landing-index-scroll {
+        width: min(1080px, 100%) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: calc(100vh - (2 * var(--page-top))) !important;
+        flex: 0 1 auto !important;
+    }
+
+    .landing-index-grid {
+        width: max-content !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        justify-content: center !important;
+        grid-template-columns:
+            max-content
+            max-content
+            max-content
+            max-content !important;
+        column-gap: clamp(18px, 3vw, 56px) !important;
+        row-gap: 0 !important;
+    }
+
+    .landing-index-header,
+    .landing-index-row {
+        width: max-content !important;
+        min-width: 0 !important;
+        justify-content: start !important;
+    }
+
+    /* One blank text line between the filter header and first project. */
+    .landing-index-header {
+        margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+    }
+
+    /* Never wrap index cells. Overflow is handled by the responsive fitter. */
+    .landing-index-cell,
+    .landing-index-header-cell {
+        white-space: nowrap !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+        hyphens: none !important;
+    }
+
+    /* Hide USE as a real grid column when the fitter decides it is needed. */
+    body.landing-index-hide-use .landing-index-grid {
+        grid-template-columns:
+            max-content
+            max-content
+            max-content !important;
+    }
+
+    body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+        display: none !important;
+    }
+
+    /* Small screens use the compact field label: PHOTO / FILM. */
+    @media (max-width: 1100px) {
+        .landing-index-grid {
+            column-gap: clamp(12px, 2.6vw, 28px) !important;
+        }
+    }
+
+    /* Portrait is intentionally more conservative: USE starts hidden. */
+    @media (max-width: 1100px) and (orientation: portrait) {
+        body.landing-index-mode #landing-index-view {
+            padding-left: var(--page-x) !important;
+            padding-right: var(--page-x) !important;
+        }
+    }
+
+    /* INFO keeps the same paragraph rhythm, but with two blank text lines. */
+    body.landing-info-mode .bio-paragraph-gap,
+    body.landing-info-mode .biography .bio-paragraph-gap {
+        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+    }
+</style>
+
 <nav id="landing-section-nav" aria-label="Landing sections">
     <button id="landing-section-index" type="button" aria-pressed="true">
         <span id="landing-section-index-text">index</span>
@@ -9708,7 +9801,11 @@ window.addEventListener("resize", () => {
     let sortDirection = "desc";
     let allRecords = [];
     let rowStates = [];
+
     let previewRecord = null;
+    let indexFieldShort = false;
+    let indexResponsiveHideUse = false;
+    let indexResponsiveTimer = null;
 
     function normalized(value) {
         return String(value ?? "").trim().toLowerCase();
@@ -9831,6 +9928,128 @@ window.addEventListener("resize", () => {
         }
     }
 
+
+    function getDisplayField(record) {
+        if (indexFieldShort && normalized(record.field) === "photography") {
+            return "photo";
+        }
+        return normalized(record.field);
+    }
+
+    function isIndexFitViewport() {
+        return window.innerWidth <= 1100;
+    }
+
+    function isIndexPortraitViewport() {
+        return isIndexFitViewport() && window.matchMedia("(orientation: portrait)").matches;
+    }
+
+    function readCssBaseFontSize() {
+        const root = document.documentElement;
+        const inlineValue = root.style.getPropertyValue("--font-size");
+        if (inlineValue) {
+            root.style.removeProperty("--font-size");
+        }
+
+        const computed = parseFloat(
+            getComputedStyle(root).getPropertyValue("--font-size")
+        ) || 15;
+
+        if (inlineValue) {
+            root.style.setProperty("--font-size", inlineValue);
+        }
+
+        return computed;
+    }
+
+    function indexContentFitsViewport() {
+        if (!indexGrid || !indexScroll) return true;
+
+        const available = Math.max(
+            1,
+            indexScroll.clientWidth
+        );
+
+        return indexGrid.scrollWidth <= available + 1;
+    }
+
+    function applyLandingIndexResponsiveLayout(forceRender = false) {
+        const compact = isIndexFitViewport();
+        const portrait = isIndexPortraitViewport();
+        const nextFieldShort = compact;
+
+        const fieldChanged =
+            nextFieldShort !== indexFieldShort;
+
+        indexFieldShort = nextFieldShort;
+
+        if (
+            forceRender ||
+            fieldChanged
+        ) {
+            renderRows();
+        }
+
+        const root = document.documentElement;
+        const baseFontSize = readCssBaseFontSize();
+
+        /*
+           Always reset to the CSS-defined size first. This lets an
+           orientation change restore the normal size automatically.
+        */
+        root.style.setProperty(
+            "--font-size",
+            `${baseFontSize}px`
+        );
+
+        let hideUse = false;
+
+        if (compact) {
+            /* Portrait always hides USE first. Landscape hides it only
+               when the complete row set cannot fit on one line. */
+            hideUse = portrait;
+            document.body.classList.toggle(
+                "landing-index-hide-use",
+                hideUse
+            );
+
+            if (!hideUse && !indexContentFitsViewport()) {
+                hideUse = true;
+                document.body.classList.add(
+                    "landing-index-hide-use"
+                );
+            }
+
+            /* If three columns still do not fit, shrink the global type. */
+            if (!indexContentFitsViewport()) {
+                const minimumFontSize = 10;
+                let candidate = baseFontSize;
+
+                while (
+                    candidate > minimumFontSize &&
+                    !indexContentFitsViewport()
+                ) {
+                    candidate = Math.max(
+                        minimumFontSize,
+                        candidate - 0.5
+                    );
+
+                    root.style.setProperty(
+                        "--font-size",
+                        `${candidate}px`
+                    );
+                }
+            }
+        } else {
+            hideUse = false;
+            document.body.classList.remove(
+                "landing-index-hide-use"
+            );
+        }
+
+        indexResponsiveHideUse = hideUse;
+    }
+
     function createRow(record) {
         const row = document.createElement("div");
         row.className = "landing-index-row";
@@ -9840,7 +10059,7 @@ window.addEventListener("resize", () => {
         row.setAttribute("role", "link");
         row.setAttribute("aria-label", `${record.title}, ${record.date}, ${record.field}, ${record.use}`);
 
-        const values = [record.title, record.date, record.field, record.use];
+        const values = [record.title, record.date, getDisplayField(record), record.use];
         const cases = values.map((value, index) => {
             const cell = document.createElement("div");
             cell.className = "landing-index-cell";
@@ -10031,6 +10250,7 @@ window.addEventListener("resize", () => {
         allRecords = buildRecords();
         syncHeaderState(0);
         renderRows();
+        requestAnimationFrame(() => applyLandingIndexResponsiveLayout(false));
     }
 
     /* =====================================================
@@ -10080,9 +10300,35 @@ window.addEventListener("resize", () => {
     allRecords = buildRecords();
     syncHeaderState(0);
     renderRows();
+    requestAnimationFrame(() => applyLandingIndexResponsiveLayout(false));
     loadData().catch(error => {
         console.error("Landing INDEX data load failed:", error);
     });
+
+    function queueLandingIndexResponsiveLayout() {
+        clearTimeout(indexResponsiveTimer);
+        indexResponsiveTimer = setTimeout(() => {
+            if (sectionMode !== "index") return;
+            applyLandingIndexResponsiveLayout(true);
+        }, 80);
+    }
+
+    window.addEventListener(
+        "resize",
+        queueLandingIndexResponsiveLayout,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "orientationchange",
+        () => {
+            setTimeout(
+                queueLandingIndexResponsiveLayout,
+                100
+            );
+        },
+        { passive: true }
+    );
 })();
 </script>
 
