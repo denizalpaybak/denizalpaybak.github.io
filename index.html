@@ -2008,425 +2008,266 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
 }
 </style>
 
-<style id="landing-index-recovery-final">
+<style id="landing-index-rebuild-css">
 /* =====================================================
-   RECOVERY FINAL — INDEX GEOMETRY + STACKING
-   This is the only final override layer. The existing JS
-   and data/preview logic from the stable backup are kept.
+   LANDING INDEX / INFO — CLEAN REBUILD
    ===================================================== */
 
-/* ---- DESKTOP GEOMETRY ---- */
-#landing-index-view {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 5 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: calc(var(--page-top) + 32px) var(--page-x) var(--page-bottom) !important;
-}
-
-#landing-index-view .landing-index-scroll {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-.landing-index-grid {
-    --landing-index-columns:
-        max-content
-        max-content
-        minmax(150px, 1fr)
-        minmax(130px, 1fr) !important;
-
-    width: min(
-        980px,
-        calc(
-            100vw -
-            2 * var(--landing-index-side-space, var(--page-x))
-        )
-    ) !important;
-
-    max-width: 980px !important;
-    margin: 0 auto !important;
-    column-gap: 28px !important;
-    row-gap: 0 !important;
-}
-
-.landing-index-header,
-.landing-index-row {
-    grid-template-columns: var(--landing-index-columns) !important;
-    column-gap: inherit !important;
-}
-
-/* One text-line breathing space between filters and first project. */
-.landing-index-header {
-    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-/* TITLE + DATE sit close; FIELD + USE occupy the right half. */
-.landing-index-header-cell:nth-child(1),
-.landing-index-row > .landing-index-cell:nth-child(1),
-.landing-index-header-cell:nth-child(2),
-.landing-index-row > .landing-index-cell:nth-child(2) {
-    text-align: left !important;
-}
-
-.landing-index-header-cell:nth-child(3),
-.landing-index-row > .landing-index-cell:nth-child(3),
-.landing-index-header-cell:nth-child(4),
-.landing-index-row > .landing-index-cell:nth-child(4) {
-    text-align: right !important;
-}
-
-/* ---- CRITICAL STACKING ----
-   base rows < preview < header + hovered row
-*/
-.landing-index-grid {
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-.landing-index-header {
-    position: relative !important;
-    z-index: 30 !important;
-}
-
-.landing-index-header-cell {
-    position: relative !important;
-    z-index: 31 !important;
-}
-
-.landing-index-row {
-    position: relative !important;
-    z-index: 5 !important;
-}
-
-.landing-index-row .landing-index-cell {
-    position: relative !important;
-    z-index: 6 !important;
-    mix-blend-mode: normal !important;
-}
-
-.landing-index-row:hover,
-.landing-index-row.is-focus {
-    position: relative !important;
-    z-index: 30 !important;
-}
-
-.landing-index-row:hover .landing-index-cell,
-.landing-index-row.is-focus .landing-index-cell {
-    z-index: 31 !important;
-    mix-blend-mode: normal !important;
-}
-
-/* Preview is deliberately between normal rows and active/header text. */
-#landing-index-preview {
-    z-index: 20 !important;
-}
-
-/* Existing difference text is the ONLY blending layer. */
-.landing-index-text {
-    position: relative !important;
-    z-index: 1 !important;
-    display: block !important;
-    width: max-content !important;
-    max-width: none !important;
-    color: #000 !important;
-    mix-blend-mode: normal !important;
-}
-
-.landing-index-difference-text {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: auto !important;
-    bottom: auto !important;
-    z-index: 2 !important;
-    display: block !important;
-    width: max-content !important;
-    max-width: none !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    color: #fff !important;
-    background: transparent !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    white-space: nowrap !important;
-    mix-blend-mode: difference !important;
+/* Existing landing media/navigation are no longer part of the visible
+   white landing surface. The original biography is the INFO page. */
+.logo,
+.navigation,
+.media-field,
+.photography-field,
+.film-field,
+.opening {
+    visibility: hidden !important;
+    opacity: 0 !important;
     pointer-events: none !important;
-    clip-path: inset(0 100% 0 0) !important;
-    -webkit-clip-path: inset(0 100% 0 0) !important;
 }
 
-/* The active row itself must NOT blend as a whole. */
-.landing-index-row:hover .landing-index-cell,
-.landing-index-row.is-focus .landing-index-cell {
-    mix-blend-mode: normal !important;
+#biography {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
-/* ---- INFO ---- */
-#biography .bio-paragraph-gap {
-    margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
+body.landing-info-mode #biography {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
-/* ---- MOBILE / TABLET ---- */
-@media (max-width: 1000px) {
-    .landing-index-grid {
-        width: min(
-            920px,
-            calc(
-                100vw -
-                2 * var(--landing-index-side-space, var(--page-x))
-            )
-        ) !important;
-        column-gap: 18px !important;
-    }
+/* -----------------------------------------------------
+   TOP SECTION SWITCH
+   ----------------------------------------------------- */
+
+#landing-section-nav {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483640 !important;
+    pointer-events: none !important;
 }
 
-/* Portrait: USE disappears first. */
-@media (max-width: 1000px) and (orientation: portrait) {
-    body.landing-index-hide-use .landing-index-grid,
-    .landing-index-grid {
-        --landing-index-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr) !important;
-    }
+#landing-section-nav button {
+    position: absolute !important;
+    top: var(--page-top) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #000 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    text-decoration: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
-body.landing-index-hide-use .landing-index-grid {
-    --landing-index-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr)
-        minmax(0, 1fr) !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
-    display: none !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
+#landing-section-index {
+    left: var(--page-x) !important;
     text-align: left !important;
 }
 
-body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
-    text-align: center !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
+#landing-section-info {
+    right: var(--page-x) !important;
     text-align: right !important;
 }
 
-@media (max-width: 700px) {
-    .landing-index-grid {
-        column-gap: 14px !important;
-    }
-    #landing-index-preview {
-        width: 86vw !important;
-        height: 56vh !important;
-    }
-    #landing-index-preview.is-film video {
-        width: 86vw !important;
-        max-width: 86vw !important;
-        max-height: 58vh !important;
-    }
-}
-
-@media (max-width: 450px) {
-    .landing-index-grid {
-        column-gap: 10px !important;
-    }
-    #landing-index-preview {
-        width: 92vw !important;
-        height: 52vh !important;
-    }
-    #landing-index-preview.is-film video {
-        width: 92vw !important;
-        max-width: 92vw !important;
-    }
-}
-</style>
-
-<style id="landing-index-authoritative-final">
-/* =====================================================
-   AUTHORITATIVE INDEX SYSTEM
-   One geometry, one stacking model, one text composite.
-   ===================================================== */
+/* -----------------------------------------------------
+   INDEX SURFACE
+   ----------------------------------------------------- */
 
 #landing-index-view {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 5 !important;
+    z-index: 10 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: var(--page-top) var(--page-x) var(--page-bottom) !important;
-    overflow: hidden !important;
+    padding: calc(var(--page-top) + 38px) var(--page-x) var(--page-bottom) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
-#landing-index-view .landing-index-scroll {
+body.landing-info-mode #landing-index-view {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+#landing-index-scroll {
     position: relative !important;
-    z-index: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
     width: 100% !important;
     height: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
 }
+#landing-index-scroll::-webkit-scrollbar { display: none !important; }
 
-.landing-index-grid {
-    --landing-index-columns:
+#landing-index-grid {
+    --index-columns:
         max-content
         max-content
         minmax(180px, 1fr)
-        minmax(140px, 1fr);
+        minmax(150px, 1fr);
 
-    position: relative !important;
-    z-index: auto !important;
+    width: min(980px, calc(100vw - (2 * var(--landing-index-side-space, var(--page-x))))) !important;
     display: grid !important;
-    grid-template-columns: var(--landing-index-columns) !important;
-    width: min(1040px, calc(100vw - (2 * var(--landing-index-side-space, var(--page-x))))) !important;
-    max-width: 1040px !important;
-    min-width: 0 !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-    column-gap: 20px !important;
+    grid-template-columns: var(--index-columns) !important;
     row-gap: 0 !important;
+    column-gap: 24px !important;
     align-items: baseline !important;
+    position: relative !important;
+    z-index: 10 !important;
 }
 
-.landing-index-header,
-.landing-index-row {
+#landing-index-grid > .landing-index-header,
+#landing-index-grid > .landing-index-row {
     display: grid !important;
-    grid-template-columns: var(--landing-index-columns) !important;
+    grid-template-columns: var(--index-columns) !important;
     grid-column: 1 / -1 !important;
     column-gap: inherit !important;
     align-items: baseline !important;
-    width: 100% !important;
-    min-width: 0 !important;
 }
 
 .landing-index-header {
-    position: relative !important;
-    z-index: 40 !important;
     margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-.landing-index-row {
-    position: relative !important;
-    z-index: 1 !important;
-    min-height: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-.landing-index-row.is-focus,
-.landing-index-row:hover {
-    z-index: 40 !important;
 }
 
 .landing-index-header-cell,
 .landing-index-cell {
-    position: relative !important;
-    z-index: auto !important;
     min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
+    border: 0 !important;
+    outline: 0 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    font-family: Arial, Helvetica, sans-serif !important;
     font-size: var(--font-size) !important;
-    line-height: var(--line-height) !important;
     font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
 }
 
 .landing-index-header-cell {
-    border: 0 !important;
-    outline: 0 !important;
-    background: transparent !important;
     color: #000 !important;
-    font: inherit !important;
-    text-align: left !important;
     cursor: pointer !important;
-    -webkit-tap-highlight-color: transparent !important;
+    text-align: left !important;
 }
 
-.landing-index-header-cell:nth-child(3),
-.landing-index-header-cell:nth-child(4),
-.landing-index-row > .landing-index-cell:nth-child(3),
-.landing-index-row > .landing-index-cell:nth-child(4) {
+.landing-index-cell {
+    color: #000 !important;
+    text-align: left !important;
+}
+
+/* Field + use use the right edge of their own columns. */
+#landing-index-grid > .landing-index-header > :nth-child(3),
+#landing-index-grid > .landing-index-header > :nth-child(4),
+#landing-index-grid > .landing-index-row > :nth-child(3),
+#landing-index-grid > .landing-index-row > :nth-child(4) {
     text-align: right !important;
 }
 
-.landing-index-row > .landing-index-cell:nth-child(1),
-.landing-index-row > .landing-index-cell:nth-child(2) {
-    text-align: left !important;
+.landing-index-text {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    color: inherit !important;
 }
 
-.landing-index-row .landing-index-cell {
-    mix-blend-mode: normal !important;
+.landing-index-row {
+    min-height: calc(var(--font-size) * var(--line-height)) !important;
+    cursor: pointer !important;
 }
 
-/* Hide the legacy per-cell difference layer completely. */
-.landing-index-difference-text {
+/* -----------------------------------------------------
+   RESPONSIVE COLUMNS
+   ----------------------------------------------------- */
+
+@media (max-width: 1000px) {
+    #landing-index-grid {
+        width: min(920px, calc(100vw - (2 * var(--landing-index-side-space, var(--page-x))))) !important;
+        column-gap: 16px !important;
+        --index-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+}
+
+body.landing-index-hide-use #landing-index-grid {
+    --index-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+}
+
+body.landing-index-hide-use .landing-index-header > :nth-child(4),
+body.landing-index-hide-use .landing-index-row > :nth-child(4) {
     display: none !important;
 }
 
-/* Source text used by the composite overlay. */
-.landing-index-text {
-    position: relative !important;
-    z-index: auto !important;
-    display: block !important;
-    width: max-content !important;
-    max-width: none !important;
-    pointer-events: none !important;
-    color: #000 !important;
+body.landing-index-hide-use .landing-index-header > :nth-child(2),
+body.landing-index-hide-use .landing-index-row > :nth-child(2) {
+    text-align: center !important;
 }
 
-.landing-index-text.is-composite-hidden,
-.landing-index-header-cell span.is-composite-hidden {
-    visibility: hidden !important;
+body.landing-index-hide-use .landing-index-header > :nth-child(3),
+body.landing-index-hide-use .landing-index-row > :nth-child(3) {
+    text-align: right !important;
 }
 
-/* =====================================================
-   PREVIEW STAGE
-   ===================================================== */
-
-#landing-index-preview-stage {
-    position: absolute !important;
-    inset: 0 !important;
-    z-index: 20 !important;
-    overflow: visible !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
+@media (max-width: 700px) {
+    #landing-index-grid { column-gap: 10px !important; }
 }
 
-#landing-index-preview-stage.visible {
-    visibility: visible !important;
+/* Two blank text lines between info paragraphs. */
+body.landing-info-mode .bio-paragraph-gap {
+    margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
 }
+
+/* -----------------------------------------------------
+   PREVIEW LAYER
+
+   Base INDEX text is BELOW the media. The media is BELOW the
+   dedicated text overlay. Only the header and active row are
+   redrawn on that overlay, so every other row naturally falls
+   behind the preview.
+   ----------------------------------------------------- */
 
 #landing-index-preview {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: min(62vw, 980px) !important;
-    height: min(58vh, 680px) !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    position: fixed !important;
+    z-index: 20 !important;
+    left: var(--landing-preview-x, 50vw) !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(44vw, 760px) !important;
+    height: min(58vh, 620px) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+#landing-index-preview.visible {
     opacity: 1 !important;
     visibility: visible !important;
-    transform: none !important;
-    pointer-events: none !important;
-    overflow: visible !important;
-    z-index: 1 !important;
 }
 
 #landing-index-preview img,
@@ -2437,137 +2278,73 @@ body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3
     max-width: 100% !important;
     max-height: 100% !important;
     object-fit: contain !important;
-    object-position: center center !important;
     pointer-events: none !important;
     user-select: none !important;
     -webkit-user-select: none !important;
 }
 
 #landing-index-preview.is-film video {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    object-fit: contain !important;
+    max-height: 58vh !important;
+    max-width: 44vw !important;
+    width: auto !important;
+    height: auto !important;
 }
 
-#landing-index-preview-stage:not(.visible) #landing-index-preview {
-    visibility: hidden !important;
+@media (max-width: 700px) {
+    #landing-index-preview {
+        width: 86vw !important;
+        height: 54vh !important;
+    }
+    #landing-index-preview.is-film video {
+        max-width: 86vw !important;
+        max-height: 54vh !important;
+    }
 }
 
-/* All active/header text is rendered here so difference blends directly
-   against the preview image/video inside the SAME stacking context. */
-#landing-index-composite-layer {
-    position: absolute !important;
+/* -----------------------------------------------------
+   ACTIVE TEXT OVERLAY
+   ----------------------------------------------------- */
+
+#landing-index-overlay {
+    position: fixed !important;
     inset: 0 !important;
-    z-index: 30 !important;
-    overflow: visible !important;
+    z-index: 40 !important;
     pointer-events: none !important;
 }
 
-.landing-index-composite-text {
-    position: absolute !important;
+.index-overlay-cell {
+    position: fixed !important;
+    overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
     pointer-events: none !important;
     color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
+    font-family: Arial, Helvetica, sans-serif !important;
     font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    box-sizing: border-box !important;
+    background: transparent !important;
 }
 
-.landing-index-composite-text.diff {
+.index-overlay-char {
+    display: inline-block !important;
+    white-space: pre !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000;
+}
+
+body.landing-index-preview-active .landing-index-header-cell,
+body.landing-index-preview-active .landing-index-row.landing-index-active-row .landing-index-text {
+    color: transparent !important;
+}
+
+body.landing-aybak-active #landing-section-nav {
+    z-index: 2147483647 !important;
+}
+
+body.landing-aybak-active #landing-section-nav button {
     color: #fff !important;
-    mix-blend-mode: difference !important;
-    z-index: 3 !important;
-}
-
-.landing-index-composite-text.outside {
-    z-index: 2 !important;
     mix-blend-mode: normal !important;
-}
-
-/* =====================================================
-   MOBILE / TABLET
-   ===================================================== */
-
-@media (max-width: 1100px) {
-    .landing-index-grid {
-        width: calc(100vw - (2 * var(--landing-index-side-space, var(--page-x)))) !important;
-        max-width: none !important;
-        column-gap: 16px !important;
-    }
-}
-
-@media (max-width: 1100px) and (orientation: portrait) {
-    .landing-index-grid,
-    body.landing-index-hide-use .landing-index-grid {
-        --landing-index-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr) !important;
-        column-gap: 12px !important;
-    }
-}
-
-body.landing-index-hide-use .landing-index-grid {
-    --landing-index-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr)
-        minmax(0, 1fr) !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
-    display: none !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(1),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(1) {
-    text-align: left !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(2),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(2) {
-    text-align: center !important;
-}
-
-body.landing-index-hide-use .landing-index-header-cell:nth-child(3),
-body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(3) {
-    text-align: right !important;
-}
-
-@media (max-width: 700px) {
-    #landing-index-preview {
-        width: 92vw !important;
-        height: 56vh !important;
-    }
-
-    #landing-index-preview.is-film video {
-        width: 92vw !important;
-        max-width: 92vw !important;
-        height: 56vh !important;
-        max-height: 56vh !important;
-    }
-}
-
-@media (max-width: 450px) {
-    #landing-index-preview {
-        width: 96vw !important;
-        height: 52vh !important;
-    }
-
-    #landing-index-preview.is-film video {
-        width: 96vw !important;
-        max-width: 96vw !important;
-        height: 52vh !important;
-        max-height: 52vh !important;
-    }
 }
 </style>
 
@@ -9697,546 +9474,40 @@ window.addEventListener("resize", () => {
 
 </script>
 
-
-<!-- =====================================================
-     LANDING INDEX / INFO SYSTEM
-     Added as the final UI layer so the existing landing preview /
-     AYBAK systems remain intact underneath it.
-     ===================================================== -->
-<style id="landing-index-info-system">
-    /* Existing photography / film top navigation is no longer visible. */
-    body > .page > .landing-grid > .media-field,
-    .photography-field,
-    .film-field,
-    .navigation {
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-    }
-
-    /* The old central copy becomes the INFO page content. */
-    #biography {
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transition: opacity 260ms cubic-bezier(.22,.61,.36,1),
-                    visibility 0s linear 260ms !important;
-    }
-
-    body.landing-info-mode #biography {
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        transition: opacity 260ms cubic-bezier(.22,.61,.36,1),
-                    visibility 0s linear 0s !important;
-    }
-
-    /* New top navigation. */
-    #landing-section-nav {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483646;
-        pointer-events: none;
-    }
-
-    #landing-section-nav button {
-        position: absolute;
-        top: var(--page-top);
-        margin: 0;
-        padding: 0;
-        border: 0;
-        outline: 0;
-        appearance: none;
-        -webkit-appearance: none;
-        background: transparent;
-        color: #000;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: var(--font-size);
-        font-weight: 400;
-        line-height: var(--line-height);
-        letter-spacing: 0;
-        white-space: nowrap;
-        cursor: pointer;
-        pointer-events: auto;
-        text-decoration: none;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    #landing-section-index {
-        left: var(--page-x);
-        text-align: left;
-    }
-
-    #landing-section-info {
-        right: var(--page-x);
-        text-align: right;
-    }
-
-    #landing-section-nav button:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 3px;
-    }
-
-    /* =================================================
-       INDEX VIEW
-       ================================================= */
-
-    #landing-index-view {
-        position: fixed;
-        inset: 0;
-        z-index: 25;
-        padding:
-            calc(var(--page-top) + 48px)
-            var(--page-x)
-            var(--page-bottom);
-        visibility: visible;
-        opacity: 1;
-        transition:
-            opacity 260ms cubic-bezier(.22,.61,.36,1),
-            visibility 0s linear 0s;
-    }
-
-    body.landing-info-mode #landing-index-view {
-        visibility: hidden;
-        opacity: 0;
-        pointer-events: none;
-        transition:
-            opacity 260ms cubic-bezier(.22,.61,.36,1),
-            visibility 0s linear 260ms;
-    }
-
-    .landing-index-scroll {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        touch-action: pan-y;
-    }
-
-    .landing-index-scroll::-webkit-scrollbar {
-        display: none;
-    }
-
-    .landing-index-grid {
-        --landing-index-columns:
-            minmax(0, 2.15fr)
-            minmax(96px, 1fr)
-            minmax(120px, 1.15fr)
-            minmax(100px, 0.95fr);
-        position: relative;
-        display: grid;
-        grid-template-columns: var(--landing-index-columns);
-        width: 100%;
-        align-items: baseline;
-        column-gap: clamp(18px, 3vw, 56px);
-    }
-
-    .landing-index-header,
-    .landing-index-row {
-        display: grid;
-        grid-template-columns: var(--landing-index-columns);
-        grid-column: 1 / -1;
-        column-gap: inherit;
-        align-items: baseline;
-    }
-
-    .landing-index-header-cell {
-        position: relative;
-        z-index: 40;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        outline: 0;
-        background: transparent;
-        color: #000;
-        font: inherit;
-        font-size: var(--font-size);
-        line-height: var(--line-height);
-        text-align: left;
-        white-space: nowrap;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .landing-index-header-cell:last-child {
-        text-align: right;
-    }
-
-    .landing-index-header-cell:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 3px;
-    }
-
-    .landing-index-cell {
-        position: relative;
-        z-index: 30;
-        margin: 0;
-        padding: 0;
-        min-width: 0;
-        color: #000;
-        font-size: var(--font-size);
-        font-weight: 400;
-        line-height: var(--line-height);
-        white-space: nowrap;
-        overflow: visible;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        transition: none;
-    }
-
-    .landing-index-row:hover .landing-index-cell,
-    .landing-index-row.is-focus .landing-index-cell {
-        mix-blend-mode: difference;
-    }
-
-    .landing-index-row > .landing-index-cell:last-child {
-        text-align: right;
-    }
-
-    .landing-index-row {
-        min-height: calc(var(--font-size) * var(--line-height));
-        cursor: pointer;
-    }
-
-    .landing-index-row::before,
-    .landing-index-row::after {
-        content: none;
-    }
-
-    /* =================================================
-       PREVIEW BEHIND TEXT
-       ================================================= */
-
-    #landing-index-preview {
-        position: fixed;
-        z-index: 20;
-        left: 50%;
-        top: 50%;
-        width: min(74vw, 980px);
-        height: min(72vh, 780px);
-        transform: translate(-50%, -50%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition:
-            opacity 150ms ease,
-            visibility 0s linear 150ms;
-    }
-
-    #landing-index-preview.visible {
-        opacity: 1;
-        visibility: visible;
-        transition:
-            opacity 150ms ease,
-            visibility 0s linear 0s;
-    }
-
-    #landing-index-preview img,
-    #landing-index-preview video {
-        display: block;
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        background: transparent;
-        pointer-events: none;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
-    #landing-index-preview.is-film video {
-        width: 100%;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-    }
-
-    .landing-index-empty {
-        grid-column: 1 / -1;
-        padding-top: 8px;
-        color: #000;
-    }
-
-    @media (max-width: 700px) {
-        #landing-section-nav button {
-            top: var(--page-top);
-        }
-
-        #landing-index-view {
-            padding:
-                calc(var(--page-top) + 44px)
-                var(--page-x)
-                var(--page-bottom);
-        }
-
-        .landing-index-grid {
-            --landing-index-columns:
-                minmax(0, 1.8fr)
-                minmax(78px, 0.9fr)
-                minmax(88px, 0.95fr)
-                minmax(78px, 0.8fr);
-            column-gap: 14px;
-        }
-
-        .landing-index-cell,
-        .landing-index-header-cell {
-            white-space: normal;
-            overflow-wrap: anywhere;
-        }
-
-        #landing-index-preview {
-            width: 76vw;
-            height: 46vh;
-        }
-    }
-
-    @media (max-width: 450px) {
-        .landing-index-grid {
-            --landing-index-columns:
-                minmax(0, 1.65fr)
-                minmax(60px, 0.8fr)
-                minmax(72px, 0.85fr)
-                minmax(66px, 0.75fr);
-            column-gap: 10px;
-        }
-
-        #landing-index-preview {
-            width: 70vw;
-            height: 42vh;
-        }
-    }
-
-    body.landing-aybak-active #landing-section-nav {
-        z-index: 2147483647;
-    }
-
-    body.landing-aybak-active #landing-section-nav button {
-        color: #fff !important;
-        mix-blend-mode: normal !important;
-    }
-</style>
-
-<style id="landing-index-responsive-final">
-    /* =====================================================
-       FINAL INDEX / INFO RESPONSIVE SYSTEM
-       ===================================================== */
-
-    :root {
-        --landing-index-side-space: var(--page-x);
-    }
-
-    /*
-       The list is centered as a whole. On desktop its horizontal
-       breathing room follows the width of the longest bottom-corner
-       label, while the actual list keeps the full remaining width.
-       This prevents the index from becoming artificially narrow.
-    */
-    #landing-index-view {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    .landing-index-scroll {
-        width: calc(100% - (2 * var(--landing-index-side-space))) !important;
-        max-width: none !important;
-        height: auto !important;
-        max-height: calc(100dvh - (2 * var(--page-top))) !important;
-        margin: 0 auto !important;
-        flex: 0 1 auto !important;
-    }
-
-    .landing-index-grid {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        margin: 0 !important;
-        justify-content: stretch !important;
-        grid-template-columns:
-            minmax(0, 2.25fr)
-            minmax(0, 1.05fr)
-            minmax(0, 0.95fr)
-            minmax(0, 0.95fr) !important;
-        column-gap: clamp(22px, 3.2vw, 64px) !important;
-        row-gap: 0 !important;
-    }
-
-    .landing-index-header,
-    .landing-index-row {
-        width: 100% !important;
-        min-width: 0 !important;
-        justify-content: stretch !important;
-    }
-
-    /* One blank text line between the filters and the first project. */
-    .landing-index-header {
-        margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
-    }
-
-    /* Never let a project name wrap to a second line. */
-    .landing-index-cell,
-    .landing-index-header-cell {
-        white-space: nowrap !important;
-        overflow-wrap: normal !important;
-        word-break: normal !important;
-        hyphens: none !important;
-    }
-
-    /* Real column removal: USE disappears rather than wrapping. */
-    body.landing-index-hide-use .landing-index-grid {
-        grid-template-columns:
-            minmax(0, 2.25fr)
-            minmax(0, 1.05fr)
-            minmax(0, 0.95fr) !important;
-    }
-
-    body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
-    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
-        display: none !important;
-    }
-
-    /* Short field label on small / tablet viewports. */
-    @media (max-width: 1100px) {
-        .landing-index-grid {
-            column-gap: clamp(14px, 2.6vw, 30px) !important;
-        }
-
-        .landing-index-scroll {
-            width: calc(100% - (2 * var(--page-x))) !important;
-        }
-    }
-
-    @media (max-width: 1100px) and (orientation: portrait) {
-        .landing-index-grid {
-            column-gap: clamp(10px, 2.8vw, 22px) !important;
-        }
-    }
-
-    /* Two-line paragraph gaps on INFO. */
-    body.landing-info-mode .bio-paragraph-gap,
-    body.landing-info-mode .biography .bio-paragraph-gap {
-        margin-bottom: calc(2 * var(--font-size) * var(--line-height)) !important;
-    }
-
-    /* =====================================================
-       TEXT / PREVIEW NEGATIVE INTERSECTION
-       ===================================================== */
-
-    .landing-index-cell {
-        position: relative !important;
-        mix-blend-mode: normal !important;
-    }
-
-    .landing-index-row:hover .landing-index-cell,
-    .landing-index-row.is-focus .landing-index-cell {
-        mix-blend-mode: normal !important;
-    }
-
-    .landing-index-text {
-        position: relative;
-        z-index: 1;
-        display: block;
-        width: max-content;
-        max-width: none;
-        pointer-events: none;
-    }
-
-    .landing-index-difference-text {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: auto;
-        bottom: auto;
-        height: calc(var(--font-size) * var(--line-height));
-        z-index: 2;
-        display: block;
-        width: max-content;
-        max-width: none;
-        color: #fff;
-        font-size: inherit;
-        line-height: inherit;
-        pointer-events: none;
-        white-space: nowrap;
-        mix-blend-mode: difference;
-        clip-path: inset(0 100% 0 0);
-        -webkit-clip-path: inset(0 100% 0 0);
-        will-change: clip-path;
-    }
-
-    .landing-index-cell > span:not(.landing-index-difference-text) {
-        pointer-events: none;
-    }
-</style>
-
 <nav id="landing-section-nav" aria-label="Landing sections">
-    <button id="landing-section-index" type="button" aria-pressed="true">
-        <span id="landing-section-index-text">index</span>
-    </button>
-    <button id="landing-section-info" type="button" aria-pressed="false">
-        <span id="landing-section-info-text">info</span>
-    </button>
+    <button id="landing-section-index" type="button" aria-pressed="true"><span id="landing-section-index-text">INDEX</span></button>
+    <button id="landing-section-info" type="button" aria-pressed="false"><span id="landing-section-info-text">info</span></button>
 </nav>
 
 <section id="landing-index-view" aria-label="Index">
-    <div class="landing-index-scroll" id="landing-index-scroll">
-        <div class="landing-index-grid" id="landing-index-grid">
+    <div id="landing-index-scroll">
+        <div id="landing-index-grid">
             <div class="landing-index-header">
-                <button class="landing-index-header-cell" data-sort-key="title" type="button">
-                    <span>title</span>
-                </button>
-                <button class="landing-index-header-cell" data-sort-key="date" type="button">
-                    <span>date</span>
-                </button>
-                <button class="landing-index-header-cell" data-sort-key="field" type="button">
-                    <span>field</span>
-                </button>
-                <button class="landing-index-header-cell" data-sort-key="use" type="button">
-                    <span>use</span>
-                </button>
+                <button class="landing-index-header-cell" data-sort-key="title" type="button"><span class="landing-index-text">title</span></button>
+                <button class="landing-index-header-cell" data-sort-key="date" type="button"><span class="landing-index-text">date</span></button>
+                <button class="landing-index-header-cell" data-sort-key="field" type="button"><span class="landing-index-text">field</span></button>
+                <button class="landing-index-header-cell" data-sort-key="use" type="button"><span class="landing-index-text">use</span></button>
             </div>
         </div>
     </div>
-    <div id="landing-index-preview-stage" aria-hidden="true">
-        <div id="landing-index-preview">
-            <img id="landing-index-preview-image" alt="" />
-            <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
-        </div>
-        <div id="landing-index-composite-layer" aria-hidden="true"></div>
-    </div>
 </section>
 
-<script id="landing-index-info-script">
+<div id="landing-index-preview" aria-hidden="true">
+    <img id="landing-index-preview-image" alt="" />
+    <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
+</div>
+<div id="landing-index-overlay" aria-hidden="true"></div>
+
+
+<script id="landing-index-clean-script">
 (() => {
     "use strict";
 
-    /* =====================================================
-       CONFIG
-       ===================================================== */
-
     const LANDING_INDEX_JSON_URL = "./landing-index.json";
-
-    const PHOTOGRAPHY_JSON_URL =
-        "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
-
-    /* The Film site already exposes its own films.json at this stable path. */
+    const PHOTOGRAPHY_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
     const FILM_JSON_URL = "https://film.denizalpaybak.com/films.json";
-
-    const PHOTO_THUMB_BASE =
-        "https://library.denizalpaybak.com/photo-thumbnails/";
-
-    const FILM_PREVIEW_BASE =
-        "https://library.denizalpaybak.com/film-previews/";
-
+    const PHOTO_THUMB_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
+    const FILM_PREVIEW_BASE = "https://library.denizalpaybak.com/film-previews/";
     const SECTION_MORPH_DURATION = 400;
     const ROW_MORPH_DURATION = 340;
 
@@ -10244,1294 +9515,526 @@ window.addEventListener("resize", () => {
     const FILM_FALLBACK = {"vogue-260113":{"title":"vogue türkiye x peugeot","date":"february 2026","videos":["vogue_260113_film.mp4","vogue_260113_teaser_1.mp4","vogue_260113_teaser_3.mp4"],"coverOverride":""},"zeyneparcay-251217":{"title":"zeynep arcay","date":"fall 2026","videos":["zeyneparcay_251217_1.mp4","zeyneparcay_251217_2.mp4","zeyneparcay_251217_3.mp4","zeyneparcay_251217_4.mp4"],"coverOverride":""},"nulook-251031":{"title":"nu-look magazine","date":"december 2025 (issue #07)","videos":["nulook_251031_4.mp4","nulook_251031_5.mp4"],"coverOverride":""},"vogue-260213":{"title":"vogue türkiye","date":"march 2026","videos":["vogue_260213_1.mp4","vogue_260213_2.mp4","vogue_260213_3.mp4","vogue_260213_4.mp4"],"coverOverride":""},"zeyneparcay-250529":{"title":"zeynep arcay","date":"resort 2026","videos":["zeyneparcay_250529_1.mp4","zeyneparcay_250529_2.mp4","zeyneparcay_250529_3.mp4"],"coverOverride":""},"nulook-240919":{"title":"nu-look magazine","date":"december 2024 (issue #04)","videos":["nulook_240919_3.mp4","nulook_240919_4.mp4","nulook_240919_5.mp4","nulook_240919_6.mp4"],"coverOverride":""},"lofficiel-241106":{"title":"l’officiel türkiye","date":"november 2024","videos":["lofficiel_241106.mp4"],"coverOverride":""},"nulook-250206":{"title":"nu-look magazine","date":"april 2025 (issue #05)","videos":["nulook_250206_1.mp4","nulook_250206_2.mp4","nulook_250206_3.mp4"],"coverOverride":""},"sober-210323":{"title":"sober magazine","date":"may 2024 (issue #02)","videos":["sober_210323_video_1.mp4","sober_210323_video_2.mp4","sober_210323_video_3.mp4"],"coverOverride":"sober_210323_video_1.mp4"}};
     const META_FALLBACK = [{"id":"vogue-260213","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-03"},{"id":"harpersbazaar-260625","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-07"},{"id":"lofficiel-250130-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02"},{"id":"lofficiel-250130","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02"},{"id":"lofficiel-241106-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11"},{"id":"lofficiel-241106","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11"},{"id":"beegoddess-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"lofficiel-260116","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-02"},{"id":"manc-231124","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-05"},{"id":"mudo-home-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"lofficiel-251213-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-01"},{"id":"vakko-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09"},{"id":"qp-250421","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-06"},{"id":"elle-250919","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-10"},{"id":"work-in-progress","field":"PHOTOGRAPHY","use":"PERSONAL","sortDate":""},{"id":"vogue-260113","field":"FILM","use":"CAMPAIGN","sortDate":"2026-02"},{"id":"zeyneparcay-251217","field":"FILM","use":"CAMPAIGN","sortDate":"2026-09"},{"id":"nulook-251031","field":"FILM","use":"EDITORIAL","sortDate":"2025-12"},{"id":"vogue-260213","field":"FILM","use":"EDITORIAL","sortDate":"2026-03"},{"id":"zeyneparcay-250529","field":"FILM","use":"CAMPAIGN","sortDate":"2026-05"},{"id":"nulook-240919","field":"FILM","use":"EDITORIAL","sortDate":"2024-12"},{"id":"lofficiel-241106","field":"FILM","use":"EDITORIAL","sortDate":"2024-11"},{"id":"nulook-250206","field":"FILM","use":"EDITORIAL","sortDate":"2025-04"},{"id":"sober-210323","field":"FILM","use":"EDITORIAL","sortDate":"2024-05"}];
 
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
-
     const body = document.body;
+    const root = document.documentElement;
     const indexView = document.getElementById("landing-index-view");
     const indexScroll = document.getElementById("landing-index-scroll");
     const indexGrid = document.getElementById("landing-index-grid");
-    const indexPreviewStage = document.getElementById("landing-index-preview-stage");
     const indexPreview = document.getElementById("landing-index-preview");
-    const indexCompositeLayer = document.getElementById("landing-index-composite-layer");
     const previewImage = document.getElementById("landing-index-preview-image");
     const previewVideo = document.getElementById("landing-index-preview-video");
+    const overlay = document.getElementById("landing-index-overlay");
     const indexButton = document.getElementById("landing-section-index");
     const infoButton = document.getElementById("landing-section-info");
     const indexText = document.getElementById("landing-section-index-text");
     const infoText = document.getElementById("landing-section-info-text");
-
-    const headerButtons = Array.from(
-        document.querySelectorAll(".landing-index-header-cell")
-    );
-
-    /* =====================================================
-       FALLBACK DATA
-       ===================================================== */
-
-    function arrayData(data) {
-        if (Array.isArray(data)) return data;
-        if (data && Array.isArray(data.projects)) return data.projects;
-        if (data && typeof data === "object") {
-            return Object.values(data).filter(Boolean);
-        }
-        return [];
-    }
-
-    function normalizePhotoProject(project) {
-        const normalized = {
-            ...project,
-            title: String(project?.title || "").replace(/q-p/gi, "q–p"),
-            images: Array.isArray(project?.images) ? project.images.slice() : []
-        };
-
-        const originalImages = normalized.images.slice();
-        if (!originalImages.length) return normalized;
-
-        let startIndex = 0;
-
-        if (normalized.coverOverride) {
-            const overrideIndex = originalImages.indexOf(normalized.coverOverride);
-            startIndex = overrideIndex >= 0
-                ? overrideIndex
-                : Math.floor(Math.random() * originalImages.length);
-        } else {
-            startIndex = Math.floor(Math.random() * originalImages.length);
-        }
-
-        normalized.images = [
-            ...originalImages.slice(startIndex),
-            ...originalImages.slice(0, startIndex)
-        ];
-        normalized.originalImages = originalImages;
-        normalized.cover = normalized.images[0];
-        return normalized;
-    }
-
-    function normalizeFilmProject(project) {
-        const normalized = {
-            ...project,
-            title: String(project?.title || "").replace(/nu-look/gi, "nu–look"),
-            videos: Array.isArray(project?.videos) ? project.videos.slice() : []
-        };
-
-        const originalVideos = normalized.videos.slice();
-        if (!originalVideos.length) return normalized;
-
-        let startIndex = 0;
-
-        if (normalized.coverOverride) {
-            const overrideIndex = originalVideos.indexOf(normalized.coverOverride);
-            startIndex = overrideIndex >= 0
-                ? overrideIndex
-                : Math.floor(Math.random() * originalVideos.length);
-        } else {
-            startIndex = Math.floor(Math.random() * originalVideos.length);
-        }
-
-        normalized.videos = [
-            ...originalVideos.slice(startIndex),
-            ...originalVideos.slice(0, startIndex)
-        ];
-        normalized.originalVideos = originalVideos;
-        return normalized;
-    }
-
-    function photoMap(data) {
-        const map = new Map();
-        arrayData(data).forEach(project => {
-            if (project?.id) map.set(project.id, normalizePhotoProject(project));
-        });
-        return map;
-    }
-
-    function filmMap(data) {
-        const map = new Map();
-        arrayData(data).forEach(project => {
-            if (project?.id) map.set(project.id, normalizeFilmProject(project));
-        });
-        return map;
-    }
+    const headerButtons = Array.from(indexGrid.querySelectorAll(".landing-index-header-cell"));
 
     let metadata = META_FALLBACK.slice();
-    let photoProjects = photoMap(PHOTO_FALLBACK);
-    let filmProjects = filmMap(FILM_FALLBACK);
-
-    /* =====================================================
-       CASE MORPH
-       ===================================================== */
-
-    function createCaseMorph(element, initial = "", mirrorElement = null) {
-        const base = String(initial).toLowerCase();
-        const positions = Array.from(base).map((character, index) => {
-            const isLetter = character.toLowerCase() !== character.toUpperCase();
-            return isLetter ? index : -1;
-        }).filter(index => index >= 0);
-
-        let state = 0;
-        let target = 0;
-        let frame = null;
-
-        function render() {
-            const active = new Set(positions.slice(0, state));
-            const text = Array.from(base).map((character, index) =>
-                active.has(index) ? character.toUpperCase() : character.toLowerCase()
-            ).join("");
-            element.textContent = text;
-            if (mirrorElement) {
-                mirrorElement.textContent = text;
-            }
-            if (previewRecord && typeof queueCompositeLayerUpdate === "function") {
-                queueCompositeLayerUpdate();
-            }
-        }
-
-        function animate(nextTarget, duration) {
-            target = Math.max(0, Math.min(positions.length, nextTarget));
-            if (frame !== null) cancelAnimationFrame(frame);
-
-            const startState = state;
-            if (startState === target) {
-                render();
-                return;
-            }
-
-            const started = performance.now();
-
-            function tick(now) {
-                const progress = Math.min(1, (now - started) / duration);
-                state = Math.round(startState + (target - startState) * progress);
-                render();
-                if (progress < 1) {
-                    frame = requestAnimationFrame(tick);
-                } else {
-                    state = target;
-                    frame = null;
-                    render();
-                }
-            }
-
-            frame = requestAnimationFrame(tick);
-        }
-
-        render();
-
-        return {
-            upper() { animate(positions.length, ROW_MORPH_DURATION); },
-            lower() { animate(0, ROW_MORPH_DURATION); },
-            setUpper(duration = SECTION_MORPH_DURATION) { animate(positions.length, duration); },
-            setLower(duration = SECTION_MORPH_DURATION) { animate(0, duration); }
-        };
-    }
-
-    const indexMorph = createCaseMorph(indexText, "index");
-    const infoMorph = createCaseMorph(infoText, "info");
-
-    /* =====================================================
-       INDEX STATE
-       ===================================================== */
+    let photoProjects = new Map(Object.entries(PHOTO_FALLBACK));
+    let filmProjects = new Map(Object.entries(FILM_FALLBACK));
 
     let sectionMode = "index";
     let sortKey = "date";
     let sortDirection = "desc";
-    let allRecords = [];
+    let records = [];
     let rowStates = [];
-    let activePreviewRow = null;
-    let activePreviewCell = null;
-    let activeCompositeFrame = null;
-
+    let activeRow = null;
+    let activeCell = null;
     let previewRecord = null;
-    let indexFieldShort = false;
-    let indexResponsiveHideUse = false;
-    let indexResponsiveTimer = null;
+    let morphFrame = null;
+    let sectionFrame = null;
+    let responsiveTimer = null;
+    let baseFontSize = parseFloat(getComputedStyle(root).getPropertyValue("--font-size")) || 15;
 
-    function normalized(value) {
+    function normalize(value) {
         return String(value ?? "").trim().toLowerCase();
     }
 
-    function metaKey(record) {
-        return `${record.field}::${record.id}`;
+    function createCaseMorph(element, initialUpper) {
+        let progress = initialUpper ? 1 : 0;
+        let target = progress;
+        let frame = null;
+        let startTime = 0;
+
+        const raw = () => String(element.dataset.rawText ?? element.textContent ?? "");
+        element.dataset.rawText = raw();
+
+        function render(value) {
+            const chars = Array.from(raw());
+            const letterIndexes = [];
+            chars.forEach((ch, i) => { if (ch.toLowerCase() !== ch.toUpperCase()) letterIndexes.push(i); });
+            const count = Math.round(letterIndexes.length * value);
+            const active = new Set(letterIndexes.slice(0, count));
+            element.textContent = chars.map((ch, i) => active.has(i) ? ch.toUpperCase() : ch.toLowerCase()).join("");
+            element.dataset.caseProgress = String(value);
+        }
+
+        function set(next, duration = SECTION_MORPH_DURATION) {
+            target = next ? 1 : 0;
+            if (frame !== null) cancelAnimationFrame(frame);
+            const from = progress;
+            const delta = target - from;
+            if (!delta || duration <= 0) { progress = target; render(progress); return; }
+            startTime = performance.now();
+            function step(now) {
+                const p = Math.min(1, (now - startTime) / duration);
+                const eased = 1 - Math.pow(1 - p, 3);
+                progress = from + delta * eased;
+                render(progress);
+                if (p < 1) frame = requestAnimationFrame(step);
+                else { progress = target; render(progress); frame = null; }
+            }
+            frame = requestAnimationFrame(step);
+        }
+
+        render(progress);
+        return { set, get progress() { return progress; } };
     }
 
-    function sourceForRecord(record) {
-        return normalized(record.field) === "film"
-            ? filmProjects.get(record.id)
-            : photoProjects.get(record.id);
+    const indexMorph = createCaseMorph(indexText, true);
+    const infoMorph = createCaseMorph(infoText, false);
+
+    function animateRow(state, target, duration = ROW_MORPH_DURATION, onDone = null) {
+        if (state.frame) cancelAnimationFrame(state.frame);
+        const from = state.progress;
+        const delta = target - from;
+        if (!delta) { if (onDone) onDone(); return; }
+        const start = performance.now();
+        function step(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            state.progress = from + delta * eased;
+            renderRowCase(state);
+            updateOverlay();
+            if (p < 1) state.frame = requestAnimationFrame(step);
+            else { state.progress = target; renderRowCase(state); state.frame = null; updateOverlay(); if (onDone) onDone(); }
+        }
+        state.frame = requestAnimationFrame(step);
+    }
+
+    function renderRowCase(state) {
+        const values = [state.record.title, state.record.date, displayField(state.record), state.record.use];
+        state.cells.forEach((cell, i) => {
+            const span = cell.querySelector(".landing-index-text");
+            if (!span) return;
+            const value = String(values[i] ?? "");
+            const chars = Array.from(value);
+            const letters = [];
+            chars.forEach((ch, idx) => { if (ch.toLowerCase() !== ch.toUpperCase()) letters.push(idx); });
+            const count = Math.round(letters.length * state.progress);
+            const active = new Set(letters.slice(0, count));
+            span.textContent = chars.map((ch, idx) => active.has(idx) ? ch.toUpperCase() : ch.toLowerCase()).join("");
+        });
+    }
+
+    function sourceFor(record) {
+        return record.field === "film" ? filmProjects.get(record.id) : photoProjects.get(record.id);
     }
 
     function buildRecords() {
-        const merged = metadata.map((item, index) => {
-            const source = sourceForRecord(item);
+        return metadata.map((item, index) => {
+            const field = normalize(item.field);
+            const src = field === "film" ? filmProjects.get(item.id) : photoProjects.get(item.id);
             return {
-                ...item,
-                title: normalized(source?.title || item.title || item.id),
-                date: normalized(source?.date || item.date || item.sortDate || ""),
-                field: normalized(item.field),
-                use: normalized(item.use),
+                id: item.id,
+                field,
+                use: normalize(item.use),
                 sortDate: String(item.sortDate || ""),
-                originalIndex: index,
-                source
+                title: normalize(src?.title || item.title || item.id),
+                date: normalize(src?.date || item.date || item.sortDate || ""),
+                source: src,
+                originalIndex: index
             };
         });
-
-        return merged;
     }
 
     function compareRecords(a, b) {
-        let av;
-        let bv;
-
+        let av = sortKey === "date" ? a.sortDate : normalize(a[sortKey]);
+        let bv = sortKey === "date" ? b.sortDate : normalize(b[sortKey]);
         if (sortKey === "date") {
-            av = a.sortDate;
-            bv = b.sortDate;
-
-            const aBlank = !av;
-            const bBlank = !bv;
-            if (aBlank !== bBlank) return aBlank ? 1 : -1;
-        } else {
-            av = normalized(a[sortKey]);
-            bv = normalized(b[sortKey]);
+            if (!av && bv) return 1;
+            if (av && !bv) return -1;
         }
-
         if (av < bv) return sortDirection === "asc" ? -1 : 1;
         if (av > bv) return sortDirection === "asc" ? 1 : -1;
         return a.originalIndex - b.originalIndex;
     }
 
-    function sortedRecords() {
-        return allRecords.slice().sort(compareRecords);
+    function sortedRecords() { return records.slice().sort(compareRecords); }
+
+    function displayField(record) {
+        return window.innerWidth <= 1000 && record.field === "photography" ? "photo" : record.field;
     }
 
+    function cellValues(record) { return [record.title, record.date, displayField(record), record.use]; }
 
-    function clearCompositeLayer() {
-        if (activeCompositeFrame !== null) {
-            cancelAnimationFrame(activeCompositeFrame);
-            activeCompositeFrame = null;
-        }
+    function clearOverlay() { overlay.innerHTML = ""; }
 
-        if (indexCompositeLayer) {
-            indexCompositeLayer.replaceChildren();
-        }
+    function previewRect() {
+        const media = previewRecord?.field === "film" ? previewVideo : previewImage;
+        if (!media) return null;
+        const r = media.getBoundingClientRect();
+        if (!r.width || !r.height) return null;
+        const cs = getComputedStyle(media);
+        if (cs.display === "none" || cs.visibility === "hidden" || parseFloat(cs.opacity || "1") === 0) return null;
+        return r;
+    }
 
-        rowStates.forEach(state => {
-            state.row.querySelectorAll(".landing-index-text").forEach(span => {
-                span.classList.remove("is-composite-hidden");
-                span.style.visibility = "";
-            });
-            state.row.classList.remove("is-focus");
+    function intersects(a, b) {
+        return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    }
+
+    function makeOverlayCell(sourceCell, text, letterProgress, insidePreview) {
+        const rect = sourceCell.getBoundingClientRect();
+        const cs = getComputedStyle(sourceCell);
+        const box = document.createElement("div");
+        box.className = "index-overlay-cell";
+        box.style.left = `${rect.left}px`;
+        box.style.top = `${rect.top}px`;
+        box.style.width = `${rect.width}px`;
+        box.style.height = `${rect.height}px`;
+        box.style.fontFamily = cs.fontFamily;
+        box.style.fontSize = cs.fontSize;
+        box.style.fontWeight = cs.fontWeight;
+        box.style.lineHeight = cs.lineHeight;
+        box.style.letterSpacing = cs.letterSpacing;
+        box.style.textAlign = cs.textAlign;
+        box.style.display = cs.display === "none" ? "none" : "block";
+        overlay.appendChild(box);
+
+        const chars = Array.from(text);
+        const letters = [];
+        chars.forEach((ch, i) => { if (ch.toLowerCase() !== ch.toUpperCase()) letters.push(i); });
+        const uppercaseCount = Math.round(letters.length * letterProgress);
+        const upperIndexes = new Set(letters.slice(0, uppercaseCount));
+
+        const spans = chars.map((ch, i) => {
+            const s = document.createElement("span");
+            s.className = "index-overlay-char";
+            s.textContent = upperIndexes.has(i) ? ch.toUpperCase() : ch.toLowerCase();
+            box.appendChild(s);
+            return s;
         });
 
-        headerButtons.forEach(button => {
-            const span = button.querySelector("span");
-            if (span) {
-                span.classList.remove("is-composite-hidden");
-                span.style.visibility = "";
-            }
-        });
-    }
-
-    function getVisiblePreviewRect() {
-        const target = normalized(previewRecord?.field) === "film"
-            ? previewVideo
-            : previewImage;
-
-        if (!target) return null;
-
-        const rect = target.getBoundingClientRect();
-        if (!rect.width || !rect.height) return null;
-
-        const styles = getComputedStyle(target);
-        if (
-            styles.visibility === "hidden" ||
-            styles.display === "none" ||
-            parseFloat(styles.opacity || "1") === 0
-        ) {
-            return null;
-        }
-
-        return rect;
-    }
-
-    function clampNumber(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    function isUppercaseContent(text) {
-        const value = String(text || "");
-        const letters = value.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g);
-        if (!letters || !letters.length) return false;
-        return letters.every(letter => letter === letter.toUpperCase());
-    }
-
-    function copyTypography(source, target) {
-        const style = getComputedStyle(source);
-
-        target.style.fontFamily = style.fontFamily;
-        target.style.fontSize = style.fontSize;
-        target.style.fontWeight = style.fontWeight;
-        target.style.fontStyle = style.fontStyle;
-        target.style.lineHeight = style.lineHeight;
-        target.style.letterSpacing = style.letterSpacing;
-        target.style.wordSpacing = style.wordSpacing;
-        target.style.textTransform = "none";
-    }
-
-    function createCompositeText(source, previewRect) {
-        const text = source.textContent || "";
-        const rect = source.getBoundingClientRect();
-
-        if (!rect.width || !rect.height) return null;
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "landing-index-composite-text";
-        wrapper.style.left = `${rect.left}px`;
-        wrapper.style.top = `${rect.top}px`;
-        wrapper.style.width = `${rect.width}px`;
-        wrapper.style.height = `${rect.height}px`;
-        copyTypography(source, wrapper);
-
-        const textUpper = isUppercaseContent(text);
-
-        const left = clampNumber(
-            previewRect ? previewRect.left - rect.left : -1,
-            0,
-            rect.width
-        );
-        const right = clampNumber(
-            previewRect ? previewRect.right - rect.left : rect.width,
-            0,
-            rect.width
-        );
-        const top = clampNumber(
-            previewRect ? previewRect.top - rect.top : -1,
-            0,
-            rect.height
-        );
-        const bottom = clampNumber(
-            previewRect ? previewRect.bottom - rect.top : rect.height,
-            0,
-            rect.height
-        );
-
-        const intersects =
-            previewRect &&
-            right > left &&
-            bottom > top &&
-            previewRect.right > rect.left &&
-            previewRect.left < rect.right &&
-            previewRect.bottom > rect.top &&
-            previewRect.top < rect.bottom;
-
-        function addPiece(
-            clipPath,
-            mode = "outside"
-        ) {
-            const piece = document.createElement("span");
-            piece.className =
-                `landing-index-composite-text ${mode}`;
-
-            piece.textContent = text;
-            piece.style.position = "absolute";
-            piece.style.left = "0";
-            piece.style.top = "0";
-            piece.style.width = "100%";
-            piece.style.height = "100%";
-            piece.style.margin = "0";
-            piece.style.padding = "0";
-            piece.style.clipPath = clipPath;
-            piece.style.webkitClipPath = clipPath;
-            copyTypography(source, piece);
-            wrapper.appendChild(piece);
-        }
-
-        if (!intersects) {
-            addPiece("inset(0 0 0 0)", "outside");
-            return wrapper;
-        }
-
-        const leftPx = left;
-        const rightPx = right;
-        const topPx = top;
-        const bottomPx = bottom;
-
-        /* Outside pieces: keep only the regions not covered by preview. */
-        if (topPx > 0.5) {
-            addPiece(
-                `inset(0 0 ${Math.max(0, rect.height - topPx)}px 0)`,
-                "outside"
-            );
-        }
-
-        if (bottomPx < rect.height - 0.5) {
-            addPiece(
-                `inset(${Math.max(0, bottomPx)}px 0 0 0)`,
-                "outside"
-            );
-        }
-
-        if (leftPx > 0.5 && bottomPx > topPx) {
-            addPiece(
-                `inset(${topPx}px ${Math.max(0, rect.width - leftPx)}px ${Math.max(0, rect.height - bottomPx)}px 0)`,
-                "outside"
-            );
-        }
-
-        if (rightPx < rect.width - 0.5 && bottomPx > topPx) {
-            addPiece(
-                `inset(${topPx}px 0 ${Math.max(0, rect.height - bottomPx)}px ${Math.max(0, rightPx)}px)`,
-                "outside"
-            );
-        }
-
-        /*
-           Uppercase text gets ONLY the intersection rendered as white
-           difference text. Because this layer is inside the same stage
-           as the media, the result is the preview's actual inverse.
-           Lowercase text intentionally has no inside piece, so it
-           disappears wherever the preview overlaps it.
-        */
-        if (textUpper) {
-            addPiece(
-                `inset(${topPx}px ${Math.max(0, rect.width - rightPx)}px ${Math.max(0, rect.height - bottomPx)}px ${leftPx}px)`,
-                "diff"
-            );
-        }
-
-        return wrapper;
-    }
-
-    function positionPreviewForCell(cell) {
-        if (!cell || !indexPreviewStage) return;
-
-        const cellRect = cell.getBoundingClientRect();
-        const pageTop =
-            parseFloat(
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue("--page-top")
-            ) || 0;
-        const pageBottom =
-            parseFloat(
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue("--page-bottom")
-            ) || 0;
-
-        const centerX = cellRect.left + cellRect.width / 2;
-        const centerY =
-            pageTop +
-            (window.innerHeight - pageTop - pageBottom) / 2;
-
-        const width = indexPreview.offsetWidth;
-        const height = indexPreview.offsetHeight;
-
-        indexPreview.style.left = `${centerX - width / 2}px`;
-        indexPreview.style.top = `${centerY - height / 2}px`;
-    }
-
-    function renderCompositeLayer() {
-        activeCompositeFrame = null;
-
-        if (
-            sectionMode !== "index" ||
-            !previewRecord ||
-            !activePreviewRow ||
-            !indexPreviewStage.classList.contains("visible")
-        ) {
-            return;
-        }
-
-        const previewRect = getVisiblePreviewRect();
-        if (!previewRect || !indexCompositeLayer) {
-            return;
-        }
-
-        indexCompositeLayer.replaceChildren();
-
-        /* Header always stays above preview. */
-        headerButtons.forEach(button => {
-            const span = button.querySelector("span");
-            if (!span) return;
-
-            span.classList.add("is-composite-hidden");
-
-            const composite = createCompositeText(
-                span,
-                previewRect
-            );
-
-            if (composite) {
-                indexCompositeLayer.appendChild(composite);
-            }
-        });
-
-        /* Only hovered row stays above preview. */
-        activePreviewRow.row
-            .querySelectorAll(".landing-index-text")
-            .forEach(span => {
-                span.classList.add("is-composite-hidden");
-
-                const composite = createCompositeText(
-                    span,
-                    previewRect
-                );
-
-                if (composite) {
-                    indexCompositeLayer.appendChild(composite);
+        const pr = previewRect();
+        spans.forEach(s => {
+            const sr = s.getBoundingClientRect();
+            const hit = pr && intersects(sr, pr);
+            const isUpper = s.textContent.toLowerCase() !== s.textContent.toUpperCase() && s.textContent === s.textContent.toUpperCase();
+            if (hit) {
+                if (isUpper) {
+                    s.style.color = "#fff";
+                    s.style.mixBlendMode = "difference";
+                    s.style.opacity = "1";
+                } else {
+                    s.style.opacity = "0";
                 }
-            });
-
-        /*
-           The source row itself remains visually present in the grid
-           only for hit-testing/clicking. The composite copy is the
-           visible text layer.
-        */
+            } else {
+                s.style.color = "#000";
+                s.style.mixBlendMode = "normal";
+                s.style.opacity = "1";
+            }
+        });
     }
 
-    function queueCompositeLayerUpdate() {
-        if (activeCompositeFrame !== null) return;
+    function updateOverlay() {
+        clearOverlay();
+        if (!previewRecord || !activeRow) {
+            body.classList.remove("landing-index-preview-active");
+            return;
+        }
+        const pr = previewRect();
+        if (!pr) {
+            body.classList.remove("landing-index-preview-active");
+            return;
+        }
+        body.classList.add("landing-index-preview-active");
 
-        activeCompositeFrame =
-            requestAnimationFrame(renderCompositeLayer);
+        /* Header is always above preview. Active sort key is uppercase. */
+        headerButtons.forEach(button => {
+            const span = button.querySelector(".landing-index-text");
+            const progress = button.dataset.sortKey === sortKey ? 1 : 0;
+            makeOverlayCell(button, span?.textContent || "", progress, true);
+        });
+
+        /* Hovered row is the only project row above preview. */
+        const values = cellValues(activeRow.record);
+        activeRow.cells.forEach((cell, i) => {
+            if (getComputedStyle(cell).display === "none") return;
+            makeOverlayCell(cell, values[i], activeRow.progress, true);
+        });
     }
 
     function clearPreview() {
-        clearCompositeLayer();
-
+        if (activeRow) {
+            animateRow(activeRow, 0, ROW_MORPH_DURATION, () => {
+                if (activeRow && activeRow.progress === 0) {
+                    activeRow.row.classList.remove("landing-index-active-row");
+                    if (previewRecord === activeRow.record) previewRecord = null;
+                    activeRow = null;
+                    activeCell = null;
+                    indexPreview.classList.remove("visible", "is-film");
+                    indexPreview.setAttribute("aria-hidden", "true");
+                    previewVideo.pause();
+                    previewVideo.removeAttribute("src");
+                    previewVideo.load();
+                    previewImage.removeAttribute("src");
+                    updateOverlay();
+                }
+            });
+            return;
+        }
         previewRecord = null;
-        activePreviewRow = null;
-        activePreviewCell = null;
-
-        if (indexPreviewStage) {
-            indexPreviewStage.classList.remove("visible");
-            indexPreviewStage.setAttribute("aria-hidden", "true");
-        }
-
-        indexPreview.classList.remove("is-film");
+        indexPreview.classList.remove("visible", "is-film");
         previewVideo.pause();
         previewVideo.removeAttribute("src");
-        previewVideo.removeAttribute("poster");
         previewVideo.load();
         previewImage.removeAttribute("src");
+        updateOverlay();
     }
 
-    function setPhotoPreview(record) {
-        const project = record.source;
-        if (!project?.images?.length) {
-            clearPreview();
-            return;
-        }
+    function setPreviewPosition() {
+        if (!activeCell) return;
+        const r = activeCell.getBoundingClientRect();
+        if (!r.width) return;
+        const pageX = parseFloat(getComputedStyle(root).getPropertyValue("--page-x")) || 24;
+        const margin = 12;
+        const half = Math.min(window.innerWidth * 0.22, 380);
+        const raw = r.left + r.width / 2;
+        const x = Math.max(pageX + half + margin, Math.min(window.innerWidth - pageX - half - margin, raw));
+        root.style.setProperty("--landing-preview-x", `${x}px`);
+    }
 
-        const filename =
-            project.cover ||
-            project.images[0];
-
-        const dotIndex =
-            filename.lastIndexOf(".");
-
-        const thumb =
-            dotIndex > 0
-                ? filename.slice(0, dotIndex) + ".webp"
-                : filename + ".webp";
-
-        const src =
-            PHOTO_THUMB_BASE +
-            encodeURIComponent(thumb);
-
+    function showPhoto(record) {
+        const srcProject = record.source;
+        if (!srcProject?.images?.length) { clearPreview(); return; }
+        const filename = srcProject.cover || srcProject.images[0];
+        const base = filename.replace(/\.[^.]+$/, "");
+        const src = PHOTO_THUMB_BASE + encodeURIComponent(base + ".webp");
         previewVideo.pause();
         previewVideo.removeAttribute("src");
-        previewVideo.removeAttribute("poster");
         previewVideo.load();
-
         previewImage.src = src;
-
         indexPreview.classList.remove("is-film");
-
-        if (indexPreviewStage) {
-            indexPreviewStage.classList.add("visible");
-            indexPreviewStage.setAttribute("aria-hidden", "false");
-        }
-
-        requestAnimationFrame(() => {
-            positionPreviewForCell(activePreviewCell);
-            queueCompositeLayerUpdate();
-        });
+        indexPreview.classList.add("visible");
+        indexPreview.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(updateOverlay);
     }
 
-    function setFilmPreview(record) {
-        const project = record.source;
-
-        if (!project?.videos?.length) {
-            clearPreview();
-            return;
-        }
-
-        const filename =
-            project.videos[0];
-
-        const previewFilename =
-            filename.replace(
-                /\.mp4$/i,
-                "_preview.mp4"
-            );
-
-        const src =
-            FILM_PREVIEW_BASE +
-            encodeURIComponent(previewFilename);
-
+    function showFilm(record) {
+        const srcProject = record.source;
+        if (!srcProject?.videos?.length) { clearPreview(); return; }
+        const filename = srcProject.cover || srcProject.videos[0];
+        const previewFilename = filename.replace(/\.mp4$/i, "_preview.mp4");
+        const src = FILM_PREVIEW_BASE + encodeURIComponent(previewFilename);
         previewImage.removeAttribute("src");
-
-        previewVideo.dataset.filename = filename;
         previewVideo.src = src;
-        previewVideo.currentTime = 0;
         previewVideo.muted = true;
         previewVideo.defaultMuted = true;
         previewVideo.playsInline = true;
         previewVideo.loop = true;
         previewVideo.preload = "auto";
+        previewVideo.currentTime = 0;
+        indexPreview.classList.add("visible", "is-film");
+        indexPreview.setAttribute("aria-hidden", "false");
         previewVideo.load();
-
         previewVideo.play().catch(() => {});
-
-        indexPreview.classList.add("is-film");
-
-        if (indexPreviewStage) {
-            indexPreviewStage.classList.add("visible");
-            indexPreviewStage.setAttribute("aria-hidden", "false");
-        }
-
-        requestAnimationFrame(() => {
-            positionPreviewForCell(activePreviewCell);
-            queueCompositeLayerUpdate();
-        });
+        requestAnimationFrame(updateOverlay);
     }
 
-    function selectPreview(record) {
+    function showPreview(record) {
         previewRecord = record;
+        setPreviewPosition();
+        if (record.field === "film") showFilm(record); else showPhoto(record);
+    }
 
-        if (normalized(record.field) === "film") {
-            setFilmPreview(record);
-        } else {
-            setPhotoPreview(record);
+    function enterRow(state, cell) {
+        if (activeRow && activeRow !== state) {
+            if (activeRow.frame) cancelAnimationFrame(activeRow.frame);
+            activeRow.progress = 0;
+            renderRowCase(activeRow);
+            activeRow.row.classList.remove("landing-index-active-row");
         }
-
-        queueCompositeLayerUpdate();
+        activeRow = state;
+        activeCell = cell;
+        state.row.classList.add("landing-index-active-row");
+        setPreviewPosition();
+        showPreview(state.record);
+        animateRow(state, 1);
     }
 
-    function refreshPreviewLayout() {
-        if (!previewRecord || !activePreviewCell) return;
-        positionPreviewForCell(activePreviewCell);
-        queueCompositeLayerUpdate();
+    function leaveRow(state) {
+        if (activeRow !== state) return;
+        clearPreview();
     }
-
-    previewImage.addEventListener("load", () => {
-        positionPreviewForCell(activePreviewCell);
-        queueCompositeLayerUpdate();
-    });
-
-    previewVideo.addEventListener("loadedmetadata", () => {
-        positionPreviewForCell(activePreviewCell);
-        queueCompositeLayerUpdate();
-    });
-
-    previewVideo.addEventListener("loadeddata", () => {
-        positionPreviewForCell(activePreviewCell);
-        queueCompositeLayerUpdate();
-    });
-
-    previewVideo.addEventListener("canplay", () => {
-        positionPreviewForCell(activePreviewCell);
-        queueCompositeLayerUpdate();
-    });
-
-    function getDisplayField(record) {
-        if (indexFieldShort && normalized(record.field) === "photography") {
-            return "photo";
-        }
-        return normalized(record.field);
-    }
-
-    function isIndexFitViewport() {
-        return window.innerWidth <= 1100;
-    }
-
-    function isIndexPortraitViewport() {
-        return isIndexFitViewport() && window.matchMedia("(orientation: portrait)").matches;
-    }
-
-    function updateLandingIndexSideSpace() {
-        const root = document.documentElement;
-        const pageX = parseFloat(
-            getComputedStyle(root).getPropertyValue("--page-x")
-        ) || 0;
-
-        const isDesktop = window.innerWidth > 700;
-        if (!isDesktop) {
-            root.style.setProperty(
-                "--landing-index-side-space",
-                `${pageX}px`
-            );
-            return;
-        }
-
-        const labels = Array.from(
-            document.querySelectorAll(".contact a")
-        );
-
-        const longestLabel = labels.reduce(
-            (max, element) => Math.max(max, element.getBoundingClientRect().width),
-            0
-        );
-
-        const sideSpace = Math.ceil(
-            Math.max(pageX, longestLabel)
-        );
-
-        root.style.setProperty(
-            "--landing-index-side-space",
-            `${sideSpace}px`
-        );
-    }
-
-    function readCssBaseFontSize() {
-        const root = document.documentElement;
-        const inlineValue = root.style.getPropertyValue("--font-size");
-        if (inlineValue) {
-            root.style.removeProperty("--font-size");
-        }
-
-        const computed = parseFloat(
-            getComputedStyle(root).getPropertyValue("--font-size")
-        ) || 15;
-
-        if (inlineValue) {
-            root.style.setProperty("--font-size", inlineValue);
-        }
-
-        return computed;
-    }
-
-    function indexContentFitsViewport() {
-        if (!indexGrid || !indexScroll) return true;
-
-        const available = Math.max(1, indexScroll.clientWidth);
-        const scrollOverflow = indexGrid.scrollWidth > available + 1;
-
-        if (scrollOverflow) return false;
-
-        const visibleCells = indexGrid.querySelectorAll(
-            ".landing-index-header-cell, .landing-index-cell"
-        );
-
-        return Array.from(visibleCells).every(cell => {
-            if (getComputedStyle(cell).display === "none") return true;
-            return cell.scrollWidth <= cell.clientWidth + 1;
-        });
-    }
-
-    function applyLandingIndexResponsiveLayout(forceRender = false) {
-        updateLandingIndexSideSpace();
-
-        const compact = isIndexFitViewport();
-        const portrait = isIndexPortraitViewport();
-        const nextFieldShort = compact;
-
-        const fieldChanged =
-            nextFieldShort !== indexFieldShort;
-
-        indexFieldShort = nextFieldShort;
-
-        if (
-            forceRender ||
-            fieldChanged
-        ) {
-            renderRows();
-        }
-
-        const root = document.documentElement;
-        const baseFontSize = readCssBaseFontSize();
-
-        /*
-           Always reset to the CSS-defined size first. This lets an
-           orientation change restore the normal size automatically.
-        */
-        root.style.setProperty(
-            "--font-size",
-            `${baseFontSize}px`
-        );
-
-        let hideUse = false;
-
-        if (compact) {
-            /* Portrait always hides USE first. Landscape hides it only
-               when the complete row set cannot fit on one line. */
-            hideUse = portrait;
-            document.body.classList.toggle(
-                "landing-index-hide-use",
-                hideUse
-            );
-
-            if (!hideUse && !indexContentFitsViewport()) {
-                hideUse = true;
-                document.body.classList.add(
-                    "landing-index-hide-use"
-                );
-            }
-
-            /* If three columns still do not fit, shrink the global type. */
-            if (!indexContentFitsViewport()) {
-                const minimumFontSize = 10;
-                let candidate = baseFontSize;
-
-                while (
-                    candidate > minimumFontSize &&
-                    !indexContentFitsViewport()
-                ) {
-                    candidate = Math.max(
-                        minimumFontSize,
-                        candidate - 0.5
-                    );
-
-                    root.style.setProperty(
-                        "--font-size",
-                        `${candidate}px`
-                    );
-                }
-            }
-        } else {
-            hideUse = false;
-            document.body.classList.remove(
-                "landing-index-hide-use"
-            );
-        }
-
-        const hideUseChanged = hideUse !== indexResponsiveHideUse;
-        indexResponsiveHideUse = hideUse;
-
-        if (!forceRender && hideUseChanged) {
-            renderRows();
-        }
-
-        queueDifferenceLayerUpdate();
-    }
-
 
     function createRow(record) {
         const row = document.createElement("div");
         row.className = "landing-index-row";
         row.dataset.id = record.id;
         row.dataset.field = record.field;
-        row.tabIndex = 0;
         row.setAttribute("role", "link");
-        row.setAttribute(
-            "aria-label",
-            `${record.title}, ${record.date}, ${record.field}, ${record.use}`
-        );
-
-        const values = [
-            record.title,
-            record.date,
-            getDisplayField(record),
-            record.use
-        ];
-
-        const cases = [];
-        const differenceSpans = [];
+        row.tabIndex = 0;
         const cells = [];
-
-        values.forEach(value => {
+        cellValues(record).forEach(value => {
             const cell = document.createElement("div");
             cell.className = "landing-index-cell";
-
             const span = document.createElement("span");
             span.className = "landing-index-text";
-
-            const difference = document.createElement("span");
-            difference.className = "landing-index-difference-text";
-            difference.setAttribute("aria-hidden", "true");
-
+            span.textContent = String(value);
             cell.appendChild(span);
-            cell.appendChild(difference);
             row.appendChild(cell);
-
             cells.push(cell);
-            cases.push(
-                createCaseMorph(
-                    span,
-                    value,
-                    difference
-                )
-            );
-            differenceSpans.push(difference);
         });
-
-        const state = {
-            row,
-            record,
-            cases,
-            differenceSpans,
-            cells
-        };
-
+        const state = { row, record, cells, progress: 0, frame: null };
         rowStates.push(state);
-
-        let entered = false;
-
-        const activate = cell => {
-            entered = true;
-
-            row.classList.add("is-focus");
-            activePreviewRow = state;
-            activePreviewCell =
-                cell ||
-                activePreviewCell ||
-                cells[0] ||
-                null;
-
-            cases.forEach(
-                controller => controller.upper()
-            );
-
-            selectPreview(record);
-            refreshPreviewLayout();
-            queueCompositeLayerUpdate();
-        };
-
-        const leave = () => {
-            if (!entered) return;
-
-            entered = false;
-
-            row.classList.remove("is-focus");
-
-            cases.forEach(
-                controller => controller.lower()
-            );
-
-            if (previewRecord === record) {
-                clearPreview();
-            }
-        };
-
-        row.addEventListener(
-            "mouseenter",
-            event => {
-                const targetCell =
-                    event.target?.closest?.(
-                        ".landing-index-cell"
-                    );
-
-                activate(
-                    targetCell &&
-                    row.contains(targetCell)
-                        ? targetCell
-                        : cells[0]
-                );
-            }
-        );
-
-        row.addEventListener(
-            "mouseleave",
-            leave
-        );
-
-        cells.forEach(cell => {
-            cell.addEventListener(
-                "mouseenter",
-                () => activate(cell)
-            );
-        });
-
-        row.addEventListener(
-            "focus",
-            () => activate(cells[0])
-        );
-
-        row.addEventListener(
-            "blur",
-            leave
-        );
-
-        row.addEventListener(
-            "click",
-            event => {
-                event.preventDefault();
-                openRecord(record);
-            }
-        );
-
-        row.addEventListener(
-            "keydown",
-            event => {
-                if (
-                    event.key === "Enter" ||
-                    event.key === " "
-                ) {
-                    event.preventDefault();
-                    openRecord(record);
-                }
-            }
-        );
-
+        cells.forEach(cell => cell.addEventListener("mouseenter", () => enterRow(state, cell)));
+        row.addEventListener("mouseleave", () => leaveRow(state));
+        row.addEventListener("click", event => { event.preventDefault(); openRecord(record); });
+        row.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openRecord(record); } });
         return row;
     }
 
     function renderRows() {
+        clearPreview();
         rowStates = [];
-        indexGrid.querySelectorAll(".landing-index-row, .landing-index-empty").forEach(node => node.remove());
-
-        const records = sortedRecords();
-        if (!records.length) {
-            const empty = document.createElement("div");
-            empty.className = "landing-index-empty";
-            empty.textContent = "index unavailable";
-            indexGrid.appendChild(empty);
-            return;
-        }
-
+        indexGrid.querySelectorAll(".landing-index-row").forEach(node => node.remove());
+        records = buildRecords();
         const fragment = document.createDocumentFragment();
-        records.forEach(record => fragment.appendChild(createRow(record)));
+        sortedRecords().forEach(record => fragment.appendChild(createRow(record)));
         indexGrid.appendChild(fragment);
+        syncHeaderState();
     }
 
     function syncHeaderState(duration = SECTION_MORPH_DURATION) {
         headerButtons.forEach(button => {
-            const key = button.dataset.sortKey;
-            const span = button.querySelector("span");
-            if (!span) return;
-
-            const active = key === sortKey;
-            const controller = button.__caseController;
-            if (controller) {
-                active ? controller.setUpper(duration) : controller.setLower(duration);
-            }
-
-            button.setAttribute("aria-sort", active
-                ? (sortDirection === "asc" ? "ascending" : "descending")
-                : "none"
-            );
+            const span = button.querySelector(".landing-index-text");
+            const raw = button.dataset.sortKey;
+            const active = raw === sortKey;
+            if (button.__morph) button.__morph.set(active, duration);
+            button.setAttribute("aria-sort", active ? (sortDirection === "asc" ? "ascending" : "descending") : "none");
+            span.dataset.rawText = raw;
         });
+        requestAnimationFrame(updateOverlay);
     }
 
     function handleSort(key) {
-        if (key === sortKey) {
-            sortDirection = sortDirection === "asc" ? "desc" : "asc";
-        } else {
-            sortKey = key;
-            sortDirection = "asc";
-        }
-        clearPreview();
-        syncHeaderState();
+        if (key === sortKey) sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        else { sortKey = key; sortDirection = "asc"; }
         renderRows();
+        syncHeaderState();
     }
 
     function openRecord(record) {
-        clearPreview();
-        const encodedId = encodeURIComponent(record.id);
-        const base = record.field === "FILM"
-            ? "https://film.denizalpaybak.com/"
-            : "https://photography.denizalpaybak.com/";
-        window.location.href = `${base}?project=${encodedId}&view=all`;
+        const base = record.field === "film" ? "https://film.denizalpaybak.com/" : "https://photography.denizalpaybak.com/";
+        window.location.href = `${base}?project=${encodeURIComponent(record.id)}&view=all`;
     }
 
     headerButtons.forEach(button => {
-        const span = button.querySelector("span");
-        button.__caseController = createCaseMorph(span, button.dataset.sortKey);
+        const span = button.querySelector(".landing-index-text");
+        span.dataset.rawText = button.dataset.sortKey;
+        button.__morph = createCaseMorph(span, button.dataset.sortKey === sortKey);
         button.addEventListener("click", () => handleSort(button.dataset.sortKey));
     });
 
-    /* =====================================================
-       SECTION SWITCH
-       ===================================================== */
-
-    function setSectionMode(nextMode, animate = true) {
-        if (nextMode === sectionMode && animate) return;
-
-        sectionMode = nextMode;
-
-        if (nextMode === "info") {
-            infoButton.setAttribute("aria-pressed", "true");
-            indexButton.setAttribute("aria-pressed", "false");
-            clearPreview();
-            infoMorph.setUpper(animate ? SECTION_MORPH_DURATION : 0);
-            indexMorph.setLower(animate ? SECTION_MORPH_DURATION : 0);
-            body.classList.remove("landing-index-mode");
-            body.classList.add("landing-info-mode");
-            document.documentElement.classList.remove("landing-index-mode");
-            document.documentElement.classList.add("landing-info-mode");
-            return;
-        }
-
-        infoButton.setAttribute("aria-pressed", "false");
-        indexButton.setAttribute("aria-pressed", "true");
-        infoMorph.setLower(animate ? SECTION_MORPH_DURATION : 0);
-        indexMorph.setUpper(animate ? SECTION_MORPH_DURATION : 0);
-        body.classList.remove("landing-info-mode");
-        window.addEventListener("resize", () => {
-        if (sectionMode !== "index") return;
-        applyLandingIndexResponsiveLayout(false);
-        refreshPreviewLayout();
-        queueCompositeLayerUpdate();
-    });
-
-    window.addEventListener("orientationchange", () => {
-        setTimeout(() => {
-            if (sectionMode !== "index") return;
-            applyLandingIndexResponsiveLayout(false);
-            refreshPreviewLayout();
-            queueCompositeLayerUpdate();
-        }, 120);
-    });
-
-    body.classList.add("landing-index-mode");
-        document.documentElement.classList.remove("landing-info-mode");
-        document.documentElement.classList.add("landing-index-mode");
+    function updateSideSpace() {
+        const pageX = parseFloat(getComputedStyle(root).getPropertyValue("--page-x")) || 24;
+        if (window.innerWidth <= 700) { root.style.setProperty("--landing-index-side-space", `${pageX}px`); return; }
+        const labels = [...document.querySelectorAll(".contact a")];
+        const longest = labels.reduce((m, el) => Math.max(m, el.getBoundingClientRect().width), 0);
+        root.style.setProperty("--landing-index-side-space", `${Math.max(pageX, Math.ceil(longest))}px`);
     }
 
-    indexButton.addEventListener("click", () => setSectionMode("index", true));
-    infoButton.addEventListener("click", () => setSectionMode("info", true));
+    function resetFont() { root.style.setProperty("--font-size", `${baseFontSize}px`); }
 
-    /* =====================================================
-       PREVENT THE OLD LANDING GESTURES FROM STEALING INDEX SCROLL
-       ===================================================== */
-
-    [indexScroll].forEach(element => {
-        ["wheel", "touchstart", "touchmove", "touchend", "pointerdown"].forEach(type => {
-            element.addEventListener(type, event => {
-                event.stopPropagation();
-            }, { passive: type === "wheel" ? false : true });
-        });
-    });
-
-    /* =====================================================
-       LOAD DATA
-       ===================================================== */
-
-    async function fetchJson(url) {
-        const response = await fetch(url, { cache: "no-store" });
-        if (!response.ok) throw new Error(`${url}: ${response.status}`);
-        return response.json();
+    function contentFits() {
+        const visibleCells = [...indexGrid.querySelectorAll(".landing-index-header-cell, .landing-index-cell")].filter(el => getComputedStyle(el).display !== "none");
+        if (!visibleCells.length) return true;
+        const over = indexGrid.scrollWidth > indexGrid.parentElement.clientWidth + 1;
+        if (over) return false;
+        return visibleCells.every(cell => cell.scrollWidth <= cell.clientWidth + 1);
     }
 
-    async function loadData() {
-        const [metaResult, photoResult, filmResult] = await Promise.allSettled([
-            fetchJson(LANDING_INDEX_JSON_URL),
-            fetchJson(PHOTOGRAPHY_JSON_URL),
-            fetchJson(FILM_JSON_URL)
-        ]);
-
-        if (metaResult.status === "fulfilled") {
-            const nextMeta = arrayData(metaResult.value);
-            if (nextMeta.length) metadata = nextMeta;
+    function applyResponsive() {
+        updateSideSpace();
+        resetFont();
+        const compact = window.innerWidth <= 1000;
+        const portrait = compact && window.matchMedia("(orientation: portrait)").matches;
+        let hideUse = false;
+        body.classList.remove("landing-index-hide-use");
+        if (compact) {
+            hideUse = portrait;
+            if (!hideUse && !contentFits()) hideUse = true;
+            if (hideUse) body.classList.add("landing-index-hide-use");
+            if (!contentFits()) {
+                let size = baseFontSize;
+                while (size > 10 && !contentFits()) { size = Math.max(10, size - 0.5); root.style.setProperty("--font-size", `${size}px`); }
+            }
         }
-
-        if (photoResult.status === "fulfilled") {
-            const nextPhotos = photoMap(photoResult.value);
-            if (nextPhotos.size) photoProjects = nextPhotos;
-        }
-
-        if (filmResult.status === "fulfilled") {
-            const nextFilms = filmMap(filmResult.value);
-            if (nextFilms.size) filmProjects = nextFilms;
-        }
-
-        allRecords = buildRecords();
-        syncHeaderState(0);
         renderRows();
-        requestAnimationFrame(() => applyLandingIndexResponsiveLayout(false));
     }
 
-    /* =====================================================
-       INITIAL STATE / DISABLE THE OLD PREVIEW AUTOMATION
-       ===================================================== */
-
-    try {
-        if (typeof cancelAutomaticIntroForInteraction === "function") {
-            cancelAutomaticIntroForInteraction();
+    function switchSection(next) {
+        if (sectionMode === next) return;
+        sectionMode = next;
+        const toInfo = next === "info";
+        if (toInfo) {
+            clearPreview();
+            indexMorph.set(false);
+            infoMorph.set(true);
+            body.classList.add("landing-info-mode");
+        } else {
+            infoMorph.set(false);
+            indexMorph.set(true);
+            body.classList.remove("landing-info-mode");
         }
-        if (typeof clearIntroTimer === "function") {
-            clearIntroTimer();
-        }
-        if (typeof cancelFilmAutoClose === "function") {
-            cancelFilmAutoClose();
-        }
-        if (typeof cancelPhotoSequence === "function") {
-            cancelPhotoSequence();
-        }
-        if (typeof clearPreviewTheme === "function") {
-            clearPreviewTheme();
-        }
-        if (typeof clearSinglePhotographyPreview === "function") {
-            clearSinglePhotographyPreview();
-        }
-        if (typeof filmVideo !== "undefined" && filmVideo) {
-            filmVideo.pause();
-        }
-        if (typeof photographyField !== "undefined" && photographyField) {
-            photographyField.classList.remove("active");
-        }
-        if (typeof filmField !== "undefined" && filmField) {
-            filmField.classList.remove("active");
-        }
-    } catch (error) {
-        console.warn("Landing preview cleanup skipped:", error);
+        indexButton.setAttribute("aria-pressed", String(!toInfo));
+        infoButton.setAttribute("aria-pressed", String(toInfo));
     }
 
-    body.classList.add("landing-index-mode");
-    document.documentElement.classList.add("landing-index-mode");
-    body.classList.remove("landing-info-mode");
-    document.documentElement.classList.remove("landing-info-mode");
+    indexButton.addEventListener("click", () => switchSection("index"));
+    infoButton.addEventListener("click", () => switchSection("info"));
 
-    indexMorph.setUpper(0);
-    infoMorph.setLower(0);
-
-    allRecords = buildRecords();
-    syncHeaderState(0);
-    renderRows();
-    updateLandingIndexSideSpace();
-    requestAnimationFrame(() => applyLandingIndexResponsiveLayout(false));
-    loadData().catch(error => {
-        console.error("Landing INDEX data load failed:", error);
+    window.addEventListener("resize", () => {
+        clearTimeout(responsiveTimer);
+        responsiveTimer = setTimeout(() => { applyResponsive(); if (activeCell) setPreviewPosition(); updateOverlay(); }, 80);
     });
 
-    function queueLandingIndexResponsiveLayout() {
-        clearTimeout(indexResponsiveTimer);
-        indexResponsiveTimer = setTimeout(() => {
-            if (sectionMode !== "index") return;
-            applyLandingIndexResponsiveLayout(true);
-        }, 80);
+    window.addEventListener("orientationchange", () => setTimeout(() => { applyResponsive(); if (activeCell) setPreviewPosition(); updateOverlay(); }, 120));
+
+    window.addEventListener("scroll", updateOverlay, true);
+
+    previewImage.addEventListener("load", updateOverlay);
+    previewVideo.addEventListener("loadedmetadata", updateOverlay);
+    previewVideo.addEventListener("loadeddata", updateOverlay);
+    previewVideo.addEventListener("canplay", updateOverlay);
+
+    async function fetchJson(url, fallback) {
+        try {
+            const response = await fetch(url, { cache: "default" });
+            if (!response.ok) throw new Error(String(response.status));
+            const data = await response.json();
+            return data;
+        } catch (error) { return fallback; }
     }
 
-    window.addEventListener(
-        "resize",
-        () => {
-            updateLandingIndexSideSpace();
-            queueLandingIndexResponsiveLayout();
-            queueDifferenceLayerUpdate();
-        },
-        { passive: true }
-    );
-
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => {
-            updateLandingIndexSideSpace();
-            queueDifferenceLayerUpdate();
-        });
+    async function initData() {
+        const [meta, photos, films] = await Promise.all([
+            fetchJson(LANDING_INDEX_JSON_URL, META_FALLBACK),
+            fetchJson(PHOTOGRAPHY_JSON_URL, Object.values(PHOTO_FALLBACK)),
+            fetchJson(FILM_JSON_URL, Object.values(FILM_FALLBACK))
+        ]);
+        metadata = Array.isArray(meta) ? meta : META_FALLBACK.slice();
+        photoProjects = new Map((Array.isArray(photos) ? photos : Object.values(PHOTO_FALLBACK)).map(item => [item.id, item]));
+        filmProjects = new Map((Array.isArray(films) ? films : Object.values(FILM_FALLBACK)).map(item => [item.id, item]));
+        applyResponsive();
+        body.classList.remove("landing-info-mode");
+        sectionMode = "index";
     }
 
-    window.addEventListener(
-        "orientationchange",
-        () => {
-            setTimeout(
-                () => {
-                    updateLandingIndexSideSpace();
-                    queueLandingIndexResponsiveLayout();
-                    queueDifferenceLayerUpdate();
-                },
-                100
-            );
-        },
-        { passive: true }
-    );
+    applyResponsive();
+    initData();
 })();
 </script>
 
