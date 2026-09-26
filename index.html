@@ -1016,91 +1016,6 @@ body.preview-active .portfolio-download {
 }
 
 /* =====================================================
-   AYBAK END CARD — ONLY THE WORD
-   ===================================================== */
-
-#landing-aybak-end-card {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    overflow: hidden;
-    visibility: hidden;
-    pointer-events: none;
-    background: rgba(0,0,0,0);
-    transition:
-        background-color 460ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 460ms;
-    touch-action: none;
-}
-
-body.landing-aybak-active #landing-aybak-end-card {
-    visibility: visible;
-    pointer-events: auto;
-    transition:
-        background-color 460ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 0s;
-}
-
-html.landing-aybak-active:not(.landing-aybak-light),
-body.landing-aybak-active:not(.landing-aybak-light),
-body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
-    background: #000;
-}
-
-html.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
-    background: #fff;
-}
-
-#landing-aybak-word {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 170ms ease;
-    pointer-events: none;
-}
-
-body.landing-aybak-active #landing-aybak-word {
-    opacity: 1;
-    transition-delay: 255ms;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .landing-grid {
-        grid-template-columns: minmax(0,1fr);
-        grid-template-rows: auto auto auto minmax(0,1fr);
-    }
-
-    .biography {
-        max-width: min(100%, 530px);
-    }
-
-    .film-field {
-        padding:
-            var(--page-top)
-            var(--page-x)
-            var(--page-bottom);
-    }
-
-    .film-link {
-        width: min(
-            calc(100vw - 2 * var(--page-x)),
-            calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
-        );
-    }
-
-    #scattered-stage.single-photo-mode .project-photo.single-photo-visible {
-        max-width: calc(100vw - 2 * var(--page-x)) !important;
-        max-height: 62vh !important;
-    }
-}
-
-
-
-/* =====================================================
    FIXED PHOTOGRAPHY PREVIEW
    ===================================================== */
 
@@ -1317,7 +1232,6 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
    CLEAN LANDING SYSTEM
    ===================================================== */
 
-/* The old top-left landing logo is retired visually. */
 .logo {
     display: none !important;
     visibility: hidden !important;
@@ -1325,7 +1239,6 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     pointer-events: none !important;
 }
 
-/* Top navigation: photography left / film right. */
 .navigation {
     position: fixed !important;
     inset: 0 !important;
@@ -1355,19 +1268,9 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     white-space: nowrap !important;
 }
 
-.navigation #photography-link {
-    left: var(--page-x) !important;
-    right: auto !important;
-    text-align: left !important;
-}
+.navigation #photography-link { left: var(--page-x) !important; right: auto !important; text-align: left !important; }
+.navigation #film-link { right: var(--page-x) !important; left: auto !important; text-align: right !important; }
 
-.navigation #film-link {
-    right: var(--page-x) !important;
-    left: auto !important;
-    text-align: right !important;
-}
-
-/* Central biography. */
 .biography {
     position: fixed !important;
     z-index: 5 !important;
@@ -1406,11 +1309,11 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     hyphens: none !important;
 }
 
+/* No blank paragraph gaps: the composition is one continuous stack. */
 .biography .bio-line + .bio-line {
-    margin-top: var(--major-gap) !important;
+    margin-top: 0 !important;
 }
 
-/* Each punctuation-defined segment is one typographic line. */
 .biography .bio-segment {
     display: block !important;
     width: 100% !important;
@@ -1422,107 +1325,35 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     hyphens: none !important;
 }
 
-/* 1 line: centered. */
-.biography .bio-line[data-line-count="1"] .bio-segment {
-    text-align: center !important;
-}
+/* Alternating alignment applies to every line of the central text. */
+.biography .bio-line[data-line-count="1"] .bio-segment { text-align: center !important; }
 
-/* 2 lines: left / right. */
-.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(1) {
-    text-align: left !important;
-}
-.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(2) {
-    text-align: right !important;
-}
+.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(1) { text-align: left !important; }
+.biography .bio-line[data-line-count="2"] .bio-segment:nth-child(2) { text-align: right !important; }
 
-/* 3 lines: center / left / right. */
-.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(1) {
-    text-align: center !important;
-}
-.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(2) {
-    text-align: left !important;
-}
-.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(3) {
-    text-align: right !important;
-}
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(1) { text-align: center !important; }
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(2) { text-align: left !important; }
+.biography .bio-line[data-line-count="3"] .bio-segment:nth-child(3) { text-align: right !important; }
 
-/* 4 lines: left / right / left / right. */
-.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(1),
-.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(3) {
-    text-align: left !important;
-}
-.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(2),
-.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(4) {
-    text-align: right !important;
-}
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(odd) { text-align: left !important; }
+.biography .bio-line[data-line-count="4"] .bio-segment:nth-child(even) { text-align: right !important; }
 
-/* 5 lines: center / left / right / left / right. */
-.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(1) {
-    text-align: center !important;
-}
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(1) { text-align: center !important; }
 .biography .bio-line[data-line-count="5"] .bio-segment:nth-child(2),
-.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(4) {
-    text-align: left !important;
-}
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(4) { text-align: left !important; }
 .biography .bio-line[data-line-count="5"] .bio-segment:nth-child(3),
-.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(5) {
-    text-align: right !important;
-}
+.biography .bio-line[data-line-count="5"] .bio-segment:nth-child(5) { text-align: right !important; }
 
-/* Collaborator headings remain centered and independent of paragraph alignment. */
-.biography .collaborator-line {
-    text-align: center !important;
-}
+.mobile-bio { display: none !important; }
 
-.biography .collaborator-heading {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
+.collaborator-heading {
     white-space: nowrap !important;
 }
 
-/*
-   Collaborators:
-   editorial is grouped 2 + 2;
-   brand is grouped 3 + 3.
-   The two groups stay on one line when both fit; otherwise they wrap together.
-*/
-.collaborator-rows {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    column-gap: 0.55em !important;
-    row-gap: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.collaborator-row {
-    display: inline-flex !important;
-    flex: 0 0 auto !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    gap: 0.55em !important;
+.collaborator-content {
     white-space: nowrap !important;
 }
 
-.client-name {
-    display: inline !important;
-    white-space: nowrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.biography .collaborator-line {
-    margin-top: var(--major-gap) !important;
-}
-
-/* Footer / corner metadata. */
 .contact {
     position: fixed !important;
     z-index: 20000 !important;
@@ -1552,23 +1383,9 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
     pointer-events: auto !important;
 }
 
-.contact a:nth-child(1) {
-    right: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(2) {
-    right: var(--page-x) !important;
-    bottom: 0 !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(3) {
-    left: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: left !important;
-}
+.contact a:nth-child(1) { right: var(--page-x) !important; bottom: calc(var(--font-size) * var(--line-height)) !important; text-align: right !important; }
+.contact a:nth-child(2) { right: var(--page-x) !important; bottom: 0 !important; text-align: right !important; }
+.contact a:nth-child(3) { left: var(--page-x) !important; bottom: calc(var(--font-size) * var(--line-height)) !important; text-align: left !important; }
 
 .portfolio-download {
     position: fixed !important;
@@ -1600,11 +1417,8 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 }
 
 .contact a:hover,
-.portfolio-download a:hover {
-    text-decoration: underline !important;
-}
+.portfolio-download a:hover { text-decoration: underline !important; }
 
-/* The old visible landing logo can never flash during a transition. */
 body:not(.landing-aybak-active) .logo,
 body.landing-aybak-leaving .logo,
 html.landing-aybak-leaving .logo {
@@ -1614,9 +1428,6 @@ html.landing-aybak-leaving .logo {
     pointer-events: none !important;
 }
 
-/* =====================================================
-   BLACK AYBAK END CARD
-   ===================================================== */
 #landing-aybak-end-card {
     position: fixed !important;
     inset: 0 !important;
@@ -1643,9 +1454,7 @@ body.landing-aybak-active #landing-aybak-end-card {
 }
 
 body.landing-aybak-leaving,
-html.landing-aybak-leaving {
-    background: #fff !important;
-}
+html.landing-aybak-leaving { background: #fff !important; }
 
 body.landing-aybak-leaving #landing-aybak-end-card {
     visibility: visible !important;
@@ -1654,7 +1463,7 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
 }
 
-/* Corner labels stay above the black surface. */
+/* Corner labels sit in their own higher stacking layer. */
 body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
 body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
 body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
@@ -1677,11 +1486,9 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
 
 body.landing-aybak-leaving .navigation a,
 body.landing-aybak-leaving .contact a,
-body.landing-aybak-leaving .portfolio-download a {
-    color: #000 !important;
-}
+body.landing-aybak-leaving .portfolio-download a { color: #000 !important; }
 
-/* End-card wordmark: exact two centered lines. */
+/* Exact centered two-line AYBAK wordmark. */
 #landing-aybak-logo {
     display: flex !important;
     flex-direction: column !important;
@@ -1711,6 +1518,7 @@ body.landing-aybak-leaving .portfolio-download a {
 #landing-aybak-name,
 #landing-aybak-aybak {
     display: block !important;
+    letter-spacing: 0 !important;
     width: max-content !important;
     height: calc(var(--font-size) * var(--line-height)) !important;
     margin: 0 !important;
@@ -1722,43 +1530,44 @@ body.landing-aybak-leaving .portfolio-download a {
 .landing-aybak-letter {
     display: inline-grid !important;
     place-items: center !important;
+    grid-template-columns: max-content !important;
+    grid-template-rows: max-content !important;
     position: relative !important;
-    vertical-align: baseline !important;
     margin: 0 !important;
     padding: 0 !important;
+    vertical-align: baseline !important;
+    line-height: inherit !important;
 }
 
 .landing-aybak-letter > span {
     grid-area: 1 / 1 !important;
     display: block !important;
+    line-height: inherit !important;
     transition: opacity 90ms ease, transform 90ms ease !important;
 }
 
-.landing-aybak-letter .lower,
 .landing-aybak-letter .upper {
-    line-height: inherit !important;
+    opacity: 0 !important;
+    transform: translateY(0.12em) !important;
 }
 
-.landing-aybak-letter .upper {
-    opacity: 0;
-    transform: translateY(0.12em);
+.landing-aybak-letter .lower {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
 
 .landing-aybak-letter.is-upper .lower {
-    opacity: 0;
-    transform: translateY(-0.12em);
+    opacity: 0 !important;
+    transform: translateY(-0.12em) !important;
 }
 
 .landing-aybak-letter.is-upper .upper {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
 
-/* Safe-area fill for iOS landscape. */
 html.landing-aybak-active,
-body.landing-aybak-active {
-    background: #000 !important;
-}
+body.landing-aybak-active { background: #000 !important; }
 
 body.landing-aybak-active #landing-aybak-end-card {
     left: calc(-1 * env(safe-area-inset-left)) !important;
@@ -1771,21 +1580,22 @@ body.landing-aybak-active #landing-aybak-end-card {
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(92vw, 430px) !important;
-    }
+    .desktop-bio { display: none !important; }
+    .mobile-bio { display: block !important; }
+    .biography { width: min(92vw, 430px) !important; }
+}
+
+@media (min-width: 601px) {
+    .desktop-bio { display: block !important; }
+    .mobile-bio { display: none !important; }
 }
 
 @media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(82vw, 580px) !important;
-    }
+    .biography { width: min(82vw, 580px) !important; }
 }
 
 @media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(720px, 72vw) !important;
-    }
+    .biography { width: min(720px, 72vw) !important; }
 }
 </style></head>
 <body>
@@ -1814,14 +1624,26 @@ body.landing-aybak-active #landing-aybak-end-card {
 </div>
 <!-- BIOGRAPHY -->
 <section class="biography" id="biography">
-<p class="bio-line bio-identity-line" data-line-count="2">
+<p class="bio-line bio-identity-line desktop-bio" data-line-count="2">
 <span class="bio-segment">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
 <span class="bio-segment">based in istanbul and available internationally.</span>
 </p>
-<p class="bio-line" data-line-count="3">
+<p class="bio-line mobile-bio" data-line-count="3">
+<span class="bio-segment">denizalp aybak (b. 1997) is a photographer</span>
+<span class="bio-segment">and filmmaker,</span>
+<span class="bio-segment">based in istanbul and available internationally.</span>
+</p>
+<p class="bio-line desktop-bio" data-line-count="3">
 <span class="bio-segment">having graduated top of his class in management at sabanci university,</span>
 <span class="bio-segment">he brings a strategic approach to image-making,</span>
 <span class="bio-segment">considering both the work itself and the world it belongs to.</span>
+</p>
+<p class="bio-line mobile-bio" data-line-count="5">
+<span class="bio-segment">having graduated top of his class in management</span>
+<span class="bio-segment">at sabanci university,</span>
+<span class="bio-segment">he brings a strategic approach to image-making,</span>
+<span class="bio-segment">considering both the work itself and the</span>
+<span class="bio-segment">world it belongs to.</span>
 </p>
 <p class="bio-line" data-line-count="5">
 <span class="bio-segment">his work creates atmosphere through contrast:</span>
@@ -1830,33 +1652,15 @@ body.landing-aybak-active #landing-aybak-end-card {
 <span class="bio-segment">stillness that carries tension,</span>
 <span class="bio-segment">and precision that emerges from spontaneity.</span>
 </p>
-<p class="bio-line collaborator-line">
-<span class="collaborator-heading">editorial collaborators include:</span>
-<span class="collaborator-rows editorial-rows">
-<span class="collaborator-row">
-<span class="client-name">vogue türkiye,</span>
-<span class="client-name">harper’s bazaar türkiye</span>
-</span>
-<span class="collaborator-row">
-<span class="client-name">elle türkiye,</span>
-<span class="client-name">l’officiel türkiye</span>
-</span>
-</span>
+<p class="bio-line collaborator-line" data-line-count="3">
+<span class="bio-segment collaborator-heading">editorial collaborators include:</span>
+<span class="bio-segment collaborator-content">vogue türkiye, harper’s bazaar türkiye</span>
+<span class="bio-segment collaborator-content">elle türkiye, l’officiel türkiye</span>
 </p>
-<p class="bio-line collaborator-line">
-<span class="collaborator-heading">brand collaborators include:</span>
-<span class="collaborator-rows brand-rows">
-<span class="collaborator-row">
-<span class="client-name">vakko,</span>
-<span class="client-name">bee goddess,</span>
-<span class="client-name">zeynep arcay</span>
-</span>
-<span class="collaborator-row">
-<span class="client-name">peugeot,</span>
-<span class="client-name">skechers,</span>
-<span class="client-name">lc waikiki</span>
-</span>
-</span>
+<p class="bio-line collaborator-line" data-line-count="3">
+<span class="bio-segment collaborator-heading">brand collaborators include:</span>
+<span class="bio-segment collaborator-content">vakko, bee goddess, zeynep arcay</span>
+<span class="bio-segment collaborator-content">peugeot, skechers, lc waikiki</span>
 </p>
 </section>
 <!-- FIXED CORNER UI: kept outside the landing-grid stacking context -->
@@ -1890,7 +1694,9 @@ body.landing-aybak-active #landing-aybak-end-card {
 </p>
 <section aria-hidden="true" id="landing-aybak-end-card">
 <button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
-<span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
+<span aria-hidden="true" id="landing-aybak-name">
+<span class="landing-aybak-letter is-upper"><span class="lower">d</span><span class="upper">D</span></span><span class="landing-aybak-static">enizalp</span>
+</span>
 <span aria-hidden="true" id="landing-aybak-aybak">
 <span class="landing-aybak-letter"><span class="lower">a</span><span class="upper">A</span></span><span class="landing-aybak-letter"><span class="lower">y</span><span class="upper">Y</span></span><span class="landing-aybak-letter"><span class="lower">b</span><span class="upper">B</span></span><span class="landing-aybak-letter"><span class="lower">a</span><span class="upper">A</span></span><span class="landing-aybak-letter"><span class="lower">k</span><span class="upper">K</span></span>
 </span>
@@ -7652,23 +7458,25 @@ function setLandingAybakLogoState(
         Math.max(
             0,
             Math.min(
-                5,
+                6,
                 state
             )
         );
 
-    landingAybakName.textContent =
-        landingAybakLogoState === 0
-            ? "Denizalp"
-            : "denizalp";
+    const letters =
+        landingAybakLogo.querySelectorAll(
+            ".landing-aybak-letter"
+        );
 
-    document.querySelectorAll(
-        ".landing-aybak-letter"
-    ).forEach(
+    letters.forEach(
         (letter, index) => {
             letter.classList.toggle(
                 "is-upper",
-                index < landingAybakLogoState
+                index < landingAybakLogoState || index === 0
+                    ? (index === 0
+                        ? landingAybakLogoState === 0
+                        : index < landingAybakLogoState)
+                    : false
             );
         }
     );
@@ -7683,7 +7491,7 @@ function animateLandingAybakLogoTo(
         Math.max(
             0,
             Math.min(
-                5,
+                6,
                 target
             )
         );
@@ -7692,11 +7500,9 @@ function animateLandingAybakLogoTo(
         landingAybakLogoTimer !==
         null
     ) {
-
         clearTimeout(
             landingAybakLogoTimer
         );
-
         landingAybakLogoTimer =
             null;
     }
@@ -7707,23 +7513,15 @@ function animateLandingAybakLogoTo(
             landingAybakLogoState ===
             landingAybakLogoTarget
         ) {
-
-            landingAybakLogoTimer =
-                null;
-
-            if (
-                typeof callback ===
-                "function"
-            ) {
+            landingAybakLogoTimer = null;
+            if (typeof callback === "function") {
                 callback();
             }
-
             return;
         }
 
         landingAybakLogoState +=
-            landingAybakLogoState <
-            landingAybakLogoTarget
+            landingAybakLogoState < landingAybakLogoTarget
                 ? 1
                 : -1;
 
@@ -7819,11 +7617,11 @@ function leaveLandingAybak(
 
     if (
         prepareUppercase &&
-        landingAybakLogoState < 5
+        landingAybakLogoState < 6
     ) {
 
         animateLandingAybakLogoTo(
-            5,
+            6,
             () => {
                 landingAybakLeaveTimer =
                     setTimeout(
@@ -7927,7 +7725,7 @@ landingAybakLogo.addEventListener(
             return;
         }
 
-        animateLandingAybakLogoTo(5);
+        animateLandingAybakLogoTo(6);
     }
 );
 
