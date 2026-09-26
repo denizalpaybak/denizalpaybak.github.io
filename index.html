@@ -9841,6 +9841,7 @@ window.addEventListener("resize", () => {
             <img id="landing-index-preview-image" alt="" />
             <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
         </div>
+        <div id="landing-index-text-overlay" aria-hidden="true"></div>
     </div>
 </section>
 
@@ -11806,6 +11807,304 @@ body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
     window.addEventListener("orientationchange", () => setTimeout(preciseHeaderMask, 100), {passive:true});
     document.addEventListener("mousemove", () => requestAnimationFrame(preciseHeaderMask), {passive:true});
     document.addEventListener("mouseover", () => requestAnimationFrame(preciseHeaderMask), {passive:true});
+})();
+</script>
+
+
+<style id="landing-index-true-overlay-fix">
+#landing-index-view > .landing-index-scroll {
+    width: min(1040px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+    max-width: 1040px !important;
+}
+
+.landing-index-grid,
+.landing-index-header,
+.landing-index-row {
+    width: 100% !important;
+    grid-template-columns:
+        max-content
+        max-content
+        minmax(0, 1fr)
+        max-content !important;
+    column-gap: 18px !important;
+}
+
+.landing-index-cell:nth-child(1),
+.landing-index-header-cell:nth-child(1),
+.landing-index-cell:nth-child(2),
+.landing-index-header-cell:nth-child(2) {
+    justify-self: start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+.landing-index-cell:nth-child(3),
+.landing-index-header-cell:nth-child(3) {
+    justify-self: stretch !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+.landing-index-cell:nth-child(4),
+.landing-index-header-cell:nth-child(4) {
+    justify-self: end !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+body.landing-index-hide-use .landing-index-grid,
+body.landing-index-hide-use .landing-index-header,
+body.landing-index-hide-use .landing-index-row {
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr) !important;
+    column-gap: 12px !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1) {
+    justify-self: start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2) {
+    justify-self: stretch !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
+    justify-self: end !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+/* Base layer */
+.landing-index-grid { position: relative !important; z-index: 1 !important; }
+.landing-index-header,
+.landing-index-row { position: relative !important; z-index: 1 !important; }
+.landing-index-row.is-focus { z-index: 1 !important; }
+.landing-index-cell,
+.landing-index-header-cell { z-index: auto !important; }
+
+/* Media layer */
+#landing-index-preview {
+    z-index: 10 !important;
+}
+
+/* Overlay text plane: only header + hovered row live here. */
+#landing-index-text-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 30 !important;
+    pointer-events: none !important;
+    overflow: visible !important;
+    isolation: auto !important;
+}
+
+#landing-index-preview.visible + #landing-index-text-overlay {
+    visibility: visible !important;
+}
+
+#landing-index-text-overlay {
+    visibility: hidden !important;
+}
+
+body.landing-index-preview-visible #landing-index-text-overlay {
+    visibility: visible !important;
+}
+
+/* Base copies are hidden only for header + active row while the overlay is active. */
+body.landing-index-preview-visible
+.landing-index-header .landing-index-text,
+body.landing-index-preview-visible
+.landing-index-row.is-focus .landing-index-text {
+    color: transparent !important;
+    mix-blend-mode: normal !important;
+    -webkit-mix-blend-mode: normal !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+}
+
+/* Disable all previous source-text blend tricks. */
+.landing-index-text {
+    mix-blend-mode: normal !important;
+    -webkit-mix-blend-mode: normal !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+}
+
+.landing-index-difference-text {
+    display: none !important;
+}
+
+/* White difference text = true pixel-by-pixel inverse of what is below it. */
+.landing-index-overlay-text {
+    position: absolute !important;
+    display: block !important;
+    width: max-content !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;
+    color: #fff !important;
+    mix-blend-mode: difference !important;
+    -webkit-mix-blend-mode: difference !important;
+    text-rendering: geometricPrecision !important;
+}
+
+@media (max-width: 1100px) {
+    #landing-index-view > .landing-index-scroll {
+        width: calc(100% - (2 * var(--page-x))) !important;
+        max-width: none !important;
+    }
+    .landing-index-grid,
+    .landing-index-header,
+    .landing-index-row {
+        column-gap: 14px !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .landing-index-grid,
+    .landing-index-header,
+    .landing-index-row {
+        column-gap: 10px !important;
+    }
+}
+</style>
+
+<script id="landing-index-true-overlay-script">
+(function () {
+    "use strict";
+
+    const view = document.getElementById("landing-index-view");
+    const scroll = document.getElementById("landing-index-scroll");
+    const overlay = document.getElementById("landing-index-text-overlay");
+    const preview = document.getElementById("landing-index-preview");
+
+    if (!view || !scroll || !overlay || !preview) return;
+
+    let raf = null;
+
+    function copyTypography(source, target) {
+        const cs = getComputedStyle(source);
+        target.style.fontFamily = cs.fontFamily;
+        target.style.fontSize = cs.fontSize;
+        target.style.fontWeight = cs.fontWeight;
+        target.style.fontStyle = cs.fontStyle;
+        target.style.lineHeight = cs.lineHeight;
+        target.style.letterSpacing = cs.letterSpacing;
+        target.style.wordSpacing = cs.wordSpacing;
+        target.style.fontKerning = cs.fontKerning;
+        target.style.fontFeatureSettings = cs.fontFeatureSettings;
+        target.style.fontVariant = cs.fontVariant;
+        target.style.fontStretch = cs.fontStretch;
+    }
+
+    function getSourceSpans() {
+        const sources = [];
+
+        /* First row: all visible header words. */
+        document.querySelectorAll(".landing-index-header-cell").forEach(cell => {
+            if (getComputedStyle(cell).display === "none") return;
+            const span = cell.querySelector(".landing-index-text");
+            if (span) sources.push(span);
+        });
+
+        /* Hovered row: all visible cells from the active project. */
+        document.querySelectorAll(".landing-index-row.is-focus .landing-index-cell").forEach(cell => {
+            if (getComputedStyle(cell).display === "none") return;
+            const span = cell.querySelector(".landing-index-text");
+            if (span) sources.push(span);
+        });
+
+        return sources;
+    }
+
+    function restoreBaseText() {
+        document
+            .querySelectorAll(".landing-index-header .landing-index-text, .landing-index-row.is-focus .landing-index-text")
+            .forEach(span => {
+                if (span.dataset.overlayHidden === "1") {
+                    delete span.dataset.overlayHidden;
+                    span.style.color = "";
+                    span.style.mixBlendMode = "";
+                    span.style.webkitMixBlendMode = "";
+                }
+            });
+    }
+
+    function hideOverlaySources() {
+        document
+            .querySelectorAll(".landing-index-header .landing-index-text, .landing-index-row.is-focus .landing-index-text")
+            .forEach(span => {
+                span.dataset.overlayHidden = "1";
+                span.style.color = "transparent";
+                span.style.mixBlendMode = "normal";
+                span.style.webkitMixBlendMode = "normal";
+            });
+    }
+
+    function addOverlayClone(source) {
+        const rect = source.getBoundingClientRect();
+        const scrollRect = scroll.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+
+        const clone = document.createElement("span");
+        clone.className = "landing-index-overlay-text";
+        clone.textContent = source.textContent || "";
+        copyTypography(source, clone);
+
+        clone.style.left = `${rect.left - scrollRect.left}px`;
+        clone.style.top = `${rect.top - scrollRect.top}px`;
+
+        overlay.appendChild(clone);
+    }
+
+    function sync() {
+        raf = null;
+
+        const visible = preview.classList.contains("visible");
+        document.body.classList.toggle("landing-index-preview-visible", visible);
+
+        overlay.replaceChildren();
+
+        if (!visible) {
+            restoreBaseText();
+            return;
+        }
+
+        hideOverlaySources();
+        getSourceSpans().forEach(addOverlayClone);
+    }
+
+    function queue() {
+        if (raf !== null) return;
+        raf = requestAnimationFrame(sync);
+    }
+
+    const observer = new MutationObserver(queue);
+    observer.observe(view, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ["class", "data-sort-active"]
+    });
+
+    window.addEventListener("resize", queue, { passive: true });
+    window.addEventListener("orientationchange", queue, { passive: true });
+    scroll.addEventListener("scroll", queue, { passive: true });
+
+    queue();
+
+    window.__landingIndexOverlaySync = queue;
 })();
 </script>
 
