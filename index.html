@@ -2710,6 +2710,74 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
 }
 </style>
 
+
+<style id="final-request-2026-09-26">
+/* =====================================================
+   FINAL REQUEST — INTERACTIVE MIDDLE IDENTITY + BLACK END CARD LABELS
+   ===================================================== */
+
+/* No automatic morph on the middle-page identity. */
+.biography .bio-identity {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    justify-content: flex-start !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    vertical-align: baseline !important;
+    cursor: pointer !important;
+}
+
+.biography .bio-identity-name,
+.biography .bio-identity-aybak {
+    display: inline-block !important;
+    white-space: nowrap !important;
+}
+
+/* Preserve the exact line count while the two case states morph. */
+.biography .bio-identity-line {
+    white-space: normal !important;
+}
+
+/* The headings requested by the user are each followed immediately by a line break. */
+.biography .collaborator-heading {
+    display: inline !important;
+    white-space: nowrap !important;
+}
+
+/* Keep all five copy lines in one actual centered composition. */
+.biography,
+.biography .bio-line,
+.biography .collaborator-line {
+    text-align: center !important;
+    text-align-last: center !important;
+}
+
+/* Corner labels must remain visible above the opaque black end card. */
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+}
+
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
+    color: #fff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    mix-blend-mode: normal !important;
+}
+
+body.landing-aybak-leaving .navigation a,
+body.landing-aybak-leaving .contact a,
+body.landing-aybak-leaving .portfolio-download a {
+    color: #000 !important;
+}
+</style>
 </head>
 
 
@@ -2865,11 +2933,10 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
     id="biography"
 >
     <p class="bio-line bio-identity-line">
-        <span class="bio-identity" id="bio-identity" tabindex="0" aria-label="Denizalp aybak">
-            <span class="bio-identity-name">Denizalp</span><span class="bio-identity-aybak">aybak</span>
+        <span class="bio-identity" id="bio-identity" tabindex="0" role="button" aria-label="Denizalp aybak">
+            <span class="bio-identity-name">Denizalp</span>&nbsp;<span class="bio-identity-aybak">aybak</span>
         </span>
-        <span> (b. 1997) is a <span class="keep">photographer and filmmaker,</span></span>
-        <span class="keep"> based in istanbul and available internationally.</span>
+        (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
     </p>
 
     <p class="bio-line">
@@ -2877,17 +2944,17 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
     </p>
 
     <p class="bio-line">
-        his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and <span class="keep">precision that emerges from spontaneity.</span>
+        his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
     </p>
 
     <p class="bio-line collaborator-line">
-        <span class="collaborator-heading">editorial collaborators:</span>
-        <span class="keep">vogue türkiye,</span> <span class="keep">harper’s bazaar türkiye,</span> <span class="keep">elle türkiye,</span> <span class="keep">l’officiel türkiye</span>
+        <span class="collaborator-heading">editorial collaborators include:</span><br>
+        vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
     </p>
 
     <p class="bio-line collaborator-line">
-        <span class="collaborator-heading">brand collaborators:</span>
-        <span class="keep">vakko,</span> <span class="keep">bee goddess,</span> <span class="keep">zeynep arcay,</span> <span class="keep">peugeot,</span> <span class="keep">skechers,</span> <span class="keep">lc waikiki</span>
+        <span class="collaborator-heading">brand collaborators include:</span><br>
+        vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
     </p>
 </section>
 
@@ -9501,10 +9568,11 @@ window.addEventListener(
 
 <script id="final-bio-identity-morph">
 /*
-    The middle "Denizalp aybak" / "denizalp AYBAK" morph is now fully
-    automatic: it is never triggered by hover or click. It loops forever,
-    holding briefly at each finished state (all-lowercase, all-uppercase)
-    before stepping to the next one.
+    Middle-page identity: interaction only.
+    Desktop = hover in / hover out.
+    Mobile = tap to uppercase, hold briefly, then return.
+    The identity reserves the width of the wider state so the first
+    paragraph cannot gain or lose a line while the case morph runs.
 */
 (() => {
     const identity = document.getElementById("bio-identity");
@@ -9515,23 +9583,27 @@ window.addEventListener(
     if (!name || !aybak) return;
 
     const STEP = 80;
-    const HOLD_LOWERCASE = 1700;
-    const HOLD_UPPERCASE = 900;
+    const MOBILE_HOLD = 520;
+    const LOWER = "Denizalp";
+    const LOWER_AYBAK = "aybak";
+    const UPPER_NAME = "denizalp";
+    const UPPER_AYBAK = "AYBAK";
 
     let state = 0;
     let target = 0;
     let stepTimer = null;
     let holdTimer = null;
+    let hovered = false;
 
     function render(next) {
         state = Math.max(0, Math.min(5, next));
-        name.textContent = state === 0 ? "Denizalp" : "denizalp";
+        name.textContent = state === 0 ? LOWER : UPPER_NAME;
         const lower = ["a", "y", "b", "a", "k"];
         const upper = ["A", "Y", "B", "A", "K"];
         aybak.textContent = lower.map((letter, i) => i < state ? upper[i] : letter).join("");
     }
 
-    function animateTo(next, done) {
+    function animateTo(next, done = null) {
         target = next;
         if (stepTimer !== null) {
             clearTimeout(stepTimer);
@@ -9548,21 +9620,92 @@ window.addEventListener(
             render(state);
             stepTimer = window.setTimeout(step, STEP);
         }
+
         step();
     }
 
-    function cycle() {
-        animateTo(5, () => {
-            holdTimer = window.setTimeout(() => {
-                animateTo(0, () => {
-                    holdTimer = window.setTimeout(cycle, HOLD_LOWERCASE);
-                });
-            }, HOLD_UPPERCASE);
-        });
+    function clearHold() {
+        if (holdTimer !== null) {
+            clearTimeout(holdTimer);
+            holdTimer = null;
+        }
     }
 
+    function measureStableWidth() {
+        const computed = getComputedStyle(identity);
+        const probe = document.createElement("span");
+        probe.style.position = "fixed";
+        probe.style.left = "-99999px";
+        probe.style.top = "-99999px";
+        probe.style.visibility = "hidden";
+        probe.style.whiteSpace = "nowrap";
+        probe.style.fontFamily = computed.fontFamily;
+        probe.style.fontSize = computed.fontSize;
+        probe.style.fontWeight = computed.fontWeight;
+        probe.style.lineHeight = computed.lineHeight;
+        probe.style.letterSpacing = computed.letterSpacing;
+        probe.textContent = `${LOWER} ${LOWER_AYBAK}`;
+        document.body.appendChild(probe);
+        const lowerWidth = probe.getBoundingClientRect().width;
+        probe.textContent = `${UPPER_NAME} ${UPPER_AYBAK}`;
+        const upperWidth = probe.getBoundingClientRect().width;
+        probe.remove();
+
+        identity.style.width = `${Math.ceil(Math.max(lowerWidth, upperWidth))}px`;
+    }
+
+    function isTouchLike() {
+        return !window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    }
+
+    identity.addEventListener("mouseenter", () => {
+        if (isTouchLike()) return;
+        hovered = true;
+        clearHold();
+        animateTo(5);
+    });
+
+    identity.addEventListener("mouseleave", () => {
+        if (isTouchLike()) return;
+        hovered = false;
+        clearHold();
+        animateTo(0);
+    });
+
+    identity.addEventListener("click", event => {
+        if (!isTouchLike()) return;
+        event.preventDefault();
+        event.stopPropagation();
+        clearHold();
+        animateTo(5, () => {
+            holdTimer = window.setTimeout(() => {
+                animateTo(0);
+                holdTimer = null;
+            }, MOBILE_HOLD);
+        });
+    });
+
+    identity.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        if (!isTouchLike()) return;
+        clearHold();
+        animateTo(5, () => {
+            holdTimer = window.setTimeout(() => {
+                animateTo(0);
+                holdTimer = null;
+            }, MOBILE_HOLD);
+        });
+    });
+
     render(0);
-    holdTimer = window.setTimeout(cycle, HOLD_LOWERCASE);
+
+    const resizeIdentity = () => measureStableWidth();
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(resizeIdentity);
+    }
+    window.addEventListener("load", resizeIdentity, { once: true });
+    window.addEventListener("resize", resizeIdentity);
 })();
 </script>
 
