@@ -1759,7 +1759,7 @@ body.landing-aybak-active #landing-aybak-end-card {
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: min(720px, 78vw) !important;
+    width: min(560px, 70vw) !important;
     max-width: calc(100vw - (2 * var(--page-x))) !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1879,8 +1879,8 @@ body.landing-aybak-active #landing-aybak-end-card {
 
 @media (orientation: landscape) and (min-width: 1001px) {
     .biography#biography {
-        width: min(600px, 68vw) !important;
-        max-width: min(600px, 68vw) !important;
+        width: min(560px, 64vw) !important;
+        max-width: min(560px, 64vw) !important;
     }
 }
 
@@ -2226,6 +2226,24 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
         finishTimer = setTimeout(finish, 520);
     }, true);
 
+    /* Main landing navigation can re-enter the black state while the white
+       fade is still running. Cancel this fallback's pending exit instantly. */
+    document.addEventListener("landing-aybak-force-enter", () => {
+        if (finishTimer !== null) {
+            clearTimeout(finishTimer);
+            finishTimer = null;
+        }
+
+        if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+
+        finishing = false;
+        document.body.classList.remove("landing-aybak-leaving");
+        document.documentElement.classList.remove("landing-aybak-leaving");
+    });
+
     render(0);
 })();
 
@@ -2401,39 +2419,49 @@ const biography =
    ===================================================== */
 
 const BIO_FLOW_SEGMENTS = [
-    { type: "text", text: "denizalp aybak (b. 1997) is a photographer and filmmaker," },
-    { type: "text", text: "based in istanbul and available internationally." },
-    { type: "text", text: "having graduated top of his class in management at sabanci university," },
-    { type: "text", text: "he brings a strategic approach to image-making," },
-    { type: "text", text: "considering both the work itself and the world it belongs to." },
-    { type: "text", text: "his work creates atmosphere through contrast:" },
-    { type: "text", text: "light that feels dark," },
-    { type: "text", text: "beauty that appears distant," },
-    { type: "text", text: "stillness that carries tension," },
-    { type: "text", text: "and precision that emerges from spontaneity." },
-    { type: "text", text: "editorial collaborators include:" },
     {
-        type: "clients",
-        names: [
-            "vogue türkiye",
-            "harper’s bazaar türkiye",
-            "elle türkiye",
-            "l’officiel türkiye"
-        ],
-        groupSize: 2
+        type: "paragraph",
+        align: "left",
+        lines: [
+            "denizalp aybak (b. 1997) is a photographer and filmmaker,",
+            "based in istanbul and available internationally."
+        ]
     },
-    { type: "text", text: "brand collaborators include:" },
     {
-        type: "clients",
-        names: [
-            "vakko",
-            "bee goddess",
-            "zeynep arcay",
-            "peugeot",
-            "skechers",
-            "lc waikiki"
-        ],
-        groupSize: 3
+        type: "paragraph",
+        align: "right",
+        lines: [
+            "having graduated top of his class in management at sabanci university,",
+            "he brings a strategic approach to image-making,",
+            "considering both the work itself and the world it belongs to."
+        ]
+    },
+    {
+        type: "paragraph",
+        align: "left",
+        lines: [
+            "his work creates atmosphere through contrast:",
+            "light that feels dark,",
+            "beauty that appears distant,",
+            "stillness that carries tension,",
+            "and precision that emerges from spontaneity."
+        ]
+    },
+    {
+        type: "paragraph",
+        align: "right",
+        lines: [
+            "editorial collaborators include:",
+            "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"
+        ]
+    },
+    {
+        type: "paragraph",
+        align: "left",
+        lines: [
+            "brand collaborators include:",
+            "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"
+        ]
     }
 ];
 
@@ -2569,50 +2597,52 @@ function alignmentClass(lineIndex) {
         : "align-right";
 }
 
-function applyBioLineAlignment(line, lineIndex) {
-    const isLeft = lineIndex % 2 === 0;
+function applyBioLineAlignment(line, alignment) {
     line.classList.remove("align-left", "align-right", "align-center");
-    line.classList.add(isLeft ? "align-left" : "align-right");
+    line.classList.add(alignment === "right" ? "align-right" : "align-left");
     line.style.setProperty(
         "justify-content",
-        isLeft ? "flex-start" : "flex-end",
+        alignment === "right" ? "flex-end" : "flex-start",
         "important"
     );
 }
 
-function appendBioTextLines(container, text, state) {
-    const width = Math.max(1, biography.clientWidth);
-    const lines = splitWordsToBalancedLines(text, width);
+function appendMeasuredLine(container, lineText, alignment) {
+    const line = document.createElement("div");
+    line.className = `bio-flow-line ${alignment === "right" ? "align-right" : "align-left"}`;
+    applyBioLineAlignment(line, alignment);
 
-    for (const lineText of lines) {
-        const line = document.createElement("div");
-        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        applyBioLineAlignment(line, state.index);
+    const textNode = document.createElement("span");
+    textNode.className = "bio-flow-text";
+    textNode.textContent = lineText;
+    line.appendChild(textNode);
 
-        const textNode = document.createElement("span");
-        textNode.className = "bio-flow-text";
-        textNode.textContent = lineText;
-        line.appendChild(textNode);
+    container.appendChild(line);
+}
 
-        container.appendChild(line);
-        state.index += 1;
+function appendBioParagraph(container, lines, alignment) {
+    for (const requestedLine of lines) {
+        const width = Math.max(1, biography.clientWidth);
+        const measuredLines = splitWordsToBalancedLines(requestedLine, width);
+
+        /*
+           Every physical line created from this paragraph keeps the
+           paragraph's alignment. Extra mobile wrapping never toggles
+           left/right on its own.
+        */
+        for (const lineText of measuredLines) {
+            appendMeasuredLine(container, lineText, alignment);
+        }
     }
 }
 
-function appendClientLines(container, names, groupSize, state) {
+function appendClientLines(container, names, groupSize, alignment) {
     const width = Math.max(1, biography.clientWidth);
-
     const full = names.join(", ");
+
+    /* One complete client line stays one line when it fits. */
     if (measureBioText(full) <= width) {
-        const line = document.createElement("div");
-        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        applyBioLineAlignment(line, state.index);
-        const text = document.createElement("span");
-        text.className = "bio-flow-text";
-        text.textContent = full;
-        line.appendChild(text);
-        container.appendChild(line);
-        state.index += 1;
+        appendMeasuredLine(container, full, alignment);
         return;
     }
 
@@ -2623,15 +2653,8 @@ function appendClientLines(container, names, groupSize, state) {
     }
 
     for (const group of groups) {
-        const line = document.createElement("div");
-        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        applyBioLineAlignment(line, state.index);
-        const text = document.createElement("span");
-        text.className = "bio-flow-text";
-        text.textContent = group;
-        line.appendChild(text);
-        container.appendChild(line);
-        state.index += 1;
+        /* Client names are atomic and every resulting line keeps the same paragraph alignment. */
+        appendMeasuredLine(container, group, alignment);
     }
 }
 
@@ -2649,13 +2672,12 @@ function buildBiographyFlow() {
     measure.style.wordSpacing = getComputedStyle(biography).wordSpacing;
 
     flow.innerHTML = "";
-    const state = { index: 0 };
 
     for (const segment of BIO_FLOW_SEGMENTS) {
-        if (segment.type === "text") {
-            appendBioTextLines(flow, segment.text, state);
+        if (segment.type === "paragraph") {
+            appendBioParagraph(flow, segment.lines, segment.align);
         } else {
-            appendClientLines(flow, segment.names, segment.groupSize, state);
+            appendClientLines(flow, segment.names, segment.groupSize, segment.align);
         }
     }
 }
@@ -8449,6 +8471,24 @@ function setLandingAybakEndCard(
         Boolean(
             active
         );
+
+    /* Re-entering the black card must be immediate. Cancel every pending
+       white-transition timer/flag before evaluating the current state. */
+    if (next) {
+        if (landingAybakLeaveTimer !== null) {
+            clearTimeout(landingAybakLeaveTimer);
+            landingAybakLeaveTimer = null;
+        }
+
+        landingAybakLeaving = false;
+
+        document.body.classList.remove("landing-aybak-leaving");
+        document.documentElement.classList.remove("landing-aybak-leaving");
+
+        document.dispatchEvent(
+            new CustomEvent("landing-aybak-force-enter")
+        );
+    }
 
     if (
         next ===
