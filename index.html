@@ -9836,14 +9836,192 @@ window.addEventListener("resize", () => {
                     <span class="landing-index-difference-text" aria-hidden="true"></span>
                 </button>
             </div>
+            <div id="landing-index-preview" aria-hidden="true">
+                <img id="landing-index-preview-image" alt="" />
+                <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
+            </div>
         </div>
     </div>
 </section>
 
-<div id="landing-index-preview" aria-hidden="true">
-    <img id="landing-index-preview-image" alt="" />
-    <video id="landing-index-preview-video" muted playsinline loop preload="auto"></video>
-</div>
+<style id="landing-index-final-actual-fix">
+    /* Final geometry: compact desktop index, natural title/date spacing. */
+    #landing-index-view {
+        z-index: 2147483645 !important;
+        position: fixed !important;
+        inset: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+    }
+
+    #landing-index-view > .landing-index-scroll {
+        position: relative !important;
+        z-index: 2 !important;
+        width: min(980px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+        max-width: 980px !important;
+        height: auto !important;
+        max-height: calc(100dvh - (2 * var(--page-top))) !important;
+        overflow: visible !important;
+        pointer-events: auto !important;
+    }
+
+    .landing-index-grid,
+    .landing-index-header,
+    .landing-index-row {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+    }
+
+    .landing-index-grid {
+        grid-template-columns: max-content max-content minmax(120px, 1fr) minmax(120px, 1fr) !important;
+        column-gap: 28px !important;
+    }
+
+    .landing-index-header,
+    .landing-index-row {
+        grid-template-columns: inherit !important;
+        column-gap: inherit !important;
+    }
+
+    .landing-index-cell,
+    .landing-index-header-cell {
+        display: flex !important;
+        align-items: baseline !important;
+        min-width: 0 !important;
+        position: relative !important;
+        z-index: auto !important;
+        overflow: visible !important;
+    }
+
+    .landing-index-cell:nth-child(1),
+    .landing-index-header-cell:nth-child(1),
+    .landing-index-cell:nth-child(2),
+    .landing-index-header-cell:nth-child(2) {
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+
+    .landing-index-cell:nth-child(3),
+    .landing-index-header-cell:nth-child(3),
+    .landing-index-cell:nth-child(4),
+    .landing-index-header-cell:nth-child(4) {
+        justify-content: flex-end !important;
+        text-align: right !important;
+    }
+
+    .landing-index-text {
+        display: block !important;
+        width: max-content !important;
+        max-width: none !important;
+        flex: 0 0 auto !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    .landing-index-difference-text {
+        position: absolute !important;
+        top: 0 !important;
+        left: auto !important;
+        right: 0 !important;
+        width: max-content !important;
+        max-width: none !important;
+        z-index: 2 !important;
+        pointer-events: none !important;
+        color: #fff !important;
+        mix-blend-mode: difference !important;
+    }
+
+    /* Preview is a sibling BELOW the text layer. */
+    #landing-index-preview {
+        position: absolute !important;
+        z-index: 1 !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        left: var(--landing-index-preview-center-x, 50%) !important;
+        top: var(--landing-index-preview-top, 50%) !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    #landing-index-preview.visible {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Header and every project row are above the preview. */
+    .landing-index-header,
+    .landing-index-row,
+    .landing-index-empty {
+        position: relative !important;
+        z-index: auto !important;
+    }
+
+    /* The header itself stays above the preview because it lives in the scroll layer. */
+    .landing-index-scroll {
+        isolation: auto !important;
+    }
+
+    /* Use removal becomes real 3-column geometry. */
+    body.landing-index-hide-use .landing-index-grid {
+        grid-template-columns: max-content minmax(0, 1fr) minmax(0, 1fr) !important;
+        column-gap: 22px !important;
+    }
+
+    body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+    body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+        display: none !important;
+    }
+
+    body.landing-index-hide-use .landing-index-cell:nth-child(1),
+    body.landing-index-hide-use .landing-index-header-cell:nth-child(1) {
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+
+    body.landing-index-hide-use .landing-index-cell:nth-child(2),
+    body.landing-index-hide-use .landing-index-header-cell:nth-child(2) {
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    body.landing-index-hide-use .landing-index-cell:nth-child(3),
+    body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
+        justify-content: flex-end !important;
+        text-align: right !important;
+    }
+
+    @media (max-width: 1100px) {
+        #landing-index-view > .landing-index-scroll {
+            width: calc(100% - (2 * var(--page-x))) !important;
+            max-width: none !important;
+        }
+
+        #landing-index-preview.is-film {
+            width: min(92vw, 900px) !important;
+            height: min(48vh, 520px) !important;
+        }
+
+        #landing-index-preview:not(.is-film) {
+            width: min(78vw, 560px) !important;
+            height: min(52vh, 620px) !important;
+        }
+    }
+
+    @media (max-width: 700px) {
+        #landing-index-view > .landing-index-scroll {
+            width: calc(100% - (2 * var(--page-x))) !important;
+        }
+
+        .landing-index-grid {
+            column-gap: 16px !important;
+        }
+    }
+</style>
 
 <script id="landing-index-info-script">
 (() => {
@@ -10178,24 +10356,24 @@ window.addEventListener("resize", () => {
 
         const left = Math.max(textRect.left, previewRect.left);
         const right = Math.min(textRect.right, previewRect.right);
+        const top = Math.max(textRect.top, previewRect.top);
+        const bottom = Math.min(textRect.bottom, previewRect.bottom);
 
-        if (right <= left) {
+        if (right <= left || bottom <= top) {
             resetBaseTextMask(textElement);
             return;
         }
 
-        const leftPercent = Math.max(
-            0,
-            Math.min(100, ((left - textRect.left) / textRect.width) * 100)
-        );
-        const rightPercent = Math.max(
-            0,
-            Math.min(100, ((right - textRect.left) / textRect.width) * 100)
-        );
+        const leftPercent = Math.max(0, Math.min(100, ((left - textRect.left) / textRect.width) * 100));
+        const rightPercent = Math.max(0, Math.min(100, ((right - textRect.left) / textRect.width) * 100));
 
-        /* Visible only OUTSIDE the preview intersection. */
+        /*
+           White = visible, transparent = hidden.
+           Only the literal rectangle where the preview overlaps
+           the text is removed from the base text.
+        */
         const mask =
-            `linear-gradient(to right, #000 0%, #000 ${leftPercent}%, transparent ${leftPercent}%, transparent ${rightPercent}%, #000 ${rightPercent}%, #000 100%)`;
+            `linear-gradient(to right, #fff 0%, #fff ${leftPercent}%, transparent ${leftPercent}%, transparent ${rightPercent}%, #fff ${rightPercent}%, #fff 100%)`;
 
         textElement.style.maskImage = mask;
         textElement.style.webkitMaskImage = mask;
@@ -10204,6 +10382,7 @@ window.addEventListener("resize", () => {
         textElement.style.maskRepeat = "no-repeat";
         textElement.style.webkitMaskRepeat = "no-repeat";
     }
+
 
     function clipDifferenceToPreview(span, textElement, previewRect) {
         if (!span || !textElement || !previewRect) {
@@ -10242,7 +10421,7 @@ window.addEventListener("resize", () => {
     }
 
     function getVisiblePreviewRect() {
-        const target = previewRecord?.field === "FILM"
+        const target = normalized(previewRecord?.field) === "film"
             ? previewVideo
             : previewImage;
 
@@ -10263,88 +10442,88 @@ window.addEventListener("resize", () => {
         return rect;
     }
 
+    function resetDifferenceAppearance(textElement) {
+        if (!textElement) return;
+        textElement.style.color = "";
+        textElement.style.mixBlendMode = "";
+        textElement.style.webkitMixBlendMode = "";
+        resetBaseTextMask(textElement);
+    }
+
     function updateDifferenceLayers() {
         activeDifferenceFrame = null;
 
-        if (!previewRecord) {
-            rowStates.forEach(state => {
-                state.differenceSpans?.forEach(setDifferenceHidden);
-                state.cases?.forEach(controller => {
-                    resetBaseTextMask(controller?.element);
-                });
+        /* Remove the old mirrored-difference spans completely. */
+        rowStates.forEach(state => {
+            state.differenceSpans?.forEach(setDifferenceHidden);
+            state.cases?.forEach(controller => {
+                resetDifferenceAppearance(controller?.element);
             });
-            headerButtons.forEach(button => {
-                button.querySelectorAll(".landing-index-difference-text")
-                    .forEach(setDifferenceHidden);
-                resetBaseTextMask(button.querySelector(".landing-index-text"));
-            });
-            return;
-        }
+        });
+
+        headerButtons.forEach(button => {
+            button.querySelectorAll(".landing-index-difference-text")
+                .forEach(setDifferenceHidden);
+            resetDifferenceAppearance(
+                button.querySelector(".landing-index-text")
+            );
+            button.removeAttribute("data-sort-active");
+        });
+
+        if (!previewRecord) return;
 
         const previewRect = getVisiblePreviewRect();
-        if (!previewRect) {
-            rowStates.forEach(state => {
-                state.differenceSpans?.forEach(setDifferenceHidden);
-                state.cases?.forEach(controller => {
-                    resetBaseTextMask(controller?.element);
-                });
-            });
-            headerButtons.forEach(button => {
-                button.querySelectorAll(".landing-index-difference-text")
-                    .forEach(setDifferenceHidden);
-                resetBaseTextMask(button.querySelector(".landing-index-text"));
-            });
-            return;
-        }
+        if (!previewRect) return;
 
         /*
-           STACKING MODEL:
-           - normal project rows are physically BELOW the preview
-           - the header row and hovered project row are ABOVE the preview
-           - only those two promoted rows receive intersection masking
-           - lowercase text disappears only at the actual overlap
-           - uppercase text gets a white/difference duplicate only there
+           The preview is now physically between the normal rows and the
+           promoted header/hovered row. Therefore:
+
+           - normal project rows are underneath the preview -> their overlap
+             disappears automatically.
+           - the hovered project row is above the preview.
+           - the header row is above the preview.
+
+           Lowercase text on those promoted rows must disappear only where
+           it intersects the preview. Uppercase text should instead use the
+           real image/video negative.
         */
 
         rowStates.forEach(state => {
-            const isActive = state === activePreviewRow;
-            state.differenceSpans?.forEach(setDifferenceHidden);
+            if (state !== activePreviewRow) return;
 
             state.cases?.forEach(controller => {
-                if (isActive) {
-                    clipDifferenceToPreview(
-                        controller?.element?.nextElementSibling,
-                        controller?.element,
-                        previewRect
-                    );
-                } else {
-                    resetBaseTextMask(controller?.element);
-                }
+                const element = controller?.element;
+                if (!element) return;
+
+                /* Uppercase active row: true negative over the image/video.
+                   On the white page outside the preview, difference renders
+                   back to black, so no separate mask is needed there. */
+                element.style.color = "#fff";
+                element.style.mixBlendMode = "difference";
+                element.style.webkitMixBlendMode = "difference";
+                resetBaseTextMask(element);
             });
         });
 
-        /* The entire header row stays above the preview. Each header is
-           masked only at the intersection; only the active uppercase
-           header receives the difference duplicate. */
         headerButtons.forEach(button => {
             const textElement = button.querySelector(".landing-index-text");
-            const difference = button.querySelector(".landing-index-difference-text");
-            applyBaseTextOutsideMask(textElement, previewRect);
-            setDifferenceHidden(difference);
-        });
+            if (!textElement) return;
 
-        const activeHeader = headerButtons.find(
-            button => button.dataset.sortKey === sortKey
-        );
-        if (activeHeader) {
-            const textElement = activeHeader.querySelector(".landing-index-text");
-            const difference = activeHeader.querySelector(".landing-index-difference-text");
-            clipDifferenceToPreview(
-                difference,
-                textElement,
-                previewRect
-            );
-        }
+            const isActiveHeader = button.dataset.sortKey === sortKey;
+            button.dataset.sortActive = isActiveHeader ? "true" : "false";
+
+            if (isActiveHeader) {
+                textElement.style.color = "#fff";
+                textElement.style.mixBlendMode = "difference";
+                textElement.style.webkitMixBlendMode = "difference";
+                resetBaseTextMask(textElement);
+            } else {
+                /* Other header words remain lowercase/black but vanish where
+                   they physically intersect the preview. */
+                applyBaseTextOutsideMask(textElement, previewRect);
+            }
+        });
     }
 
     function queueDifferenceLayerUpdate() {
@@ -10359,26 +10538,30 @@ window.addEventListener("resize", () => {
         const cell = cells[columnIndex] || cells[0];
         if (!cell) return;
 
-        const rect = cell.getBoundingClientRect();
-        if (!rect.width) return;
+        const cellRect = cell.getBoundingClientRect();
+        const gridRect = indexGrid.getBoundingClientRect();
+        if (!cellRect.width || !gridRect.width) return;
 
         const isFilm = normalized(activePreviewRow.record?.field) === "film";
         const compactViewport = window.innerWidth <= 1100;
 
-        const centerX = rect.left + rect.width / 2;
+        const centerXViewport = cellRect.left + cellRect.width / 2;
+        const centerX = centerXViewport - gridRect.left;
+        const centerY = (window.innerHeight / 2) - gridRect.top;
 
         let width;
         let height;
 
         if (isFilm) {
-            /* Give landscape video more width so it carries similar visual weight
-               to a portrait photograph. */
+            /* 16:9 preview gets substantially more width so it carries
+               comparable visual weight to a portrait photograph. */
             width = compactViewport
-                ? Math.min(window.innerWidth * 0.94, 820)
-                : Math.min(window.innerWidth * 0.52, 840);
-            height = compactViewport
-                ? Math.min(window.innerHeight * 0.48, 500)
-                : Math.min(window.innerHeight * 0.52, 560);
+                ? Math.min(window.innerWidth * 0.92, 900)
+                : Math.min(window.innerWidth * 0.50, 840);
+            height = width * 9 / 16;
+            height = Math.min(height, compactViewport
+                ? Math.min(window.innerHeight * 0.50, 520)
+                : Math.min(window.innerHeight * 0.58, 560));
         } else {
             width = compactViewport
                 ? Math.min(window.innerWidth * 0.78, 560)
@@ -10394,7 +10577,7 @@ window.addEventListener("resize", () => {
         );
         document.documentElement.style.setProperty(
             "--landing-index-preview-top",
-            `50%`
+            `${centerY}px`
         );
         document.documentElement.style.setProperty(
             "--landing-index-preview-width",
@@ -10877,6 +11060,7 @@ window.addEventListener("resize", () => {
             if (!span) return;
 
             const active = key === sortKey;
+            button.dataset.sortActive = active ? "true" : "false";
             const controller = button.__caseController;
             if (controller) {
                 active ? controller.setUpper(duration) : controller.setLower(duration);
@@ -11100,5 +11284,222 @@ window.addEventListener("resize", () => {
 })();
 </script>
 
+
+<style id="landing-index-v4-fix">
+/* =====================================================
+   INDEX V4 — ACTUAL STACKING + COMPACT DESKTOP GEOMETRY
+   ===================================================== */
+
+#landing-index-view {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483645 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+#landing-index-view > .landing-index-scroll {
+    position: relative !important;
+    width: min(860px, calc(100% - (2 * var(--landing-index-side-space)))) !important;
+    max-width: 860px !important;
+    height: auto !important;
+    max-height: calc(100dvh - (2 * var(--page-top))) !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    flex: 0 1 auto !important;
+}
+
+.landing-index-grid {
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+    grid-template-columns: max-content max-content minmax(150px, 1fr) minmax(140px, 1fr) !important;
+    column-gap: 20px !important;
+    row-gap: 0 !important;
+    align-items: baseline !important;
+    overflow: visible !important;
+}
+
+.landing-index-header,
+.landing-index-row {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: inherit !important;
+    column-gap: inherit !important;
+    align-items: baseline !important;
+}
+
+.landing-index-header {
+    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+    z-index: 30 !important;
+}
+
+.landing-index-row {
+    z-index: 1 !important;
+}
+
+.landing-index-row.is-focus {
+    z-index: 30 !important;
+}
+
+.landing-index-cell,
+.landing-index-header-cell {
+    min-width: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: baseline !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+/* Title/date stay close; field/use occupy the right side. */
+.landing-index-cell:nth-child(1),
+.landing-index-header-cell:nth-child(1),
+.landing-index-cell:nth-child(2),
+.landing-index-header-cell:nth-child(2) {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+.landing-index-cell:nth-child(3),
+.landing-index-header-cell:nth-child(3),
+.landing-index-cell:nth-child(4),
+.landing-index-header-cell:nth-child(4) {
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+/* =====================================================
+   PREVIEW SITS BETWEEN NORMAL ROWS AND ACTIVE TEXT
+   ===================================================== */
+
+#landing-index-preview {
+    position: absolute !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    left: var(--landing-index-preview-center-x, 50%) !important;
+    top: var(--landing-index-preview-top, 50%) !important;
+    transform: translate(-50%, -50%) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#landing-index-preview.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* =====================================================
+   TRUE NEGATIVE FOR ACTIVE UPPERCASE TEXT
+
+   White text + mix-blend-mode:difference gives:
+   white background -> black
+   white image      -> black
+   yellow image     -> blue-ish dark/complementary text
+   black image      -> white
+   ===================================================== */
+
+.landing-index-text {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    pointer-events: none !important;
+}
+
+.landing-index-difference-text {
+    display: none !important;
+}
+
+/* Active uppercase row/header sits above preview and becomes true difference. */
+.landing-index-row.is-focus .landing-index-text,
+.landing-index-header .landing-index-header-cell[data-sort-active="true"] .landing-index-text {
+    color: #fff !important;
+    mix-blend-mode: difference !important;
+}
+
+/* Lowercase header text must disappear only where preview intersects it. */
+.landing-index-header-cell .landing-index-text {
+    -webkit-mask-image: none;
+    mask-image: none;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* =====================================================
+   USE REMOVAL — TRUE 3-COLUMN GEOMETRY
+   ===================================================== */
+
+body.landing-index-hide-use .landing-index-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+    column-gap: 18px !important;
+}
+
+body.landing-index-hide-use .landing-index-header-cell:nth-child(4),
+body.landing-index-hide-use .landing-index-row > .landing-index-cell:nth-child(4) {
+    display: none !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(1),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(1) {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(2),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(2) {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+body.landing-index-hide-use .landing-index-cell:nth-child(3),
+body.landing-index-hide-use .landing-index-header-cell:nth-child(3) {
+    justify-content: flex-end !important;
+    text-align: right !important;
+}
+
+@media (max-width: 1100px) {
+    #landing-index-view > .landing-index-scroll {
+        width: calc(100% - (2 * var(--page-x))) !important;
+        max-width: none !important;
+    }
+
+    .landing-index-grid {
+        column-gap: clamp(12px, 2vw, 20px) !important;
+    }
+
+    #landing-index-preview.is-film {
+        width: min(92vw, 900px) !important;
+        height: min(50vh, 520px) !important;
+    }
+
+    #landing-index-preview:not(.is-film) {
+        width: min(78vw, 560px) !important;
+        height: min(54vh, 620px) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    #landing-index-view > .landing-index-scroll {
+        width: calc(100% - (2 * var(--page-x))) !important;
+    }
+
+    .landing-index-grid {
+        column-gap: 12px !important;
+    }
+}
+</style>
 </body>
 </html>
