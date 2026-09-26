@@ -1863,6 +1863,11 @@ body.landing-aybak-active #landing-aybak-end-card {
     white-space: nowrap !important;
 }
 
+/* Exactly one blank line between paragraph blocks. */
+.bio-paragraph-gap {
+    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
+}
+
 @media (max-width: 600px) and (orientation: portrait) {
     .biography#biography {
         width: 86vw !important;
@@ -1895,7 +1900,13 @@ body.landing-aybak-active #landing-aybak-end-card {
     position: relative !important;
     z-index: 10001 !important;
     pointer-events: auto !important;
+    cursor: pointer !important;
     touch-action: manipulation !important;
+}
+
+#landing-aybak-logo,
+#landing-aybak-logo * {
+    cursor: pointer !important;
 }
 
 #landing-aybak-name,
@@ -1948,6 +1959,11 @@ body.landing-aybak-active #landing-aybak-end-card {
 #landing-aybak-name,
 #landing-aybak-aybak {
     pointer-events: none !important;
+}
+
+#landing-aybak-logo,
+#landing-aybak-logo * {
+    cursor: pointer !important;
 }
 
 .landing-aybak-letter {
@@ -2159,16 +2175,16 @@ body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
             finishTimer = null;
         }
 
+        /* End the logical black state immediately; fade is only visual. */
+        document.body.classList.remove("landing-aybak-active");
+        document.documentElement.classList.remove("landing-aybak-active");
         document.body.classList.add("landing-aybak-leaving");
         document.documentElement.classList.add("landing-aybak-leaving");
+        card.setAttribute("aria-hidden", "true");
 
-        /* Let the uppercase state hold before the black card fades. */
         finishTimer = setTimeout(() => {
-            document.body.classList.remove("landing-aybak-active");
-            document.documentElement.classList.remove("landing-aybak-active");
             document.body.classList.remove("landing-aybak-leaving");
             document.documentElement.classList.remove("landing-aybak-leaving");
-            card.setAttribute("aria-hidden", "true");
             render(0);
             finishing = false;
             finishTimer = null;
@@ -2618,9 +2634,12 @@ function appendMeasuredLine(container, lineText, alignment) {
     line.appendChild(textNode);
 
     container.appendChild(line);
+    return line;
 }
 
 function appendBioParagraph(container, lines, alignment) {
+    let lastLine = null;
+
     for (const requestedLine of lines) {
         const width = Math.max(1, biography.clientWidth);
         const measuredLines = splitWordsToBalancedLines(requestedLine, width);
@@ -2631,8 +2650,13 @@ function appendBioParagraph(container, lines, alignment) {
            left/right on its own.
         */
         for (const lineText of measuredLines) {
-            appendMeasuredLine(container, lineText, alignment);
+            lastLine = appendMeasuredLine(container, lineText, alignment);
         }
+    }
+
+    /* Keep a full line of breathing room after every paragraph. */
+    if (lastLine) {
+        lastLine.classList.add("bio-paragraph-gap");
     }
 }
 
@@ -8367,6 +8391,26 @@ function finishLandingAybakLeave() {
             null;
     }
 
+    /*
+       The logical black state ends immediately. The CSS fade continues
+       independently, which means a new gesture/click can reopen the card
+       without waiting for the outgoing animation to finish.
+    */
+    landingAybakActive = false;
+
+    document.body.classList.remove(
+        "landing-aybak-active"
+    );
+
+    document.documentElement.classList.remove(
+        "landing-aybak-active"
+    );
+
+    landingAybakEndCard.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
     document.body.classList.add(
         "landing-aybak-leaving"
     );
@@ -8382,22 +8426,6 @@ function finishLandingAybakLeave() {
                 landingAybakLeaveTimer =
                     null;
 
-                landingAybakActive =
-                    false;
-
-                document.body.classList.remove(
-                    "landing-aybak-active"
-                );
-
-                document.documentElement.classList.remove(
-                    "landing-aybak-active"
-                );
-
-                landingAybakEndCard.setAttribute(
-                    "aria-hidden",
-                    "true"
-                );
-
                 document.body.classList.remove(
                     "landing-aybak-leaving"
                 );
@@ -8406,7 +8434,7 @@ function finishLandingAybakLeave() {
                     "landing-aybak-leaving"
                 );
 
-                /* Reset only after the black page is gone. */
+                /* Reset only after the visual fade has completed. */
                 setLandingAybakLogoState(0);
 
                 landingAybakLeaving =
