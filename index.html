@@ -1,18 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Denizalp Aybak</title>
-
-<link rel="stylesheet" href="https://use.typekit.net/rmn7qgm.css">
-
+<link href="https://use.typekit.net/rmn7qgm.css" rel="stylesheet"/>
 <style>
 
 /* =====================================================
@@ -1308,74 +1301,40 @@ body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
 </style>
 
 
-<style id="final-aybak-monochrome-override">
-html.landing-aybak-active,
-body.landing-aybak-active,
-html.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active #landing-aybak-end-card,
-body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
-    background: #000 !important;
-}
-</style>
 
-<style id="final-mobile-aybak-safe-area-fix">
-html.landing-aybak-active,
-body.landing-aybak-active,
-html.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active .page,
-body.landing-aybak-active #landing-aybak-end-card {
-    background: #000 !important;
-}
 
-body.landing-aybak-active #landing-aybak-end-card::before {
-    content: "";
-    position: fixed;
-    inset: -320px;
-    z-index: -1;
-    background: #000;
-    pointer-events: none;
-}
-</style>
 
-<style id="final-ios-landscape-aybak-viewport-fill-v2">
-/* Extend the black AYBAK surface through iOS landscape safe-area gutters. */
-html.landing-aybak-active,
-body.landing-aybak-active {
-    background: #000 !important;
-}
-body.landing-aybak-active #landing-aybak-end-card {
-    left: calc(-1 * env(safe-area-inset-left)) !important;
-    right: calc(-1 * env(safe-area-inset-right)) !important;
-    top: calc(-1 * env(safe-area-inset-top)) !important;
-    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
-    width: auto !important;
-    height: auto !important;
-    background: #000 !important;
-}
-</style>
 
-<style id="final-landing-block-revision">
+
+
+
+
+
+
+
+<style id="final-clean-landing-system">
 /* =====================================================
-   FINAL LANDING TYPOGRAPHY / POSITIONING
+   CLEAN LANDING SYSTEM
+   One final source of truth for the landing composition,
+   footer/corner labels and AYBAK end-card.
    ===================================================== */
 
-/* The white landing surface no longer shows the old top-left logo. */
-body:not(.landing-aybak-active) .logo {
-    visibility: hidden !important;
-    pointer-events: none !important;
+/* The old top-left landing logo is no longer part of the visible landing page. */
+.logo {
+    display: none !important;
 }
 
-/* Photography left / Film right, same top axis. */
+/* Top navigation: photography left / film right. */
 .navigation {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 20 !important;
-    display: block !important;
-    pointer-events: none !important;
+    z-index: 20000 !important;
     width: 100% !important;
     height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    pointer-events: none !important;
 }
 
 .navigation a {
@@ -1383,13 +1342,22 @@ body:not(.landing-aybak-active) .logo {
     top: var(--page-top) !important;
     width: max-content !important;
     margin: 0 !important;
+    padding: 0 !important;
     pointer-events: auto !important;
-    text-align: left !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
 }
 
 .navigation #photography-link {
     left: var(--page-x) !important;
     right: auto !important;
+    text-align: left !important;
 }
 
 .navigation #film-link {
@@ -1398,431 +1366,215 @@ body:not(.landing-aybak-active) .logo {
     text-align: right !important;
 }
 
-/* The biography is the single centered typographic block. */
+/* The central biography is one normal centered composition. */
 .biography {
     position: fixed !important;
     z-index: 5 !important;
     left: 50% !important;
     top: 50% !important;
-    width: min(42vw, 560px) !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(720px, 78vw) !important;
     max-width: calc(100vw - (2 * var(--page-x))) !important;
     margin: 0 !important;
     padding: 0 !important;
-    transform: translate(-50%, -50%) !important;
-
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    text-align-last: left !important;
-    hyphens: auto !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    letter-spacing: 0 !important;
-    word-spacing: normal !important;
-    text-wrap: pretty !important;
-}
-
-.biography p {
-    margin: 0 0 var(--major-gap) 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    text-align-last: left !important;
-    hyphens: auto !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    letter-spacing: 0 !important;
-    word-spacing: normal !important;
-}
-
-.biography p:last-of-type {
-    margin-bottom: 0 !important;
-}
-
-/* Section labels stay optically left; the content below them remains justified. */
-.biography p br + .item {
-    /* no special tracking or spacing */
-}
-
-/* Typographic divider uses the same font, size, weight and line-height as the bio. */
-.biography-divider {
     display: block !important;
-    width: 100% !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    margin: calc(var(--major-gap) + 2px) 0 calc(var(--major-gap) + 2px) 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-
     font-family: inherit !important;
     font-size: var(--font-size) !important;
     font-weight: 400 !important;
     line-height: var(--line-height) !important;
     letter-spacing: 0 !important;
     word-spacing: 0 !important;
-    text-align: left !important;
-}
-
-/* Keep the portfolio exactly as normal site metadata: fixed, same font and size,
-   clickable, and using the working relative GitHub Pages file path. */
-.biography .portfolio-download {
-    position: fixed !important;
-    right: var(--page-x) !important;
-    bottom: var(--page-bottom) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-align: right !important;
-}
-
-.biography .portfolio-download a {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.30em !important;
-    color: #000 !important;
-    font-size: inherit !important;
-    font-weight: inherit !important;
-    line-height: inherit !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
-}
-
-.biography .portfolio-download a:hover {
-    text-decoration: underline !important;
-}
-
-/* We are not showing photography / film media on the landing page anymore. */
-.media-field,
-.photography-field,
-.film-field,
-#fixed-photo-preview {
-    display: none !important;
-}
-
-/* =====================================================
-   NAVIGATION LABELS
-   ===================================================== */
-
-.navigation a span {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    letter-spacing: 0;
-}
-
-/* Portrait: compact labels. Landscape + desktop use full domains. */
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(82vw, 420px) !important;
-    }
-
-    .navigation #photography-link,
-    .navigation #film-link {
-        top: var(--page-top) !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(72vw, 520px) !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) and (max-height: 700px) {
-    .biography {
-        width: min(45vw, 520px) !important;
-    }
-}
-</style>
-
-
-<style id="final-bio-block-and-portfolio-fix">
-/* The old opening sentence is no longer part of the visible landing layout. */
-.opening {
-    display: none !important;
-}
-
-/* -----------------------------------------------------
-   CENTRAL TYPOGRAPHIC COMPOSITION
-   ----------------------------------------------------- */
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-
-    width: min(620px, 42vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-.bio-primary {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.bio-primary p {
-    margin: 0 0 var(--major-gap) 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-
-    text-align: justify !important;
-    text-align-last: left !important;
-    text-justify: inter-word !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    text-wrap: pretty !important;
-}
-
-.bio-primary p:last-child {
-    margin-bottom: 0 !important;
-}
-
-/* A single normal line of air separates biography and collaborators. */
-.bio-collaborators {
-    width: min(330px, 58vw) !important;
-    margin: var(--major-gap) auto 0 auto !important;
-    padding: 0 !important;
-}
-
-.collaborator-group {
-    margin: 0 0 var(--major-gap) 0 !important;
-    padding: 0 !important;
-}
-
-.collaborator-group:last-child {
-    margin-bottom: 0 !important;
-}
-
-.collaborator-heading,
-.collaborator-list {
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-.collaborator-heading {
-    text-align: left !important;
-    margin-bottom: 0 !important;
-}
-
-.collaborator-list {
-    text-align: justify !important;
-    text-align-last: left !important;
-    text-justify: inter-word !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    text-wrap: pretty !important;
-}
-
-/* Portfolio remains a page-level footer item, exactly at bottom-right. */
-.portfolio-download {
-    position: fixed !important;
-    z-index: 20 !important;
-    right: var(--page-x) !important;
-    bottom: var(--page-bottom) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: right !important;
-}
-
-.portfolio-download a {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.30em !important;
-    color: #000 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
-}
-
-.portfolio-download a:hover {
-    text-decoration: underline !important;
-}
-
-/* Landing no longer renders the old photo / film preview surfaces. */
-.media-field,
-.photography-field,
-.film-field,
-#fixed-photo-preview {
-    display: none !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(88vw, 370px) !important;
-    }
-
-    .bio-collaborators {
-        width: min(82vw, 330px) !important;
-        margin-top: var(--major-gap) !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(76vw, 540px) !important;
-    }
-
-    .bio-collaborators {
-        width: min(54vw, 320px) !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) and (max-height: 700px) {
-    .biography {
-        width: min(50vw, 560px) !important;
-    }
-
-    .bio-collaborators {
-        width: min(30vw, 320px) !important;
-    }
-}
-</style>
-
-
-<style id="final-landing-centered-bio-and-text-aybak">
-/* The biography sits directly at the viewport center; no block/justification treatment. */
-.opening {
-    display: none !important;
-}
-
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: 50% !important;
-    width: min(76vw, 620px) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: translate(-50%, -50%) !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
     text-align: center !important;
-    text-transform: uppercase !important;
-}
-
-.bio-primary,
-.bio-primary p {
-    width: 100% !important;
-    margin: 0 0 calc(var(--major-gap) * 1.15) 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
+    text-align-last: center !important;
+    text-transform: none !important;
     white-space: normal !important;
-    word-spacing: normal !important;
-    letter-spacing: 0 !important;
-    hyphens: none !important;
+    text-wrap: wrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
-    text-wrap: balance !important;
+    hyphens: none !important;
 }
 
-.bio-primary p:last-child {
-    margin-bottom: 0 !important;
+.biography .bio-line {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    text-wrap: wrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
 }
 
-.keep-phrase {
+.biography .bio-line + .bio-line {
+    margin-top: var(--major-gap) !important;
+}
+
+/* The punctuation-defined breaks above are intentional. */
+.biography br {
+    line-height: inherit !important;
+}
+
+/* The middle name is permanently lowercase and non-interactive. */
+.biography .bio-identity,
+.biography .bio-identity-name,
+.biography .bio-identity-aybak {
+    display: inline !important;
+    white-space: nowrap !important;
+    text-transform: none !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* Collaborator headings stay on their own line. */
+.biography .collaborator-heading {
     display: inline-block !important;
+    white-space: nowrap !important;
+    vertical-align: baseline !important;
+}
+
+/* Balanced collaborator rows:
+   editorial = 2 + 2 when wrapping,
+   brand     = 3 + 3 when wrapping.
+   When both grouped rows fit, they remain on one line. */
+.collaborator-rows {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    column-gap: 0.55em !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.collaborator-row {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    gap: 0.55em !important;
     white-space: nowrap !important;
 }
 
-.bio-collaborators {
-    width: 100% !important;
-    margin: calc(var(--major-gap) * 1.15) 0 0 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
+.client-name {
+    display: inline !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
 }
 
-.collaborator-group,
-.collaborator-heading,
-.collaborator-list {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
+/* Keep the two collaborator sections in the same centered copy block. */
+.biography .collaborator-line {
+    margin-top: var(--major-gap) !important;
 }
 
-.collaborator-group {
-    margin-bottom: var(--major-gap) !important;
-}
-
-.collaborator-group:last-child {
-    margin-bottom: 0 !important;
-}
-
-.collaborator-heading,
-.collaborator-list {
-    font: inherit !important;
-    line-height: inherit !important;
-}
-
-.portfolio-download {
+/* Footer: left = models / portfolio, right = email / Instagram. */
+.contact {
     position: fixed !important;
-    right: var(--page-x) !important;
-    bottom: var(--page-bottom) !important;
-    width: max-content !important;
+    z-index: 20000 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: var(--page-top) !important;
+    width: 100% !important;
+    height: calc(var(--font-size) * var(--line-height) * 2) !important;
     margin: 0 !important;
     padding: 0 !important;
-    z-index: 20 !important;
-    text-align: right !important;
+    display: block !important;
+    pointer-events: none !important;
 }
 
-.portfolio-download a {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.30em !important;
+.contact a {
+    position: absolute !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
     color: #000 !important;
+    font-family: inherit !important;
     font-size: var(--font-size) !important;
     font-weight: 400 !important;
     line-height: var(--line-height) !important;
     text-decoration: none !important;
+    white-space: nowrap !important;
+    pointer-events: auto !important;
+}
+
+.contact a:nth-child(1) {
+    right: var(--page-x) !important;
+    bottom: calc(var(--font-size) * var(--line-height)) !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(2) {
+    right: var(--page-x) !important;
+    bottom: 0 !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(3) {
+    left: var(--page-x) !important;
+    bottom: calc(var(--font-size) * var(--line-height)) !important;
+    text-align: left !important;
+}
+
+.portfolio-download {
+    position: fixed !important;
+    z-index: 20000 !important;
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: var(--page-top) !important;
+    width: max-content !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.portfolio-download a {
+    display: block !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
     cursor: pointer !important;
     pointer-events: auto !important;
 }
 
+.contact a:hover,
 .portfolio-download a:hover {
     text-decoration: underline !important;
 }
 
-/* Revert the end-card itself to the clean text-based black page. */
+.native-down-arrow {
+    display: none !important;
+}
+
+/* Prevent the old landing logo from flashing during the return to white. */
+body:not(.landing-aybak-active) .logo,
+body.landing-aybak-leaving .logo,
+html.landing-aybak-leaving .logo {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* =====================================================
+   BLACK AYBAK END CARD
+   ===================================================== */
 #landing-aybak-end-card {
     position: fixed !important;
     inset: 0 !important;
@@ -1836,7 +1588,7 @@ body:not(.landing-aybak-active) .logo {
     pointer-events: none !important;
     background: #000 !important;
     opacity: 0 !important;
-    transform: translate3d(0,0,0) !important;
+    transform: none !important;
     transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
     touch-action: none !important;
 }
@@ -1860,6 +1612,34 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
 }
 
+/* Four corner labels sit above the black end card. */
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 20000 !important;
+    pointer-events: auto !important;
+}
+
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
+body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
+    color: #fff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    text-shadow: none !important;
+}
+
+body.landing-aybak-leaving .navigation a,
+body.landing-aybak-leaving .contact a,
+body.landing-aybak-leaving .portfolio-download a {
+    color: #000 !important;
+}
+
+/* End-card logo: two text lines with a visible stepped case morph. */
 #landing-aybak-logo {
     display: flex !important;
     flex-direction: column !important;
@@ -1888,1023 +1668,86 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 
 #landing-aybak-name,
 #landing-aybak-aybak {
-    display: block !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    white-space: nowrap !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(88vw, 390px) !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(80vw, 540px) !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(46vw, 620px) !important;
-    }
-}
-</style>
-
-
-<style id="final-user-layout-override">
-/* =====================================================
-   FINAL USER LAYOUT — CENTERED BIO + FOOTER REBALANCE
-   ===================================================== */
-
-/* The complete biography is a normal centered text composition.
-   No justification, no balance algorithm, no artificial last-line expansion. */
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(760px, 78vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: normal !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    text-wrap: normal !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-}
-
-.bio-primary,
-.bio-primary p {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    white-space: normal !important;
-    text-wrap: normal !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    letter-spacing: 0 !important;
-    word-spacing: normal !important;
-}
-
-.bio-primary p + p {
-    margin-top: calc(var(--major-gap) * 1.15) !important;
-}
-
-/* These phrases stay intact so the browser never leaves an isolated
-   "FILMMAKER," / "DISTANT," / similar fragment on its own line. */
-.bio-primary .keep-phrase {
-    display: inline !important;
-    white-space: nowrap !important;
-}
-
-.bio-collaborators {
-    width: 100% !important;
-    margin: calc(var(--major-gap) * 1.35) 0 0 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-}
-
-.collaborator-group,
-.collaborator-heading,
-.collaborator-list {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: normal !important;
-    text-align: center !important;
-    text-transform: uppercase !important;
-    white-space: normal !important;
-    text-wrap: normal !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-}
-
-.collaborator-heading {
-    margin-bottom: 0 !important;
-}
-
-.collaborator-group + .collaborator-group {
-    margin-top: var(--major-gap) !important;
-}
-
-/* Bottom navigation / contact arrangement:
-   email bottom-left, portfolio directly beneath it;
-   Instagram + models.com stacked bottom-right. */
-.contact {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: var(--page-bottom) !important;
-    width: 100% !important;
-    height: calc((var(--font-size) * var(--line-height)) * 2) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    pointer-events: none !important;
-    text-align: left !important;
-}
-
-.contact a {
-    position: absolute !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    pointer-events: auto !important;
-    white-space: nowrap !important;
-}
-
-.contact a:first-child {
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-.contact a:nth-child(2) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(3) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: 0 !important;
-    text-align: right !important;
-}
-
-.portfolio-download {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: var(--page-bottom) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
-}
-
-.portfolio-download a {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.30em !important;
-    color: #000 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
-}
-
-.portfolio-download a:hover {
-    text-decoration: underline !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: 90vw !important;
-        max-width: 90vw !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: 84vw !important;
-        max-width: 84vw !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(760px, 72vw) !important;
-        max-width: calc(100vw - (2 * var(--page-x))) !important;
-    }
-}
-</style>
-
-<style id="final-plain-centered-landing-copy">
-/* =====================================================
-   FINAL USER REQUEST — PLAIN CENTERED COPY + FOOTER
-   ===================================================== */
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(760px, 74vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    text-align: center !important;
-    text-transform: none !important;
-    text-wrap: normal !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-}
-
-.bio-primary,
-.bio-primary p {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    text-align: center !important;
-    text-transform: none !important;
-    white-space: normal !important;
-    text-wrap: balance !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-.bio-primary p + p {
-    margin-top: calc(var(--major-gap) * 1.15) !important;
-}
-
-/* Old phrase wrappers must never force artificial line breaks. */
-.bio-primary .keep-phrase {
-    display: inline !important;
-    white-space: normal !important;
-}
-
-.bio-identity {
-    display: inline !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
-    -webkit-tap-highlight-color: transparent !important;
-    outline: none !important;
-}
-
-.bio-identity-name,
-.bio-identity-aybak {
-    display: inline !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    text-transform: none !important;
-}
-
-.bio-collaborators {
-    width: min(100%, 760px) !important;
-    margin: calc(var(--major-gap) * 1.15) auto 0 auto !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-transform: none !important;
-}
-
-.collaborator-group,
-.collaborator-heading,
-.collaborator-list {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    text-align: center !important;
-    text-transform: none !important;
-    white-space: normal !important;
-    text-wrap: balance !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-}
-
-.collaborator-heading {
-    margin-bottom: 0 !important;
-}
-
-.collaborator-list {
-    margin-top: 0 !important;
-}
-
-.collaborator-group + .collaborator-group {
-    margin-top: var(--major-gap) !important;
-}
-
-/* Bottom-left: models.com, then portfolio.pdf. */
-.portfolio-download {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: var(--page-bottom) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
-}
-
-.portfolio-download a {
-    display: inline-block !important;
-    color: #000 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
-}
-
-.portfolio-download a:hover {
-    text-decoration: underline !important;
-}
-
-.native-down-arrow {
-    display: none !important;
-}
-
-/* Bottom-right: email, then Instagram. Models stays on the left. */
-.contact {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: var(--page-bottom) !important;
-    width: 100% !important;
-    height: calc((var(--font-size) * var(--line-height)) * 2) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    pointer-events: none !important;
-    text-align: left !important;
-}
-
-.contact a {
-    position: absolute !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    pointer-events: auto !important;
-    white-space: nowrap !important;
-}
-
-.contact a:first-child {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(2) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: 0 !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(3) {
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: 0 !important;
-    text-align: left !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: 92vw !important;
-        max-width: 92vw !important;
-    }
-
-    .bio-collaborators {
-        width: 92vw !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: 84vw !important;
-        max-width: 84vw !important;
-    }
-
-    .bio-collaborators {
-        width: 84vw !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(780px, 66vw) !important;
-    }
-
-    .bio-collaborators {
-        width: min(780px, 66vw) !important;
-    }
-}
-</style>
-
-
-<style id="final-clean-centered-bio-footer">
-/* Definitive landing typography/footer layout */
-.biography {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(760px, 78vw) !important;
-    max-width: calc(100vw - 40px) !important;
-    margin: 0 !important;
-    padding: 0 !important;
     display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    align-items: baseline !important;
     justify-content: center !important;
-    text-align: center !important;
-    text-transform: none !important;
-    text-wrap: wrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.bio-primary,
-.bio-collaborators {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    text-align: center !important;
-}
-
-.bio-primary p,
-.collaborator-group,
-.collaborator-heading,
-.collaborator-list {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-align-last: center !important;
-    text-wrap: wrap !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
-}
-
-.bio-primary p {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.bio-primary p + p {
-    margin-top: var(--major-gap) !important;
-}
-
-.bio-collaborators {
-    margin-top: var(--major-gap) !important;
-}
-
-.collaborator-group + .collaborator-group {
-    margin-top: var(--major-gap) !important;
-}
-
-/* The identity itself uses the same stepped case morph as the black AYBAK screen. */
-.bio-identity {
-    display: inline-flex !important;
-    flex-direction: row !important;
     white-space: nowrap !important;
-    vertical-align: baseline !important;
-    cursor: pointer !important;
-}
-
-.bio-identity-name,
-.bio-identity-aybak {
-    display: inline !important;
-    white-space: nowrap !important;
-}
-
-/* Footer: left = models.com / portfolio.pdf; right = email / Instagram. */
-.contact a:nth-child(1) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(2) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    bottom: 0 !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(3) {
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: left !important;
-}
-
-.portfolio-download {
-    position: fixed !important;
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: 0 !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
-}
-
-.portfolio-download a {
-    display: inline-block !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: 88vw !important;
-        max-width: 88vw !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: 82vw !important;
-        max-width: 82vw !important;
-    }
-}
-</style>
-
-
-<style id="final-single-centered-bio-and-aligned-footer">
-/* =====================================================
-   DEFINITIVE LANDING LAYOUT
-   One actual centered copy block + symmetric two-line footer.
-   ===================================================== */
-
-/* One typography block: every line shares the same centered text box. */
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: calc(50vh - 10px) !important;
-    transform: translate(-50%, -50%) !important;
-
-    width: min(680px, 78vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-
-    display: block !important;
-    text-align: center !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    text-transform: none !important;
-    white-space: normal !important;
-    text-wrap: wrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.biography .bio-line {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-align-last: center !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    color: inherit !important;
-}
-
-.biography .bio-line + .bio-line {
-    margin-top: var(--major-gap) !important;
-}
-
-/* Keep natural phrase breaks; never force isolated words such as FILMMAKER,. */
-.biography .keep {
-    display: inline !important;
-    white-space: nowrap !important;
-}
-
-/* Name morph keeps a real visual space between Denizalp and aybak. */
-.biography .bio-identity {
-    display: inline-flex !important;
-    align-items: baseline !important;
-    white-space: nowrap !important;
-    vertical-align: baseline !important;
-    cursor: pointer !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    outline: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-.biography .bio-identity-name {
-    display: inline-block !important;
-    white-space: nowrap !important;
-    margin-right: 0.28em !important;
-}
-
-.biography .bio-identity-aybak {
-    display: inline-block !important;
-    white-space: nowrap !important;
-}
-
-/* Collaborators are NOT a second container; they are two normal lines
-   inside the same centered block. No forced left edge. */
-.biography .collaborator-line {
-    margin-top: var(--major-gap) !important;
-}
-
-.biography .collaborator-heading {
-    display: inline !important;
-    white-space: nowrap !important;
-}
-
-/* Symmetric footer: same horizontal inset and same two-line rhythm on both sides.
-   Top footer row = models / email. Bottom footer row = portfolio / Instagram. */
-.contact {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: var(--page-top) !important;
-    width: 100% !important;
-    height: calc(var(--font-size) * var(--line-height) * 2) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    pointer-events: none !important;
-}
-
-.contact a {
-    position: absolute !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    white-space: nowrap !important;
-    pointer-events: auto !important;
-}
-
-/* right, first row */
-.contact a:nth-child(1) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    top: 0 !important;
-    bottom: auto !important;
-    text-align: right !important;
-}
-
-/* right, second row */
-.contact a:nth-child(2) {
-    left: auto !important;
-    right: var(--page-x) !important;
-    top: calc(var(--font-size) * var(--line-height)) !important;
-    bottom: auto !important;
-    text-align: right !important;
-}
-
-/* left, first row */
-.contact a:nth-child(3) {
-    left: var(--page-x) !important;
-    right: auto !important;
-    top: 0 !important;
-    bottom: auto !important;
-    text-align: left !important;
-}
-
-.portfolio-download {
-    position: fixed !important;
-    z-index: 20 !important;
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: var(--page-top) !important;
-    width: max-content !important;
     height: calc(var(--font-size) * var(--line-height)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
 }
 
-.portfolio-download a {
-    display: block !important;
+#landing-aybak-name {
+    position: relative !important;
     width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
 }
 
-.native-down-arrow {
-    display: none !important;
-}
-
-/* Hover underlines for every footer link, on both sides. */
-.contact a:hover,
-.portfolio-download a:hover {
-    text-decoration: underline !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(90vw, 430px) !important;
-        top: calc(50vh - 26px) !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(84vw, 620px) !important;
-        top: calc(50vh - 16px) !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(680px, 66vw) !important;
-    }
-}
-</style>
-
-<style id="final-aybak-corner-labels">
-/* =====================================================
-   CORNER LABELS STAY VISIBLE ON THE BLACK AYBAK SCREEN
-   ===================================================== */
-
-/* Sit above the opaque end-card so the four corner labels
-   remain visible instead of being covered by it. */
-.navigation,
-.contact,
-.portfolio-download {
-    z-index: 10001 !important;
-}
-
-/* White while the black screen is fully shown; the moment the
-   leaving transition starts (page is turning back to white),
-   drop back to black so both crossfade together. */
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
-    color: #fff !important;
-}
-
-.contact a,
-.portfolio-download a {
-    transition: color 400ms cubic-bezier(.22,.61,.36,1);
-}
-</style>
-
-
-<style id="final-request-2026-09-26">
-/* =====================================================
-   FINAL REQUEST — INTERACTIVE MIDDLE IDENTITY + BLACK END CARD LABELS
-   ===================================================== */
-
-/* No automatic morph on the middle-page identity. */
-.biography .bio-identity {
-    display: inline-flex !important;
-    align-items: baseline !important;
-    justify-content: flex-start !important;
-    flex: 0 0 auto !important;
-    min-width: max-content !important;
-    white-space: nowrap !important;
-    vertical-align: baseline !important;
-    cursor: pointer !important;
-}
-
-.biography .bio-identity-name,
-.biography .bio-identity-aybak {
-    display: inline-block !important;
-    white-space: nowrap !important;
-}
-
-/* Preserve the exact line count while the two case states morph. */
-.biography .bio-identity-line {
-    white-space: normal !important;
-}
-
-/* The headings requested by the user are each followed immediately by a line break. */
-.biography .collaborator-heading {
-    display: inline !important;
-    white-space: nowrap !important;
-}
-
-/* Keep all five copy lines in one actual centered composition. */
-.biography,
-.biography .bio-line,
-.biography .collaborator-line {
-    text-align: center !important;
-    text-align-last: center !important;
-}
-
-/* Corner labels must remain visible above the opaque black end card. */
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 10001 !important;
-    pointer-events: auto !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
-    color: #fff !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    mix-blend-mode: normal !important;
-}
-
-body.landing-aybak-leaving .navigation a,
-body.landing-aybak-leaving .contact a,
-body.landing-aybak-leaving .portfolio-download a {
-    color: #000 !important;
-}
-</style>
-
-
-<style id="final-latest-landing-typography-fix">
-/* =====================================================
-   FINAL LATEST LANDING FIX
-   ===================================================== */
-
-/* Middle copy: one centered composition, lowercase, no interactive identity. */
-.biography {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(720px, 78vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
+.landing-aybak-name-case {
+    grid-area: 1 / 1 !important;
     display: block !important;
-    text-align: center !important;
-    text-transform: none !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    white-space: normal !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-    text-wrap: pretty !important;
+    transition: opacity 110ms ease, transform 110ms ease !important;
 }
 
-.biography .bio-line,
-.biography .bio-identity-line,
-.biography .collaborator-line {
+#landing-aybak-name {
+    display: grid !important;
+}
+
+.landing-aybak-name-upper,
+.landing-aybak-letter-lower {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.landing-aybak-name-lower,
+.landing-aybak-letter-upper {
+    opacity: 0;
+    transform: translateY(0.12em);
+}
+
+#landing-aybak-name.is-lower .landing-aybak-name-upper {
+    opacity: 0;
+    transform: translateY(-0.12em);
+}
+
+#landing-aybak-name.is-lower .landing-aybak-name-lower {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.landing-aybak-letter {
+    display: inline-grid !important;
+    place-items: center !important;
+    position: relative !important;
+}
+
+.landing-aybak-letter > span {
+    grid-area: 1 / 1 !important;
     display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    text-align-last: center !important;
-    text-transform: none !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    white-space: normal !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-    text-wrap: pretty !important;
+    transition: opacity 110ms ease, transform 110ms ease !important;
 }
 
-.biography .bio-line + .bio-line {
-    margin-top: var(--major-gap) !important;
+.landing-aybak-letter.is-upper .landing-aybak-letter-lower {
+    opacity: 0;
+    transform: translateY(-0.12em);
 }
 
-/* Never split a meaningful phrase, word, or multi-word client/publication name. */
-.biography .no-break,
-.biography .collaborator-heading {
-    display: inline-block !important;
-    white-space: nowrap !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
-    vertical-align: baseline !important;
+.landing-aybak-letter.is-upper .landing-aybak-letter-upper {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* The middle name is static lowercase: no hover, click, or case morph. */
-.biography .bio-identity,
-.biography .bio-identity-name,
-.biography .bio-identity-aybak {
-    display: inline !important;
+/* iOS landscape: extend the black surface through safe-area gutters. */
+html.landing-aybak-active,
+body.landing-aybak-active {
+    background: #000 !important;
+}
+
+body.landing-aybak-active #landing-aybak-end-card {
+    left: calc(-1 * env(safe-area-inset-left)) !important;
+    right: calc(-1 * env(safe-area-inset-right)) !important;
+    top: calc(-1 * env(safe-area-inset-top)) !important;
+    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
     width: auto !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    text-transform: none !important;
-    cursor: default !important;
-    pointer-events: none !important;
-}
-
-/* Explicitly prevent an accidental double space between denizalp and aybak. */
-.biography .bio-identity-name::after {
-    content: " " !important;
-}
-
-/* Corner labels: fixed above the black end-card, with symmetric page-edge insets. */
-.navigation,
-.contact,
-.portfolio-download {
-    position: fixed !important;
-    z-index: 200000 !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 200000 !important;
-    pointer-events: auto !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
-    position: absolute !important;
-    z-index: 200001 !important;
-    color: #fff !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    mix-blend-mode: normal !important;
-    filter: none !important;
-    text-shadow: none !important;
-}
-
-body.landing-aybak-leaving .navigation a,
-body.landing-aybak-leaving .contact a,
-body.landing-aybak-leaving .portfolio-download a {
-    color: #000 !important;
-}
-
-/* Keep the landing-page spacing identical on all four outer edges. */
-.navigation a {
-    top: var(--page-top) !important;
+    height: auto !important;
+    background: #000 !important;
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
@@ -2924,216 +1767,134 @@ body.landing-aybak-leaving .portfolio-download a {
         width: min(720px, 66vw) !important;
     }
 }
-</style>
-
-</head>
-
-
+</style></head>
 <body>
-
-<div
-    class="page"
-    id="page"
->
-
-    <div
-        class="photography-field"
-        id="photography-field"
-    >
-
-        <div
-            id="scattered-stage"
-        ></div>
-
-        <img
-            id="fixed-photo-preview"
-            src="./photo.jpg"
-            alt=""
-            aria-hidden="true"
-        >
-
-    </div>
-
-
-    <main
-        class="landing-grid"
-        id="landing-grid"
-    >
-
-
-        <!-- LOGO -->
-
-        <button
-            class="logo"
-            id="logo"
-            type="button"
-            aria-label="Denizalp Aybak"
-        >
-
-            <span
-                class="logo-name"
-                id="logo-name"
-            >
+<div class="page" id="page">
+<div class="photography-field" id="photography-field">
+<div id="scattered-stage"></div>
+<img alt="" aria-hidden="true" id="fixed-photo-preview" src="./photo.jpg"/>
+</div>
+<main class="landing-grid" id="landing-grid">
+<!-- LOGO -->
+<button aria-label="Denizalp Aybak" class="logo" id="logo" type="button">
+<span class="logo-name" id="logo-name">
                 Denizalp
             </span>
-
-            <span class="logo-aybak">
-
-                <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
-
-            </span>
-
-        </button>
-
-
-
-        <!-- MEDIA -->
-
-        <div
-            class="media-field"
-            id="media-field"
-        >
-
-            <div
-                class="film-field"
-                id="film-field"
-            >
-
-                <a
-                    class="film-link"
-                    href="https://film.denizalpaybak.com/"
-                    aria-label="Film"
-                >
-
-                    <video
-                        id="film-video"
-                        src="./film.mp4"
-                        muted
-                        playsinline
-                        preload="auto"
-                    ></video>
-
-                </a>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- BIOGRAPHY -->
-
-        <section
-    class="biography"
-    id="biography"
->
-    <p class="bio-line bio-identity-line">
-        denizalp aybak (b. 1997) is a photographer and filmmaker,<br>
-        <span class="no-break">based in istanbul and available internationally.</span>
+<span class="logo-aybak">
+<span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
+</span>
+</button>
+<!-- MEDIA -->
+<div class="media-field" id="media-field">
+<div class="film-field" id="film-field">
+<a aria-label="Film" class="film-link" href="https://film.denizalpaybak.com/">
+<video id="film-video" muted="" playsinline="" preload="auto" src="./film.mp4"></video>
+</a>
+</div>
+</div>
+<!-- BIOGRAPHY -->
+<section class="biography" id="biography">
+<p class="bio-line bio-identity-line">
+        denizalp aybak (b. 1997) is a photographer and filmmaker,<br/>
+        based in istanbul and available internationally.
     </p>
-
-    <p class="bio-line">
-        <span class="no-break">having graduated top of his class in management at sabanci university,</span>
-        <span class="no-break">he brings a strategic approach to image-making,</span>
-        <span class="no-break">considering both the work itself and the world it belongs to.</span>
+<p class="bio-line">
+        having graduated top of his class in management at sabanci university,<br/>
+        he brings a strategic approach to image-making,<br/>
+        considering both the work itself and the world it belongs to.
     </p>
-
-    <p class="bio-line">
-        <span class="no-break">his work creates atmosphere through contrast:</span>
-        <span class="no-break">light that feels dark,</span>
-        <span class="no-break">beauty that appears distant,</span>
-        <span class="no-break">stillness that carries tension,</span>
-        <span class="no-break">and precision that emerges from spontaneity.</span>
+<p class="bio-line">
+        his work creates atmosphere through contrast:<br/>
+        light that feels dark,<br/>
+        beauty that appears distant,<br/>
+        stillness that carries tension,<br/>
+        and precision that emerges from spontaneity.
     </p>
-
-    <p class="bio-line collaborator-line">
-        <span class="collaborator-heading">editorial collaborators include:</span><br>
-        <span class="no-break">vogue türkiye,</span> <span class="no-break">harper’s bazaar türkiye,</span> <span class="no-break">elle türkiye,</span> <span class="no-break">l’officiel türkiye</span>
-    </p>
-
-    <p class="bio-line collaborator-line">
-        <span class="collaborator-heading">brand collaborators include:</span><br>
-        <span class="no-break">vakko,</span> <span class="no-break">bee goddess,</span> <span class="no-break">zeynep arcay,</span> <span class="no-break">peugeot,</span> <span class="no-break">skechers,</span> <span class="no-break">lc waikiki</span>
-    </p>
+<p class="bio-line collaborator-line">
+<span class="collaborator-heading">editorial collaborators include:</span><br/>
+<span class="collaborator-rows editorial-rows">
+<span class="collaborator-row">
+<span class="client-name">vogue türkiye,</span>
+<span class="client-name">harper’s bazaar türkiye</span>
+</span>
+<span class="collaborator-row">
+<span class="client-name">elle türkiye,</span>
+<span class="client-name">l’officiel türkiye</span>
+</span>
+</span>
+</p>
+<p class="bio-line collaborator-line">
+<span class="collaborator-heading">brand collaborators include:</span><br/>
+<span class="collaborator-rows brand-rows">
+<span class="collaborator-row">
+<span class="client-name">vakko,</span>
+<span class="client-name">bee goddess,</span>
+<span class="client-name">zeynep arcay</span>
+</span>
+<span class="collaborator-row">
+<span class="client-name">peugeot,</span>
+<span class="client-name">skechers,</span>
+<span class="client-name">lc waikiki</span>
+</span>
+</span>
+</p>
 </section>
-
-
-
-    <!-- FIXED CORNER UI: kept outside the landing-grid stacking context -->
+<!-- FIXED CORNER UI: kept outside the landing-grid stacking context -->
 <nav class="navigation">
-
-            <a
-                href="https://photography.denizalpaybak.com/"
-                id="photography-link"
-            >
-                <span id="photography-text">
+<a href="https://photography.denizalpaybak.com/" id="photography-link">
+<span id="photography-text">
                     PHOTOGRAPHY.
                 </span>
-            </a>
-
-            <a
-                href="https://film.denizalpaybak.com/"
-                id="film-link"
-            >
-                <span id="film-text">
+</a>
+<a href="https://film.denizalpaybak.com/" id="film-link">
+<span id="film-text">
                     FILM.
                 </span>
-            </a>
-
-        </nav>
-
+</a>
+</nav>
 <div class="contact">
-
-            <a
-                href="mailto:d@denizalpaybak.com"
-                target="_blank"
-                rel="noopener"
-            >
+<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">
                 d@denizalpaybak.com
             </a>
-
-            <a
-                href="https://www.instagram.com/denizalpaybak/"
-                target="_blank"
-                rel="noopener"
-            >
+<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">
                 instagram @denizalpaybak
             </a>
-
-            <a
-                href="https://models.com/people/denizalp-aybak"
-                target="_blank"
-                rel="noopener"
-            >
+<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">
                 models.com
             </a>
-
-        </div>
-
+</div>
 <p class="portfolio-download">
-                <a
-                            href="./denizalp-aybak-portfolio.pdf"
-                            id="portfolio-download"
-                            download="denizalp-aybak-portfolio.pdf"
-                >
+<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">
                     portfolio.pdf
                 </a>
-            </p>
-
-    <section id="landing-aybak-end-card" aria-hidden="true">
-        <button
-            id="landing-aybak-logo"
-            type="button"
-            aria-label="Denizalp Aybak"
-        >
-            <span id="landing-aybak-name">Denizalp</span>
-            <span id="landing-aybak-aybak">aybak</span>
-        </button>
-    </section>
-
-</div>
-
-
+</p>
+<section aria-hidden="true" id="landing-aybak-end-card">
+<button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
+<span aria-hidden="true" id="landing-aybak-name">
+<span class="landing-aybak-name-case landing-aybak-name-upper">Denizalp</span>
+<span class="landing-aybak-name-case landing-aybak-name-lower">denizalp</span>
+</span>
+<span aria-hidden="true" id="landing-aybak-aybak">
+<span class="landing-aybak-letter">
+<span class="landing-aybak-letter-lower">a</span>
+<span class="landing-aybak-letter-upper">A</span>
+</span><span class="landing-aybak-letter">
+<span class="landing-aybak-letter-lower">y</span>
+<span class="landing-aybak-letter-upper">Y</span>
+</span><span class="landing-aybak-letter">
+<span class="landing-aybak-letter-lower">b</span>
+<span class="landing-aybak-letter-upper">B</span>
+</span><span class="landing-aybak-letter">
+<span class="landing-aybak-letter-lower">a</span>
+<span class="landing-aybak-letter-upper">A</span>
+</span><span class="landing-aybak-letter">
+<span class="landing-aybak-letter-lower">k</span>
+<span class="landing-aybak-letter-upper">K</span>
+</span>
+</span>
+</button>
+</section>
+</main></div>
 <script>
 
 /* =====================================================
@@ -8894,36 +7655,21 @@ function setLandingAybakLogoState(
             )
         );
 
-    landingAybakName.textContent =
-        landingAybakLogoState === 0
-            ? "Denizalp"
-            : "denizalp";
+    landingAybakName.classList.toggle(
+        "is-lower",
+        landingAybakLogoState > 0
+    );
 
-    const lower = [
-        "a",
-        "y",
-        "b",
-        "a",
-        "k"
-    ];
-
-    const upper = [
-        "A",
-        "Y",
-        "B",
-        "A",
-        "K"
-    ];
-
-    landingAybakAybak.textContent =
-        lower
-            .map(
-                (letter, index) =>
-                    index < landingAybakLogoState
-                        ? upper[index]
-                        : letter
-            )
-            .join("");
+    document.querySelectorAll(
+        ".landing-aybak-letter"
+    ).forEach(
+        (letter, index) => {
+            letter.classList.toggle(
+                "is-upper",
+                index < landingAybakLogoState
+            );
+        }
+    );
 }
 
 function animateLandingAybakLogoTo(
@@ -9714,9 +8460,5 @@ window.addEventListener(
 );
 
 </script>
-
-
-
-
 </body>
 </html>
