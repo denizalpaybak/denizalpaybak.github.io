@@ -1,0 +1,146 @@
+[
+  {
+    "id": "vogue-260213",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2026-03"
+  },
+  {
+    "id": "harpersbazaar-260625",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2026-07"
+  },
+  {
+    "id": "lofficiel-250130-cover",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2025-02"
+  },
+  {
+    "id": "lofficiel-250130",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2025-02"
+  },
+  {
+    "id": "lofficiel-241106-cover",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2024-11"
+  },
+  {
+    "id": "lofficiel-241106",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2024-11"
+  },
+  {
+    "id": "beegoddess-fw24",
+    "field": "PHOTOGRAPHY",
+    "use": "CAMPAIGN",
+    "sortDate": "2024-09"
+  },
+  {
+    "id": "lofficiel-260116",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2026-02"
+  },
+  {
+    "id": "manc-231124",
+    "field": "PHOTOGRAPHY",
+    "use": "CAMPAIGN",
+    "sortDate": "2024-05"
+  },
+  {
+    "id": "mudo-home-fw24",
+    "field": "PHOTOGRAPHY",
+    "use": "CAMPAIGN",
+    "sortDate": "2024-09"
+  },
+  {
+    "id": "lofficiel-251213-cover",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2026-01"
+  },
+  {
+    "id": "vakko-fw24",
+    "field": "PHOTOGRAPHY",
+    "use": "CAMPAIGN",
+    "sortDate": "2024-09"
+  },
+  {
+    "id": "qp-250421",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2025-06"
+  },
+  {
+    "id": "elle-250919",
+    "field": "PHOTOGRAPHY",
+    "use": "EDITORIAL",
+    "sortDate": "2025-10"
+  },
+  {
+    "id": "work-in-progress",
+    "field": "PHOTOGRAPHY",
+    "use": "PERSONAL",
+    "sortDate": ""
+  },
+  {
+    "id": "vogue-260113",
+    "field": "FILM",
+    "use": "CAMPAIGN",
+    "sortDate": "2026-02"
+  },
+  {
+    "id": "zeyneparcay-251217",
+    "field": "FILM",
+    "use": "CAMPAIGN",
+    "sortDate": "2026-09"
+  },
+  {
+    "id": "nulook-251031",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2025-12"
+  },
+  {
+    "id": "vogue-260213",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2026-03"
+  },
+  {
+    "id": "zeyneparcay-250529",
+    "field": "FILM",
+    "use": "CAMPAIGN",
+    "sortDate": "2026-05"
+  },
+  {
+    "id": "nulook-240919",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2024-12"
+  },
+  {
+    "id": "lofficiel-241106",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2024-11"
+  },
+  {
+    "id": "nulook-250206",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2025-04"
+  },
+  {
+    "id": "sober-210323",
+    "field": "FILM",
+    "use": "EDITORIAL",
+    "sortDate": "2024-05"
+  }
+]
