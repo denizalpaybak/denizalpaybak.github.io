@@ -1,514 +1,520 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Denizalp Aybak</title>
 <link rel="preconnect" href="https://library.denizalpaybak.com" crossorigin>
+<link rel="stylesheet" href="https://use.typekit.net/rmn7qgm.css">
 <style>
 *{box-sizing:border-box}
 html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#fff;
-    color:#000;
-    font-family:Arial,Helvetica,sans-serif;
-    -webkit-text-size-adjust:100%;
-    text-size-adjust:100%;
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#fff;
+  color:#000;
+  font-family:Arial,Helvetica,sans-serif;
+  font-weight:400;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
 }
-button{font:inherit}
+button,input,textarea,select{font:inherit;font-weight:400}
+button{appearance:none;-webkit-appearance:none;border:0;background:none;margin:0;padding:0;color:inherit}
 a{color:inherit;text-decoration:none}
 :root{
-    --font-size:clamp(12px, .88vw, 15px);
-    --line-height:1.15;
-    --side:48px;
-    --top:30px;
-    --bottom:24px;
-    --ui-z:40;
-    --preview-z:4;
-    --viewer-z:30;
-    --ease:cubic-bezier(.22,.61,.36,1);
-}
-.chrome{
-    color:#fff;
-    mix-blend-mode:difference;
-}
-.ui-link,.index-header,.index-cell,.info-copy,.footer-link,.logo-word{
-    color:#fff;
-    mix-blend-mode:difference;
-}
-button,.cell-hit,.index-header{
-    -webkit-tap-highlight-color:transparent;
-}
-button{appearance:none;-webkit-appearance:none;border:0;background:none;padding:0}
-#site{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    background:#fff;
-}
-#preview-layer{
-    position:fixed;
-    inset:0;
-    z-index:var(--preview-z);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity 180ms ease;
-    overflow:hidden;
-}
-#preview-layer.visible{opacity:1}
-#preview-layer img,#preview-layer video{
-    display:block;
-    max-width:82vw;
-    max-height:74vh;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-}
-#preview-layer video{background:transparent}
-#preview-layer::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:transparent;
-    pointer-events:none;
+  --font-size:15px;
+  --line-height:1.15;
+  --side:48px;
+  --top:30px;
+  --bottom:24px;
+  --header-z:100;
+  --preview-z:5;
+  --viewer-z:200;
+  --ease:cubic-bezier(.22,.61,.36,1);
 }
 
-/* GLOBAL HEADER */
+/* ---------- shared typography ---------- */
+.site-text{
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:var(--font-size) !important;
+  font-weight:400 !important;
+  line-height:var(--line-height) !important;
+  letter-spacing:0 !important;
+  word-spacing:0 !important;
+  font-synthesis:none !important;
+}
+
+/* ---------- letter morph ---------- */
+.morph{
+  display:inline-block;
+  white-space:nowrap;
+  font:inherit !important;
+  font-weight:400 !important;
+  letter-spacing:0 !important;
+  word-spacing:0 !important;
+  font-synthesis:none !important;
+  vertical-align:baseline;
+}
+.morph-char{
+  display:inline-grid;
+  grid-template-columns:1fr;
+  grid-template-rows:1fr;
+  place-items:baseline center;
+  position:relative;
+  width:max-content;
+  min-width:0;
+  height:1em;
+  line-height:1em;
+  vertical-align:baseline;
+  font:inherit !important;
+  font-weight:400 !important;
+}
+.morph-char>span{
+  grid-area:1/1;
+  display:block;
+  font:inherit !important;
+  font-weight:400 !important;
+  letter-spacing:0 !important;
+  line-height:1em !important;
+  transition:opacity 120ms var(--ease),transform 120ms var(--ease);
+}
+.morph-lower{opacity:1;transform:translateY(0)}
+.morph-upper{opacity:0;transform:translateY(.10em)}
+.morph.is-upper .morph-lower{opacity:0;transform:translateY(-.10em)}
+.morph.is-upper .morph-upper{opacity:1;transform:translateY(0)}
+
+/* ---------- chrome ---------- */
+#top-left,#top-right,#top-center,
+#footer-left,#footer-right{
+  position:fixed;
+  z-index:var(--header-z);
+  font:inherit;
+}
 #top-left,#top-right{
-    position:fixed;
-    top:var(--top);
-    z-index:var(--ui-z);
-    font-size:var(--font-size);
-    line-height:var(--line-height);
+  top:var(--top);
+  font-size:var(--font-size);
+  line-height:var(--line-height);
 }
 #top-left{left:var(--side)}
 #top-right{right:var(--side)}
-.header-button{
-    position:relative;
-    display:block;
-    cursor:pointer;
-    white-space:nowrap;
-}
 #top-center{
-    position:fixed;
-    top:var(--top);
-    left:50%;
-    transform:translateX(-50%);
-    z-index:var(--ui-z);
-    width:max-content;
-    text-align:center;
-    cursor:default;
+  top:var(--top);
+  left:50%;
+  transform:translateX(-50%);
+  width:max-content;
+}
+.header-button{
+  display:block;
+  cursor:pointer;
+  white-space:nowrap;
 }
 #logo-button{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    gap:0;
-    cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:0;
+  cursor:pointer;
+  color:#000;
 }
-.logo-word{
-    display:block;
-    line-height:var(--line-height);
-    white-space:nowrap;
-}
-.logo-word + .logo-word{margin-top:-.02em}
-
-/* Morph letters */
-.morph{
-    display:inline-flex;
-    white-space:nowrap;
-    vertical-align:baseline;
-}
-.morph-char{
-    display:inline-grid;
-    width:max-content;
-    min-width:0;
-    position:relative;
-}
-.morph-char > span{
-    grid-area:1/1;
-    display:inline-block;
-    transition:opacity 220ms var(--ease),transform 220ms var(--ease);
-}
-.morph-lower{opacity:1;transform:translateY(0)}
-.morph-upper{opacity:0;transform:translateY(.12em)}
-.morph.is-upper .morph-lower{opacity:0;transform:translateY(-.12em)}
-.morph.is-upper .morph-upper{opacity:1;transform:translateY(0)}
-.morph-space{width:.28em}
-
-/* FOOTER */
+#logo-button .morph{display:block}
 #footer-left,#footer-right{
-    position:fixed;
-    bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
-    z-index:var(--ui-z);
-    display:flex;
-    flex-direction:column;
-    gap:0;
-    font-size:var(--font-size);
-    line-height:var(--line-height);
+  bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  font-size:var(--font-size);
+  line-height:var(--line-height);
+  color:#000;
 }
 #footer-left{left:var(--side)}
 #footer-right{right:var(--side);text-align:right}
-.footer-link{display:inline-block;white-space:nowrap;cursor:pointer}
+.footer-link{display:block;white-space:nowrap;cursor:pointer}
 
-/* INFO */
+/* ---------- index ---------- */
+#index-view{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  display:block;
+  background:#fff;
+  color:#000;
+}
+#index-wrap{
+  position:absolute;
+  top:calc(var(--top) + 52px);
+  left:var(--side);
+  right:var(--side);
+  bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
+  overflow:hidden;
+}
+#index-table{
+  width:100%;
+  font-size:var(--font-size);
+  line-height:var(--line-height);
+}
+.index-grid{
+  display:grid;
+  grid-template-columns:minmax(0,2.35fr) minmax(86px,1.10fr) minmax(88px,.82fr) minmax(80px,.82fr);
+  column-gap:clamp(18px,2.7vw,42px);
+  align-items:baseline;
+}
+#index-head{
+  position:relative;
+  z-index:2;
+  padding-bottom:calc(var(--font-size) * .85);
+}
+.index-header{
+  text-align:left;
+  cursor:pointer;
+  white-space:nowrap;
+  font-weight:400 !important;
+  color:#000;
+}
+.index-row{
+  position:relative;
+  min-height:calc(var(--font-size) * var(--line-height) + 7px);
+  padding:3.5px 0;
+}
+.index-cell{
+  display:block;
+  width:100%;
+  min-width:0;
+  text-align:left;
+  white-space:nowrap;
+  overflow:visible;
+  cursor:pointer;
+  color:#000;
+  font-weight:400 !important;
+}
+.index-cell .morph{display:inline-block}
+
+/* The preview is below the index text but above the page surface. */
+#preview-layer{
+  position:fixed;
+  inset:0;
+  z-index:var(--preview-z);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 160ms ease;
+  overflow:hidden;
+}
+#preview-layer.visible{opacity:1}
+#preview-layer img,#preview-layer video{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:min(82vw,1100px);
+  max-height:74vh;
+  object-fit:contain;
+}
+#preview-layer video{background:transparent}
+
+/* Black normally. When a preview is active, white + difference gives black text
+   on white space and an inverted/readable result exactly where the artwork sits. */
+body.preview-active #index-view .index-ui,
+body.preview-active #top-left,
+body.preview-active #top-right,
+body.preview-active #top-center{
+  color:#fff !important;
+  mix-blend-mode:difference;
+}
+body.preview-active #index-view .index-ui button,
+body.preview-active #logo-button{
+  color:#fff !important;
+}
+
+/* Optional columns disappear only when 12px still cannot keep every visible cell
+   on one physical line. */
+#index-table.hide-use .index-grid{
+  grid-template-columns:minmax(0,2.65fr) minmax(90px,1.05fr) minmax(84px,.86fr);
+}
+#index-table.hide-use .use-col{display:none}
+#index-table.hide-use-and-field .index-grid{
+  grid-template-columns:minmax(0,1.95fr) minmax(100px,1fr);
+}
+#index-table.hide-use-and-field .use-col,
+#index-table.hide-use-and-field .field-col{display:none}
+
+/* ---------- INFO ---------- */
 #info-view{
-    position:fixed;
-    inset:0;
-    z-index:10;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:calc(var(--top) * 2 + 20px) var(--side);
-    background:#fff;
+  position:fixed;
+  inset:0;
+  z-index:9;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:calc(var(--top) + 28px) var(--side) calc(var(--bottom) + 28px);
+  background:#fff;
+  color:#000;
+  overflow:hidden;
 }
 body.info-mode #info-view{display:flex}
 body.info-mode #index-view{display:none}
 .info-inner{
-    width:min(600px,76vw);
-    max-height:calc(100vh - 140px);
-    font-size:var(--font-size);
-    line-height:var(--line-height);
+  width:min(600px,76vw);
+  max-height:calc(100vh - 132px);
+  overflow:visible;
+  font-size:var(--font-size);
+  line-height:var(--line-height);
+  color:#000;
 }
 .info-p{
-    margin:0 0 1.15em;
-    padding:0;
+  margin:0 0 1.15em;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:var(--font-size);
+  font-weight:400;
+  line-height:var(--line-height);
+  letter-spacing:0;
+  word-spacing:0;
+  white-space:normal;
+  text-wrap:pretty;
+  hyphens:none;
+  overflow-wrap:normal;
+  word-break:normal;
 }
 .info-p:last-child{margin-bottom:0}
 .info-left{text-align:left}
 .info-right{text-align:right}
 
-/* INDEX */
-#index-view{
-    position:fixed;
-    inset:0;
-    z-index:8;
-    display:block;
-    background:transparent;
-}
-body.info-mode #index-view{display:none}
-#index-wrap{
-    position:absolute;
-    inset:calc(var(--top) + 50px) var(--side) calc(var(--bottom) + 18px);
-    overflow:hidden;
-}
-#index-table{
-    width:100%;
-    display:grid;
-    grid-auto-rows:minmax(0,auto);
-    align-content:start;
-    font-size:var(--font-size);
-    line-height:var(--line-height);
-}
-.index-grid{
-    display:grid;
-    grid-template-columns:minmax(0,2.25fr) minmax(80px,1fr) minmax(92px,.85fr) minmax(86px,.85fr);
-    column-gap:28px;
-    align-items:baseline;
-}
-#index-head{
-    position:sticky;
-    top:0;
-    z-index:2;
-    padding-bottom:1.1em;
-    background:transparent;
-}
-.index-header{
-    text-align:left;
-    cursor:pointer;
-    white-space:nowrap;
-}
-.index-row{
-    min-height:calc(var(--font-size) * var(--line-height));
-    position:relative;
-}
-.index-row::after{
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    top:100%;
-    height:0;
-    pointer-events:none;
-}
-.index-cell{
-    position:relative;
-    display:block;
-    width:100%;
-    min-width:0;
-    text-align:left;
-    white-space:nowrap;
-    overflow:visible;
-    cursor:pointer;
-}
-.index-row.active .index-cell{cursor:pointer}
-.index-cell .morph{display:inline-flex}
-
-/* VIEWER */
+/* ---------- VIEWER ---------- */
 #viewer{
-    position:fixed;
-    inset:0;
-    z-index:var(--viewer-z);
-    display:none;
-    background:#fff;
+  position:fixed;
+  inset:0;
+  z-index:var(--viewer-z);
+  display:none;
+  background:#fff;
+  color:#000;
 }
 body.viewer-open #viewer{display:block}
+body.viewer-open #footer-left,
+body.viewer-open #footer-right,
+body.viewer-open #top-center,
+body.viewer-open #top-left,
+body.viewer-open #top-right{display:none}
 #viewer-top-left,#viewer-top-right{
-    position:fixed;
-    top:var(--top);
-    z-index:50;
-    font-size:var(--font-size);
-    line-height:var(--line-height);
+  position:fixed;
+  top:var(--top);
+  z-index:20;
+  font-size:var(--font-size);
+  line-height:var(--line-height);
 }
 #viewer-top-left{left:var(--side)}
 #viewer-top-right{right:var(--side)}
 .viewer-link{
-    color:#fff;
-    mix-blend-mode:difference;
-    cursor:pointer;
-    white-space:nowrap;
+  cursor:pointer;
+  white-space:nowrap;
+  color:#000;
+  font-size:var(--font-size);
+  font-weight:400;
+  line-height:var(--line-height);
 }
 #viewer-stage{
-    position:absolute;
-    inset:0;
-    padding:calc(var(--top) + 22px) var(--side) calc(var(--bottom) + 38px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
+  position:absolute;
+  inset:0;
+  padding:calc(var(--top) + 24px) var(--side) calc(var(--bottom) + 58px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 #viewer-stage img,#viewer-stage video{
-    display:block;
-    max-width:100%;
-    max-height:calc(100vh - 120px);
-    width:auto;
-    height:auto;
-    object-fit:contain;
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:82vw;
+  max-height:75vh;
+  object-fit:contain;
 }
 #viewer-stage video{background:transparent}
+.viewer-photo-grid,
+.viewer-film-grid{
+  width:100%;
+  height:100%;
+  display:grid;
+  align-items:center;
+  justify-items:center;
+  align-content:center;
+  padding:10px 0;
+  overflow:auto;
+}
 .viewer-photo-grid{
-    display:grid;
-    width:100%;
-    height:100%;
-    gap:7px;
-    place-items:center;
-    align-content:center;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    grid-auto-rows:minmax(0,1fr);
-    padding:16px 0;
-    overflow:auto;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  gap:7px;
 }
 .viewer-film-grid{
-    display:grid;
-    width:100%;
-    height:100%;
-    gap:5px;
-    place-items:center;
-    align-content:center;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    grid-auto-rows:minmax(0,1fr);
-    padding:16px 0;
-    overflow:auto;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  gap:5px;
 }
 .viewer-grid-cell{
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-width:0;
-    min-height:0;
-    cursor:pointer;
-    padding:0;
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  overflow:hidden;
 }
 .viewer-grid-cell img{
-    max-width:100%;
-    max-height:100%;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-    display:block;
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
 }
 .viewer-grid-cell video{
-    max-width:100%;
-    max-height:100%;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-    display:block;
-    pointer-events:none;
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  pointer-events:none;
 }
 #viewer-meta{
-    position:fixed;
+  position:fixed;
+  left:var(--side);
+  right:var(--side);
+  bottom:var(--bottom);
+  z-index:30;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  font-size:var(--font-size);
+  line-height:var(--line-height);
+  color:#000;
+  pointer-events:none;
+}
+.viewer-meta-left,
+.viewer-meta-right{
+  display:flex;
+  flex-direction:column;
+  font-size:var(--font-size);
+  font-weight:400;
+  line-height:var(--line-height);
+}
+.viewer-meta-right{align-items:flex-end;text-align:right}
+.viewer-control{
+  cursor:pointer;
+  pointer-events:auto;
+  white-space:nowrap;
+  color:#000;
+  font:inherit;
+  font-weight:400;
+}
+.viewer-film-controls{
+  position:absolute;
+  left:50%;
+  bottom:calc(var(--bottom) + (var(--font-size) * var(--line-height) * 1.55));
+  transform:translateX(-50%);
+  display:flex;
+  gap:calc(var(--font-size) * 1.35);
+  align-items:center;
+}
+
+/* ---------- mobile ---------- */
+@media (max-width:700px){
+  :root{
+    --font-size:12px;
+    --side:20px;
+    --top:18px;
+    --bottom:17px;
+  }
+  #index-wrap{
+    top:calc(var(--top) + 44px);
     left:var(--side);
     right:var(--side);
-    bottom:var(--bottom);
-    z-index:60;
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    font-size:var(--font-size);
-    line-height:var(--line-height);
-}
-.viewer-meta-left,.viewer-meta-right,.viewer-film-controls{
-    color:#fff;
-    mix-blend-mode:difference;
-}
-.viewer-meta-left{display:flex;flex-direction:column}
-.viewer-meta-right{display:flex;flex-direction:column;align-items:flex-end}
-.viewer-film-controls{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:0;
-    display:flex;
-    gap:20px;
-}
-.viewer-control{
-    cursor:pointer;
-    white-space:nowrap;
-    color:#fff;
-    mix-blend-mode:difference;
-}
-.viewer-control:hover{text-decoration:none}
-.viewer-note{
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    color:#fff;
-    mix-blend-mode:difference;
-    display:none;
-}
-body.viewer-grid-mode .viewer-note{display:none}
-
-/* mobile */
-@media (max-width:700px){
-    :root{
-        --font-size:12px;
-        --side:20px;
-        --top:18px;
-        --bottom:17px;
-    }
-    #index-wrap{
-        inset:calc(var(--top) + 44px) var(--side) calc(var(--bottom) + 12px);
-    }
-    .index-grid{
-        grid-template-columns:minmax(0,2.25fr) minmax(64px,1fr) minmax(68px,.78fr) minmax(64px,.78fr);
-        column-gap:12px;
-    }
-    #index-head{padding-bottom:1em}
-    #viewer-stage{
-        padding:calc(var(--top) + 15px) var(--side) calc(var(--bottom) + 48px);
-    }
-    .viewer-photo-grid{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:5px;
-    }
-    .viewer-film-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:4px;
-    }
-    .info-inner{
-        width:min(88vw,520px);
-        max-height:calc(100vh - 110px);
-    }
+    bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
+  }
+  .index-grid{
+    grid-template-columns:minmax(0,2.35fr) minmax(64px,1.05fr) minmax(58px,.78fr) minmax(54px,.72fr);
+    column-gap:10px;
+  }
+  #index-head{padding-bottom:.95em}
+  .info-inner{width:min(88vw,520px);max-height:calc(100vh - 94px)}
+  .info-p{margin-bottom:1.15em}
+  #viewer-stage{padding:calc(var(--top) + 14px) var(--side) calc(var(--bottom) + 52px)}
+  #viewer-stage img,#viewer-stage video{max-width:92vw;max-height:73vh}
+  .viewer-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .viewer-film-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
 }
 @media (max-width:430px){
-    #index-wrap{inset:calc(var(--top) + 40px) var(--side) calc(var(--bottom) + 8px)}
-    .index-grid{column-gap:9px}
+  :root{--side:17px}
+  .index-grid{column-gap:8px}
 }
-@media (max-width:360px){
-    :root{--font-size:12px;--side:16px}
-    .index-grid{column-gap:7px}
-}
-
-/* when optional columns disappear */
-#index-table.hide-use .index-grid{
-    grid-template-columns:minmax(0,2.55fr) minmax(74px,1fr) minmax(76px,.86fr);
-}
-#index-table.hide-use .use-col{display:none}
-#index-table.hide-use-and-field .index-grid{
-    grid-template-columns:minmax(0,1.7fr) minmax(78px,.95fr);
-}
-#index-table.hide-use-and-field .use-col,
-#index-table.hide-use-and-field .field-col{display:none}
-
-/* KEEP EVERY PROJECT VALUE ON ONE LINE */
-.index-cell,.index-header{white-space:nowrap}
-
-/* future-ready hidden state */
-#viewer[data-viewer="photo"] .film-only{display:none}
-#viewer[data-viewer="film"] .photo-only{display:none}
 </style>
 </head>
 <body>
 <div id="site">
 
-    <div id="preview-layer" aria-hidden="true">
-        <img id="preview-image" alt="">
-        <video id="preview-video" muted playsinline loop preload="metadata"></video>
-    </div>
+  <div id="preview-layer" aria-hidden="true">
+    <img id="preview-image" alt="">
+    <video id="preview-video" muted playsinline loop preload="metadata"></video>
+  </div>
 
-    <div id="top-left" class="chrome">
-        <button id="index-button" class="header-button ui-link" type="button"></button>
-    </div>
-    <div id="top-center">
-        <button id="logo-button" type="button" aria-label="Denizalp Aybak">
-            <span id="logo-name" class="logo-word"></span>
-            <span id="logo-aybak" class="logo-word"></span>
-        </button>
-    </div>
-    <div id="top-right" class="chrome">
-        <button id="info-button" class="header-button ui-link" type="button"></button>
-    </div>
+  <div id="top-left" class="site-text">
+    <button id="index-button" class="header-button" type="button"></button>
+  </div>
+  <div id="top-center" class="site-text">
+    <button id="logo-button" type="button" aria-label="Denizalp Aybak"></button>
+  </div>
+  <div id="top-right" class="site-text">
+    <button id="info-button" class="header-button" type="button"></button>
+  </div>
 
-    <div id="index-view">
-        <div id="index-wrap">
-            <div id="index-table">
-                <div id="index-head" class="index-grid">
-                    <button class="index-header morph-host title-col" data-sort="title" type="button"></button>
-                    <button class="index-header morph-host date-col" data-sort="date" type="button"></button>
-                    <button class="index-header morph-host field-col" data-sort="field" type="button"></button>
-                    <button class="index-header morph-host use-col" data-sort="use" type="button"></button>
-                </div>
-                <div id="index-body"></div>
-            </div>
+  <main id="index-view">
+    <div id="index-wrap">
+      <div id="index-table">
+        <div id="index-head" class="index-grid index-ui">
+          <button class="index-header title-col" data-sort="title" type="button"></button>
+          <button class="index-header date-col" data-sort="date" type="button"></button>
+          <button class="index-header field-col" data-sort="field" type="button"></button>
+          <button class="index-header use-col" data-sort="use" type="button"></button>
         </div>
+        <div id="index-body"></div>
+      </div>
     </div>
+  </main>
 
-    <section id="info-view" aria-hidden="true">
-        <div class="info-inner info-copy chrome">
-            <p class="info-p info-left">denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.</p>
-            <p class="info-p info-right">having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.</p>
-            <p class="info-p info-left">his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.</p>
-            <p class="info-p info-right">editorial collaborators include: vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</p>
-            <p class="info-p info-left">brand collaborators include: vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</p>
-        </div>
-    </section>
-
-    <section id="viewer" aria-hidden="true">
-        <div id="viewer-top-left"><button class="viewer-link" id="viewer-index" type="button"></button></div>
-        <div id="viewer-top-right"><button class="viewer-link" id="viewer-info" type="button"></button></div>
-        <div id="viewer-stage"></div>
-        <div id="viewer-meta"></div>
-    </section>
-
-    <div id="footer-left" class="chrome">
-        <a class="footer-link" href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
-        <a class="footer-link" href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+  <section id="info-view" aria-hidden="true">
+    <div class="info-inner">
+      <p class="info-p info-left">denizalp aybak (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.</p>
+      <p class="info-p info-right">having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.</p>
+      <p class="info-p info-left">his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.</p>
+      <p class="info-p info-right">editorial collaborators include: vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</p>
+      <p class="info-p info-left">brand collaborators include: vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</p>
     </div>
-    <div id="footer-right" class="chrome">
-        <a class="footer-link" href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
-        <a class="footer-link" href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
-    </div>
+  </section>
+
+  <section id="viewer" aria-hidden="true">
+    <div id="viewer-top-left"><button class="viewer-link" id="viewer-index" type="button">index</button></div>
+    <div id="viewer-top-right"><button class="viewer-link" id="viewer-info" type="button">info</button></div>
+    <div id="viewer-stage"></div>
+    <div id="viewer-meta"></div>
+  </section>
+
+  <div id="footer-left" class="site-text">
+    <a class="footer-link" href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
+    <a class="footer-link" href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+  </div>
+  <div id="footer-right" class="site-text">
+    <a class="footer-link" href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
+    <a class="footer-link" href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
+  </div>
 </div>
 
 <script>
@@ -517,600 +523,566 @@ const PHOTO_FULL_BASE = "https://library.denizalpaybak.com/photos/";
 const PHOTO_THUMB_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
 const FILM_FULL_BASE = "https://library.denizalpaybak.com/films/";
 const FILM_PREVIEW_BASE = "https://library.denizalpaybak.com/film-previews/";
-const FILM_POSTER_BASE = "https://library.denizalpaybak.com/film-posters/";
-const MORPH_DURATION = 230;
+const MORPH_STEP = 42;
 const LOGO_HOLD = 650;
 const MOBILE_MIN_FONT = 12;
 
-let projects = [];
-let infoMode = false;
-let sortKey = "date";
-let sortDir = "desc";
-let selectedId = null;
-let previewTimer = null;
-let viewerOpen = false;
-let viewerMode = "grid";
-let viewerProject = null;
-let viewerIndex = 0;
-let viewerVideo = null;
-let filmMuted = true;
-let mobileColumnResizeRaf = null;
-
 const body = document.body;
+const indexView = document.getElementById("index-view");
+const infoView = document.getElementById("info-view");
 const indexButton = document.getElementById("index-button");
 const infoButton = document.getElementById("info-button");
 const logoButton = document.getElementById("logo-button");
-const logoName = document.getElementById("logo-name");
-const logoAybak = document.getElementById("logo-aybak");
 const indexTable = document.getElementById("index-table");
 const indexBody = document.getElementById("index-body");
+const indexHead = document.getElementById("index-head");
 const previewLayer = document.getElementById("preview-layer");
 const previewImage = document.getElementById("preview-image");
 const previewVideo = document.getElementById("preview-video");
-const infoView = document.getElementById("info-view");
 const viewer = document.getElementById("viewer");
 const viewerStage = document.getElementById("viewer-stage");
 const viewerMeta = document.getElementById("viewer-meta");
 const viewerIndexButton = document.getElementById("viewer-index");
 const viewerInfoButton = document.getElementById("viewer-info");
 
+let projects=[];
+let infoMode=false;
+let sortKey="date";
+let sortDir="desc";
+let previewTimer=null;
+let selectedId=null;
+let indexRows=[];
+let viewerProject=null;
+let viewerIndex=0;
+let viewerMode="grid";
+let viewerOpen=false;
+let viewerVideo=null;
+let filmMuted=true;
+let logoTimer=null;
+let resizeRaf=null;
+let touchMap=new WeakMap();
+
 function escapeHtml(value){
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
 }
 
-function formatField(field){
-    if (window.matchMedia("(max-width:700px)").matches && field === "photography") return "photo";
-    return String(field || "").toLowerCase();
-}
-
-function morphHtml(text){
-    const value = String(text ?? "");
-    const parts = [];
-    for(const ch of value){
-        if(ch === " "){
-            parts.push('<span class="morph-char morph-space" aria-hidden="true"><span class="morph-lower">&nbsp;</span><span class="morph-upper">&nbsp;</span></span>');
-            continue;
-        }
-        parts.push(
-            '<span class="morph-char" aria-hidden="true"><span class="morph-lower">'+escapeHtml(ch.toLowerCase())+'</span><span class="morph-upper">'+escapeHtml(ch.toUpperCase())+'</span></span>'
-        );
+function morphMarkup(text){
+  const value=String(text ?? "").toLowerCase();
+  let html="";
+  for(const ch of value){
+    if(ch===" "){
+      html += " ";
+      continue;
     }
-    return parts.join("");
+    html += '<span class="morph-char"><span class="morph-lower">'+escapeHtml(ch)+'</span><span class="morph-upper">'+escapeHtml(ch.toUpperCase())+'</span></span>';
+  }
+  return html;
 }
 
 function setMorphHost(el,text,upper=false){
-    el.innerHTML = '<span class="morph '+(upper ? 'is-upper':'')+'">'+morphHtml(text)+'</span>';
+  el.innerHTML='<span class="morph'+(upper?" is-upper":"")+'">'+morphMarkup(text)+'</span>';
 }
-
 function setMorphState(el,upper){
-    const morph = el.querySelector(".morph");
-    if(morph) morph.classList.toggle("is-upper",Boolean(upper));
+  const morph=el.querySelector(".morph");
+  if(morph) morph.classList.toggle("is-upper",Boolean(upper));
+}
+function morphTo(el,target,upper){
+  const morph=el.querySelector(".morph");
+  if(!morph) return;
+  setMorphState(el,upper);
 }
 
-function setButtonText(el,text,upper=false){
-    setMorphHost(el,text,upper);
+function currentMobile(){return window.matchMedia("(max-width:700px)").matches}
+function canHover(){return window.matchMedia("(hover:hover) and (pointer:fine)").matches}
+function displayField(value){
+  const v=String(value||"").toLowerCase();
+  return currentMobile() && v==="photography" ? "photo" : v;
 }
 
-function headerState(){
-    setButtonText(indexButton,"index",!infoMode);
-    setButtonText(infoButton,"info",infoMode);
-}
-headerState();
-
-function animateMorph(el,upper){
-    setMorphState(el,upper);
+function setHeaderStates(){
+  setMorphHost(indexButton,"index",!infoMode);
+  setMorphHost(infoButton,"info",infoMode);
 }
 
-function showPreview(project){
-    clearTimeout(previewTimer);
-    previewImage.removeAttribute("src");
-    previewVideo.pause();
-    previewVideo.removeAttribute("src");
-    previewVideo.load();
-
-    if(project.viewer === "photo"){
-        const file = project.coverOverride || project.images?.[0];
-        if(!file) return;
-        previewImage.src = PHOTO_FULL_BASE + encodeURIComponent(file);
-        previewImage.style.display="block";
-        previewVideo.style.display="none";
-    }else{
-        const file = project.coverOverride || project.videos?.[0];
-        if(!file) return;
-        previewVideo.src = FILM_PREVIEW_BASE + encodeURIComponent(file.replace(/\.mp4$/i,"_preview.mp4"));
-        previewVideo.style.display="block";
-        previewImage.style.display="none";
-        previewVideo.play().catch(()=>{});
-    }
-    previewLayer.classList.add("visible");
-}
-
-function hidePreview(delay=70){
-    clearTimeout(previewTimer);
-    previewTimer=setTimeout(()=>{
-        previewLayer.classList.remove("visible");
-        previewVideo.pause();
-        previewVideo.removeAttribute("src");
-        previewVideo.load();
-        previewImage.removeAttribute("src");
-    },delay);
-}
-
-function projectForSort(a,b,key,dir){
-    let va,vb;
-    if(key==="date"){
-        va=a.sortDate||"";
-        vb=b.sortDate||"";
-    }else{
-        va=String(a[key]||"").toLowerCase();
-        vb=String(b[key]||"").toLowerCase();
-    }
-    const cmp = va.localeCompare(vb,"tr",{numeric:true,sensitivity:"base"});
-    return dir==="asc" ? cmp : -cmp;
-}
-
-function sortedProjects(){
-    return projects.slice().sort((a,b)=>{
-        const c=projectForSort(a,b,sortKey,sortDir);
-        if(c!==0) return c;
-        return String(a.id).localeCompare(String(b.id));
-    });
-}
-
-function createCell(project,key,displayValue){
-    const button=document.createElement("button");
-    button.type="button";
-    button.className=`index-cell ${key}-col`;
-    const host=document.createElement("span");
-    host.className="morph-host";
-    host.dataset.raw=displayValue;
-    setMorphHost(host,displayValue,false);
-    button.appendChild(host);
-    return {button,host};
-}
-
-function setRowActive(rowState,active){
-    rowState.active=active;
-    rowState.cells.forEach(cell=>setMorphState(cell.host,active));
-}
-
-function selectProject(project, fromMobile=false){
-    selectedId=project.id;
-    const row=indexRows.find(r=>r.project.id===project.id);
-    if(row){
-        indexRows.forEach(r=>setRowActive(r,false));
-        setRowActive(row,true);
-    }
-    showPreview(project);
-}
-let indexRows=[];
-
-function buildIndex(){
-    indexBody.innerHTML="";
-    indexRows=[];
-    for(const project of sortedProjects()){
-        const row=document.createElement("div");
-        row.className="index-row index-grid";
-        const cells=[];
-        for(const key of ["title","date","field","use"]){
-            const value=key==="field" ? formatField(project.field) : String(project[key]||"");
-            const {button,host}=createCell(project,key,value);
-            cells.push({button,host,key});
-            row.appendChild(button);
-        }
-        const state={project,row,cells,active:false};
-        indexRows.push(state);
-
-        row.addEventListener("mouseenter",()=>{
-            if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
-                selectProject(project);
-            }
-        });
-        row.addEventListener("mouseleave",()=>{
-            if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
-                setRowActive(state,false);
-                if(selectedId===project.id) selectedId=null;
-                hidePreview();
-            }
-        });
-        for(const cell of cells){
-            cell.button.addEventListener("focus",()=>{
-                if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
-                    selectProject(project);
-                }
-            });
-            cell.button.addEventListener("click",(event)=>{
-                event.stopPropagation();
-                const isTouch = !window.matchMedia("(hover:hover) and (pointer:fine)").matches;
-                if(isTouch){
-                    if(selectedId===project.id){
-                        openViewer(project);
-                    }else{
-                        selectProject(project,true);
-                    }
-                }else{
-                    openViewer(project);
-                }
-            });
-        }
-        indexBody.appendChild(row);
-    }
-    requestAnimationFrame(fitMobileColumns);
-}
-
-function fitMobileColumns(){
-    cancelAnimationFrame(mobileColumnResizeRaf);
-    mobileColumnResizeRaf=requestAnimationFrame(()=>{
-        const narrow=window.matchMedia("(max-width:700px)").matches;
-        indexTable.classList.remove("hide-use","hide-use-and-field");
-        if(!narrow) return;
-        const rootFont=parseFloat(getComputedStyle(document.documentElement).fontSize);
-        const fontSize=parseFloat(getComputedStyle(document.body).fontSize || "12");
-        // CSS already locks minimum at 12px. If the full four-column rail still overflows,
-        // remove USE, then FIELD. Never wrap a cell.
-        const fits=()=>indexTable.scrollWidth <= indexTable.clientWidth + 1;
-        if(!fits()) indexTable.classList.add("hide-use");
-        if(!fits()) indexTable.classList.add("hide-use-and-field");
-    });
+function setLogoState(upper){
+  logoButton.innerHTML='';
+  const a=document.createElement("span");
+  const b=document.createElement("span");
+  a.className="logo-word";
+  b.className="logo-word";
+  setMorphHost(a,"denizalp",upper);
+  setMorphHost(b,"aybak",upper);
+  logoButton.append(a,b);
 }
 
 function setInfoMode(next){
-    infoMode=Boolean(next);
-    body.classList.toggle("info-mode",infoMode);
-    infoView.setAttribute("aria-hidden",String(!infoMode));
-    if(infoMode) hidePreview(0);
-    headerState();
+  infoMode=Boolean(next);
+  body.classList.toggle("info-mode",infoMode);
+  infoView.setAttribute("aria-hidden",String(!infoMode));
+  if(infoMode) hidePreview(0);
+  setHeaderStates();
 }
 
-indexButton.addEventListener("click",()=>{ closeViewer(); setInfoMode(false); });
-infoButton.addEventListener("click",()=>{ closeViewer(); setInfoMode(true); });
-viewerIndexButton.addEventListener("click",()=>closeViewer());
-viewerInfoButton.addEventListener("click",()=>{ closeViewer(); setInfoMode(true); });
-
-/* Central logo: desktop hover only, mobile tap morphs then returns. */
-let logoTimer=null;
-let logoUpper=false;
-function setLogo(upper){
-    logoUpper=upper;
-    setMorphHost(logoName,"Denizalp",upper);
-    setMorphHost(logoAybak,"aybak",upper);
-}
-setLogo(false);
-
-logoButton.addEventListener("mouseenter",()=>{
-    if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
-        setLogo(true);
-    }
-});
-logoButton.addEventListener("mouseleave",()=>{
-    if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
-        setLogo(false);
-    }
-});
-logoButton.addEventListener("click",(e)=>{
-    e.preventDefault();
-    if(window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-    clearTimeout(logoTimer);
-    setLogo(true);
-    logoTimer=setTimeout(()=>setLogo(false),LOGO_HOLD);
-});
-
-/* Viewer */
-function mediaUrl(project,index){
-    if(project.viewer==="photo"){
-        const file=project.images[index];
-        return file ? PHOTO_FULL_BASE+encodeURIComponent(file) : "";
-    }
-    const file=project.videos[index];
-    return file ? FILM_FULL_BASE+encodeURIComponent(file) : "";
-}
-function thumbUrl(project,index){
-    if(project.viewer==="photo"){
-        const file=project.images[index];
-        return file ? PHOTO_THUMB_BASE+encodeURIComponent(file) : "";
-    }
-    const file=project.videos[index];
-    return file ? FILM_PREVIEW_BASE+encodeURIComponent(file.replace(/\.mp4$/i,"_preview.mp4")) : "";
-}
-function assetCount(project){
-    return project.viewer==="photo" ? (project.images?.length||0) : (project.videos?.length||0);
+function clearPreview(){
+  body.classList.remove("preview-active");
+  previewLayer.classList.remove("visible");
+  previewVideo.pause();
+  previewVideo.removeAttribute("src");
+  previewVideo.load();
+  previewImage.removeAttribute("src");
 }
 
-function closeViewer(){
-    viewerOpen=false;
-    body.classList.remove("viewer-open","viewer-grid-mode","viewer-slide-mode");
-    viewer.setAttribute("aria-hidden","true");
-    viewerStage.innerHTML="";
-    viewerMeta.innerHTML="";
-    if(viewerVideo){
-        viewerVideo.pause();
-        viewerVideo.removeAttribute("src");
-        viewerVideo.load();
-        viewerVideo=null;
-    }
-    const oldFilmControls = document.querySelector(".viewer-film-controls");
-    if(oldFilmControls) oldFilmControls.remove();
-    viewerProject=null;
-    viewerIndex=0;
-    document.title="Denizalp Aybak";
-    if(selectedId){
-        const row=indexRows.find(r=>r.project.id===selectedId);
-        if(row) setRowActive(row,false);
-    }
-    selectedId=null;
-    hidePreview(0);
+function hidePreview(delay=0){
+  clearTimeout(previewTimer);
+  if(delay<=0){clearPreview();return;}
+  previewTimer=setTimeout(clearPreview,delay);
 }
 
-function openViewer(project,frame=0){
-    selectedId=project.id;
-    viewerProject=project;
-    viewerMode="slide";
-    hidePreview(0);
-    viewerIndex=Math.max(0,Math.min(assetCount(project)-1,frame));
-    viewerOpen=true;
-    body.classList.add("viewer-open");
-    body.classList.remove("viewer-grid-mode");
-    body.classList.add("viewer-slide-mode");
-    viewer.setAttribute("aria-hidden","false");
-    renderViewerSlide();
+function filmPreviewUrl(file){
+  if(!file) return "";
+  return FILM_PREVIEW_BASE+encodeURIComponent(String(file).replace(/\.mp4$/i,"_preview.mp4"));
 }
 
-function openViewerGrid(project){
-    selectedId=project.id;
-    viewerProject=project;
-    filmMuted = true;
-    hidePreview(0);
-    viewerOpen=true;
-    viewerMode="grid";
-    body.classList.add("viewer-open","viewer-grid-mode");
-    body.classList.remove("viewer-slide-mode");
-    viewer.setAttribute("aria-hidden","false");
-    renderViewerGrid();
+function showPreview(project){
+  clearTimeout(previewTimer);
+  previewImage.removeAttribute("src");
+  previewVideo.pause();
+  previewVideo.removeAttribute("src");
+  previewVideo.load();
+
+  if(project.viewer==="photo"){
+    const file=project.coverOverride || project.images?.[0];
+    if(!file) return;
+    previewImage.src=PHOTO_FULL_BASE+encodeURIComponent(file);
+    previewImage.style.display="block";
+    previewVideo.style.display="none";
+  }else{
+    const file=project.coverOverride || project.videos?.[0];
+    if(!file) return;
+    previewVideo.src=filmPreviewUrl(file);
+    previewVideo.style.display="block";
+    previewImage.style.display="none";
+    previewVideo.play().catch(()=>{});
+  }
+  body.classList.add("preview-active");
+  previewLayer.classList.add("visible");
 }
 
-function openViewerFromIndex(project){
-    openViewerGrid(project);
+function sortValue(project,key){
+  if(key==="date") return project.sortDate || "";
+  return String(project[key]||"").toLowerCase();
+}
+function compareProjects(a,b){
+  const av=sortValue(a,sortKey);
+  const bv=sortValue(b,sortKey);
+  const cmp=av.localeCompare(bv,"tr",{numeric:true,sensitivity:"base"});
+  if(cmp!==0) return sortDir==="asc"?cmp:-cmp;
+  return String(a.id).localeCompare(String(b.id),"tr",{numeric:true});
+}
+function sortedProjects(){return projects.slice().sort(compareProjects)}
+
+function createIndexCell(project,key,value){
+  const button=document.createElement("button");
+  button.type="button";
+  button.className=`index-cell index-ui ${key}-col`;
+  const host=document.createElement("span");
+  setMorphHost(host,value,false);
+  button.appendChild(host);
+  return {button,host};
+}
+
+function rowActivate(state,active){
+  state.active=active;
+  state.cells.forEach(cell=>setMorphState(cell.host,active));
+}
+
+function selectProject(project){
+  selectedId=project.id;
+  for(const row of indexRows) rowActivate(row,false);
+  const row=indexRows.find(item=>item.project.id===project.id);
+  if(row) rowActivate(row,true);
+  showPreview(project);
 }
 
 function openProjectFromIndex(project){
-    openViewerGrid(project);
+  /* INDEX always opens VIEW ALL — never the slide. */
+  openViewerGrid(project);
+}
+
+function attachTouchState(element,project){
+  touchMap.set(element,{project,lastTap:0});
+  element.addEventListener("touchend",event=>{
+    if(canHover()) return;
+    const state=touchMap.get(element);
+    const now=Date.now();
+    if(state.lastTap && now-state.lastTap<700 && selectedId===project.id){
+      event.preventDefault();
+      state.lastTap=0;
+      openProjectFromIndex(project);
+      return;
+    }
+    state.lastTap=now;
+    selectProject(project);
+  },{passive:false});
+}
+
+function buildIndex(){
+  indexBody.innerHTML="";
+  indexRows=[];
+  for(const project of sortedProjects()){
+    const row=document.createElement("div");
+    row.className="index-row index-grid index-ui";
+    const cells=[];
+    const values={
+      title:String(project.title||"").toLowerCase(),
+      date:String(project.date||"").toLowerCase(),
+      field:displayField(project.field),
+      use:String(project.use||"").toLowerCase()
+    };
+    for(const key of ["title","date","field","use"]){
+      const value=values[key];
+      const {button,host}=createIndexCell(project,key,value);
+      cells.push({button,host,key});
+      row.appendChild(button);
+    }
+    const state={project,row,cells,active:false};
+    indexRows.push(state);
+
+    if(canHover()){
+      row.addEventListener("mouseenter",()=>selectProject(project));
+      row.addEventListener("mouseleave",()=>{
+        rowActivate(state,false);
+        if(selectedId===project.id) selectedId=null;
+        hidePreview(0);
+      });
+    }else{
+      attachTouchState(row,project);
+    }
+
+    for(const cell of cells){
+      cell.button.addEventListener("focus",()=>{if(canHover()) selectProject(project)});
+      cell.button.addEventListener("mouseenter",()=>{if(canHover()) selectProject(project)});
+      cell.button.addEventListener("mouseleave",()=>{
+        if(canHover() && row.matches(":hover")){selectProject(project)}
+      });
+      cell.button.addEventListener("click",event=>{
+        if(canHover()){
+          event.preventDefault();
+          openProjectFromIndex(project);
+        }
+      });
+    }
+    indexBody.appendChild(row);
+  }
+  requestAnimationFrame(fitMobileColumns);
+}
+
+function cellOverflows(cell){
+  const rect=cell.getBoundingClientRect();
+  return cell.scrollWidth>rect.width+1 || cell.getBoundingClientRect().width<cell.scrollWidth-1;
+}
+
+function fitMobileColumns(){
+  cancelAnimationFrame(resizeRaf);
+  resizeRaf=requestAnimationFrame(()=>{
+    indexTable.classList.remove("hide-use","hide-use-and-field");
+    if(!currentMobile()) return;
+    const check=()=>[...indexTable.querySelectorAll(".index-row")].some(row=>[...row.querySelectorAll(".index-cell")].some(cell=>cellOverflows(cell)));
+    if(check()) indexTable.classList.add("hide-use");
+    if(check()) indexTable.classList.add("hide-use-and-field");
+  });
+}
+
+/* ---------- Viewer ---------- */
+function assetFiles(project){
+  return project.viewer==="photo" ? (project.images||[]) : (project.videos||[]);
+}
+function assetCount(project){return assetFiles(project).length}
+function fullAssetUrl(project,index){
+  const file=assetFiles(project)[index];
+  if(!file) return "";
+  return project.viewer==="photo"
+    ? PHOTO_FULL_BASE+encodeURIComponent(file)
+    : FILM_FULL_BASE+encodeURIComponent(file);
+}
+function thumbAssetUrl(project,index){
+  const file=assetFiles(project)[index];
+  if(!file) return "";
+  return project.viewer==="photo"
+    ? PHOTO_THUMB_BASE+encodeURIComponent(file)
+    : filmPreviewUrl(file);
+}
+
+function setViewerMeta(project,mode){
+  viewerMeta.innerHTML="";
+  const left=document.createElement("div");
+  left.className="viewer-meta-left";
+  const title=document.createElement("span");
+  title.textContent=String(project.title||"").toLowerCase();
+  const date=document.createElement("span");
+  date.textContent=String(project.date||"").toLowerCase();
+  left.append(title,date);
+
+  const right=document.createElement("div");
+  right.className="viewer-meta-right";
+  const count=document.createElement("button");
+  count.type="button";
+  count.className="viewer-control";
+  count.textContent=mode==="grid"
+    ? `all ${assetCount(project)}`
+    : `${viewerIndex+1} / ${assetCount(project)}`;
+  const main=document.createElement("button");
+  main.type="button";
+  main.className="viewer-control";
+  main.textContent=mode==="grid" ? "close" : "view all";
+  if(mode==="grid"){
+    count.addEventListener("click",()=>previousProject());
+    main.addEventListener("click",closeViewer);
+  }else{
+    count.addEventListener("click",previousFrame);
+    main.addEventListener("click",()=>openViewerGrid(project));
+  }
+  right.append(count,main);
+  viewerMeta.append(left,right);
+
+  const old=document.querySelector(".viewer-film-controls");
+  if(old) old.remove();
+  if(mode==="slide" && project.viewer==="film"){
+    const controls=document.createElement("div");
+    controls.className="viewer-film-controls";
+    const prev=document.createElement("button");
+    prev.className="viewer-control";prev.type="button";prev.textContent="previous";
+    const sound=document.createElement("button");
+    sound.className="viewer-control";sound.type="button";sound.textContent=viewerVideo&&!viewerVideo.muted?"sound on":"sound off";
+    const next=document.createElement("button");
+    next.className="viewer-control";next.type="button";next.textContent="next";
+    prev.addEventListener("click",previousFrame);
+    next.addEventListener("click",nextFrame);
+    sound.addEventListener("click",()=>{filmMuted=!filmMuted;renderViewerSlide()});
+    controls.append(prev,sound,next);
+    viewer.appendChild(controls);
+  }
+}
+
+function cleanViewerMedia(){
+  if(viewerVideo){
+    viewerVideo.pause();
+    viewerVideo.removeAttribute("src");
+    viewerVideo.load();
+    viewerVideo=null;
+  }
+  const old=document.querySelector(".viewer-film-controls");
+  if(old) old.remove();
+}
+
+function openViewerGrid(project){
+  selectedId=project.id;
+  viewerProject=project;
+  viewerMode="grid";
+  viewerIndex=0;
+  viewerOpen=true;
+  hidePreview(0);
+  body.classList.add("viewer-open","viewer-grid-mode");
+  body.classList.remove("viewer-slide-mode");
+  viewer.setAttribute("aria-hidden","false");
+  renderViewerGrid();
+}
+
+function openViewer(project,index=0){
+  selectedId=project.id;
+  viewerProject=project;
+  viewerMode="slide";
+  viewerIndex=Math.max(0,Math.min(assetCount(project)-1,index));
+  viewerOpen=true;
+  hidePreview(0);
+  body.classList.add("viewer-open","viewer-slide-mode");
+  body.classList.remove("viewer-grid-mode");
+  viewer.setAttribute("aria-hidden","false");
+  renderViewerSlide();
+}
+
+function closeViewer(){
+  cleanViewerMedia();
+  viewerStage.innerHTML="";
+  viewerMeta.innerHTML="";
+  viewerProject=null;
+  viewerOpen=false;
+  body.classList.remove("viewer-open","viewer-grid-mode","viewer-slide-mode");
+  viewer.setAttribute("aria-hidden","true");
+  selectedId=null;
 }
 
 function renderViewerGrid(){
-    if(!viewerProject) return;
-    if(viewerVideo){
-        viewerVideo.pause();
-        viewerVideo=null;
+  cleanViewerMedia();
+  viewerStage.innerHTML="";
+  if(!viewerProject) return;
+  const grid=document.createElement("div");
+  grid.className=viewerProject.viewer==="photo"?"viewer-photo-grid":"viewer-film-grid";
+  assetFiles(viewerProject).forEach((file,index)=>{
+    const cell=document.createElement("button");
+    cell.type="button";
+    cell.className="viewer-grid-cell";
+    if(viewerProject.viewer==="photo"){
+      const img=document.createElement("img");
+      img.src=thumbAssetUrl(viewerProject,index);
+      img.alt="";
+      img.loading=index<6?"eager":"lazy";
+      img.decoding="async";
+      cell.appendChild(img);
+    }else{
+      const video=document.createElement("video");
+      video.src=thumbAssetUrl(viewerProject,index);
+      video.muted=true;
+      video.loop=true;
+      video.playsInline=true;
+      video.preload=index<4?"metadata":"none";
+      if(canHover()){
+        video.addEventListener("mouseenter",()=>video.play().catch(()=>{}));
+        video.addEventListener("mouseleave",()=>video.pause());
+      }
+      cell.appendChild(video);
     }
-    const oldFilmControls = document.querySelector(".viewer-film-controls");
-    if(oldFilmControls) oldFilmControls.remove();
-    viewerStage.innerHTML="";
-    const grid=document.createElement("div");
-    grid.className=viewerProject.viewer==="photo" ? "viewer-photo-grid" : "viewer-film-grid";
-    const assets=viewerProject.viewer==="photo" ? viewerProject.images : viewerProject.videos;
-    assets.forEach((file,i)=>{
-        const cell=document.createElement("button");
-        cell.className="viewer-grid-cell";
-        cell.type="button";
-        if(viewerProject.viewer==="photo"){
-            const img=document.createElement("img");
-            img.loading=i<6?"eager":"lazy";
-            img.decoding="async";
-            img.src=thumbUrl(viewerProject,i);
-            cell.appendChild(img);
-        }else{
-            const v=document.createElement("video");
-            v.src=thumbUrl(viewerProject,i);
-            v.muted=true;
-            v.loop=true;
-            v.playsInline=true;
-            v.preload=i<4?"metadata":"none";
-            v.addEventListener("mouseenter",()=>v.play().catch(()=>{}));
-            v.addEventListener("mouseleave",()=>v.pause());
-            cell.appendChild(v);
-        }
-        cell.addEventListener("click",()=>openViewer(viewerProject,i));
-        grid.appendChild(cell);
+    cell.addEventListener("click",event=>{
+      event.stopPropagation();
+      openViewer(viewerProject,index);
     });
-    viewerStage.appendChild(grid);
-    renderViewerMeta();
+    grid.appendChild(cell);
+  });
+  viewerStage.appendChild(grid);
+  setViewerMeta(viewerProject,"grid");
 }
 
 function renderViewerSlide(){
-    if(!viewerProject) return;
-    if(viewerVideo){
-        viewerVideo.pause();
-        viewerVideo.removeAttribute("src");
-        viewerVideo.load();
-        viewerVideo=null;
-    }
-    viewerStage.innerHTML="";
-    const oldFilmControls = document.querySelector(".viewer-film-controls");
-    if(oldFilmControls) oldFilmControls.remove();
-    const file = viewerProject.viewer==="photo" ? viewerProject.images[viewerIndex] : viewerProject.videos[viewerIndex];
-    if(viewerProject.viewer==="photo"){
-        const img=document.createElement("img");
-        img.src=mediaUrl(viewerProject,viewerIndex);
-        img.alt=viewerProject.title;
-        viewerStage.appendChild(img);
-        img.addEventListener("click",()=>nextViewerFrame());
-    }else{
-        const v=document.createElement("video");
-        viewerVideo=v;
-        v.src=mediaUrl(viewerProject,viewerIndex);
-        v.muted=filmMuted;
-        v.playsInline=true;
-        v.autoplay=true;
-        v.loop=true;
-        v.controls=false;
-        v.addEventListener("click",()=>v.paused?v.play().catch(()=>{}):v.pause());
-        v.addEventListener("dblclick",e=>e.preventDefault());
-        viewerStage.appendChild(v);
-        v.play().catch(()=>{});
-    }
-    renderViewerMeta();
+  cleanViewerMedia();
+  viewerStage.innerHTML="";
+  if(!viewerProject) return;
+  const file=assetFiles(viewerProject)[viewerIndex];
+  if(viewerProject.viewer==="photo"){
+    const img=document.createElement("img");
+    img.src=fullAssetUrl(viewerProject,viewerIndex);
+    img.alt=viewerProject.title||"";
+    img.addEventListener("click",nextFrame);
+    viewerStage.appendChild(img);
+  }else{
+    const v=document.createElement("video");
+    viewerVideo=v;
+    v.src=fullAssetUrl(viewerProject,viewerIndex);
+    v.muted=filmMuted;
+    v.autoplay=true;
+    v.loop=true;
+    v.playsInline=true;
+    v.controls=false;
+    viewerStage.appendChild(v);
+    v.play().catch(()=>{});
+  }
+  setViewerMeta(viewerProject,"slide");
 }
 
-function renderViewerMeta(){
-    if(!viewerProject) return;
-    const total=assetCount(viewerProject);
-    const left=document.createElement("div");
-    left.className="viewer-meta-left";
-    setMorphHost(left,viewerProject.title,false);
-    const date=document.createElement("span");
-    setMorphHost(date,viewerProject.date,false);
-    left.appendChild(date);
-    const right=document.createElement("div");
-    right.className="viewer-meta-right";
-    const count=document.createElement("button");
-    count.type="button";
-    count.className="viewer-control";
-    setMorphHost(count,`${viewerIndex+1} / ${total}`.toLowerCase(),false);
-    count.addEventListener("click",()=>previousViewerFrame());
-    const viewAll=document.createElement("button");
-    viewAll.type="button";
-    viewAll.className="viewer-control";
-    setMorphHost(viewAll,"view all",false);
-    viewAll.addEventListener("click",()=>renderViewerGrid());
-    right.appendChild(count);
-    right.appendChild(viewAll);
-    viewerMeta.innerHTML="";
-    viewerMeta.appendChild(left);
-    viewerMeta.appendChild(right);
-
-    if(viewerProject.viewer==="film"){
-        const controls=document.createElement("div");
-        controls.className="viewer-film-controls";
-        const prev=document.createElement("button");
-        prev.type="button";
-        prev.className="viewer-control";
-        setMorphHost(prev,"previous",false);
-        prev.addEventListener("click",previousViewerFrame);
-        const sound=document.createElement("button");
-        sound.type="button";
-        sound.className="viewer-control";
-        setMorphHost(sound,viewerVideo && !viewerVideo.muted ? "sound on":"sound off",false);
-        sound.addEventListener("click",()=>{
-            if(!viewerVideo) return;
-            viewerVideo.muted=!viewerVideo.muted;
-            renderViewerSlide();
-        });
-        const next=document.createElement("button");
-        next.type="button";
-        next.className="viewer-control";
-        setMorphHost(next,"next",false);
-        next.addEventListener("click",nextViewerFrame);
-        controls.append(prev,sound,next);
-        viewer.appendChild(controls);
-    }else{
-        const controls=document.querySelector(".viewer-film-controls");
-        if(controls) controls.remove();
-    }
+function nextFrame(){
+  if(!viewerProject) return;
+  viewerIndex=(viewerIndex+1)%assetCount(viewerProject);
+  renderViewerSlide();
+}
+function previousFrame(){
+  if(!viewerProject) return;
+  viewerIndex=(viewerIndex-1+assetCount(viewerProject))%assetCount(viewerProject);
+  renderViewerSlide();
+}
+function previousProject(){
+  if(!viewerProject || projects.length<2) return;
+  const idx=projects.findIndex(p=>p.id===viewerProject.id);
+  const next=(idx-1+projects.length)%projects.length;
+  openViewerGrid(projects[next]);
 }
 
-function nextViewerFrame(){
-    if(!viewerProject) return;
-    viewerIndex=(viewerIndex+1)%assetCount(viewerProject);
-    renderViewerSlide();
-}
-function previousViewerFrame(){
-    if(!viewerProject) return;
-    viewerIndex=(viewerIndex-1+assetCount(viewerProject))%assetCount(viewerProject);
-    renderViewerSlide();
-}
+viewerIndexButton.addEventListener("click",()=>{closeViewer();setInfoMode(false)});
+viewerInfoButton.addEventListener("click",()=>{closeViewer();setInfoMode(true)});
 
-viewerStage.addEventListener("click",(event)=>{
-    if(!viewerProject) return;
+viewer.addEventListener("click",event=>{
+  if(viewerMode==="slide" && event.target===viewerStage){nextFrame()}
 });
-window.addEventListener("keydown",(event)=>{
-    if(!viewerOpen) return;
-    if(event.key==="Escape"){closeViewer();return}
-    if(viewerMode==="grid") return;
-    if(event.key==="ArrowRight"){event.preventDefault();nextViewerFrame()}
-    if(event.key==="ArrowLeft"){event.preventDefault();previousViewerFrame()}
+window.addEventListener("keydown",event=>{
+  if(!viewerOpen) return;
+  if(event.key==="Escape"){closeViewer();return}
+  if(viewerMode!=="slide") return;
+  if(event.key==="ArrowRight"){event.preventDefault();nextFrame()}
+  if(event.key==="ArrowLeft"){event.preventDefault();previousFrame()}
 });
-
-let wheelAccumulator=0;
-let wheelTimer=null;
-window.addEventListener("wheel",(event)=>{
-    if(!viewerOpen) return;
-    if(viewerMode!=="slide") return;
-    if(event.ctrlKey) return;
-    wheelAccumulator+=event.deltaY || 0;
-    clearTimeout(wheelTimer);
-    wheelTimer=setTimeout(()=>wheelAccumulator=0,100);
-    if(wheelAccumulator>45){wheelAccumulator=0;nextViewerFrame()}
-    else if(wheelAccumulator<-45){wheelAccumulator=0;previousViewerFrame()}
+let viewerWheel=0;
+let viewerWheelTimer=null;
+window.addEventListener("wheel",event=>{
+  if(!viewerOpen || viewerMode!=="slide" || event.ctrlKey) return;
+  viewerWheel += event.deltaY||0;
+  clearTimeout(viewerWheelTimer);
+  viewerWheelTimer=setTimeout(()=>viewerWheel=0,110);
+  if(viewerWheel>42){viewerWheel=0;nextFrame()}
+  else if(viewerWheel<-42){viewerWheel=0;previousFrame()}
 },{passive:true});
 
-/* Index sort */
-const headers=[...document.querySelectorAll(".index-header")];
-const headerMorphs=new Map();
-for(const h of headers){
-    const key=h.dataset.sort;
-    headerMorphs.set(key,h);
-    setMorphHost(h,key,false);
-    h.addEventListener("click",()=>{
-        if(sortKey===key){
-            sortDir=sortDir==="desc"?"asc":"desc";
-        }else{
-            sortKey=key;
-            sortDir="desc";
-        }
-        renderHeaders();
-        buildIndex();
-    });
+/* ---------- sorting ---------- */
+const headerButtons=[...document.querySelectorAll(".index-header")];
+for(const header of headerButtons){
+  const key=header.dataset.sort;
+  setMorphHost(header,key,false);
+  header.addEventListener("click",()=>{
+    if(sortKey===key) sortDir=sortDir==="desc"?"asc":"desc";
+    else {sortKey=key;sortDir="desc"}
+    renderHeaders();
+    buildIndex();
+  });
 }
 function renderHeaders(){
-    for(const h of headers){
-        const key=h.dataset.sort;
-        setMorphState(h,sortKey===key);
-    }
+  headerButtons.forEach(header=>setMorphState(header,header.dataset.sort===sortKey));
 }
 renderHeaders();
 
-/* Make the selected row preview survive across a single mobile tap. */
-let lastTouchTime=0;
-window.addEventListener("touchstart",()=>{lastTouchTime=Date.now()},{passive:true});
+/* ---------- central logo ---------- */
+setLogoState(false);
+logoButton.addEventListener("mouseenter",()=>{if(canHover()) setLogoState(true)});
+logoButton.addEventListener("mouseleave",()=>{if(canHover()) setLogoState(false)});
+logoButton.addEventListener("click",event=>{
+  event.preventDefault();
+  if(canHover()) return;
+  clearTimeout(logoTimer);
+  setLogoState(true);
+  logoTimer=setTimeout(()=>setLogoState(false),LOGO_HOLD);
+});
 
-/* Responsive listener */
+/* ---------- section headers ---------- */
+indexButton.addEventListener("click",()=>{closeViewer();setInfoMode(false)});
+infoButton.addEventListener("click",()=>{closeViewer();setInfoMode(true)});
+
+/* ---------- responsive ---------- */
 window.addEventListener("resize",()=>{
-    fitMobileColumns();
-    if(viewerOpen && viewerProject && viewerMode==="grid"){
-        // keep the viewer structure but let CSS recalculate
-    }
+  cancelAnimationFrame(resizeRaf);
+  resizeRaf=requestAnimationFrame(()=>{
+    buildIndex();
+    setHeaderStates();
+  });
 });
 
-/* DATA */
+/* ---------- load ---------- */
 fetch(DATA_URL,{cache:"no-store"})
-    .then(r=>{
-        if(!r.ok) throw new Error("projects.json failed");
-        return r.json();
-    })
-    .then(data=>{
-        projects=Array.isArray(data)?data:[];
-        buildIndex();
-        renderHeaders();
-    })
-    .catch(err=>{
-        console.error(err);
-        indexBody.innerHTML='<div class="index-row index-grid"><div class="index-cell" style="grid-column:1/-1">projects.json could not be loaded.</div></div>';
-    });
+  .then(response=>{
+    if(!response.ok) throw new Error(`projects.json: ${response.status}`);
+    return response.json();
+  })
+  .then(data=>{
+    projects=Array.isArray(data)?data:[];
+    buildIndex();
+    renderHeaders();
+  })
+  .catch(error=>{
+    console.error(error);
+    indexBody.innerHTML='<div class="index-row index-grid index-ui"><div class="index-cell" style="grid-column:1/-1">projects.json could not be loaded.</div></div>';
+  });
 
-/* Start on INDEX */
 setInfoMode(false);
-
-/* click/tap global header state while viewer is open */
-document.addEventListener("click",e=>{
-    if(e.target.closest("#viewer")) return;
-    if(e.target.closest("#index-button")) return;
-    if(e.target.closest("#info-button")) return;
-});
 </script>
 </body>
 </html>
