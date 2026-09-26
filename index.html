@@ -1643,6 +1643,7 @@ body.landing-aybak-leaving .portfolio-download a {
 /* End-card logo: two text lines with a visible stepped case morph. */
 #landing-aybak-logo {
     position: relative !important;
+    z-index: 10001 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1667,6 +1668,8 @@ body.landing-aybak-leaving .portfolio-download a {
     -webkit-tap-highlight-color: transparent !important;
     user-select: none !important;
     -webkit-user-select: none !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
 }
 
 #landing-aybak-name,
@@ -1674,67 +1677,42 @@ body.landing-aybak-leaving .portfolio-download a {
     display: flex !important;
     align-items: baseline !important;
     justify-content: center !important;
-    white-space: nowrap !important;
     height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
 }
 
 #landing-aybak-name {
-    position: relative !important;
     width: max-content !important;
 }
 
-.landing-aybak-name-case {
-    grid-area: 1 / 1 !important;
-    display: block !important;
-    transition: opacity 110ms ease, transform 110ms ease !important;
-}
-
-#landing-aybak-name {
-    display: grid !important;
-}
-
-.landing-aybak-name-upper,
-.landing-aybak-letter-lower {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.landing-aybak-name-lower,
-.landing-aybak-letter-upper {
-    opacity: 0;
-    transform: translateY(0.12em);
-}
-
-#landing-aybak-name.is-lower .landing-aybak-name-upper {
-    opacity: 0;
-    transform: translateY(-0.12em);
-}
-
-#landing-aybak-name.is-lower .landing-aybak-name-lower {
-    opacity: 1;
-    transform: translateY(0);
+#landing-aybak-aybak {
+    gap: 0 !important;
+    width: max-content !important;
 }
 
 .landing-aybak-letter {
-    display: inline-grid !important;
-    place-items: center !important;
-    position: relative !important;
+    display: inline-block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    white-space: pre !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
 }
 
-.landing-aybak-letter > span {
-    grid-area: 1 / 1 !important;
-    display: block !important;
-    transition: opacity 110ms ease, transform 110ms ease !important;
-}
-
-.landing-aybak-letter.is-upper .landing-aybak-letter-lower {
-    opacity: 0;
-    transform: translateY(-0.12em);
-}
-
-.landing-aybak-letter.is-upper .landing-aybak-letter-upper {
-    opacity: 1;
-    transform: translateY(0);
+body.landing-aybak-active #landing-aybak-logo,
+body.landing-aybak-active #landing-aybak-logo * {
+    pointer-events: auto !important;
 }
 
 /* iOS landscape: extend the black surface through safe-area gutters. */
@@ -1801,15 +1779,24 @@ body.landing-aybak-active #landing-aybak-end-card {
 }
 
 #biography-flow {
+    display: block !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    text-align: initial !important;
 }
 
+/*
+   Every punctuation-defined visual line is a full-width flex row.
+   Alignment is therefore controlled by justify-content rather than
+   inherited text-align, so the left / right / center sequence cannot
+   collapse back to the centered biography rule.
+*/
 .bio-flow-line {
-    display: block !important;
+    display: flex !important;
     width: 100% !important;
     min-width: 100% !important;
+    box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
     font: inherit !important;
@@ -1821,22 +1808,31 @@ body.landing-aybak-active #landing-aybak-end-card {
     hyphens: none !important;
     word-break: normal !important;
     overflow-wrap: normal !important;
+    text-align: initial !important;
+}
+
+.bio-flow-line > .bio-flow-text {
+    display: inline-block !important;
+    width: max-content !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
 }
 
 .bio-flow-line.align-left {
-    text-align: left !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    justify-content: flex-start !important;
 }
 .bio-flow-line.align-right {
-    text-align: right !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    justify-content: flex-end !important;
 }
 .bio-flow-line.align-center {
-    text-align: center !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    justify-content: center !important;
 }
 
 /* Collaborator rows remain atomic: names never break internally. */
@@ -1973,13 +1969,8 @@ body.landing-aybak-active #landing-aybak-logo * {
 </p>
 <section aria-hidden="true" id="landing-aybak-end-card">
 <button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
-<span aria-hidden="true" id="landing-aybak-name">
-<span class="landing-aybak-name-case landing-aybak-name-upper">Denizalp</span>
-<span class="landing-aybak-name-case landing-aybak-name-lower">denizalp</span>
-</span>
-<span aria-hidden="true" id="landing-aybak-aybak">
-<span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">a</span><span class="landing-aybak-letter-upper">A</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">y</span><span class="landing-aybak-letter-upper">Y</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">b</span><span class="landing-aybak-letter-upper">B</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">a</span><span class="landing-aybak-letter-upper">A</span></span><span class="landing-aybak-letter"><span class="landing-aybak-letter-lower">k</span><span class="landing-aybak-letter-upper">K</span></span>
-</span>
+<span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
+<span aria-hidden="true" id="landing-aybak-aybak"><span class="landing-aybak-letter" id="landing-aybak-letter-a">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-y">y</span><span class="landing-aybak-letter" id="landing-aybak-letter-b">b</span><span class="landing-aybak-letter" id="landing-aybak-letter-a2">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-k">k</span></span>
 </button>
 </section>
 </main></div>
@@ -2286,7 +2277,10 @@ function appendBioTextLines(container, text, state) {
     for (const lineText of lines) {
         const line = document.createElement("div");
         line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        line.textContent = lineText;
+        const text = document.createElement("span");
+        text.className = "bio-flow-text";
+        text.textContent = lineText;
+        line.appendChild(text);
         container.appendChild(line);
         state.index += 1;
     }
@@ -2299,7 +2293,10 @@ function appendClientLines(container, names, groupSize, state) {
     if (measureBioText(full) <= width) {
         const line = document.createElement("div");
         line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-        line.textContent = full;
+        const text = document.createElement("span");
+        text.className = "bio-flow-text";
+        text.textContent = full;
+        line.appendChild(text);
         container.appendChild(line);
         state.index += 1;
         return;
@@ -2312,14 +2309,14 @@ function appendClientLines(container, names, groupSize, state) {
     }
 
     for (const group of groups) {
-        const lines = splitWordsToBalancedLines(group, width);
-        for (const lineText of lines) {
-            const line = document.createElement("div");
-            line.className = `bio-flow-line ${alignmentClass(state.index)}`;
-            line.textContent = lineText;
-            container.appendChild(line);
-            state.index += 1;
-        }
+        const line = document.createElement("div");
+        line.className = `bio-flow-line ${alignmentClass(state.index)}`;
+        const text = document.createElement("span");
+        text.className = "bio-flow-text";
+        text.textContent = group;
+        line.appendChild(text);
+        container.appendChild(line);
+        state.index += 1;
     }
 }
 
@@ -7935,29 +7932,24 @@ function setLandingAybakLogoState(
 ) {
 
     landingAybakLogoState =
-        Math.max(
-            0,
-            Math.min(
-                5,
-                state
-            )
-        );
+        Math.max(0, Math.min(5, state));
 
-    landingAybakName.classList.toggle(
-        "is-lower",
-        landingAybakLogoState > 0
-    );
+    landingAybakName.textContent =
+        landingAybakLogoState === 0
+            ? "Denizalp"
+            : "denizalp";
 
-    document.querySelectorAll(
-        ".landing-aybak-letter"
-    ).forEach(
-        (letter, index) => {
-            letter.classList.toggle(
-                "is-upper",
+    const lowercase = ["a", "y", "b", "a", "k"];
+    const uppercase = ["A", "Y", "B", "A", "K"];
+
+    landingAybakAybak
+        .querySelectorAll(".landing-aybak-letter")
+        .forEach((letter, index) => {
+            letter.textContent =
                 index < landingAybakLogoState
-            );
-        }
-    );
+                    ? uppercase[index]
+                    : lowercase[index];
+        });
 }
 
 function animateLandingAybakLogoTo(
