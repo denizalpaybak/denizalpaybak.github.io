@@ -2472,6 +2472,208 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 }
 </style>
 
+
+<style id="final-single-centered-bio-and-aligned-footer">
+/* =====================================================
+   DEFINITIVE LANDING LAYOUT
+   One actual centered copy block + symmetric two-line footer.
+   ===================================================== */
+
+/* One typography block: every line shares the same centered text box. */
+.biography {
+    position: fixed !important;
+    z-index: 5 !important;
+    left: 50% !important;
+    top: var(--bio-center-y, 50vh) !important;
+    transform: translate(-50%, -50%) !important;
+
+    width: min(680px, 78vw) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: block !important;
+    text-align: center !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    text-wrap: wrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+.biography .bio-line {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    text-align-last: center !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+}
+
+.biography .bio-line + .bio-line {
+    margin-top: var(--major-gap) !important;
+}
+
+/* Keep natural phrase breaks; never force isolated words such as FILMMAKER,. */
+.biography .keep {
+    display: inline !important;
+    white-space: nowrap !important;
+}
+
+/* Name morph keeps a real visual space between Denizalp and aybak. */
+.biography .bio-identity {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    white-space: nowrap !important;
+    vertical-align: baseline !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.biography .bio-identity-name {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    margin-right: 0.28em !important;
+}
+
+.biography .bio-identity-aybak {
+    display: inline-block !important;
+    white-space: nowrap !important;
+}
+
+/* Collaborators are NOT a second container; they are two normal lines
+   inside the same centered block. No forced left edge. */
+.biography .collaborator-line {
+    margin-top: var(--major-gap) !important;
+}
+
+.biography .collaborator-heading {
+    display: inline !important;
+    white-space: nowrap !important;
+}
+
+/* Symmetric footer: same horizontal inset and same two-line rhythm on both sides.
+   Top footer row = models / email. Bottom footer row = portfolio / Instagram. */
+.contact {
+    position: fixed !important;
+    z-index: 20 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: var(--page-top) !important;
+    width: 100% !important;
+    height: calc(var(--font-size) * var(--line-height) * 2) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    pointer-events: none !important;
+}
+
+.contact a {
+    position: absolute !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    pointer-events: auto !important;
+}
+
+/* right, first row */
+.contact a:nth-child(1) {
+    left: auto !important;
+    right: var(--page-x) !important;
+    top: 0 !important;
+    bottom: auto !important;
+    text-align: right !important;
+}
+
+/* right, second row */
+.contact a:nth-child(2) {
+    left: auto !important;
+    right: var(--page-x) !important;
+    top: calc(var(--font-size) * var(--line-height)) !important;
+    bottom: auto !important;
+    text-align: right !important;
+}
+
+/* left, first row */
+.contact a:nth-child(3) {
+    left: var(--page-x) !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+    text-align: left !important;
+}
+
+.portfolio-download {
+    position: fixed !important;
+    z-index: 20 !important;
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: var(--page-top) !important;
+    width: max-content !important;
+    height: calc(var(--font-size) * var(--line-height)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.portfolio-download a {
+    display: block !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-family: inherit !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.native-down-arrow {
+    display: none !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography {
+        width: min(90vw, 430px) !important;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography {
+        width: min(84vw, 620px) !important;
+    }
+}
+
+@media (orientation: landscape) and (min-width: 1001px) {
+    .biography {
+        width: min(680px, 66vw) !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -2626,37 +2828,31 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     class="biography"
     id="biography"
 >
-    <div class="bio-primary">
-        <p>
-            <span class="bio-identity" id="bio-identity" tabindex="0" aria-label="Denizalp aybak">
-                <span class="bio-identity-name">Denizalp</span> <span class="bio-identity-aybak">aybak</span>
-            </span> (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
-        </p>
+    <p class="bio-line bio-identity-line">
+        <span class="bio-identity" id="bio-identity" tabindex="0" aria-label="Denizalp aybak">
+            <span class="bio-identity-name">Denizalp</span><span class="bio-identity-aybak">aybak</span>
+        </span>
+        <span> (b. 1997) is a <span class="keep">photographer and filmmaker,</span></span>
+        <span class="keep"> based in istanbul and available internationally.</span>
+    </p>
 
-        <p>
-            having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
-        </p>
+    <p class="bio-line">
+        having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
+    </p>
 
-        <p>
-            his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
-        </p>
-    </div>
+    <p class="bio-line">
+        his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and <span class="keep">precision that emerges from spontaneity.</span>
+    </p>
 
-    <div class="bio-collaborators">
-        <div class="collaborator-group">
-            <p class="collaborator-heading">editorial collaborators:</p>
-            <p class="collaborator-list">
-                vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
-            </p>
-        </div>
+    <p class="bio-line collaborator-line">
+        <span class="collaborator-heading">editorial collaborators:</span>
+        vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
+    </p>
 
-        <div class="collaborator-group">
-            <p class="collaborator-heading">brand collaborators:</p>
-            <p class="collaborator-list">
-                vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
-            </p>
-        </div>
-    </div>
+    <p class="bio-line collaborator-line">
+        <span class="collaborator-heading">brand collaborators:</span>
+        vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
+    </p>
 </section>
 
         <p class="portfolio-download">
@@ -9357,6 +9553,33 @@ window.addEventListener(
     });
 
     render(0);
+})();
+</script>
+
+
+<script id="final-bio-vertical-centering">
+(() => {
+    const bio = document.getElementById("biography");
+    const nav = document.querySelector(".navigation");
+    const contact = document.querySelector(".contact");
+    if (!bio || !nav || !contact) return;
+
+    function syncBioCenter() {
+        const navRect = nav.getBoundingClientRect();
+        const contactRect = contact.getBoundingClientRect();
+        const navBottom = navRect.top + Math.max(navRect.height, parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--font-size")) || 15);
+        const footerTop = contactRect.top;
+        const center = (navBottom + footerTop) / 2;
+        document.documentElement.style.setProperty("--bio-center-y", `${Math.round(center * 100) / 100}px`);
+    }
+
+    const run = () => requestAnimationFrame(() => requestAnimationFrame(syncBioCenter));
+    run();
+    window.addEventListener("resize", run, { passive: true });
+    window.addEventListener("orientationchange", run, { passive: true });
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(run);
+    }
 })();
 </script>
 
