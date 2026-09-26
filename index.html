@@ -2110,6 +2110,235 @@ body.landing-aybak-leaving #landing-aybak-end-card {
     }
 }
 </style>
+
+<style id="final-plain-centered-landing-copy">
+/* =====================================================
+   FINAL USER REQUEST — PLAIN CENTERED COPY + FOOTER
+   ===================================================== */
+.biography {
+    position: fixed !important;
+    z-index: 5 !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(760px, 74vw) !important;
+    max-width: calc(100vw - (2 * var(--page-x))) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+    text-wrap: normal !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+}
+
+.bio-primary,
+.bio-primary p {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    text-align: center !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    text-wrap: balance !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+}
+
+.bio-primary p + p {
+    margin-top: calc(var(--major-gap) * 1.15) !important;
+}
+
+/* Old phrase wrappers must never force artificial line breaks. */
+.bio-primary .keep-phrase {
+    display: inline !important;
+    white-space: normal !important;
+}
+
+.bio-identity {
+    display: inline !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+}
+
+.bio-identity-name,
+.bio-identity-aybak {
+    display: inline !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+.bio-collaborators {
+    width: min(100%, 760px) !important;
+    margin: calc(var(--major-gap) * 1.15) auto 0 auto !important;
+    padding: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+}
+
+.collaborator-group,
+.collaborator-heading,
+.collaborator-list {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: 0 !important;
+    word-spacing: 0 !important;
+    text-align: center !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    text-wrap: balance !important;
+    hyphens: none !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+}
+
+.collaborator-heading {
+    margin-bottom: 0 !important;
+}
+
+.collaborator-list {
+    margin-top: 0 !important;
+}
+
+.collaborator-group + .collaborator-group {
+    margin-top: var(--major-gap) !important;
+}
+
+/* Bottom-left: models.com, then portfolio.pdf. */
+.portfolio-download {
+    position: fixed !important;
+    z-index: 20 !important;
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: var(--page-bottom) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.portfolio-download a {
+    display: inline-block !important;
+    color: #000 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.portfolio-download a:hover {
+    text-decoration: underline !important;
+}
+
+.native-down-arrow {
+    display: none !important;
+}
+
+/* Bottom-right: email, then Instagram. Models stays on the left. */
+.contact {
+    position: fixed !important;
+    z-index: 20 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: var(--page-bottom) !important;
+    width: 100% !important;
+    height: calc((var(--font-size) * var(--line-height)) * 2) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    pointer-events: none !important;
+    text-align: left !important;
+}
+
+.contact a {
+    position: absolute !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-size: var(--font-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--line-height) !important;
+    text-decoration: none !important;
+    pointer-events: auto !important;
+    white-space: nowrap !important;
+}
+
+.contact a:first-child {
+    left: auto !important;
+    right: var(--page-x) !important;
+    bottom: calc(var(--font-size) * var(--line-height)) !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(2) {
+    left: auto !important;
+    right: var(--page-x) !important;
+    bottom: 0 !important;
+    text-align: right !important;
+}
+
+.contact a:nth-child(3) {
+    left: var(--page-x) !important;
+    right: auto !important;
+    bottom: 0 !important;
+    text-align: left !important;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+    .biography {
+        width: 92vw !important;
+        max-width: 92vw !important;
+    }
+
+    .bio-collaborators {
+        width: 92vw !important;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
+    .biography {
+        width: 84vw !important;
+        max-width: 84vw !important;
+    }
+
+    .bio-collaborators {
+        width: 84vw !important;
+    }
+}
+
+@media (orientation: landscape) and (min-width: 1001px) {
+    .biography {
+        width: min(780px, 66vw) !important;
+    }
+
+    .bio-collaborators {
+        width: min(780px, 66vw) !important;
+    }
+}
+</style>
+
 </head>
 
 
@@ -2266,30 +2495,32 @@ body.landing-aybak-leaving #landing-aybak-end-card {
 >
     <div class="bio-primary">
         <p>
-            DENIZALP AYBAK (B. 1997) IS A <span class="keep-phrase">PHOTOGRAPHER AND FILMMAKER,</span> <span class="keep-phrase">BASED IN ISTANBUL AND AVAILABLE INTERNATIONALLY.</span>
+            <span class="bio-identity" id="bio-identity" tabindex="0" aria-label="Denizalp aybak">
+                <span class="bio-identity-name">Denizalp</span> <span class="bio-identity-aybak">aybak</span>
+            </span> (b. 1997) is a photographer and filmmaker, based in istanbul and available internationally.
         </p>
 
         <p>
-            HAVING GRADUATED TOP OF HIS CLASS IN MANAGEMENT AT SABANCI UNIVERSITY, HE BRINGS A STRATEGIC APPROACH TO IMAGE-MAKING, <span class="keep-phrase">CONSIDERING BOTH THE WORK ITSELF AND THE WORLD IT BELONGS TO.</span>
+            having graduated top of his class in management at sabanci university, he brings a strategic approach to image-making, considering both the work itself and the world it belongs to.
         </p>
 
         <p>
-            HIS WORK CREATES ATMOSPHERE THROUGH CONTRAST: LIGHT THAT FEELS DARK, <span class="keep-phrase">BEAUTY THAT APPEARS DISTANT,</span> <span class="keep-phrase">STILLNESS THAT CARRIES TENSION,</span> AND PRECISION THAT EMERGES FROM SPONTANEITY.
+            his work creates atmosphere through contrast: light that feels dark, beauty that appears distant, stillness that carries tension, and precision that emerges from spontaneity.
         </p>
     </div>
 
     <div class="bio-collaborators">
         <div class="collaborator-group">
-            <p class="collaborator-heading">EDITORIAL COLLABORATORS:</p>
+            <p class="collaborator-heading">editorial collaborators:</p>
             <p class="collaborator-list">
-                VOGUE TÜRKİYE, HARPER’S BAZAAR TÜRKİYE, ELLE TÜRKİYE, L’OFFICIEL TÜRKİYE
+                vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye
             </p>
         </div>
 
         <div class="collaborator-group">
-            <p class="collaborator-heading">BRAND COLLABORATORS:</p>
+            <p class="collaborator-heading">brand collaborators:</p>
             <p class="collaborator-list">
-                VAKKO, BEE GODDESS, ZEYNEP ARCAY, PEUGEOT, SKECHERS, LC WAIKIKI
+                vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki
             </p>
         </div>
     </div>
@@ -2301,7 +2532,7 @@ body.landing-aybak-leaving #landing-aybak-end-card {
                             id="portfolio-download"
                             download="denizalp-aybak-portfolio.pdf"
                 >
-                    portfolio.pdf <span class="native-down-arrow" aria-hidden="true">↓</span>
+                    portfolio.pdf
                 </a>
             </p>
         
@@ -8910,6 +9141,69 @@ window.addEventListener(
     }
 );
 
+</script>
+
+
+<script id="final-bio-identity-morph">
+/* Center-copy identity: initial "Denizalp aybak" -> hover/tap "denizalp AYBAK". */
+(() => {
+    const identity = document.getElementById("bio-identity");
+    if (!identity) return;
+
+    const name = identity.querySelector(".bio-identity-name");
+    const aybak = identity.querySelector(".bio-identity-aybak");
+    if (!name || !aybak) return;
+
+    let timer = null;
+    let active = false;
+
+    const canHover = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    const setState = (alternate) => {
+        active = alternate;
+        name.textContent = alternate ? "denizalp" : "Denizalp";
+        aybak.textContent = alternate ? "AYBAK" : "aybak";
+    };
+
+    const showAlternate = () => {
+        if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        setState(true);
+    };
+
+    const restore = () => {
+        if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        setState(false);
+    };
+
+    identity.addEventListener("mouseenter", () => {
+        if (canHover()) showAlternate();
+    });
+
+    identity.addEventListener("mouseleave", () => {
+        if (canHover()) restore();
+    });
+
+    identity.addEventListener("click", (event) => {
+        if (canHover()) return;
+        event.preventDefault();
+        showAlternate();
+        timer = window.setTimeout(restore, 900);
+    });
+
+    identity.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        if (canHover()) return;
+        showAlternate();
+        timer = window.setTimeout(restore, 900);
+    });
+})();
 </script>
 
 </body>
