@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Denizalp Aybak</title>
+<!-- Favicon Emojisi -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
+
+<link href="https://use.typekit.net/rmn7qgm.css" rel="stylesheet"/>
 <link href="https://use.typekit.net/rmn7qgm.css" rel="stylesheet"/>
 <style>
 
@@ -1937,13 +1941,13 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-char { display: inline-block; white-space: pre; }
 .clean-index-row-hit { position: absolute; inset: 0; z-index: 3; appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0; }
 
-/* INFO SECTION (Mutlak Merkez ve Akıllı Dengeleme) */
+/* INFO SECTION */
 .clean-index-info-scroll { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; }
 .clean-index-info-scroll::-webkit-scrollbar { display: none; }
 .clean-index-info-content { width: 100%; max-width: 800px; padding: 0 24px; margin: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .clean-index-info-block { width: 100%; margin: 0 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-/* text-wrap: balance ile tarayıcı kelimeleri eşitleyerek iki satırı aynı uzunluğa getirir */
 .clean-index-info-block .line { display: block; white-space: normal; text-wrap: balance; margin: 0; padding: 0; text-align: center; }
+.nw { white-space: nowrap; } /* Bu sınıf kelimelerin bölünmesini engeller */
 
 /* FOOTER */
 .clean-index-footer { position: absolute; left: var(--ci-side); right: var(--ci-side); bottom: var(--ci-bottom); display: flex; justify-content: space-between; align-items: flex-end; }
@@ -2027,7 +2031,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     <div class="clean-index-topbar">
       <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
       
-      <!-- ÜST ORTA BEYAZ EKRAN LOGOSU -->
       <div id="ci-white-logo-wrap">
         <button id="ci-white-logo-btn" class="ci-logo-btn" type="button" aria-label="Denizalp Aybak">
           <div class="ci-logo-denizalp">Denizalp</div>
@@ -2070,13 +2073,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
       <div class="clean-index-info-scroll">
         <div id="clean-info-content" class="clean-index-info-content">
-          <!-- Biyografi (text-wrap: balance ile matematiksel hizalanacak olan tamamen temizlenmiş metinler) -->
+          <!-- .nw SINIFLARI İLE ÖZEL İSİMLER KORUMA ALTINA ALINDI -->
           <div class="clean-index-info-block">
             <span class="line">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
             <span class="line">based in istanbul and available internationally.</span>
           </div>
           <div class="clean-index-info-block">
-            <span class="line">having graduated top of his class in management at sabanci university,</span>
+            <span class="line">having graduated top of his class in management at <span class="nw">sabanci university,</span></span>
             <span class="line">he brings a strategic approach to image-making,</span>
             <span class="line">considering both the work itself and the world it belongs to.</span>
           </div>
@@ -2089,11 +2092,11 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
           </div>
           <div class="clean-index-info-block">
             <span class="line">editorial collaborators include:</span>
-            <span class="line">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</span>
+            <span class="line"><span class="nw">vogue türkiye,</span> <span class="nw">harper’s bazaar türkiye,</span> <span class="nw">elle türkiye,</span> <span class="nw">l’officiel türkiye</span></span>
           </div>
           <div class="clean-index-info-block">
             <span class="line">brand collaborators include:</span>
-            <span class="line">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</span>
+            <span class="line"><span class="nw">vakko,</span> <span class="nw">bee goddess,</span> <span class="nw">zeynep arcay,</span> <span class="nw">peugeot,</span> <span class="nw">skechers,</span> <span class="nw">lc waikiki</span></span>
           </div>
         </div>
       </div>
@@ -2309,7 +2312,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
     if(r.p.type==='photo') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
     
-    // GÖRSELİN TAM ÜSTÜNE TIKLANINCA PROJEYE GİDER
     el.addEventListener("click", (e) => { e.stopPropagation(); goToProject(r.p); });
     p.appendChild(el); p.classList.add('visible');
   }
@@ -2357,7 +2359,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   indexButton.addEventListener('click',()=>switchView('index'));
   infoButton.addEventListener('click',()=>switchView('info'));
 
-  // LAZER TARAMA (HITBOX) SİSTEMİ: Sadece görsel pikselleri tıklanır!
+  // LAZER TARAMA SİSTEMİ (Mobilde Pikselleri Tıklama)
   document.addEventListener("click", (e) => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if (isBlackCard) return;
@@ -2421,18 +2423,15 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         ecFinishing = true;
         document.body.classList.remove('landing-aybak-active');
         document.documentElement.classList.remove('landing-aybak-active');
-        // Kapanma süresi (400ms) bittikten sonra kilidi açar ve logo state'ini sıfırlar
         animateLogo(0, () => { setTimeout(() => { ecFinishing = false; }, 400); });
     }
   }
 
   [ecBtn, wlBtn].forEach(btn => {
       if(!btn) return;
-      // Mouseenter (Hover animasyonları - Kilit kapalıyken çalışır)
       btn.addEventListener("mouseenter", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(6); });
       btn.addEventListener("mouseleave", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(0); });
       
-      // Click ile geçiş
       btn.addEventListener("click", () => {
           if(ecFinishing) return;
           if (window.innerWidth <= 900) {
