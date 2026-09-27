@@ -1907,18 +1907,16 @@ document.documentElement.classList.add('clean-index-boot');
   box-sizing: border-box;
 }
 
-/* PREVIEW LAYER (Z-INDEX 1) */
+/* PREVIEW LAYER (Ekranın Tam Merkezi) */
 #ci-preview-layer {
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 50vw;
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   z-index: 1; pointer-events: none;
 }
 
 .ci-preview-item {
   position: absolute;
-  max-width: 90%; max-height: 90%;
+  max-width: 65vw; max-height: 75vh;
   object-fit: contain;
   opacity: 0; transform: scale(0.98);
   transition: opacity 240ms ease, transform 240ms ease;
@@ -1931,14 +1929,12 @@ document.documentElement.classList.add('clean-index-boot');
 #ci-ui-layer {
   position: absolute; inset: 0; z-index: 2;
   mix-blend-mode: difference; color: #fff;
-  pointer-events: none; /* Let clicks pass through empty space */
+  pointer-events: none;
 }
 
-/* Make interactive elements inside UI layer clickable */
 .clean-index-topbar,
 .clean-index-footer,
 .clean-index-table-wrap,
-.clean-index-filters,
 .clean-index-info-scroll {
   pointer-events: auto;
 }
@@ -1955,6 +1951,13 @@ document.documentElement.classList.add('clean-index-boot');
   cursor: pointer; user-select: none; white-space: nowrap;
 }
 
+.clean-index-headerbutton {
+  transition: text-decoration 200ms ease;
+}
+.clean-index-headerbutton.active-sort {
+  text-decoration: underline;
+}
+
 .clean-index-view {
   position: absolute; inset: 0;
   visibility: hidden; opacity: 0; pointer-events: none;
@@ -1966,12 +1969,9 @@ document.documentElement.classList.add('clean-index-boot');
 /* FILTERS */
 .clean-index-filters {
   margin-bottom: 32px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.ci-filter-row {
   display: flex; align-items: baseline; gap: 0.4em;
 }
-.ci-filter-label { opacity: 0.5; margin-right: 0.5em; }
+.ci-filter-label { margin-right: 0.5em; }
 .ci-filter-btn {
   appearance: none; border: 0; background: transparent; color: inherit;
   padding: 0; margin: 0; cursor: pointer; font: inherit;
@@ -1982,8 +1982,7 @@ document.documentElement.classList.add('clean-index-boot');
 /* TABLE */
 .clean-index-table-wrap {
   position: absolute;
-  left: 0; width: 75vw;
-  padding-left: var(--ci-side); padding-right: 24px;
+  left: var(--ci-side); right: var(--ci-side);
   top: 50%; transform: translateY(-50%);
   max-height: calc(100vh - 150px);
   overflow: auto; scrollbar-width: none; overscroll-behavior: none;
@@ -1993,13 +1992,18 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-table { width: 100%; }
 .clean-index-header, .clean-index-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline; width: 100%;
 }
 .clean-index-header { margin-bottom: 24px; }
 .clean-index-row { min-height: calc(var(--ci-font)*var(--ci-line)); margin-bottom: var(--ci-gap); position: relative; }
 
-.clean-index-cell { min-width: 0; position: relative; text-align: left; justify-self: start; }
+.clean-index-cell { min-width: 0; position: relative; }
+.clean-index-header .clean-index-cell:nth-child(1),
+.clean-index-row .clean-index-cell:nth-child(1) { text-align: left; justify-self: start; }
+.clean-index-header .clean-index-cell:nth-child(2),
+.clean-index-row .clean-index-cell:nth-child(2) { text-align: right; justify-self: end; }
+
 .clean-index-cell-content { display: inline-flex; position: relative; z-index: 2; pointer-events: none; }
 .clean-index-char { display: inline-block; white-space: pre; }
 
@@ -2021,9 +2025,8 @@ document.documentElement.classList.add('clean-index-boot');
 /* MOBILE */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
-  .clean-index-table-wrap { width: 100vw; padding-left: var(--ci-side); padding-right: var(--ci-side); max-height: calc(100vh - 125px); }
-  #ci-preview-layer { width: 100vw; }
-  .ci-filter-row { flex-wrap: wrap; }
+  .ci-preview-item { max-width: 85vw; max-height: 45vh; }
+  .clean-index-filters { margin-bottom: 24px; }
 }
 
 /* INFO */
@@ -2049,12 +2052,16 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 <img alt="" aria-hidden="true" id="fixed-photo-preview" src="./photo.jpg"/>
 </div>
 <main class="landing-grid" id="landing-grid">
+<!-- LOGO -->
 <button aria-label="Denizalp Aybak" class="logo" id="logo" type="button">
-<span class="logo-name" id="logo-name">Denizalp</span>
+<span class="logo-name" id="logo-name">
+                Denizalp
+            </span>
 <span class="logo-aybak">
 <span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
 </span>
 </button>
+<!-- MEDIA -->
 <div class="media-field" id="media-field">
 <div class="film-field" id="film-field">
 <a aria-label="Film" class="film-link" href="https://film.denizalpaybak.com/">
@@ -2062,30 +2069,40 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 </a>
 </div>
 </div>
+<!-- BIOGRAPHY -->
 <section class="biography" id="biography">
     <div id="biography-flow" aria-live="off"></div>
 </section>
 </main>
-
+<!-- FIXED CORNER UI: intentionally outside the landing-grid stacking context -->
 <nav class="navigation">
 <a href="https://photography.denizalpaybak.com/" id="photography-link">
-<span id="photography-text">PHOTOGRAPHY.</span>
+<span id="photography-text">
+                    PHOTOGRAPHY.
+                </span>
 </a>
 <a href="https://film.denizalpaybak.com/" id="film-link">
-<span id="film-text">FILM.</span>
+<span id="film-text">
+                    FILM.
+                </span>
 </a>
 </nav>
-
 <div class="contact">
-<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">d@denizalpaybak.com</a>
-<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">instagram @denizalpaybak</a>
-<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">models.com</a>
+<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">
+                d@denizalpaybak.com
+            </a>
+<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">
+                instagram @denizalpaybak
+            </a>
+<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">
+                models.com
+            </a>
 </div>
-
 <p class="portfolio-download">
-<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">portfolio.pdf</a>
+<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">
+                    portfolio.pdf
+                </a>
 </p>
-
 <section aria-hidden="true" id="landing-aybak-end-card">
 <button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
 <span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
@@ -2093,7 +2110,6 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 </button>
 </section>
 </div>
-
 <script>
 /* =====================================================
    AYBAK END-CARD FALLBACK INTERACTION
@@ -2190,6 +2206,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
             finishTimer = null;
         }
 
+        /* End the logical black state immediately; fade is only visual. */
         document.body.classList.remove("landing-aybak-active");
         document.documentElement.classList.remove("landing-aybak-active");
         document.body.classList.add("landing-aybak-leaving");
@@ -2256,6 +2273,8 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
         finishTimer = setTimeout(finish, 520);
     }, true);
 
+    /* Main landing navigation can re-enter the black state while the white
+       fade is still running. Cancel this fallback's pending exit instantly. */
     document.addEventListener("landing-aybak-force-enter", () => {
         if (finishTimer !== null) {
             clearTimeout(finishTimer);
@@ -2505,8 +2524,7 @@ function buildBiographyFlow() {
     }
 }
 buildBiographyFlow();
-</script>
-<script>
+
 const mediaField = document.getElementById("media-field");
 const photographyField = document.getElementById("photography-field");
 const filmField = document.getElementById("film-field");
@@ -3558,10 +3576,10 @@ filmLink.addEventListener("click", event => {
 </script>
 <!-- =========================================================
      CLEAN INDEX SYSTEM HTML & SCRIPT
-     Difference blend mode ve filtreleme mantığı burada
+     Difference blend mode ve dinamik JSON mantığı burada
      ========================================================= -->
 <div id="clean-index-shell">
-  <!-- Arka Plan Görsel/Video Katmanı (Sağ %50) -->
+  <!-- Arka Plan Görsel/Video Katmanı (Ekranın Tam Merkezi) -->
   <div id="ci-preview-layer">
     <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
   </div>
@@ -3576,14 +3594,12 @@ filmLink.addEventListener("click", event => {
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
         
-        <!-- YENİ: A Seçeneği Filtre Menüsü -->
+        <!-- Filtre Menüsü -->
         <div class="clean-index-filters">
-          <div class="ci-filter-row">
-            <span class="ci-filter-label">field:</span>
-            <button class="ci-filter-btn active" data-filter="ALL">all</button> /
-            <button class="ci-filter-btn" data-filter="PHOTOGRAPHY">photo</button> /
-            <button class="ci-filter-btn" data-filter="FILM">film</button>
-          </div>
+          <span class="ci-filter-label">field:</span>
+          <button class="ci-filter-btn active" data-filter="ALL">all</button> /
+          <button class="ci-filter-btn" data-filter="PHOTOGRAPHY">photography</button> /
+          <button class="ci-filter-btn" data-filter="FILM">film</button>
         </div>
 
         <div id="clean-index-table" class="clean-index-table">
@@ -3616,36 +3632,11 @@ filmLink.addEventListener("click", event => {
 </div>
 
 <script id="clean-index-script">
-(() => {
+(async () => {
   "use strict";
 
-  // Tarihler nu-look ve sober için özel istendiği gibi güncellendi
-  const DATA = [
-    {id:"vogue-260213", type:"photo", title:"Vogue Türkiye", date:"March 2026", field:"PHOTOGRAPHY", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
-    {id:"harpersbazaar-260625", type:"photo", title:"Harper's Bazaar Türkiye", date:"July 2026", field:"PHOTOGRAPHY", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1},
-    {id:"lofficiel-250130-cover", type:"photo", title:"L'Officiel Türkiye", date:"February 2025 Digital Cover", field:"PHOTOGRAPHY", sortDate:"2025-02", media:["lofficiel_250130_cover.jpg"], _order:2},
-    {id:"lofficiel-250130", type:"photo", title:"L'Officiel Türkiye", date:"February 2025", field:"PHOTOGRAPHY", sortDate:"2025-02", media:["lofficiel_250130_1246.jpg"], _order:3},
-    {id:"lofficiel-241106-cover", type:"photo", title:"L'Officiel Türkiye", date:"November 2024 Digital Cover", field:"PHOTOGRAPHY", sortDate:"2024-11", media:["lofficiel_241106_cover.jpg"], _order:4},
-    {id:"lofficiel-241106", type:"photo", title:"L'Officiel Türkiye", date:"November 2024", field:"PHOTOGRAPHY", sortDate:"2024-11", media:["lofficiel_241106_0131_retouched.jpg"], _order:5},
-    {id:"beegoddess-fw24", type:"photo", title:"Bee Goddess", date:"F/W 2024", field:"PHOTOGRAPHY", sortDate:"2024-09", media:["beegoddess_full_1.jpg"], _order:6},
-    {id:"lofficiel-260116", type:"photo", title:"L'Officiel Türkiye", date:"February 2026", field:"PHOTOGRAPHY", sortDate:"2026-02", media:["lofficiel_260116_0984.jpg"], _order:7},
-    {id:"manc-231124", type:"photo", title:"MANC", date:"Resort 2024", field:"PHOTOGRAPHY", sortDate:"2024-05", media:["manc_231124_01.jpg"], _order:8},
-    {id:"mudo-home-fw24", type:"photo", title:"Mudo Home", date:"F/W 2024", field:"PHOTOGRAPHY", sortDate:"2024-09", media:["mudo_home_1.jpg"], _order:9},
-    {id:"lofficiel-251213-cover", type:"photo", title:"L'Officiel Türkiye", date:"January 2026 Digital Cover", field:"PHOTOGRAPHY", sortDate:"2026-01", coverOverride:"lofficiel_251213_1647_retouched_3.jpg", media:["lofficiel_251213_1647_retouched_3.jpg"], _order:10},
-    {id:"vakko-fw24", type:"photo", title:"Vakko", date:"F/W 2024", field:"PHOTOGRAPHY", sortDate:"2024-09", media:["vakko_2.jpg"], _order:11},
-    {id:"qp-250421", type:"photo", title:"Q-P Magazine", date:"June 2025", field:"PHOTOGRAPHY", sortDate:"2025-06", media:["qp_250421_01.jpg"], _order:12},
-    {id:"elle-250919", type:"photo", title:"ELLE Türkiye", date:"October 2025", field:"PHOTOGRAPHY", sortDate:"2025-10", media:["elle_250919_01.jpg"], _order:13},
-    {id:"work-in-progress", type:"photo", title:"Work-in-Progress", date:"Personal", field:"PHOTOGRAPHY", sortDate:"", media:["denizalp_aybak_01.jpg"], _order:14},
-    {id:"vogue-260113", type:"film", title:"vogue türkiye x peugeot", date:"february 2026", field:"FILM", sortDate:"2026-02", media:["vogue_260113_film.mp4"], _order:15},
-    {id:"zeyneparcay-251217", type:"film", title:"zeynep arcay", date:"fall 2026", field:"FILM", sortDate:"2026-09", media:["zeyneparcay_251217_1.mp4"], _order:16},
-    {id:"nulook-251031", type:"film", title:"nu-look magazine", date:"december 2025 (issue #07)", field:"FILM", sortDate:"2025-12", media:["nulook_251031_4.mp4"], _order:17},
-    {id:"vogue-260213", type:"film", title:"vogue türkiye", date:"march 2026", field:"FILM", sortDate:"2026-03", media:["vogue_260213_1.mp4"], _order:18},
-    {id:"zeyneparcay-250529", type:"film", title:"zeynep arcay", date:"resort 2026", field:"FILM", sortDate:"2026-05", media:["zeyneparcay_250529_1.mp4"], _order:19},
-    {id:"nulook-240919", type:"film", title:"nu-look magazine", date:"december 2024 (issue #04)", field:"FILM", sortDate:"2024-12", media:["nulook_240919_3.mp4"], _order:20},
-    {id:"lofficiel-241106", type:"film", title:"l’officiel türkiye", date:"november 2024", field:"FILM", sortDate:"2024-11", media:["lofficiel_241106.mp4"], _order:21},
-    {id:"nulook-250206", type:"film", title:"nu-look magazine", date:"april 2025 (issue #05)", field:"FILM", sortDate:"2025-04", media:["nulook_250206_1.mp4"], _order:22},
-    {id:"sober-210323", type:"film", title:"sober magazine", date:"may 2024 (issue #02)", field:"FILM", sortDate:"2024-05", media:["sober_210323_video_1.mp4"], _order:23}
-  ];
+  const PHOTO_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
+  const FILM_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-film/main/films.json";
 
   const PHOTO_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
   const FILM_BASE = "https://library.denizalpaybak.com/film-previews/";
@@ -3667,6 +3658,23 @@ filmLink.addEventListener("click", event => {
   if (!shell) return;
   document.documentElement.classList.remove("clean-index-boot");
   document.documentElement.classList.add("clean-index-live");
+
+  // Dinamik Veri Çekme (Fetch JSON)
+  let DATA = [];
+  try {
+      const [photoRes, filmRes] = await Promise.all([
+          fetch(PHOTO_JSON_URL, { cache: "no-store" }),
+          fetch(FILM_JSON_URL, { cache: "no-store" })
+      ]);
+      const photoData = await photoRes.json();
+      const filmData = await filmRes.json();
+      
+      let orderCounter = 0;
+      photoData.forEach(p => { p.type = "photo"; p.field = "PHOTOGRAPHY"; p._order = orderCounter++; DATA.push(p); });
+      filmData.forEach(p => { p.type = "film"; p.field = "FILM"; p._order = orderCounter++; DATA.push(p); });
+  } catch (err) {
+      console.error("Projeler yüklenemedi:", err);
+  }
 
   const MORPH_STATES = new WeakMap();
   let activeView = "index";
@@ -3803,6 +3811,14 @@ filmLink.addEventListener("click", event => {
 
   function triggerHoverIn(index) {
     if(!currentRows[index]) return;
+    
+    // Açık kalmış başka satır varsa temizle (Mobil bug çözümü)
+    currentRows.forEach((r, i) => {
+        if(i !== index && r.hover) {
+            triggerHoverOut(i);
+        }
+    });
+
     const r = currentRows[index];
     const cells = getRowCells(r.el);
     r.hover = true;
@@ -3828,7 +3844,7 @@ filmLink.addEventListener("click", event => {
     const hit = row.querySelector(".clean-index-row-hit");
     
     row.addEventListener("pointerenter", (e) => {
-      // Mobilde hover mantığını touch'a bırakıyoruz
+      // Mobilde hover tetiklemesi iptal, her şeyi "click" algılayacak
       if(window.innerWidth <= 900 && e.pointerType === "touch") return; 
       triggerHoverIn(index);
     });
@@ -3843,17 +3859,17 @@ filmLink.addEventListener("click", event => {
         if (lastTappedId === p.id) {
           goToProject(p); // 2. Tık: Projeyi aç
         } else {
-          // 1. Tık: Önceki açığı kapat, yenisini aç (Hover efekti)
+          // 1. Tık: Eski açık olanı kapat, yenisine hover tetikle
           const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
           if(oldIdx !== -1) triggerHoverOut(oldIdx);
 
           lastTappedId = p.id;
           clearTimeout(tapTimer);
-          tapTimer = setTimeout(() => { lastTappedId = null; }, 1500); // 1.5 saniye içinde 2. tıklama gelmeli
+          tapTimer = setTimeout(() => { lastTappedId = null; }, 1500); // 1.5 sn içinde 2. tıklama gelmeli
           triggerHoverIn(index);
         }
       } else {
-        goToProject(p); // Masaüstünde direkt aç
+        goToProject(p); // Masaüstünde tıklandığı an direkt aç
       }
     });
   }
@@ -3869,7 +3885,6 @@ filmLink.addEventListener("click", event => {
       row.dataset.id=p.id;
       row.dataset.type=p.type;
       
-      // Sadece 2 Sütun (Title ve Date)
       const values=[p.title, p.date];
       values.forEach(value=>{
         const cell=document.createElement("div");
@@ -3897,11 +3912,17 @@ filmLink.addEventListener("click", event => {
     tableHeader.querySelectorAll(".clean-index-headerbutton").forEach(btn=>{
       const key=btn.dataset.key;
       if(!btn.__ready) { initCharSpans(btn,HEADER_LABELS[key]); btn.__ready=true; }
-      setStaticCase(btn,headerActiveUpper(key));
+      
+      // Başlıklarda uppercase efekti kaldırıldı, yerine sadece underline geldi
+      if(headerActiveUpper(key)) {
+         btn.classList.add("active-sort");
+      } else {
+         btn.classList.remove("active-sort");
+      }
+      setStaticCase(btn, false); 
+
       if(!btn.__bound) {
         btn.__bound=true;
-        btn.addEventListener("mouseenter",()=>morphElement(btn,true));
-        btn.addEventListener("mouseleave",()=>morphElement(btn,headerActiveUpper(key)));
         btn.addEventListener("click",()=>{
           if(sortKey===key) sortDirection*=-1;
           else { sortKey=key; sortDirection=key==="sortDate" ? -1 : 1; }
@@ -3923,20 +3944,28 @@ filmLink.addEventListener("click", event => {
   function renderIndex() {
     previewRequest++;
     hidePreview();
-    lastTappedId = null; // Filtre değişirse tap state sıfırlanır
+    lastTappedId = null; // Filtre/Sıralama değiştiğinde tap state sıfırlanır
     renderHeaders();
     renderTableData();
   }
 
   function mediaFor(project) {
-    const media = project.coverOverride || (project.media && project.media[0]);
+    let media = null;
+    if (project.coverOverride) {
+        media = project.coverOverride;
+    } else if (project.images && project.images.length > 0) {
+        media = project.images[0];
+    } else if (project.videos && project.videos.length > 0) {
+        media = project.videos[0];
+    }
     if(!media) return null;
+    
     if(project.type === 'photo') return PHOTO_BASE + media.replace(/\.[^.]+$/i,'.webp');
     const dot = media.lastIndexOf('.');
     return FILM_BASE + (dot > 0 ? media.slice(0,dot) : media) + '_preview.mp4';
   }
 
-  // Dağınık mantık yerine sabit merkezleme CSS'e bırakıldı.
+  // Devasa ortalanmış preview (Difference Mode)
   function showPreview(r) {
     previewRow = r;
     const request = ++previewRequest;
@@ -3950,19 +3979,6 @@ filmLink.addEventListener("click", event => {
     
     preview.appendChild(el);
     preview.classList.add('visible');
-
-    const done = () => requestAnimationFrame(() => { 
-      if(request===previewRequest) preview.classList.add('visible'); 
-    });
-
-    if(r.p.type==='photo') { 
-      if(el.complete) done(); 
-      else { el.addEventListener('load',done,{once:true}); el.addEventListener('error',done,{once:true}); } 
-    }
-    else { 
-      el.addEventListener('loadedmetadata',done,{once:true}); 
-      el.addEventListener('canplay',done,{once:true}); 
-    }
   }
 
   function hidePreview() { 
@@ -4067,8 +4083,7 @@ filmLink.addEventListener("click", event => {
     }
   },{passive:true});
 
-  // İlk yükleme
-  renderIndex();
+  renderIndex(); // İlk yüklemeyi tetikle
   setStaticCase(indexButton,true);
   setStaticCase(infoButton,false);
   morphTopState();
