@@ -1888,20 +1888,15 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-index-shell { position: fixed; inset: 0; z-index: 9000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden; }
 #clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after { box-sizing: border-box; }
 
-/* SİYAH ARKA PLAN KATMANI (End-Card için) */
+/* SİYAH ARKA PLAN KATMANI */
 #ci-black-bg { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity 400ms ease; pointer-events: none; z-index: 0; }
 
-/* PREVIEW LAYER */
-#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: block; }
-.ci-preview-item { 
-    position: absolute !important; left: 50% !important; top: 50% !important; 
-    transform: translate(-50%, -50%) scale(0.98) !important; margin: 0 !important; 
-    max-width: 65vw; max-height: 55vh; object-fit: contain; opacity: 0; 
-    transition: opacity 240ms ease, transform 240ms ease; pointer-events: none;
-}
-/* Görsele tıklandığında linke gitmesi için pointer-events: auto ekledik */
-.ci-preview-item.visible { opacity: 1; transform: translate(-50%, -50%) scale(1) !important; pointer-events: auto; cursor: pointer; z-index: 10; }
-.ci-preview-item img, .ci-preview-item video { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: 0 auto; }
+/* KESİN MERKEZLEME: PREVIEW LAYER (Kaymayı Sıfırlayan Flexbox) */
+#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.ci-preview-item { display: flex; align-items: center; justify-content: center; width: 65vw; height: 55vh; opacity: 0; transition: opacity 240ms ease; }
+.ci-preview-item.visible { opacity: 1; }
+.ci-preview-item img, .ci-preview-item video { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.98); transition: transform 240ms ease; display: block; }
+.ci-preview-item.visible img, .ci-preview-item.visible video { transform: scale(1); }
 
 /* UI LAYER */
 #ci-ui-layer { position: absolute; inset: 0; z-index: 2; mix-blend-mode: difference; color: #fff; pointer-events: none; }
@@ -1953,51 +1948,60 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-footer a { color: inherit; text-decoration: none; white-space: nowrap; }
 .clean-index-footer a:hover { text-decoration: underline; }
 
-/* YENİ END-CARD TEXT (Göbekte) */
-#ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; }
-#ci-endcard-btn { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: center; pointer-events: auto; padding: 20px; }
-#ci-endcard-denizalp { text-transform: lowercase; }
+/* END-CARD BEYAZ TEXT (Merkezde) */
+#ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; color: #fff; }
+#ci-endcard-btn { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: center; pointer-events: auto; padding: 20px; outline: none; }
+#ci-endcard-denizalp { display: block; text-transform: lowercase; }
 #ci-endcard-aybak { display: flex; gap: 0; justify-content: center; }
-#ci-endcard-aybak span { text-transform: lowercase; transition: none; display: inline-block; white-space: pre; }
+#ci-endcard-aybak span { display: inline-block; white-space: pre; }
 
-/* MOBİL & TABLET AYARLARI */
+/* MOBİL (Dikey Mod) HİZALAMALARI */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
   
-  /* Filtre boşlukları: INDEX'ten 1 satır aşağı, TITLE'dan 1 satır yukarı */
-  .clean-index-filters { margin-top: calc(var(--ci-font) * var(--ci-line)); margin-bottom: 0; }
+  /* Liste her zaman yukarıya, index'in 1 satır altına yapışır */
+  .clean-index-table-wrap, .clean-index-info-scroll { 
+      top: calc(var(--ci-top) + (var(--ci-font) * var(--ci-line)) * 2) !important; 
+      transform: none !important; justify-content: flex-start; 
+      left: var(--ci-side); width: calc(100vw - (var(--ci-side) * 2)); 
+      height: calc(100vh - (var(--ci-top) + (var(--ci-font) * var(--ci-line)) * 2) - var(--ci-bottom) - 10px);
+  }
+  .clean-index-filters { margin-top: 0; margin-bottom: 0; }
   .ci-filter-row:last-child { margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
   .clean-index-header { margin-top: 0; margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
-  .ci-filter-row { flex-wrap: wrap; }
-  .clean-index-table-wrap, .clean-index-info-scroll { left: var(--ci-side); width: calc(100vw - (var(--ci-side) * 2)); }
-  .m-br { display: block; content: ""; margin-top: 2px; }
   
-  /* MOBİL PREVIEW: Alt Sınırı Footer'ın (models.com) Tam 1 Satır Üstüne Çivilendi */
-  .ci-preview-item { 
-      top: auto !important; 
-      bottom: calc(var(--ci-bottom) + (var(--ci-font) * var(--ci-line) * 2) + 8px) !important; 
-      transform: translateX(-50%) scale(0.98) !important; 
-      max-width: 85vw; max-height: 48vh; 
+  /* Mobil Dikey Preview: Alt sınır models.com'un 1 satır üzerinde */
+  .ci-preview-item {
+      position: fixed !important; left: 50% !important; top: auto !important; 
+      bottom: calc(var(--ci-bottom) + (var(--ci-font) * var(--ci-line)) * 1.5) !important; 
+      transform: translateX(-50%) !important; width: 85vw; height: 42vh; 
   }
-  .ci-preview-item.visible { transform: translateX(-50%) scale(1) !important; }
-  /* Resim her zaman çivilenen kutunun en altına (bottom) yapışır */
+  .ci-preview-item.visible { transform: translateX(-50%) !important; }
   .ci-preview-item img, .ci-preview-item video { object-position: bottom center; }
+
+  .m-br { display: block; content: ""; margin-top: 2px; }
 }
 
-/* SİYAH EKRAN TETİKLENDİĞİNDE OLACAKLAR */
+/* MOBİL (Yatay Mod) HİZALAMALARI */
+@media (max-width: 900px) and (orientation: landscape) {
+  .ci-preview-item {
+      position: fixed !important; left: 50% !important; bottom: 50% !important; top: auto !important;
+      transform: translate(-50%, 50%) !important; width: 50vw; height: 65vh; 
+  }
+  .ci-preview-item.visible { transform: translate(-50%, 50%) !important; }
+  .ci-preview-item img, .ci-preview-item video { object-position: center center; }
+}
+
 html.clean-index-live .page { visibility: hidden !important; }
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download { visibility: hidden !important; pointer-events: none !important; }
-
 body.landing-aybak-active #ci-black-bg { opacity: 1; }
 body.landing-aybak-active .clean-index-view { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
 body.landing-aybak-active #ci-preview-layer { opacity: 0 !important; visibility: hidden !important; }
 body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visible; transition-delay: 0s; }
 </style>
-<div id="clean-index-shell">
-  <!-- SİYAH ARKA PLAN -->
-  <div id="ci-black-bg"></div>
 
-  <!-- SİYAH EKRAN (END-CARD) YAZISI -->
+<div id="clean-index-shell">
+  <div id="ci-black-bg"></div>
   <div id="ci-endcard-container">
     <button id="ci-endcard-btn" type="button" aria-label="Denizalp Aybak">
       <div id="ci-endcard-denizalp">denizalp</div>
@@ -2006,22 +2010,16 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       </div>
     </button>
   </div>
-
-  <!-- ÖNİZLEME KATMANI -->
   <div id="ci-preview-layer">
     <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
   </div>
-
-  <!-- ARAYÜZ KATMANI -->
   <div id="ci-ui-layer">
     <div class="clean-index-topbar">
       <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
       <button id="clean-info-button" class="clean-index-topbutton" type="button" aria-label="Info"></button>
     </div>
-
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
-        
         <div class="clean-index-filters">
           <div class="ci-filter-row">
             <span class="ci-filter-label">field:</span>
@@ -2037,7 +2035,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
             <button class="ci-filter-btn" data-type="use" data-val="PERSONAL">personal</button>
           </div>
         </div>
-
         <div id="clean-index-table" class="clean-index-table">
           <div class="clean-index-header">
             <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
@@ -2047,7 +2044,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         </div>
       </div>
     </section>
-
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
       <div class="clean-index-info-scroll">
         <div id="clean-info-content" class="clean-index-info-content">
@@ -2078,7 +2074,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         </div>
       </div>
     </section>
-
     <div class="clean-index-footer">
       <div class="clean-index-footer-left">
         <a href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
@@ -2091,7 +2086,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     </div>
   </div>
 </div>
-
 <script id="clean-index-script">
 (async () => {
   "use strict";
@@ -2124,6 +2118,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   let indexPointerHover = false, infoPointerHover = false, lastTappedId = null, tapTimer = null;
   const MORPH_STATES = new WeakMap();
 
+  // SİTE ASLA BOŞ AÇILMAZ: Fallback Başlangıç Verisi
   let DATA = [
     {id:"vogue-260213", type:"photo", title:"vogue türkiye", date:"march 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
     {id:"harpersbazaar-260625", type:"photo", title:"harper's bazaar türkiye", date:"july 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1},
@@ -2132,6 +2127,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     {id:"beegoddess-fw24", type:"photo", title:"bee goddess", date:"f/w 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-09", media:["beegoddess_full_1.jpg"], _order:4}
   ];
 
+  // ARKA PLANDA SESSİZCE CANLI FETCH
   async function fetchLiveProjects() {
     try {
         const [landingRes, photoRes, filmRes] = await Promise.all([
@@ -2153,12 +2149,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         }).filter(Boolean);
         
         if(freshData.length > 0) { DATA = freshData; renderIndex(); }
-    } catch (err) {}
+    } catch (err) { console.warn("Fetch failed, relying on fallback.", err); }
   }
 
   const HEADER_LABELS = {title:"title", sortDate:"date"};
 
   function letters(text) { const out=[]; for(let i=0;i<text.length;i++) { const c=text[i]; if(c.toLowerCase() !== c.toUpperCase()) out.push(i); } return out; }
+  
   function initCharSpans(el, rawText) {
     const text=String(rawText).toLowerCase(); const frag=document.createDocumentFragment();
     for(const ch of text) { const s=document.createElement("span"); s.className="clean-index-char"; s.textContent=ch; frag.appendChild(s); }
@@ -2166,11 +2163,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     el.replaceChildren(wrap); el.__rawText=text; el.__charWrap=wrap;
     MORPH_STATES.set(el, {state:0,target:0,frame:null,count:letters(text).length});
   }
+  
   function renderMorph(el, state) {
     const st=MORPH_STATES.get(el); if(!st || !el.__charWrap) return;
     const text=el.__rawText, pos=letters(text), active=new Set(pos.slice(0,state));
     Array.from(el.__charWrap.children).forEach((span,i)=>{ const c=text[i]; span.textContent=active.has(i) ? c.toUpperCase() : c.toLowerCase(); }); st.state=state;
   }
+  
   function morphElement(el, toUpper, duration=MORPH_MS) {
     const st=MORPH_STATES.get(el); if(!st) return Promise.resolve();
     if(st.frame!==null) cancelAnimationFrame(st.frame);
@@ -2185,11 +2184,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       }; st.target=target; st.frame=requestAnimationFrame(frame);
     });
   }
+  
   function setStaticCase(el, upper) {
     const st=MORPH_STATES.get(el); if(!st) return;
     if(st.frame!==null) cancelAnimationFrame(st.frame);
     renderMorph(el, upper ? st.count : 0); st.frame=null; st.target=upper?st.count:0;
   }
+  
   function morphTopState() { morphElement(indexButton, activeView === "index" || indexPointerHover); morphElement(infoButton, activeView === "info" || infoPointerHover); }
 
   initCharSpans(indexButton,"index"); initCharSpans(infoButton,"info");
@@ -2205,12 +2206,14 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   }
 
   function getRowCells(row) { return Array.from(row.querySelectorAll(".clean-index-morph-host")); }
+  
   function triggerHoverIn(index) {
     if(!currentRows[index]) return;
     currentRows.forEach((r, i) => { if(i !== index && r.hover) triggerHoverOut(i); });
     const r = currentRows[index]; const cells = getRowCells(r.el);
     r.hover = true; Promise.all(cells.map(c=>morphElement(c,true))); showPreview(r);
   }
+  
   function triggerHoverOut(index) {
     if(!currentRows[index]) return;
     const r = currentRows[index]; const cells = getRowCells(r.el);
@@ -2225,10 +2228,12 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     row.addEventListener("pointerleave", (e) => { if(window.innerWidth <= 900 && e.pointerType === "touch") return; triggerHoverOut(index); });
     hit.addEventListener("click", () => {
       if (window.innerWidth <= 900) {
-        if (lastTappedId === p.id) { goToProject(p); } else {
+        if (lastTappedId === p.id) { 
+            // Çift tıklama artık iptal, sadece hover için kullanıyoruz mobilde. Projeye gitmek için resmin üstüne tıklanacak.
+        } else {
           const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
           if(oldIdx !== -1) triggerHoverOut(oldIdx);
-          lastTappedId = p.id; clearTimeout(tapTimer); tapTimer = setTimeout(() => { lastTappedId = null; }, 1500); triggerHoverIn(index);
+          lastTappedId = p.id; triggerHoverIn(index);
         }
       } else { goToProject(p); }
     });
@@ -2310,6 +2315,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   });
 
   document.addEventListener("click", (e) => {
+    // Eger mobildeysek, acik bir onizleme varsa, ve tiklanilan yer filtre/liste/onizleme degilse
     if (window.innerWidth <= 900 && lastTappedId) {
       if (!e.target.closest('.clean-index-row-hit') && !e.target.closest('.ci-preview-item') && !e.target.closest('.ci-filter-btn') && !e.target.closest('.clean-index-headerbutton')) {
         const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
@@ -2347,6 +2353,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         document.body.classList.add('landing-aybak-active');
         document.documentElement.classList.add('landing-aybak-active');
         ecFinishing = false;
+        renderEC(0); // Siyah ekran acildiginda bastan baslasin
     } else {
         if(ecFinishing) return;
         ecFinishing = true;
@@ -2364,6 +2371,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   ecBtn.addEventListener("click", () => {
       if(ecFinishing) return;
       if (window.innerWidth <= 900) {
+          // Mobilde önce animasyon büyüyecek, sonra kapanacak
           animateEC(5, () => { setTimeout(() => openEndCard(false), 300); });
       } else {
           openEndCard(false);
