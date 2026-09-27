@@ -1885,17 +1885,23 @@ document.documentElement.classList.add('clean-index-boot');
    CLEAN INDEX SYSTEM
    ========================================================= */
 :root { --ci-font: 15px; --ci-line: 1.15; --ci-top: 32px; --ci-side: 48px; --ci-bottom: 24px; --ci-gap: 0px; }
-#clean-index-shell { position: fixed; inset: 0; z-index: 9000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; }
+#clean-index-shell { position: fixed; inset: 0; z-index: 9000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden; transition: opacity 300ms ease, visibility 0s linear 300ms; }
 #clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after { box-sizing: border-box; }
 
-/* KESİN ÇÖZÜM: PREVIEW LAYER (Kayması imkansızlaştırıldı) */
-#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: block; }
-.ci-preview-item { position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) scale(0.98) !important; margin: 0 !important; max-width: 65vw; max-height: 55vh; object-fit: contain; opacity: 0; transition: opacity 240ms ease, transform 240ms ease; }
-.ci-preview-item.visible { opacity: 1; transform: translate(-50%, -50%) scale(1) !important; }
+/* KESİN ÇÖZÜM: PREVIEW LAYER (Kaymayı Sıfırlayan Flexbox Mantığı) */
+#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.ci-preview-item { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 240ms ease; }
+.ci-preview-item.visible { opacity: 1; }
+.ci-preview-item img, .ci-preview-item video { 
+    max-width: 65vw; max-height: 55vh; object-fit: contain; 
+    transform: scale(0.98); transition: transform 240ms ease; display: block; margin: 0 auto; 
+}
+.ci-preview-item.visible img, .ci-preview-item.visible video { transform: scale(1); }
 
 /* UI LAYER */
 #ci-ui-layer { position: absolute; inset: 0; z-index: 2; mix-blend-mode: difference; color: #fff; pointer-events: none; }
 .clean-index-topbar, .clean-index-footer, .clean-index-table-wrap, .clean-index-filters, .clean-index-info-scroll { pointer-events: auto; }
+
 .clean-index-topbar { position: absolute; top: var(--ci-top); left: var(--ci-side); right: var(--ci-side); display: flex; justify-content: space-between; align-items: flex-start; }
 .clean-index-topbutton, .clean-index-headerbutton { appearance: none; border: 0; outline: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; line-height: inherit; cursor: pointer; user-select: none; white-space: nowrap; }
 .clean-index-headerbutton { transition: text-decoration 200ms ease; }
@@ -1912,7 +1918,7 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-filter-btn:hover { text-decoration: underline; }
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
-/* TABLE (Orta %33 Masaüstü, boşluklar ayarlandı) */
+/* TABLE (Orta %33 Masaüstü) */
 .clean-index-table-wrap { position: absolute; left: 33vw; width: 34vw; top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; display: flex; flex-direction: column; justify-content: center; }
 .clean-index-table-wrap::-webkit-scrollbar { display: none; }
 .clean-index-table { width: 100%; }
@@ -1945,26 +1951,32 @@ document.documentElement.classList.add('clean-index-boot');
 /* MOBİL & TABLET */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
-  .ci-preview-item { max-width: 85vw; max-height: 45vh; }
+  .ci-preview-item img, .ci-preview-item video { max-width: 85vw; max-height: 45vh; }
   .ci-filter-row { flex-wrap: wrap; }
   .clean-index-table-wrap, .clean-index-info-scroll { left: var(--ci-side); width: calc(100vw - (var(--ci-side) * 2)); }
-  .m-br { display: block; content: ""; margin-top: 2px; } /* Mobilde sabancı vs. kısımlarını kırar */
+  .m-br { display: block; content: ""; margin-top: 2px; } /* Mobilde sabancı kısımlarını kırar */
 }
 
 html.clean-index-live .page { visibility: hidden !important; }
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download { visibility: hidden !important; pointer-events: none !important; }
-body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-index-shell { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: opacity 400ms ease, visibility 0s linear 400ms !important; }
+body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-index-shell { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: opacity 300ms ease, visibility 0s linear 300ms !important; }
 </style>
-
 <div id="clean-index-shell">
-  <div id="ci-preview-layer"><div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div></div>
+  <!-- Arka Plan Görsel/Video Katmanı (Asla Kaymaz Flexbox Kutusu) -->
+  <div id="ci-preview-layer">
+    <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
+  </div>
+
+  <!-- Ön Plan UI Katmanı -->
   <div id="ci-ui-layer">
     <div class="clean-index-topbar">
       <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
       <button id="clean-info-button" class="clean-index-topbutton" type="button" aria-label="Info"></button>
     </div>
+
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
+        
         <div class="clean-index-filters">
           <div class="ci-filter-row">
             <span class="ci-filter-label">field:</span>
@@ -1980,6 +1992,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
             <button class="ci-filter-btn" data-type="use" data-val="PERSONAL">personal</button>
           </div>
         </div>
+
         <div id="clean-index-table" class="clean-index-table">
           <div class="clean-index-header">
             <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
@@ -1989,9 +2002,11 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
         </div>
       </div>
     </section>
+
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
       <div class="clean-index-info-scroll">
         <div id="clean-info-content" class="clean-index-info-content">
+          <!-- Biyografi: Manuel Satır Atlama Kuralları ve Mobil Kırılımları (<br class="m-br">) -->
           <div class="clean-index-info-block left">
             <span class="line">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
             <span class="line">based in istanbul and available internationally.</span>
@@ -2010,15 +2025,18 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
           </div>
           <div class="clean-index-info-block right">
             <span class="line">editorial collaborators include:</span>
+            <!-- 2-2 Bölünme -->
             <span class="line">vogue türkiye, harper’s bazaar türkiye, <br class="m-br">elle türkiye, l’officiel türkiye</span>
           </div>
           <div class="clean-index-info-block left">
             <span class="line">brand collaborators include:</span>
+            <!-- 3-3 Bölünme -->
             <span class="line">vakko, bee goddess, zeynep arcay, <br class="m-br">peugeot, skechers, lc waikiki</span>
           </div>
         </div>
       </div>
     </section>
+
     <div class="clean-index-footer">
       <div class="clean-index-footer-left">
         <a href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
@@ -2035,153 +2053,295 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 <script id="clean-index-script">
 (async () => {
   "use strict";
-  const L_URL="https://raw.githubusercontent.com/denizalpaybak/denizalpaybak.github.io/main/landing-index.json",
-        P_URL="https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json",
-        F_URL="https://raw.githubusercontent.com/denizalpaybak/aybak-film/main/films.json";
-  const P_BASE="https://library.denizalpaybak.com/photo-thumbnails/", F_BASE="https://library.denizalpaybak.com/film-previews/", P_SITE="https://photography.denizalpaybak.com/", F_SITE="https://film.denizalpaybak.com/";
-  
-  const shell=document.getElementById("clean-index-shell"); if(!shell) return;
-  document.documentElement.classList.remove("clean-index-boot"); document.documentElement.classList.add("clean-index-live");
-  
-  let aView="index", aField="ALL", aUse="ALL", sortK="sortDate", sortD=-1, cRows=[], pReq=0, lTap=null, tapT=null;
-  const M_ST=new WeakMap();
-  
-  // Sitenin ilk açılışta boş kalmaması için Fallback datası (JSON inene kadar anında renderlanır)
-  let DATA=[
-    {id:"vogue-260213",type:"photo",title:"vogue türkiye",date:"march 2026",field:"PHOTOGRAPHY",use:"EDITORIAL",sortDate:"2026-03",media:["vogue_260213_01.jpg"],_order:0},
-    {id:"zeyneparcay-251217",type:"film",title:"zeynep arcay",date:"fall 2026",field:"FILM",use:"CAMPAIGN",sortDate:"2026-09",media:["zeyneparcay_251217_1.mp4"],_order:1}
+
+  const LANDING_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/denizalpaybak.github.io/main/landing-index.json";
+  const PHOTO_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
+  const FILM_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-film/main/films.json";
+  const PHOTO_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
+  const FILM_BASE = "https://library.denizalpaybak.com/film-previews/";
+  const PHOTO_SITE = "https://photography.denizalpaybak.com/";
+  const FILM_SITE = "https://film.denizalpaybak.com/";
+  const MORPH_MS = 400;
+
+  const shell = document.getElementById("clean-index-shell");
+  const indexView = document.getElementById("clean-index-view");
+  const infoView = document.getElementById("clean-info-view");
+  const tableBody = document.getElementById("clean-index-body");
+  const tableHeader = document.querySelector(".clean-index-header");
+  const indexButton = document.getElementById("clean-index-button");
+  const infoButton = document.getElementById("clean-info-button");
+  const filterBtns = document.querySelectorAll(".ci-filter-btn");
+
+  if (!shell) return;
+  document.documentElement.classList.remove("clean-index-boot");
+  document.documentElement.classList.add("clean-index-live");
+
+  let activeView = "index", activeField = "ALL", activeUse = "ALL", sortKey = "sortDate", sortDirection = -1;
+  let currentRows = [], previewRow = null, previewRequest = 0;
+  let indexPointerHover = false, infoPointerHover = false, lastTappedId = null, tapTimer = null;
+  const MORPH_STATES = new WeakMap();
+
+  // SİTE ASLA BOŞ AÇILMAZ: Fallback Başlangıç Verisi
+  let DATA = [
+    {id:"vogue-260213", type:"photo", title:"vogue türkiye", date:"march 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
+    {id:"harpersbazaar-260625", type:"photo", title:"harper's bazaar türkiye", date:"july 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1},
+    {id:"zeyneparcay-251217", type:"film", title:"zeynep arcay", date:"fall 2026", field:"FILM", use:"CAMPAIGN", sortDate:"2026-09", media:["zeyneparcay_251217_1.mp4"], _order:2},
+    {id:"lofficiel-250130-cover", type:"photo", title:"l'officiel türkiye", date:"february 2025", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2025-02", media:["lofficiel_250130_cover.jpg"], _order:3},
+    {id:"beegoddess-fw24", type:"photo", title:"bee goddess", date:"f/w 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-09", media:["beegoddess_full_1.jpg"], _order:4}
   ];
 
-  async function fetchLive() {
+  // ARKA PLANDA SESSİZCE CANLI FETCH
+  async function fetchLiveProjects() {
     try {
-      const [lr, pr, fr] = await Promise.all([fetch(L_URL,{cache:"no-store"}),fetch(P_URL,{cache:"no-store"}),fetch(F_URL,{cache:"no-store"})]);
-      const lD=await lr.json(), pD=await pr.json(), fD=await fr.json();
-      const pArr=Array.isArray(pD)?pD:pD.projects||[], fArr=Array.isArray(fD)?fD:fD.projects||fD.films||[];
-      const fData=lD.map((i,idx)=>{
-        let isP=i.field==="PHOTOGRAPHY", mD=isP?pArr.find(p=>p.id===i.id):fArr.find(p=>p.id===i.id);
-        if(!mD) return null;
-        return {id:i.id,title:mD.title,date:mD.date,type:isP?"photo":"film",field:i.field,use:i.use,sortDate:i.sortDate,images:mD.images||null,videos:mD.videos||null,coverOverride:mD.coverOverride||null,_order:idx};
-      }).filter(Boolean);
-      if(fData.length) { DATA=fData; renderIdx(); }
-    } catch(e){}
+        const [landingRes, photoRes, filmRes] = await Promise.all([
+            fetch(LANDING_JSON_URL, { cache: "no-store" }), fetch(PHOTO_JSON_URL, { cache: "no-store" }), fetch(FILM_JSON_URL, { cache: "no-store" })
+        ]);
+        const landingData = await landingRes.json(), photoData = await photoRes.json(), filmData = await filmRes.json();
+        const pArr = Array.isArray(photoData) ? photoData : photoData.projects || [];
+        const fArr = Array.isArray(filmData) ? filmData : filmData.projects || filmData.films || [];
+        
+        const freshData = landingData.map((item, index) => {
+            let isPhoto = item.field === "PHOTOGRAPHY";
+            let mediaData = isPhoto ? pArr.find(p => p.id === item.id) : fArr.find(p => p.id === item.id);
+            if (!mediaData) return null; 
+            return {
+                id: item.id, title: mediaData.title, date: mediaData.date, type: isPhoto ? "photo" : "film",
+                field: item.field, use: item.use, sortDate: item.sortDate, images: mediaData.images || null,
+                videos: mediaData.videos || null, coverOverride: mediaData.coverOverride || null, _order: index
+            };
+        }).filter(Boolean);
+        
+        if(freshData.length > 0) { DATA = freshData; renderIndex(); }
+    } catch (err) { console.warn("Fetch failed, relying on fallback.", err); }
   }
 
-  function letters(t){let o=[];for(let i=0;i<t.length;i++)if(t[i].toLowerCase()!==t[i].toUpperCase())o.push(i);return o;}
-  function initC(el,t){
-    t=String(t).toLowerCase(); const fg=document.createDocumentFragment();
-    for(let c of t){let s=document.createElement("span");s.className="clean-index-char";s.textContent=c;fg.appendChild(s);}
-    let w=document.createElement("span");w.className="clean-index-cell-content";w.appendChild(fg);el.replaceChildren(w);
-    el.__rt=t; el.__cw=w; M_ST.set(el,{s:0,t:0,f:null,c:letters(t).length});
+  const HEADER_LABELS = {title:"title", sortDate:"date"};
+
+  function letters(text) { const out=[]; for(let i=0;i<text.length;i++) { const c=text[i]; if(c.toLowerCase() !== c.toUpperCase()) out.push(i); } return out; }
+  
+  function initCharSpans(el, rawText) {
+    const text=String(rawText).toLowerCase(); const frag=document.createDocumentFragment();
+    for(const ch of text) { const s=document.createElement("span"); s.className="clean-index-char"; s.textContent=ch; frag.appendChild(s); }
+    const wrap=document.createElement("span"); wrap.className="clean-index-cell-content"; wrap.appendChild(frag);
+    el.replaceChildren(wrap); el.__rawText=text; el.__charWrap=wrap;
+    MORPH_STATES.set(el, {state:0,target:0,frame:null,count:letters(text).length});
   }
-  function renM(el,st){
-    const s=M_ST.get(el); if(!s||!el.__cw)return; const t=el.__rt, p=letters(t), act=new Set(p.slice(0,st));
-    Array.from(el.__cw.children).forEach((sp,i)=>{sp.textContent=act.has(i)?t[i].toUpperCase():t[i].toLowerCase();}); s.s=st;
+  
+  function renderMorph(el, state) {
+    const st=MORPH_STATES.get(el); if(!st || !el.__charWrap) return;
+    const text=el.__rawText, pos=letters(text), active=new Set(pos.slice(0,state));
+    Array.from(el.__charWrap.children).forEach((span,i)=>{ const c=text[i]; span.textContent=active.has(i) ? c.toUpperCase() : c.toLowerCase(); }); st.state=state;
   }
-  function morph(el,up,dur=400){
-    const st=M_ST.get(el); if(!st)return Promise.resolve(); if(st.f) cancelAnimationFrame(st.f);
-    const tgt=up?st.c:0, start=st.s; if(start===tgt){renM(el,tgt);return Promise.resolve();}
-    const stTime=performance.now();
-    return new Promise(res=>{
-      const fr=n=>{
-        const p=Math.min(1,(n-stTime)/dur), es=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-        renM(el,Math.round(start+(tgt-start)*es));
-        if(p<1) st.f=requestAnimationFrame(fr); else { st.f=null; renM(el,tgt); res(); }
-      }; st.t=tgt; st.f=requestAnimationFrame(fr);
+  
+  function morphElement(el, toUpper, duration=MORPH_MS) {
+    const st=MORPH_STATES.get(el); if(!st) return Promise.resolve();
+    if(st.frame!==null) cancelAnimationFrame(st.frame);
+    const target=toUpper ? st.count : 0, startState=st.state;
+    if(startState===target) { renderMorph(el,target); return Promise.resolve(); }
+    const start=performance.now();
+    return new Promise(resolve=>{
+      const frame=now=>{
+        const p=Math.min(1,(now-start)/duration); const eased=p < .5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
+        renderMorph(el,Math.round(startState+(target-startState)*eased));
+        if(p<1) st.frame=requestAnimationFrame(frame); else { st.frame=null; renderMorph(el,target); resolve(); }
+      }; st.target=target; st.frame=requestAnimationFrame(frame);
     });
   }
-  function setStat(el,up){ const st=M_ST.get(el); if(!st)return; if(st.f)cancelAnimationFrame(st.f); renM(el,up?st.c:0); st.f=null; st.t=up?st.c:0; }
-  function mTop(){ morph(document.getElementById("clean-index-button"), aView==="index"); morph(document.getElementById("clean-info-button"), aView==="info"); }
+  
+  function setStaticCase(el, upper) {
+    const st=MORPH_STATES.get(el); if(!st) return;
+    if(st.frame!==null) cancelAnimationFrame(st.frame);
+    renderMorph(el, upper ? st.count : 0); st.frame=null; st.target=upper?st.count:0;
+  }
+  
+  function morphTopState() { morphElement(indexButton, activeView === "index" || indexPointerHover); morphElement(infoButton, activeView === "info" || infoPointerHover); }
 
-  initC(document.getElementById("clean-index-button"),"index"); initC(document.getElementById("clean-info-button"),"info");
+  initCharSpans(indexButton,"index"); initCharSpans(infoButton,"info");
 
-  function fSort(){
-    let cp=DATA.filter(p=>(aField==="ALL"||(p.field&&p.field.toUpperCase()===aField))&&(aUse==="ALL"||(p.use&&p.use.toUpperCase()===aUse)));
-    return cp.sort((a,b)=>{
-      let av=String(a[sortK]||"").toLowerCase(), bv=String(b[sortK]||"").toLowerCase(), aa=sortK==="sortDate"?(av||"0000"):av, bb=sortK==="sortDate"?(bv||"0000"):bv, c=aa.localeCompare(bb,undefined,{sensitivity:"base"});
-      return c!==0?c*sortD:a._order-b._order;
+  function filteredAndSortedProjects() {
+    let copy = DATA.filter(p => (activeField === "ALL" || (p.field && p.field.toUpperCase() === activeField)) && (activeUse === "ALL" || (p.use && p.use.toUpperCase() === activeUse)));
+    copy.sort((a,b)=>{
+      const av=String(a[sortKey]||"").toLowerCase(), bv=String(b[sortKey]||"").toLowerCase();
+      const aa=sortKey==="sortDate" ? (av || "0000-00") : av; const bb=sortKey==="sortDate" ? (bv || "0000-00") : bv;
+      const c=aa.localeCompare(bb,undefined,{sensitivity:"base"});
+      return c!==0 ? c*sortDirection : a._order-b._order;
+    }); return copy;
+  }
+
+  function getRowCells(row) { return Array.from(row.querySelectorAll(".clean-index-morph-host")); }
+  
+  function triggerHoverIn(index) {
+    if(!currentRows[index]) return;
+    currentRows.forEach((r, i) => { if(i !== index && r.hover) triggerHoverOut(i); });
+    const r = currentRows[index]; const cells = getRowCells(r.el);
+    r.hover = true; Promise.all(cells.map(c=>morphElement(c,true))); showPreview(r);
+  }
+  
+  function triggerHoverOut(index) {
+    if(!currentRows[index]) return;
+    const r = currentRows[index]; const cells = getRowCells(r.el);
+    r.hover = false; Promise.all(cells.map(c=>morphElement(c,false))); hidePreview();
+  }
+
+  function goToProject(p) { window.location.href = (p.type === "photo" ? PHOTO_SITE : FILM_SITE) + "?project=" + encodeURIComponent(p.id) + "&view=all"; }
+
+  function attachRow(row, p, index) {
+    const hit = row.querySelector(".clean-index-row-hit");
+    row.addEventListener("pointerenter", (e) => { if(window.innerWidth <= 900 && e.pointerType === "touch") return; triggerHoverIn(index); });
+    row.addEventListener("pointerleave", (e) => { if(window.innerWidth <= 900 && e.pointerType === "touch") return; triggerHoverOut(index); });
+    hit.addEventListener("click", () => {
+      if (window.innerWidth <= 900) {
+        if (lastTappedId === p.id) { goToProject(p); } else {
+          const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
+          if(oldIdx !== -1) triggerHoverOut(oldIdx);
+          lastTappedId = p.id; clearTimeout(tapTimer); tapTimer = setTimeout(() => { lastTappedId = null; }, 1500); triggerHoverIn(index);
+        }
+      } else { goToProject(p); }
     });
   }
 
-  function getC(r){return Array.from(r.querySelectorAll(".clean-index-morph-host"));}
-  function hovIn(idx){ if(!cRows[idx])return; cRows.forEach((r,i)=>{if(i!==idx&&r.h)hovOut(i);}); let r=cRows[idx]; r.h=true; Promise.all(getC(r.el).map(c=>morph(c,true))); showPrev(r); }
-  function hovOut(idx){ if(!cRows[idx])return; let r=cRows[idx]; r.h=false; Promise.all(getC(r.el).map(c=>morph(c,false))); hidePrev(); }
-  function go(p){window.location.href=(p.type==="photo"?P_SITE:F_SITE)+"?project="+encodeURIComponent(p.id)+"&view=all";}
-
-  function renderD(){
-    const tb=document.getElementById("clean-index-body"); tb.innerHTML=""; const fg=document.createDocumentFragment(); cRows=[];
-    fSort().forEach((p,i)=>{
-      const rw=document.createElement("div"); rw.className="clean-index-row";
-      [p.title,p.date].forEach(v=>{ const c=document.createElement("div");c.className="clean-index-cell";const h=document.createElement("span");h.className="clean-index-morph-host";c.appendChild(h);rw.appendChild(c);initC(h,v); });
-      const ht=document.createElement("button");ht.className="clean-index-row-hit";ht.type="button";rw.appendChild(ht); fg.appendChild(rw);
-      let rObj={el:rw,p:p,idx:i,h:false}; cRows.push(rObj);
-      rw.addEventListener("pointerenter",e=>{if(window.innerWidth<=900&&e.pointerType==="touch")return;hovIn(i);});
-      rw.addEventListener("pointerleave",e=>{if(window.innerWidth<=900&&e.pointerType==="touch")return;hovOut(i);});
-      ht.addEventListener("click",()=>{
-        if(window.innerWidth<=900){if(lTap===p.id)go(p);else{let o=cRows.findIndex(c=>c.p.id===lTap);if(o!==-1)hovOut(o);lTap=p.id;clearTimeout(tapT);tapT=setTimeout(()=>lTap=null,1500);hovIn(i);}}else go(p);
+  function renderTableData() {
+    tableBody.innerHTML = ""; const frag = document.createDocumentFragment(); currentRows = [];
+    filteredAndSortedProjects().forEach((p, index)=>{
+      const row=document.createElement("div"); row.className="clean-index-row"; row.dataset.id=p.id; row.dataset.type=p.type;
+      [p.title, p.date].forEach(value=>{
+        const cell=document.createElement("div"); cell.className="clean-index-cell";
+        const host=document.createElement("span"); host.className="clean-index-morph-host";
+        cell.appendChild(host); row.appendChild(cell); initCharSpans(host,value);
       });
-    }); tb.appendChild(fg);
+      const hit=document.createElement("button"); hit.className="clean-index-row-hit"; hit.type="button"; hit.setAttribute("aria-label",p.title);
+      row.appendChild(hit); frag.appendChild(row); currentRows.push({el:row, p, index, hover:false}); attachRow(row, p, index);
+    }); tableBody.appendChild(frag);
   }
 
-  function renderH(){
-    document.querySelectorAll(".clean-index-headerbutton").forEach(b=>{
-      let k=b.dataset.key; if(!b.__r){initC(b,k==="title"?"title":"date");b.__r=true;}
-      if(k===sortK)b.classList.add("active-sort");else b.classList.remove("active-sort"); setStat(b,false);
-      if(!b.__b){b.__b=true;b.addEventListener("click",()=>{if(sortK===k)sortD*=-1;else{sortK=k;sortD=k==="sortDate"?-1:1;}renderIdx();});}
+  function renderHeaders() {
+    tableHeader.querySelectorAll(".clean-index-headerbutton").forEach(btn=>{
+      const key=btn.dataset.key;
+      if(!btn.__ready) { initCharSpans(btn,HEADER_LABELS[key]); btn.__ready=true; }
+      if(key === sortKey) btn.classList.add("active-sort"); else btn.classList.remove("active-sort");
+      setStaticCase(btn, false);
+      if(!btn.__bound) {
+        btn.__bound=true;
+        btn.addEventListener("click",()=>{ if(sortKey===key) sortDirection*=-1; else { sortKey=key; sortDirection=key==="sortDate" ? -1 : 1; } renderIndex(); });
+      }
     });
   }
 
-  document.querySelectorAll(".ci-filter-btn").forEach(b=>{
-    b.addEventListener("click",()=>{
-      let t=b.dataset.type, v=b.dataset.val; document.querySelectorAll(`.ci-filter-btn[data-type="${t}"]`).forEach(x=>x.classList.remove("active")); b.classList.add("active");
-      if(t==="field")aField=v; if(t==="use")aUse=v; renderIdx();
+  filterBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.type; const val = btn.dataset.val;
+      document.querySelectorAll(`.ci-filter-btn[data-type="${type}"]`).forEach(b => b.classList.remove("active")); btn.classList.add("active");
+      if(type === "field") activeField = val; if(type === "use") activeUse = val; renderIndex();
     });
   });
 
-  function renderIdx(){ pReq++; hidePrev(); lTap=null; renderH(); renderD(); }
+  function renderIndex() { previewRequest++; hidePreview(); lastTappedId = null; renderHeaders(); renderTableData(); }
 
-  function mFor(p){ let m=p.coverOverride||(p.images&&p.images[0])||(p.videos&&p.videos[0])||null; if(!m)return null; if(p.type==='photo')return P_BASE+m.replace(/\.[^.]+$/i,'.webp'); const d=m.lastIndexOf('.'); return F_BASE+(d>0?m.slice(0,d):m)+'_preview.mp4'; }
-  function showPrev(r){
-    pReq++; let p=document.getElementById("clean-index-preview"); p.innerHTML=''; let src=mFor(r.p); if(!src)return;
-    let el=r.p.type==='photo'?document.createElement('img'):document.createElement('video');
-    if(r.p.type==='photo'){el.src=src;}else{el.src=src;el.muted=el.autoplay=el.loop=el.playsInline=true;}
+  function mediaFor(project) {
+    let media = project.coverOverride || (project.images && project.images[0]) || (project.videos && project.videos[0]) || null;
+    if(!media) return null;
+    if(project.type === 'photo') return PHOTO_BASE + media.replace(/\.[^.]+$/i,'.webp');
+    const dot = media.lastIndexOf('.'); return FILM_BASE + (dot > 0 ? media.slice(0,dot) : media) + '_preview.mp4';
+  }
+
+  function showPreview(r) {
+    previewRow = r; const request = ++previewRequest; 
+    const p = document.getElementById("clean-index-preview"); p.innerHTML = ''; 
+    const src = mediaFor(r.p); if(!src) return;
+    const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
+    if(r.p.type==='photo') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
     p.appendChild(el); p.classList.add('visible');
   }
-  function hidePrev(){ document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML=''; }
 
-  function swV(t){
-    if(aView===t)return; hidePrev(); lTap=null; aView=t; mTop();
-    document.getElementById("clean-index-view").classList.toggle('active',t==='index'); document.getElementById("clean-info-view").classList.toggle('active',t==='info');
-  }
-  document.getElementById("clean-index-button").addEventListener('click',()=>swV('index'));
-  document.getElementById("clean-info-button").addEventListener('click',()=>swV('info'));
+  function hidePreview() { previewRow = null; document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML = ''; }
 
-  function opC(s){
-    if(s){document.body.classList.add('landing-aybak-active');document.documentElement.classList.add('landing-aybak-active');}
-    else{const lg=document.getElementById("landing-aybak-logo");if(lg)lg.click();else{document.body.classList.remove('landing-aybak-active');document.documentElement.classList.remove('landing-aybak-active');}}
+  function switchView(target) {
+    if(activeView===target) return;
+    hidePreview(); lastTappedId = null; 
+    activeView=target; morphTopState();
+    indexView.classList.toggle('active',target==='index'); infoView.classList.toggle('active',target==='info');
+    indexView.setAttribute('aria-hidden',target!=='index'); infoView.setAttribute('aria-hidden',target!=='info');
   }
-  let wA=0, wT=null, lY=null;
-  document.addEventListener('wheel',e=>{
-    let ib=document.body.classList.contains('landing-aybak-active'); if(e.target.closest('.clean-index-footer'))return;
-    if(!ib){
-      if(e.deltaY<=0){wA=0;return;} let w=document.querySelector(aView==="index"?'.clean-index-table-wrap':'.clean-index-info-scroll');
-      if(w&&w.scrollHeight>w.clientHeight&&w.scrollTop+w.clientHeight<w.scrollHeight-2){wA=0;return;}
-    }else{if(e.deltaY>=0){wA=0;return;}}
-    wA+=e.deltaY; clearTimeout(wT); wT=setTimeout(()=>wA=0,140);
-    if(!ib&&wA>=48){e.preventDefault();wA=0;opC(true);}else if(ib&&wA<=-48){e.preventDefault();wA=0;opC(false);}
-  },{passive:false});
-  document.addEventListener('keydown',e=>{let ib=document.body.classList.contains('landing-aybak-active');if(!ib&&(e.key==='ArrowDown'||e.key==='PageDown')){e.preventDefault();opC(true);}if(ib&&(e.key==='ArrowUp'||e.key==='PageUp')){e.preventDefault();opC(false);}});
-  document.addEventListener('touchstart',e=>{if(e.changedTouches[0])lY=e.changedTouches[0].clientY;},{passive:true});
-  document.addEventListener('touchend',e=>{
-    let ib=document.body.classList.contains('landing-aybak-active'); if(lY===null||!e.changedTouches[0])return; let d=e.changedTouches[0].clientY-lY; lY=null;
-    if(!ib&&d<-45){let w=document.querySelector(aView==="index"?'.clean-index-table-wrap':'.clean-index-info-scroll');if(w&&w.scrollHeight>w.clientHeight&&w.scrollTop+w.clientHeight<w.scrollHeight-2)return;opC(true);}else if(ib&&d>45)opC(false);
+
+  indexButton.addEventListener('mouseenter',()=>{ indexPointerHover=true; morphTopState(); });
+  indexButton.addEventListener('mouseleave',()=>{ indexPointerHover=false; morphTopState(); });
+  infoButton.addEventListener('mouseenter',()=>{ infoPointerHover=true; morphTopState(); });
+  infoButton.addEventListener('mouseleave',()=>{ infoPointerHover=false; morphTopState(); });
+  indexButton.addEventListener('click',()=>switchView('index'));
+  infoButton.addEventListener('click',()=>switchView('info'));
+
+  // END CARD ÇIKIŞ VE GİRİŞ (Original Script'i Tetikler)
+  function openEndCard(show) { 
+    if(show) {
+        document.body.classList.add('landing-aybak-active');
+        document.documentElement.classList.add('landing-aybak-active');
+    } else {
+        const logo = document.getElementById("landing-aybak-logo");
+        if(logo) {
+            logo.click(); // Siyah ekranı kendi animasyonuyla pürüzsüz kapatır
+        } else {
+            document.body.classList.remove('landing-aybak-active');
+            document.documentElement.classList.remove('landing-aybak-active');
+        }
+    }
+  }
+
+  let wheelAccumulator = 0; let wheelResetTimer = null;
+  document.addEventListener('wheel', event => {
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
+    if(event.target.closest('.clean-index-footer')) return;
+    if (!isBlackCard) {
+      if (event.deltaY <= 0) { wheelAccumulator = 0; return; }
+      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
+      if (wrap) {
+          const canScroll = wrap.scrollHeight > wrap.clientHeight;
+          const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
+          if (canScroll && !atBottom) { wheelAccumulator = 0; return; }
+      }
+    } else {
+      if (event.deltaY >= 0) { wheelAccumulator = 0; return; }
+    }
+    wheelAccumulator += event.deltaY;
+    clearTimeout(wheelResetTimer); wheelResetTimer = setTimeout(() => wheelAccumulator = 0, 140);
+    if (!isBlackCard && wheelAccumulator >= 48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(true); }
+    else if (isBlackCard && wheelAccumulator <= -48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(false); }
+  }, {passive: false});
+
+  document.addEventListener('keydown',event=>{
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
+    if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { event.preventDefault(); openEndCard(true); }
+    if(isBlackCard && (event.key==='ArrowUp' || event.key==='PageUp')) { event.preventDefault(); openEndCard(false); }
+  });
+
+  let lastTouchY = null;
+  document.addEventListener('touchstart',event=>{ if(event.changedTouches && event.changedTouches[0]) lastTouchY=event.changedTouches[0].clientY; },{passive:true});
+  document.addEventListener('touchend',event=>{
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
+    if(lastTouchY===null || !event.changedTouches || !event.changedTouches[0]) return;
+    const dy = event.changedTouches[0].clientY - lastTouchY; lastTouchY = null;
+    if (!isBlackCard && dy < -45) {
+      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
+      if (wrap) {
+          const canScroll = wrap.scrollHeight > wrap.clientHeight;
+          const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
+          if (canScroll && !atBottom) return;
+      }
+      openEndCard(true);
+    } else if (isBlackCard && dy > 45) { openEndCard(false); }
   },{passive:true});
 
-  renderIdx(); setStat(document.getElementById("clean-index-button"),true); setStat(document.getElementById("clean-info-button"),false); mTop();
-  fetchLive();
+  // İLK YÜKLEMEDE TETİKLENECEKLER
+  renderIndex(); // Anında fallback datayla renderla (site boş kalmasın)
+  setStaticCase(indexButton,true); setStaticCase(infoButton,false); morphTopState();
+  
+  // Arkada veriyi çek
+  fetchLiveProjects();
 
-  new MutationObserver(()=>{
-    let a=document.body.classList.contains('landing-aybak-active'); shell.style.opacity=a?"0":"1"; shell.style.visibility=a?"hidden":"visible"; shell.style.pointerEvents=a?"none":"auto";
-  }).observe(document.body,{attributes:true,attributeFilter:['class']});
+  const watcher=new MutationObserver(()=>{
+    const active=document.body.classList.contains('landing-aybak-active');
+    shell.style.opacity = active ? "0" : "1"; shell.style.visibility = active ? "hidden" : "visible"; shell.style.pointerEvents = active ? "none" : "auto";
+  });
+  watcher.observe(document.body,{attributes:true,attributeFilter:['class']});
 })();
 </script>
 </body>
