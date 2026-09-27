@@ -5,1242 +5,607 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Denizalp Aybak</title>
 <link rel="stylesheet" href="https://use.typekit.net/rmn7qgm.css">
-
 <style>
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+button,a{font:inherit}
+button{appearance:none;-webkit-appearance:none}
+:root{
+  --size:17px;
+  --line:1.15;
+  --gutter:40px;
+  --top:30px;
+  --bottom:30px;
+  --header-gap:18px;
+  --row-gap:5px;
+  --morph-ms:300ms;
 }
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    color: #000;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: geometricPrecision;
+/* =========================
+   APP / LAYOUT
+   ========================= */
+#index-app{position:fixed;inset:0;z-index:10;background:#fff;color:#000;overflow:hidden}
+#index-nav{position:absolute;left:var(--gutter);right:var(--gutter);top:var(--top);z-index:70;display:flex;justify-content:space-between;align-items:flex-start}
+#index-nav button{margin:0;padding:0;border:0;outline:0;background:transparent;color:#000;line-height:var(--line);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+#index-nav button:focus-visible{outline:1px solid currentColor;outline-offset:4px}
+
+#index-main{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(var(--top) + 58px);bottom:calc(var(--bottom) + 14px);z-index:20;display:flex;flex-direction:column;min-height:0}
+#index-panel{display:flex;flex:1;min-height:0;flex-direction:column;opacity:1;visibility:visible;pointer-events:auto;transition:opacity 140ms ease}
+#index-panel.hidden{opacity:0;visibility:hidden;pointer-events:none;position:absolute;inset:0;z-index:0}
+#index-table{display:grid;grid-template-rows:auto 1fr;min-height:0;height:100%}
+.idx-head,.idx-row{display:grid;grid-template-columns:minmax(0,2.45fr) minmax(0,1.25fr) minmax(130px,0.95fr) minmax(135px,0.95fr);column-gap:clamp(34px,4.2vw,72px);align-items:baseline;width:100%}
+.idx-head{margin-bottom:var(--header-gap);position:relative;z-index:25;flex:none}
+.idx-body{display:grid;grid-template-rows:repeat(var(--rows,1),auto);grid-auto-flow:row;align-content:space-between;min-height:0}
+.idx-row{position:relative;margin:0;padding:0;min-height:calc(var(--size,17px)*var(--line) + var(--row-gap));color:#000;text-decoration:none;cursor:pointer;outline:none}
+.idx-cell{position:relative;min-width:0}
+.idx-cell.title,.idx-cell.date{text-align:left}
+.idx-cell.field,.idx-cell.use{justify-self:stretch;text-align:right}
+.idx-text,.idx-sort{display:block;margin:0;padding:0;color:#000;line-height:var(--line);white-space:nowrap;overflow:visible}
+.idx-sort{width:max-content;border:0;background:transparent;cursor:pointer;outline:none;text-align:left}
+.idx-head .field .idx-sort,.idx-head .use .idx-sort{width:100%;text-align:right}
+.idx-head .date .idx-sort{width:max-content;text-align:left}
+.idx-row:focus-visible{outline:1px solid #000;outline-offset:4px}
+
+/* shared character renderer: the case state is changed one character at a time */
+.morph-text{display:inline-block;white-space:nowrap}
+.morph-char{display:inline-block;white-space:pre}
+.morph-char[data-digit="1"]{font-variant-numeric:tabular-nums}
+
+/* =========================
+   PREVIEW / COMPOSITING
+   ========================= */
+#index-preview{position:fixed;left:50%;top:50%;z-index:8;display:none;transform:translate(-50%,-50%);pointer-events:none;will-change:left,top}
+#index-preview.visible{display:block}
+#index-preview img,#index-preview video{display:block;width:auto;height:auto;max-width:min(430px,38vw);max-height:52vh;object-fit:contain;pointer-events:none;user-select:none}
+#index-preview video{width:min(460px,42vw);max-width:min(460px,42vw)}
+
+/* This layer contains only clipped duplicate glyphs. Because it lives in the
+   same stacking context as the preview, white+difference produces the real
+   pixel-wise inverse of the preview exactly where text overlaps it. */
+#index-negative-layer{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.idx-negative{position:fixed;margin:0;padding:0;color:#fff;background:transparent;white-space:nowrap;pointer-events:none;mix-blend-mode:difference;clip-path:inset(0);will-change:clip-path,left,top}
+
+/* =========================
+   FOOTER ALIGNMENT
+   ========================= */
+#index-footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:var(--bottom);z-index:70;display:flex;justify-content:space-between;align-items:flex-end;font-size:var(--size);line-height:var(--line);pointer-events:auto}
+#index-footer .footer-col{display:flex;flex-direction:column}
+#index-footer .right{align-items:flex-end;text-align:right}
+#index-footer a{color:#000;text-decoration:none;white-space:nowrap}
+#index-footer a:hover{text-decoration:underline}
+
+/* =========================
+   INFO
+   ========================= */
+#info-panel{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:88px var(--gutter) 88px;opacity:1;visibility:visible;pointer-events:none;transition:opacity 140ms ease}
+#info-panel.hidden{opacity:0;visibility:hidden;pointer-events:none;z-index:0}
+#info-copy{width:min(860px,74vw);max-height:calc(100vh - 176px);overflow:hidden}
+.info-line{font-size:var(--size);line-height:var(--line);white-space:nowrap}
+.info-line.left{text-align:left}.info-line.right{text-align:right}.info-gap{height:calc(var(--size)*1.1)}
+
+/* =========================
+   BLACK AYBAK END CARD
+   restored from the original landing interaction
+   ========================= */
+#black-card{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;visibility:hidden;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms;touch-action:none}
+body.black-mode #black-card{visibility:visible;pointer-events:auto;opacity:1;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s}
+body.black-leaving #black-card{visibility:visible;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms}
+body.black-mode #index-nav,body.black-mode #index-footer{color:#fff;z-index:210} body.black-mode #index-nav button,body.black-mode #index-footer a{mix-blend-mode:normal}
+body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
+body.black-mode #index-main{visibility:hidden} body.black-mode #index-preview,body.black-mode #index-negative-layer{visibility:hidden}
+body.black-mode #black-card{background:#000}
+#black-logo{position:relative;z-index:101;display:flex;flex-direction:column;align-items:center;justify-content:center;width:max-content;margin:0;padding:0;border:0;background:transparent;color:#fff;font-size:var(--size);line-height:var(--line);cursor:pointer}
+#black-logo-name,#black-logo-aybak{display:block;height:calc(var(--size)*var(--line));white-space:nowrap}
+.black-letter{display:inline-block}
+
+@media (max-width:900px){
+  :root{--size:16px;--gutter:24px;--top:22px;--bottom:22px;--header-gap:16px;--row-gap:5px}
+  .idx-head,.idx-row{grid-template-columns:minmax(0,1fr) minmax(90px,.72fr) minmax(96px,.70fr);column-gap:24px}
+  .idx-cell.use,.idx-head .use{display:none}
+  .idx-cell.title{text-align:left}
+  .idx-cell.date,.idx-head .date{text-align:center}
+  .idx-cell.field,.idx-head .field{text-align:right}
+  .idx-head .date .idx-sort{width:100%;text-align:center}
+  .idx-head .field .idx-sort{width:100%;text-align:right}
+  #index-preview img,#index-preview video{max-width:56vw;max-height:44vh}
+  #index-footer{font-size:14px}
+  #info-copy{width:88vw}
 }
-
-button,
-a {
-    font: inherit;
+@media (max-width:520px){
+  :root{--size:15px;--gutter:18px;--top:20px;--bottom:18px;--header-gap:14px;--row-gap:5px}
+  .idx-head,.idx-row{column-gap:14px;grid-template-columns:minmax(0,1fr) minmax(74px,.68fr) minmax(86px,.62fr)}
+  #index-preview img,#index-preview video{max-width:66vw;max-height:36vh}
+  #index-footer{font-size:13px}
 }
-
-button {
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-:root {
-    --idx-size: 17px;
-    --idx-line: 1.15;
-    --idx-x: 40px;
-    --idx-top: 30px;
-    --idx-bottom: 30px;
-    --idx-header-gap: 16px;
-    --idx-row-gap: 3px;
-}
-
-#index-app {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: #fff;
-    color: #000;
-    isolation: isolate;
-    overflow: hidden;
-    font-size: var(--idx-size);
-    line-height: var(--idx-line);
-}
-
-#index-nav {
-    position: absolute;
-    top: var(--idx-top);
-    left: var(--idx-x);
-    right: var(--idx-x);
-    z-index: 60;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-#index-nav button {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: #000;
-    cursor: pointer;
-    line-height: inherit;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.morph-text {
-    position: relative;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-.morph-char {
-    display: inline-grid;
-    grid-template-columns: max-content;
-    width: max-content;
-    height: 1em;
-    vertical-align: baseline;
-}
-
-.morph-char.space {
-    width: .28em;
-}
-
-.morph-char > span {
-    grid-area: 1 / 1;
-    display: inline-block;
-    transform-origin: 50% 75%;
-}
-
-.morph-char .lower,
-.morph-char .upper {
-    opacity: 0;
-    transform: translateY(.14em) scaleY(.82);
-    filter: blur(.9px);
-    will-change: opacity, transform, filter;
-}
-
-.morph-char .lower.is-current,
-.morph-char .upper.is-current {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-    filter: blur(0);
-}
-
-#index-content {
-    position: absolute;
-    top: calc(var(--idx-top) + 58px);
-    left: var(--idx-x);
-    right: var(--idx-x);
-    bottom: calc(var(--idx-bottom) + 14px);
-    z-index: 20;
-    overflow: hidden;
-}
-
-#index-scroll {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-#index-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-#index-table {
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.idx-head,
-.idx-row {
-    display: grid;
-    grid-template-columns:
-        minmax(0, 2.45fr)
-        minmax(0, 1.20fr)
-        minmax(120px, .90fr)
-        minmax(130px, .90fr);
-    column-gap: clamp(34px, 4.2vw, 72px);
-    align-items: baseline;
-    width: 100%;
-}
-
-.idx-head {
-    margin-bottom: var(--idx-header-gap);
-    position: relative;
-    z-index: 25;
-}
-
-.idx-row {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    min-height: calc(var(--idx-size) * var(--idx-line) + var(--idx-row-gap));
-    text-decoration: none;
-    color: #000;
-    cursor: pointer;
-    outline: none;
-}
-
-.idx-cell {
-    min-width: 0;
-    position: relative;
-}
-
-.idx-cell.date {
-    text-align: left;
-}
-
-.idx-cell.field,
-.idx-cell.use,
-.idx-head .field,
-.idx-head .use {
-    text-align: right;
-}
-
-.idx-text {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    color: #000;
-    line-height: inherit;
-    white-space: nowrap;
-    overflow: visible;
-}
-
-.idx-sort {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: #000;
-    line-height: inherit;
-    cursor: pointer;
-    text-align: left;
-    white-space: nowrap;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.idx-head .field .idx-sort,
-.idx-head .use .idx-sort {
-    text-align: right;
-    width: 100%;
-}
-
-.idx-row:focus-visible {
-    outline: 1px solid #000;
-    outline-offset: 4px;
-}
-
-#index-preview {
-    position: fixed;
-    z-index: 10;
-    display: none;
-    left: 50vw;
-    top: 50vh;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    will-change: left, top;
-}
-
-#index-preview.visible {
-    display: block;
-}
-
-#index-preview img,
-#index-preview video {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: min(430px, 38vw);
-    max-height: 52vh;
-    object-fit: contain;
-    pointer-events: none;
-    user-select: none;
-}
-
-#index-preview video {
-    width: min(460px, 42vw);
-    max-width: min(460px, 42vw);
-}
-
-#index-negative-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 35;
-    pointer-events: none;
-}
-
-.idx-negative {
-    position: fixed;
-    margin: 0;
-    padding: 0;
-    color: #fff;
-    background: transparent;
-    white-space: nowrap;
-    overflow: hidden;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    transform: translateZ(0);
-    will-change: clip-path, left, top, width, height;
-}
-
-#index-footer {
-    position: absolute;
-    left: var(--idx-x);
-    right: var(--idx-x);
-    bottom: var(--idx-bottom);
-    z-index: 60;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    font-size: var(--idx-size);
-    line-height: var(--idx-line);
-}
-
-#index-footer .footer-col {
-    display: flex;
-    flex-direction: column;
-}
-
-#index-footer .right {
-    align-items: flex-end;
-    text-align: right;
-}
-
-#index-footer a {
-    color: #000;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-#index-footer a:hover {
-    text-decoration: underline;
-}
-
-#index-info {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 90px var(--idx-x) 90px;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 180ms ease, visibility 0s linear 0s;
-    overflow: hidden;
-}
-
-#index-info.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 180ms ease, visibility 0s linear 180ms;
-}
-
-#info-copy {
-    width: min(720px, 72vw);
-    max-height: calc(100vh - 180px);
-    overflow-y: auto;
-    scrollbar-width: none;
-}
-
-#info-copy::-webkit-scrollbar {
-    display: none;
-}
-
-.info-line {
-    width: 100%;
-    font-size: var(--idx-size);
-    line-height: var(--idx-line);
-}
-
-.info-line.left {
-    text-align: left;
-}
-
-.info-line.right {
-    text-align: right;
-}
-
-.info-gap {
-    height: calc(var(--idx-size) * 1.05);
-}
-
-#index-info:not(.hidden) {
-    pointer-events: auto;
-}
-
-#index-info.hidden + #index-footer {
-    opacity: 1;
-}
-
-@media (max-width: 900px) {
-    :root {
-        --idx-size: 16px;
-        --idx-x: 24px;
-        --idx-top: 22px;
-        --idx-bottom: 22px;
-        --idx-row-gap: 4px;
-    }
-
-    .idx-head,
-    .idx-row {
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(90px, .72fr)
-            minmax(92px, .70fr);
-        column-gap: 24px;
-    }
-
-    .idx-cell.use,
-    .idx-head .use {
-        display: none;
-    }
-
-    .idx-cell.date,
-    .idx-head .date {
-        text-align: center;
-    }
-
-    .idx-cell.field,
-    .idx-head .field {
-        text-align: right;
-    }
-
-    .idx-head .date .idx-sort {
-        width: 100%;
-        text-align: center;
-    }
-
-    #index-content {
-        top: calc(var(--idx-top) + 50px);
-        bottom: calc(var(--idx-bottom) + 8px);
-    }
-
-    #index-preview img,
-    #index-preview video {
-        max-width: 56vw;
-        max-height: 44vh;
-    }
-
-    #index-footer {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 520px) {
-    :root {
-        --idx-size: 15px;
-        --idx-x: 18px;
-        --idx-top: 20px;
-        --idx-bottom: 18px;
-        --idx-header-gap: 14px;
-        --idx-row-gap: 5px;
-    }
-
-    .idx-head,
-    .idx-row {
-        column-gap: 14px;
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(72px, .65fr)
-            minmax(82px, .62fr);
-    }
-
-    #index-preview img,
-    #index-preview video {
-        max-width: 66vw;
-        max-height: 36vh;
-    }
-
-    #index-footer {
-        font-size: 13px;
-    }
-
-    #info-copy {
-        width: 88vw;
-    }
-}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
-
 <body>
 <div id="index-app">
+  <nav id="index-nav" aria-label="Landing sections">
+    <button id="index-switch" type="button" class="composite-target" aria-label="Index"></button>
+    <button id="info-switch" type="button" class="composite-target" aria-label="Info"></button>
+  </nav>
 
-<nav id="index-nav" aria-label="Landing sections">
-    <button id="index-switch" type="button" aria-pressed="true"></button>
-    <button id="info-switch" type="button" aria-pressed="false"></button>
-</nav>
+  <main id="index-main">
+    <section id="index-panel" aria-label="Project index">
+      <div id="index-table"></div>
+    </section>
+    <section id="info-panel" class="hidden" aria-label="Information">
+      <div id="info-copy">
+        <div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
+        <div class="info-line left">based in istanbul and available internationally.</div>
+        <div class="info-gap"></div>
+        <div class="info-line right">having graduated top of his class in management at sabanci university,</div>
+        <div class="info-line right">he brings a strategic approach to image-making,</div>
+        <div class="info-line right">considering both the work itself and the world it belongs to.</div>
+        <div class="info-gap"></div>
+        <div class="info-line left">his work creates atmosphere through contrast:</div>
+        <div class="info-line left">light that feels dark,</div>
+        <div class="info-line left">beauty that appears distant,</div>
+        <div class="info-line left">stillness that carries tension,</div>
+        <div class="info-line left">and precision that emerges from spontaneity.</div>
+        <div class="info-gap"></div>
+        <div class="info-line right">editorial collaborators include:</div>
+        <div class="info-line right">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</div>
+        <div class="info-gap"></div>
+        <div class="info-line left">brand collaborators include:</div>
+        <div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div>
+      </div>
+    </section>
+  </main>
 
-<main id="index-content">
-    <div id="index-scroll">
-        <div id="index-table" aria-label="Project index"></div>
-    </div>
-</main>
+  <div id="index-preview" aria-hidden="true"></div>
+  <div id="index-negative-layer" aria-hidden="true"></div>
 
-<div id="index-preview" aria-hidden="true"></div>
-<div id="index-negative-layer" aria-hidden="true"></div>
-
-<section id="index-info" class="hidden" aria-label="Information">
-    <div id="info-copy">
-<div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
-<div class="info-line left">based in istanbul and available internationally.</div>
-<div class="info-gap"></div>
-<div class="info-line right">having graduated top of his class in management at sabanci university,</div>
-<div class="info-line right">he brings a strategic approach to image-making,</div>
-<div class="info-line right">considering both the work itself and the world it belongs to.</div>
-<div class="info-gap"></div>
-<div class="info-line left">his work creates atmosphere through contrast:</div>
-<div class="info-line left">light that feels dark,</div>
-<div class="info-line left">beauty that appears distant,</div>
-<div class="info-line left">stillness that carries tension,</div>
-<div class="info-line left">and precision that emerges from spontaneity.</div>
-<div class="info-gap"></div>
-<div class="info-line right">editorial collaborators include:</div>
-<div class="info-line right">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</div>
-<div class="info-gap"></div>
-<div class="info-line left">brand collaborators include:</div>
-<div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div>
-<div class="info-gap"></div>
-    </div>
-</section>
-
-<footer id="index-footer">
+  <footer id="index-footer">
     <div class="footer-col left">
-        <a href="https://www.models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
-        <a href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+      <a class="composite-target" href="https://www.models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
+      <a class="composite-target" href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
     </div>
     <div class="footer-col right">
-        <a href="mailto:d@denizalpaybak.com" target="_blank" rel="noopener">d@denizalpaybak.com</a>
-        <a href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
+      <a class="composite-target" href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
+      <a class="composite-target" href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
     </div>
-</footer>
-
+  </footer>
+  <section id="black-card" aria-hidden="true">
+    <button id="black-logo" type="button" aria-label="Denizalp Aybak">
+      <span id="black-logo-name">Denizalp</span>
+      <span id="black-logo-aybak"><span class="black-letter">a</span><span class="black-letter">y</span><span class="black-letter">b</span><span class="black-letter">a</span><span class="black-letter">k</span></span>
+    </button>
+  </section>
 </div>
 
 <script>
 (() => {
-    "use strict";
+  "use strict";
 
-    const PROJECTS = [{"id":"vogue-260213","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-03","title":"Vogue Türkiye","date":"March 2026","images":["vogue_260213_01.jpg","vogue_260213_02.jpg","vogue_260213_0926_alt.jpg","vogue_260213_1327.jpg","vogue_260213_0197.jpg","vogue_260213_0235_alt.jpg","vogue_260213_0419_alt.jpg","vogue_260213_1101.jpg","vogue_260213_0881.jpg","vogue_260213_1922.jpg","vogue_260213_05312.jpg"],"videos":[]},{"id":"harpersbazaar-260625","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-07","title":"Harper's Bazaar Türkiye","date":"July 2026","images":["harpersbazaar_260625_0554.jpg","harpersbazaar_260625_0578_alt.jpg","harpersbazaar_260625_0733.jpg","harpersbazaar_260625_0775.jpg","harpersbazaar_260625_0818.jpg","harpersbazaar_260625_0856_alt.jpg","harpersbazaar_260625_0970.jpg","harpersbazaar_260625_1037.jpg","harpersbazaar_260625_1040.jpg","harpersbazaar_260625_1454_alt.jpg","harpersbazaar_260625_0357.jpg","harpersbazaar_260625_0506.jpg"],"videos":[]},{"id":"lofficiel-250130-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","title":"L'Officiel Türkiye","date":"February 2025 Digital Cover","images":["lofficiel_250130_cover.jpg"],"videos":[]},{"id":"lofficiel-250130","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","title":"L'Officiel Türkiye","date":"February 2025","images":["lofficiel_250130_1246.jpg","lofficiel_250130_layout_1.jpg","lofficiel_250130_layout_4.jpg","lofficiel_250130_layout_5.jpg"],"videos":[]},{"id":"lofficiel-241106-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","title":"L'Officiel Türkiye","date":"November 2024 Digital Cover","images":["lofficiel_241106_cover.jpg"],"videos":[]},{"id":"lofficiel-241106","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","title":"L'Officiel Türkiye","date":"November 2024","images":["lofficiel_241106_0131_retouched.jpg","lofficiel_241106_0376.jpg","lofficiel_241106_0928.jpg"],"videos":[]},{"id":"beegoddess-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Bee Goddess","date":"F/W 2024","images":["beegoddess_full_1.jpg","beegoddess_full_2.jpg"],"videos":[]},{"id":"lofficiel-260116","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-02","title":"L'Officiel Türkiye","date":"February 2026","images":["lofficiel_260116_0984.jpg","lofficiel_260116_1608.jpg"],"videos":[]},{"id":"manc-231124","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-05","title":"MANC","date":"Resort 2024","images":["manc_231124_01.jpg"],"videos":[]},{"id":"mudo-home-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Mudo Home","date":"F/W 2024","images":["mudo_home_1.jpg","mudo_home_5.jpg"],"videos":[]},{"id":"lofficiel-251213-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-01","title":"L'Officiel Türkiye","date":"January 2026 Digital Cover","images":["lofficiel_251213_1647_retouched_3.jpg","lofficiel_251213_1900_ig.jpg"],"videos":[]},{"id":"vakko-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Vakko","date":"F/W 2024","images":["vakko_2.jpg","vakko_3.jpg","vakko_5.jpg"],"videos":[]},{"id":"qp-250421","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-06","title":"Q-P Magazine","date":"June 2025","images":["qp_250421_01.jpg"],"videos":[]},{"id":"elle-250919","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-10","title":"ELLE Türkiye","date":"October 2025","images":["elle_250919_01.jpg","elle_250919_02.jpg","elle_250919_03.jpg","elle_250919_04.jpg","elle_250919_05.jpg"],"videos":[]},{"id":"work-in-progress","field":"PHOTOGRAPHY","use":"PERSONAL","sortDate":"","title":"Work-in-Progress","date":"Personal","images":["denizalp_aybak_01.jpg","denizalp_aybak_02.jpg","denizalp_aybak_03.jpg","denizalp_aybak_04.jpg","denizalp_aybak_05.jpg","denizalp_aybak_06.jpg","denizalp_aybak_07.jpg","denizalp_aybak_08.jpg","denizalp_aybak_09.jpg"],"videos":[]},{"id":"vogue-260113","field":"FILM","use":"CAMPAIGN","sortDate":"2026-02","title":"vogue türkiye x peugeot","date":"february 2026","images":[],"videos":["vogue_260113_film.mp4","vogue_260113_teaser_1.mp4","vogue_260113_teaser_3.mp4"]},{"id":"zeyneparcay-251217","field":"FILM","use":"CAMPAIGN","sortDate":"2026-09","title":"zeynep arcay","date":"fall 2026","images":[],"videos":["zeyneparcay_251217_1.mp4","zeyneparcay_251217_2.mp4","zeyneparcay_251217_3.mp4","zeyneparcay_251217_4.mp4"]},{"id":"nulook-251031","field":"FILM","use":"EDITORIAL","sortDate":"2025-12","title":"nu-look magazine","date":"december 2025 (issue #07)","images":[],"videos":["nulook_251031_4.mp4","nulook_251031_5.mp4"]},{"id":"vogue-260213","field":"FILM","use":"EDITORIAL","sortDate":"2026-03","title":"vogue türkiye","date":"march 2026","images":[],"videos":["vogue_260213_1.mp4","vogue_260213_2.mp4","vogue_260213_3.mp4","vogue_260213_4.mp4"]},{"id":"zeyneparcay-250529","field":"FILM","use":"CAMPAIGN","sortDate":"2026-05","title":"zeynep arcay","date":"resort 2026","images":[],"videos":["zeyneparcay_250529_1.mp4","zeyneparcay_250529_2.mp4","zeyneparcay_250529_3.mp4"]},{"id":"nulook-240919","field":"FILM","use":"EDITORIAL","sortDate":"2024-12","title":"nu-look magazine","date":"december 2024 (issue #04)","images":[],"videos":["nulook_240919_3.mp4","nulook_240919_4.mp4","nulook_240919_5.mp4","nulook_240919_6.mp4"]},{"id":"lofficiel-241106","field":"FILM","use":"EDITORIAL","sortDate":"2024-11","title":"l’officiel türkiye","date":"november 2024","images":[],"videos":["lofficiel_241106.mp4"]},{"id":"nulook-250206","field":"FILM","use":"EDITORIAL","sortDate":"2025-04","title":"nu-look magazine","date":"april 2025 (issue #05)","images":[],"videos":["nulook_250206_1.mp4","nulook_250206_2.mp4","nulook_250206_3.mp4"]},{"id":"sober-210323","field":"FILM","use":"EDITORIAL","sortDate":"2024-05","title":"sober magazine","date":"may 2024 (issue #02)","images":[],"videos":["sober_210323_video_1.mp4","sober_210323_video_2.mp4","sober_210323_video_3.mp4"]}];
-    const PHOTO_THUMB_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
-    const FILM_PREVIEW_BASE = "https://library.denizalpaybak.com/film-previews/";
-    const PHOTO_SITE = "https://photography.denizalpaybak.com/";
-    const FILM_SITE = "https://film.denizalpaybak.com/";
+  const PROJECTS = [{"id":"vogue-260213","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-03","title":"Vogue Türkiye","date":"March 2026","images":["vogue_260213_01.jpg","vogue_260213_02.jpg","vogue_260213_0926_alt.jpg","vogue_260213_1327.jpg","vogue_260213_0197.jpg","vogue_260213_0235_alt.jpg","vogue_260213_0419_alt.jpg","vogue_260213_1101.jpg","vogue_260213_0881.jpg","vogue_260213_1922.jpg","vogue_260213_05312.jpg"],"videos":[]},{"id":"harpersbazaar-260625","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-07","title":"Harper's Bazaar Türkiye","date":"July 2026","images":["harpersbazaar_260625_0554.jpg","harpersbazaar_260625_0578_alt.jpg","harpersbazaar_260625_0733.jpg","harpersbazaar_260625_0775.jpg","harpersbazaar_260625_0818.jpg","harpersbazaar_260625_0856_alt.jpg","harpersbazaar_260625_0970.jpg","harpersbazaar_260625_1037.jpg","harpersbazaar_260625_1040.jpg","harpersbazaar_260625_1454_alt.jpg","harpersbazaar_260625_0357.jpg","harpersbazaar_260625_0506.jpg"],"videos":[]},{"id":"lofficiel-250130-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","title":"L'Officiel Türkiye","date":"February 2025 Digital Cover","images":["lofficiel_250130_cover.jpg"],"videos":[]},{"id":"lofficiel-250130","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","title":"L'Officiel Türkiye","date":"February 2025","images":["lofficiel_250130_1246.jpg","lofficiel_250130_layout_1.jpg","lofficiel_250130_layout_4.jpg","lofficiel_250130_layout_5.jpg"],"videos":[]},{"id":"lofficiel-241106-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","title":"L'Officiel Türkiye","date":"November 2024 Digital Cover","images":["lofficiel_241106_cover.jpg"],"videos":[]},{"id":"lofficiel-241106","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","title":"L'Officiel Türkiye","date":"November 2024","images":["lofficiel_241106_0131_retouched.jpg","lofficiel_241106_0376.jpg","lofficiel_241106_0928.jpg"],"videos":[]},{"id":"beegoddess-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Bee Goddess","date":"F/W 2024","images":["beegoddess_full_1.jpg","beegoddess_full_2.jpg"],"videos":[]},{"id":"lofficiel-260116","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-02","title":"L'Officiel Türkiye","date":"February 2026","images":["lofficiel_260116_0984.jpg","lofficiel_260116_1608.jpg"],"videos":[]},{"id":"manc-231124","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-05","title":"MANC","date":"Resort 2024","images":["manc_231124_01.jpg"],"videos":[]},{"id":"mudo-home-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Mudo Home","date":"F/W 2024","images":["mudo_home_1.jpg","mudo_home_5.jpg"],"videos":[]},{"id":"lofficiel-251213-cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-01","title":"L'Officiel Türkiye","date":"January 2026 Digital Cover","images":["lofficiel_251213_1647_retouched_3.jpg","lofficiel_251213_1900_ig.jpg"],"videos":[]},{"id":"vakko-fw24","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","title":"Vakko","date":"F/W 2024","images":["vakko_2.jpg","vakko_3.jpg","vakko_5.jpg"],"videos":[]},{"id":"qp-250421","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-06","title":"Q-P Magazine","date":"June 2025","images":["qp_250421_01.jpg"],"videos":[]},{"id":"elle-250919","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-10","title":"ELLE Türkiye","date":"October 2025","images":["elle_250919_01.jpg","elle_250919_02.jpg","elle_250919_03.jpg","elle_250919_04.jpg","elle_250919_05.jpg"],"videos":[]},{"id":"work-in-progress","field":"PHOTOGRAPHY","use":"PERSONAL","sortDate":"","title":"Work-in-Progress","date":"Personal","images":["denizalp_aybak_01.jpg","denizalp_aybak_02.jpg","denizalp_aybak_03.jpg","denizalp_aybak_04.jpg","denizalp_aybak_05.jpg","denizalp_aybak_06.jpg","denizalp_aybak_07.jpg","denizalp_aybak_08.jpg","denizalp_aybak_09.jpg"],"videos":[]},{"id":"vogue-260113","field":"FILM","use":"CAMPAIGN","sortDate":"2026-02","title":"vogue türkiye x peugeot","date":"february 2026","images":[],"videos":["vogue_260113_film.mp4","vogue_260113_teaser_1.mp4","vogue_260113_teaser_3.mp4"]},{"id":"zeyneparcay-251217","field":"FILM","use":"CAMPAIGN","sortDate":"2026-09","title":"zeynep arcay","date":"fall 2026","images":[],"videos":["zeyneparcay_251217_1.mp4","zeyneparcay_251217_2.mp4","zeyneparcay_251217_3.mp4","zeyneparcay_251217_4.mp4"]},{"id":"nulook-251031","field":"FILM","use":"EDITORIAL","sortDate":"2025-12","title":"nu-look magazine","date":"december 2025 (issue #07)","images":[],"videos":["nulook_251031_4.mp4","nulook_251031_5.mp4"]},{"id":"vogue-260213","field":"FILM","use":"EDITORIAL","sortDate":"2026-03","title":"vogue türkiye","date":"march 2026","images":[],"videos":["vogue_260213_1.mp4","vogue_260213_2.mp4","vogue_260213_3.mp4","vogue_260213_4.mp4"]},{"id":"zeyneparcay-250529","field":"FILM","use":"CAMPAIGN","sortDate":"2026-05","title":"zeynep arcay","date":"resort 2026","images":[],"videos":["zeyneparcay_250529_1.mp4","zeyneparcay_250529_2.mp4","zeyneparcay_250529_3.mp4"]},{"id":"nulook-240919","field":"FILM","use":"EDITORIAL","sortDate":"2024-12","title":"nu-look magazine","date":"december 2024 (issue #04)","images":[],"videos":["nulook_240919_3.mp4","nulook_240919_4.mp4","nulook_240919_5.mp4","nulook_240919_6.mp4"]},{"id":"lofficiel-241106","field":"FILM","use":"EDITORIAL","sortDate":"2024-11","title":"l’officiel türkiye","date":"november 2024","images":[],"videos":["lofficiel_241106.mp4"]},{"id":"nulook-250206","field":"FILM","use":"EDITORIAL","sortDate":"2025-04","title":"nu-look magazine","date":"april 2025 (issue #05)","images":[],"videos":["nulook_250206_1.mp4","nulook_250206_2.mp4","nulook_250206_3.mp4"]},{"id":"sober-210323","field":"FILM","use":"EDITORIAL","sortDate":"2024-05","title":"sober magazine","date":"may 2024 (issue #02)","images":[],"videos":["sober_210323_video_1.mp4","sober_210323_video_2.mp4","sober_210323_video_3.mp4"]}];
+  const PHOTO_THUMB_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
+  const FILM_PREVIEW_BASE = "https://library.denizalpaybak.com/film-previews/";
+  const PHOTO_SITE = "https://photography.denizalpaybak.com/";
+  const FILM_SITE = "https://film.denizalpaybak.com/";
 
-    const app = document.getElementById("index-app");
-    const table = document.getElementById("index-table");
-    const scroll = document.getElementById("index-scroll");
-    const preview = document.getElementById("index-preview");
-    const negativeLayer = document.getElementById("index-negative-layer");
-    const infoView = document.getElementById("index-info");
-    const indexSwitch = document.getElementById("index-switch");
-    const infoSwitch = document.getElementById("info-switch");
+  const indexSwitch = document.getElementById("index-switch");
+  const infoSwitch = document.getElementById("info-switch");
+  const indexPanel = document.getElementById("index-panel");
+  const infoPanel = document.getElementById("info-panel");
+  const indexTable = document.getElementById("index-table");
+  const preview = document.getElementById("index-preview");
+  const negativeLayer = document.getElementById("index-negative-layer");
+  const blackCard = document.getElementById("black-card");
+  const blackLogo = document.getElementById("black-logo");
+  const blackName = document.getElementById("black-logo-name");
+  const blackLetters = [...blackLogo.querySelectorAll(".black-letter")];
 
-    const CASE_DURATION = 620;
-    const ACTIVE_NUMBER_TRACKING = "0.055em";
+  const MORPH_DURATION = 280;
+  const BLACK_STEP = 80;
 
-    let activeKey = "date";
-    let direction = -1;
+  let mode = "index";
+  let modeTransition = null;
+  let activeKey = "date";
+  let direction = -1;
+  let hoveredRowState = null;
+  let hoveredCell = null;
+  let previewToken = 0;
+  let negativeFrame = null;
+  let blackActive = false;
+  let blackLeaving = false;
+  let blackState = 0;
+  let blackTarget = 0;
+  let blackTimer = null;
 
-    let hoveredRow = null;
-    let hoveredCell = null;
-    let previewToken = 0;
-    let negativeRaf = null;
-    let negativeLoopRunning = false;
+  const lower = value => String(value ?? "").toLocaleLowerCase();
+  const upper = value => String(value ?? "").toLocaleUpperCase();
+  const isLetter = ch => ch.toLocaleLowerCase() !== ch.toLocaleUpperCase();
 
-    const rowStates = [];
-    const headerStates = new Map();
+  function morphPositions(text){
+    return [...String(text)].map((ch,i)=>(isLetter(ch)||/[0-9]/.test(ch))?i:-1).filter(i=>i>=0);
+  }
 
-    const lower = value => String(value ?? "").toLocaleLowerCase();
-    const upper = value => String(value ?? "").toLocaleUpperCase();
+  function renderTypography(el, text, activePositions = new Set()){
+    const frag = document.createDocumentFragment();
+    [...String(text)].forEach((ch,i)=>{
+      const span = document.createElement("span");
+      span.className = "morph-char";
+      span.textContent = ch;
+      if(/[0-9]/.test(ch) && activePositions.has(i)) span.style.letterSpacing = ".055em";
+      frag.appendChild(span);
+    });
+    el.replaceChildren(frag);
+  }
 
-    function getMorphPositions(text) {
-        return Array.from(String(text))
-            .map((character, index) => {
-                const isLetter =
-                    character.toLowerCase() !== character.toUpperCase();
-                const isDigit = /[0-9]/.test(character);
-                return (isLetter || isDigit) ? index : -1;
-            })
-            .filter(index => index >= 0);
+  function caseText(baseText, count){
+    const base = lower(baseText);
+    const positions = morphPositions(base);
+    const active = new Set(positions.slice(0,count));
+    return {
+      text:[...base].map((ch,i)=>isLetter(ch)&&active.has(i)?upper(ch):lower(ch)).join(""),
+      active
+    };
+  }
+
+  function currentCaseState(el, baseText){
+    const base = lower(baseText);
+    const pos = morphPositions(base);
+    const children = [...el.children];
+    if(children.length !== base.length) return 0;
+    let state = 0;
+    for(let i=0;i<pos.length;i++){
+      const p = pos[i], ch = base[p], child = children[p];
+      const active = /[0-9]/.test(ch) ? !!child?.style?.letterSpacing : child?.textContent === upper(ch);
+      if(active) state++; else break;
+    }
+    return state;
+  }
+
+  function setCaseInstant(el, baseText, count){
+    const r = caseText(baseText,count);
+    renderTypography(el,r.text,r.active);
+    el.dataset.morphText = lower(baseText);
+    el.dataset.morphCount = String(count);
+  }
+
+  function morphTo(el, baseText, target, duration=MORPH_DURATION, onFrame=null){
+    const base = lower(baseText);
+    const positions = morphPositions(base);
+    const total = positions.length;
+    let startState = Number(el.dataset.morphCount || currentCaseState(el,base));
+    startState = Math.max(0,Math.min(total,startState));
+    target = Math.max(0,Math.min(total,target));
+
+    if(el._morphFrame) cancelAnimationFrame(el._morphFrame);
+    if(startState === target){
+      setCaseInstant(el,base,target);
+      if(onFrame) onFrame();
+      return Promise.resolve();
     }
 
-    function renderInteractiveTypography(element, text, activePositions = new Set()) {
-        const fragment = document.createDocumentFragment();
-
-        Array.from(String(text)).forEach((character, index) => {
-            const span = document.createElement("span");
-            span.textContent = character;
-
-            if (/[0-9]/.test(character) && activePositions.has(index)) {
-                span.style.letterSpacing = ACTIVE_NUMBER_TRACKING;
-            }
-
-            fragment.appendChild(span);
-        });
-
-        element.replaceChildren(fragment);
-    }
-
-    function renderCaseFromActivePositions(baseText, activePositions) {
-        return String(baseText)
-            .split("")
-            .map((character, index) => {
-                const isLetter =
-                    character.toLowerCase() !== character.toUpperCase();
-
-                return (isLetter && activePositions.has(index))
-                    ? character.toUpperCase()
-                    : character.toLowerCase();
-            })
-            .join("");
-    }
-
-    function createCaseController(element, baseText, afterRender = null) {
-        const base = String(baseText ?? "").toLowerCase();
-        const positions = getMorphPositions(base);
-        const total = positions.length;
-
-        let state = 0;
-        let frameId = null;
-
-        function render() {
-            const activePositions = new Set(positions.slice(0, state));
-            renderInteractiveTypography(
-                element,
-                renderCaseFromActivePositions(base, activePositions),
-                activePositions
-            );
-            element.dataset.rawText = element.textContent;
-            if (afterRender) afterRender();
+    const start = performance.now();
+    return new Promise(resolve=>{
+      const frame = now=>{
+        const p = Math.min(1,(now-start)/duration);
+        const eased = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
+        const state = Math.round(startState + (target-startState)*eased);
+        setCaseInstant(el,base,state);
+        if(onFrame) onFrame();
+        if(p<1){
+          el._morphFrame=requestAnimationFrame(frame);
+        }else{
+          setCaseInstant(el,base,target);
+          el._morphFrame=null;
+          if(onFrame) onFrame();
+          resolve();
         }
+      };
+      el._morphFrame=requestAnimationFrame(frame);
+    });
+  }
 
-        function animateTo(target) {
-            if (frameId !== null) {
-                cancelAnimationFrame(frameId);
-            }
+  function morphMany(items, toUpper, duration=MORPH_DURATION){
+    const tasks = items.map(item=>morphTo(item.el,item.text,toUpper?morphPositions(item.text).length:0,duration));
+    return Promise.all(tasks);
+  }
 
-            const startState = state;
-            if (startState === target) {
-                render();
-                return;
-            }
+  function fieldLabel(project){ return project.field === "PHOTOGRAPHY" ? "photography" : "film"; }
+  function valueFor(project,key){
+    if(key === "title") return lower(project.title);
+    if(key === "field") return lower(fieldLabel(project));
+    if(key === "use") return lower(project.use);
+    return project.sortDate || "";
+  }
+  function sortedProjects(){
+    return [...PROJECTS].sort((a,b)=>{
+      const av=valueFor(a,activeKey), bv=valueFor(b,activeKey);
+      if(av==="" && bv!=="") return 1;
+      if(av!=="" && bv==="") return -1;
+      if(av<bv) return -1*direction;
+      if(av>bv) return 1*direction;
+      const at=lower(a.title), bt=lower(b.title);
+      if(at<bt) return -1;
+      if(at>bt) return 1;
+      return a.id.localeCompare(b.id);
+    });
+  }
 
-            const start = performance.now();
+  function writeMorphElement(el,text,upperState=false){
+    el.classList.add("composite-target");
+    setCaseInstant(el,text,upperState?morphPositions(text).length:0);
+    el._morphBase=text;
+  }
 
-            function frame(now) {
-                const progress = Math.min(1, (now - start) / CASE_DURATION);
-                state = Math.round(startState + (target - startState) * progress);
-                render();
+  function buildHeader(){
+    const head=document.createElement("div");
+    head.className="idx-head";
+    const specs=[["title","title"],["date","date"],["field","field"],["use","use"]];
+    specs.forEach(([key,label])=>{
+      const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
+      const btn=document.createElement("button"); btn.type="button"; btn.className="idx-sort composite-target"; btn.setAttribute("aria-label",`Sort by ${label}`);
+      cell.appendChild(btn); head.appendChild(cell);
+      writeMorphElement(btn,label,key===activeKey);
+      btn._sortKey=key; btn._sortLabel=label;
+      btn.addEventListener("click",async e=>{
+        e.preventDefault(); e.stopPropagation();
+        if(activeKey===key) direction*=-1;
+        else { activeKey=key; direction=key==="date"?-1:1; }
+        const buttons=[...document.querySelectorAll(".idx-sort")];
+        const activeBtn=buttons.find(x=>x._sortKey===activeKey);
+        const oldBtns=buttons.filter(x=>x!==activeBtn);
+        await Promise.all([
+          morphTo(activeBtn,activeBtn._sortLabel,morphPositions(activeBtn._sortLabel).length,MORPH_DURATION),
+          ...oldBtns.map(x=>morphTo(x,x._sortLabel,0,MORPH_DURATION))
+        ]);
+        buildRowsOnly();
+      });
+    });
+    return head;
+  }
 
-                if (progress < 1) {
-                    frameId = requestAnimationFrame(frame);
-                } else {
-                    state = target;
-                    render();
-                    frameId = null;
-                }
-            }
-
-            frameId = requestAnimationFrame(frame);
-        }
-
-        render();
-
-        return {
-            upper() { animateTo(total); },
-            lower() { animateTo(0); },
-            getState() { return state; }
-        };
+  function choosePreview(project){
+    if(project.field==="PHOTOGRAPHY"){
+      if(!project.images?.length) return null;
+      const name=project.images[Math.floor(Math.random()*project.images.length)];
+      const dot=name.lastIndexOf(".");
+      const previewName=dot>0?`${name.slice(0,dot)}.webp`:`${name}.webp`;
+      return {type:"image",src:PHOTO_THUMB_BASE+encodeURIComponent(previewName)};
     }
-
-    function fieldLabel(project) {
-        return project.field === "PHOTOGRAPHY" ? "photography" : "film";
-    }
-
-    function valueFor(project, key) {
-        if (key === "title") return lower(project.title);
-        if (key === "field") return lower(fieldLabel(project));
-        if (key === "use") return lower(project.use);
-        return project.sortDate || "";
-    }
-
-    function sortedProjects() {
-        return [...PROJECTS].sort((a, b) => {
-            const av = valueFor(a, activeKey);
-            const bv = valueFor(b, activeKey);
-
-            if (av < bv) return -1 * direction;
-            if (av > bv) return 1 * direction;
-
-            const at = lower(a.title);
-            const bt = lower(b.title);
-
-            if (at < bt) return -1;
-            if (at > bt) return 1;
-            return a.id.localeCompare(b.id);
-        });
-    }
-
-    function htmlEscape(value) {
-        return String(value ?? "").replace(/[&<>"]/g, char => {
-            return {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;"
-            }[char];
-        });
-    }
-
-    function createMorphElement(text, className) {
-        const el = document.createElement("span");
-        el.className = className;
-        el.setAttribute("aria-hidden", "true");
-        return el;
-    }
-
-    function writeMorphButton(button, text) {
-        button.replaceChildren();
-        const wrapper = createMorphElement(text, "morph-text");
-        const base = lower(text);
-
-        Array.from(base).forEach((character, index) => {
-            const charWrap = document.createElement("span");
-            charWrap.className = "morph-char";
-            if (/\s/.test(character)) charWrap.classList.add("space");
-
-            const lo = document.createElement("span");
-            const up = document.createElement("span");
-            lo.className = "lower is-current";
-            up.className = "upper";
-
-            lo.textContent = character;
-            up.textContent = character.toUpperCase();
-
-            charWrap.append(lo, up);
-            wrapper.appendChild(charWrap);
-        });
-
-        button.appendChild(wrapper);
-    }
-
-    function setNavWord(button, text, active) {
-        const controller = createCaseController(button, text);
-        if (active) controller.upper();
-        return controller;
-    }
-
-    function choosePreview(project) {
-        if (project.field === "PHOTOGRAPHY") {
-            if (!project.images?.length) return null;
-
-            const name =
-                project.images[
-                    Math.floor(Math.random() * project.images.length)
-                ];
-
-            const dot = name.lastIndexOf(".");
-            const previewName =
-                dot > 0
-                    ? `${name.slice(0, dot)}.webp`
-                    : `${name}.webp`;
-
-            return {
-                type: "image",
-                src: PHOTO_THUMB_BASE + encodeURIComponent(previewName)
-            };
-        }
-
-        if (!project.videos?.length) return null;
-
-        const name =
-            project.videos[
-                Math.floor(Math.random() * project.videos.length)
-            ];
-
-        const dot = name.lastIndexOf(".");
-        const previewName =
-            dot > 0
-                ? `${name.slice(0, dot)}_preview.mp4`
-                : `${name}_preview.mp4`;
-
-        return {
-            type: "video",
-            src: FILM_PREVIEW_BASE + encodeURIComponent(previewName)
-        };
-    }
-
-    function projectForRow(row) {
-        return PROJECTS.find(project =>
-            project.id === row.dataset.projectId &&
-            project.field === row.dataset.projectField
-        ) || null;
-    }
-
-    function positionPreview() {
-        if (!hoveredCell) return;
-
-        const media = preview.firstElementChild;
-        if (!media) return;
-
-        const anchorRect = hoveredCell.getBoundingClientRect();
-        const mediaRect = media.getBoundingClientRect();
-
-        if (!mediaRect.width || !mediaRect.height) return;
-
-        let x = anchorRect.left + anchorRect.width / 2;
-        let y = anchorRect.top + anchorRect.height / 2;
-
-        const halfW = mediaRect.width / 2;
-        const halfH = mediaRect.height / 2;
-
-        x = Math.max(
-            halfW + 12,
-            Math.min(window.innerWidth - halfW - 12, x)
-        );
-
-        y = Math.max(
-            halfH + 12,
-            Math.min(window.innerHeight - halfH - 12, y)
-        );
-
-        preview.style.left = `${x}px`;
-        preview.style.top = `${y}px`;
-    }
-
-    function clearNegativeLayer() {
-        negativeLayer.replaceChildren();
-    }
-
-    function getActiveTextElement(row) {
-        return row?.querySelector(".idx-text");
-    }
-
-    function copyTextStyle(source, clone) {
-        const computed = getComputedStyle(source);
-
-        clone.style.fontFamily = computed.fontFamily;
-        clone.style.fontSize = computed.fontSize;
-        clone.style.fontWeight = computed.fontWeight;
-        clone.style.fontStyle = computed.fontStyle;
-        clone.style.lineHeight = computed.lineHeight;
-        clone.style.letterSpacing = computed.letterSpacing;
-        clone.style.wordSpacing = computed.wordSpacing;
-        clone.style.textAlign = computed.textAlign;
-        clone.style.width = computed.width;
-        clone.style.height = computed.height;
-    }
-
-    function updateNegativeLayer() {
-        negativeRaf = null;
-        clearNegativeLayer();
-
-        const media = preview.firstElementChild;
-
-        if (!preview.classList.contains("visible") || !media) {
-            return;
-        }
-
-        const mediaRect = media.getBoundingClientRect();
-
-        if (!mediaRect.width || !mediaRect.height) return;
-
-        const sources = [
-            ...table.querySelectorAll(".idx-text"),
-            ...table.querySelectorAll(".idx-sort")
-        ];
-
-        for (const source of sources) {
-            const sourceRect = source.getBoundingClientRect();
-
-            const left = Math.max(sourceRect.left, mediaRect.left);
-            const right = Math.min(sourceRect.right, mediaRect.right);
-            const top = Math.max(sourceRect.top, mediaRect.top);
-            const bottom = Math.min(sourceRect.bottom, mediaRect.bottom);
-
-            if (right <= left || bottom <= top) continue;
-
-            const clone = document.createElement("span");
-            clone.className = "idx-negative";
-            clone.textContent = source.textContent;
-
-            copyTextStyle(source, clone);
-
-            clone.style.left = `${sourceRect.left}px`;
-            clone.style.top = `${sourceRect.top}px`;
-            clone.style.width = `${sourceRect.width}px`;
-            clone.style.height = `${sourceRect.height}px`;
-
-            const insetTop = Math.max(0, top - sourceRect.top);
-            const insetRight = Math.max(0, sourceRect.right - right);
-            const insetBottom = Math.max(0, sourceRect.bottom - bottom);
-            const insetLeft = Math.max(0, left - sourceRect.left);
-
-            clone.style.clipPath =
-                `inset(${insetTop}px ${insetRight}px ${insetBottom}px ${insetLeft}px)`;
-
-            negativeLayer.appendChild(clone);
-        }
-    }
-
-    function requestNegativeFrame() {
-        if (negativeRaf !== null) return;
-        negativeRaf = requestAnimationFrame(updateNegativeLayer);
-    }
-
-    function startNegativeLoop() {
-        if (negativeLoopRunning) return;
-        negativeLoopRunning = true;
-
-        function loop() {
-            if (!negativeLoopRunning) return;
-            updateNegativeLayer();
-            requestAnimationFrame(loop);
-        }
-
-        requestAnimationFrame(loop);
-    }
-
-    function stopNegativeLoop() {
-        negativeLoopRunning = false;
-        clearNegativeLayer();
-    }
-
-    function showPreview(project) {
-        const source = choosePreview(project);
-        const token = ++previewToken;
-
-        preview.replaceChildren();
-        clearNegativeLayer();
-
-        if (!source) {
-            preview.classList.remove("visible");
-            return;
-        }
-
-        const media =
-            document.createElement(
-                source.type === "video" ? "video" : "img"
-            );
-
-        if (source.type === "video") {
-            media.muted = true;
-            media.autoplay = true;
-            media.loop = true;
-            media.playsInline = true;
-            media.preload = "metadata";
-            media.src = source.src;
-
-            media.addEventListener("loadedmetadata", () => {
-                if (token !== previewToken) return;
-
-                media.currentTime = 0;
-                media.play().catch(() => {});
-                positionPreview();
-                requestNegativeFrame();
-            }, { once: true });
-        } else {
-            media.alt = "";
-            media.decoding = "async";
-            media.loading = "eager";
-            media.src = source.src;
-
-            media.addEventListener("load", () => {
-                if (token !== previewToken) return;
-                positionPreview();
-                requestNegativeFrame();
-            }, { once: true });
-        }
-
-        media.addEventListener("error", () => {
-            if (token !== previewToken) return;
-
-            preview.classList.remove("visible");
-            stopNegativeLoop();
-        }, { once: true });
-
-        preview.appendChild(media);
-        preview.classList.add("visible");
-
-        positionPreview();
-        startNegativeLoop();
-    }
-
-    function clearHover() {
-        hoveredRow = null;
-        hoveredCell = null;
-        previewToken++;
-        preview.classList.remove("visible");
-        preview.replaceChildren();
-        stopNegativeLoop();
-    }
-
-    function setRowCase(rowState, toUpper) {
-        if (!rowState) return;
-
-        rowState.cells.forEach(cell => {
-            if (toUpper) cell.caseController.upper();
-            else cell.caseController.lower();
-        });
-    }
-
-    function setHoveredRow(rowState, cellEl) {
-        if (!rowState) return;
-
-        if (hoveredRow !== rowState) {
-            if (hoveredRow) {
-                hoveredRow.row.classList.remove("is-hovered");
-                setRowCase(hoveredRow, false);
-            }
-
-            hoveredRow = rowState;
-            hoveredRow.row.classList.add("is-hovered");
-
-            showPreview(rowState.project);
-        }
-
-        hoveredCell = cellEl || rowState.cells[0].element;
-        positionPreview();
-        requestNegativeFrame();
-    }
-
-    function buildHeader() {
-        const head = document.createElement("div");
-        head.className = "idx-head";
-
-        const specs = [
-            ["title", "title", false],
-            ["date", "date", true],
-            ["field", "field", false],
-            ["use", "use", false]
-        ];
-
-        const stateObjects = [];
-
-        for (const [key, label] of specs) {
-            const cell = document.createElement("div");
-            cell.className = `idx-cell ${key}`;
-
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "idx-sort";
-            button.setAttribute("aria-label", `Sort by ${label}`);
-
-            cell.appendChild(button);
-            head.appendChild(cell);
-
-            writeMorphButton(button, label);
-
-            const controller = createCaseController(
-                button,
-                label,
-                requestNegativeFrame
-            );
-
-            if (activeKey === key) controller.upper();
-
-            button.addEventListener("click", () => {
-                if (activeKey === key) {
-                    direction *= -1;
-                } else {
-                    activeKey = key;
-                    direction = key === "date" ? -1 : 1;
-                }
-
-                clearHover();
-                buildTable();
-            });
-
-            stateObjects.push([key, controller]);
-        }
-
-        headerStates.clear();
-        stateObjects.forEach(([key, controller]) => headerStates.set(key, controller));
-
-        return head;
-    }
-
-    function buildTable() {
-        clearHover();
-        rowStates.length = 0;
-        table.replaceChildren();
-
-        const head = buildHeader();
-        table.appendChild(head);
-
-        const rows = sortedProjects();
-
-        for (const project of rows) {
-            const row = document.createElement("a");
-            row.className = "idx-row";
-            row.href =
-                (project.field === "FILM" ? FILM_SITE : PHOTO_SITE) +
-                `?project=${encodeURIComponent(project.id)}&view=all`;
-
-            row.dataset.projectId = project.id;
-            row.dataset.projectField = project.field;
-            row.setAttribute("aria-label", `${project.title}, ${fieldLabel(project)}, ${project.use}`);
-
-            const cells = [
-                ["title", project.title],
-                ["date", project.date || ""],
-                ["field", fieldLabel(project)],
-                ["use", project.use || ""]
-            ];
-
-            const state = {
-                row,
-                project,
-                cells: []
-            };
-
-            for (const [key, value] of cells) {
-                const cell = document.createElement("div");
-                cell.className = `idx-cell ${key}`;
-
-                const text = document.createElement("span");
-                text.className = "idx-text";
-                text.textContent = lower(value);
-
-                cell.appendChild(text);
-                row.appendChild(cell);
-
-                const controller = createCaseController(
-                    text,
-                    value,
-                    requestNegativeFrame
-                );
-
-                state.cells.push({
-                    element: text,
-                    caseController: controller
-                });
-            }
-
-            row.addEventListener("pointerenter", event => {
-                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-                    return;
-                }
-
-                const targetCell =
-                    event.target.closest(".idx-cell") ||
-                    row.querySelector(".idx-cell.title");
-
-                setHoveredRow(state, targetCell);
-            });
-
-            row.addEventListener("pointerover", event => {
-                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-                    return;
-                }
-
-                const targetCell = event.target.closest(".idx-cell");
-                if (targetCell) {
-                    hoveredCell = targetCell.querySelector(".idx-text") || targetCell;
-                    positionPreview();
-                }
-            });
-
-            row.addEventListener("pointerleave", () => {
-                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-                    return;
-                }
-
-                if (hoveredRow === state) {
-                    state.row.classList.remove("is-hovered");
-                    setRowCase(state, false);
-                    hoveredRow = null;
-                    hoveredCell = null;
-                    previewToken++;
-                    preview.classList.remove("visible");
-                    preview.replaceChildren();
-                    stopNegativeLoop();
-                }
-            });
-
-            row.addEventListener("focus", () => {
-                setHoveredRow(state, row.querySelector(".idx-text"));
-            });
-
-            row.addEventListener("blur", clearHover);
-
-            rowStates.push(state);
-            table.appendChild(row);
-        }
-
-        requestNegativeFrame();
-    }
-
-    function setNavMode(mode) {
-        const info = mode === "info";
-        infoView.classList.toggle("hidden", !info);
-
-        if (info) {
-            headerStates.get("index")?.lower?.();
-            headerStates.get("info")?.upper?.();
-        }
-
-        const indexTarget = info ? "index" : "index";
-        const infoTarget = info ? "info" : "info";
-        indexSwitch.setAttribute("aria-pressed", String(!info));
-        infoSwitch.setAttribute("aria-pressed", String(info));
-
-        if (info) {
-            indexSwitch.replaceChildren();
-            infoSwitch.replaceChildren();
-            writeMorphButton(indexSwitch, "index");
-            writeMorphButton(infoSwitch, "info");
-            const iCtrl = createCaseController(indexSwitch, "index");
-            const fCtrl = createCaseController(infoSwitch, "info");
-            fCtrl.upper();
-        } else {
-            indexSwitch.replaceChildren();
-            infoSwitch.replaceChildren();
-            writeMorphButton(indexSwitch, "index");
-            writeMorphButton(infoSwitch, "info");
-            const iCtrl = createCaseController(indexSwitch, "index");
-            const fCtrl = createCaseController(infoSwitch, "info");
-            iCtrl.upper();
-        }
-        clearHover();
-    }
-
-    indexSwitch.addEventListener("mouseenter", () => {
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-            // Cosmetic only: active word remains uppercase.
-        }
+    if(!project.videos?.length) return null;
+    const name=project.videos[Math.floor(Math.random()*project.videos.length)];
+    const dot=name.lastIndexOf(".");
+    const previewName=dot>0?`${name.slice(0,dot)}_preview.mp4`:`${name}_preview.mp4`;
+    return {type:"video",src:FILM_PREVIEW_BASE+encodeURIComponent(previewName)};
+  }
+
+  function positionPreview(){
+    const media=preview.firstElementChild;
+    if(!media || !hoveredCell) return;
+    const a=hoveredCell.getBoundingClientRect(), m=media.getBoundingClientRect();
+    if(!m.width||!m.height) return;
+    let x=a.left+a.width/2, y=a.top+a.height/2;
+    const hw=m.width/2, hh=m.height/2;
+    x=Math.max(hw+10,Math.min(innerWidth-hw-10,x));
+    y=Math.max(hh+10,Math.min(innerHeight-hh-10,y));
+    preview.style.left=`${x}px`; preview.style.top=`${y}px`;
+  }
+
+  function scheduleNegative(){
+    if(negativeFrame!==null) return;
+    negativeFrame=requestAnimationFrame(()=>{negativeFrame=null; updateNegative();});
+  }
+
+  function sameTypography(source,clone){
+    const c=getComputedStyle(source);
+    clone.style.fontFamily=c.fontFamily;
+    clone.style.fontSize=c.fontSize;
+    clone.style.fontWeight=c.fontWeight;
+    clone.style.fontStyle=c.fontStyle;
+    clone.style.lineHeight=c.lineHeight;
+    clone.style.letterSpacing=c.letterSpacing;
+    clone.style.wordSpacing=c.wordSpacing;
+    clone.style.textAlign=c.textAlign;
+  }
+
+  function updateNegative(){
+    negativeLayer.replaceChildren();
+    const media=preview.firstElementChild;
+    if(!preview.classList.contains("visible")||!media) return;
+    const mr=media.getBoundingClientRect();
+    if(!mr.width||!mr.height) return;
+
+    const sources=[...document.querySelectorAll("#index-app .composite-target")].filter(el=>{
+      if(!el.textContent.trim()) return false;
+      if(el.closest("#black-card")) return false;
+      if(el.offsetParent===null) return false;
+      return true;
     });
 
-    infoSwitch.addEventListener("mouseenter", () => {
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-            // Cosmetic only: active word remains uppercase.
-        }
+    for(const source of sources){
+      const r=source.getBoundingClientRect();
+      const L=Math.max(r.left,mr.left), R=Math.min(r.right,mr.right), T=Math.max(r.top,mr.top), B=Math.min(r.bottom,mr.bottom);
+      if(R<=L||B<=T) continue;
+      const clone=document.createElement("span");
+      clone.className="idx-negative";
+      clone.textContent=source.textContent;
+      sameTypography(source,clone);
+      clone.style.left=`${r.left}px`; clone.style.top=`${r.top}px`; clone.style.width=`${r.width}px`; clone.style.height=`${r.height}px`;
+      clone.style.clipPath=`inset(${Math.max(0,T-r.top)}px ${Math.max(0,r.right-R)}px ${Math.max(0,r.bottom-B)}px ${Math.max(0,L-r.left)}px)`;
+      negativeLayer.appendChild(clone);
+    }
+  }
+
+  function clearPreview(){
+    previewToken++;
+    preview.classList.remove("visible");
+    preview.replaceChildren();
+    negativeLayer.replaceChildren();
+  }
+
+  function showPreview(project){
+    const source=choosePreview(project); const token=++previewToken;
+    preview.replaceChildren(); negativeLayer.replaceChildren();
+    if(!source){preview.classList.remove("visible");return;}
+    const media=document.createElement(source.type==="video"?"video":"img");
+    if(source.type==="video"){
+      media.muted=true;media.autoplay=true;media.loop=true;media.playsInline=true;media.preload="metadata";media.src=source.src;
+      media.addEventListener("loadedmetadata",()=>{if(token!==previewToken)return;media.currentTime=0;media.play().catch(()=>{});positionPreview();scheduleNegative();},{once:true});
+    }else{
+      media.alt="";media.decoding="async";media.loading="eager";media.src=source.src;
+      media.addEventListener("load",()=>{if(token!==previewToken)return;positionPreview();scheduleNegative();},{once:true});
+    }
+    media.addEventListener("error",()=>{if(token!==previewToken)return;clearPreview();},{once:true});
+    preview.appendChild(media); preview.classList.add("visible"); positionPreview(); scheduleNegative();
+  }
+
+  function setRowState(state,upperState){
+    if(!state) return;
+    state.items.forEach(item=>{
+      morphTo(item.el,item.text,upperState?morphPositions(item.text).length:0,MORPH_DURATION,scheduleNegative);
     });
+  }
 
-    indexSwitch.addEventListener("click", () => {
-        setNavMode("index");
+  function hoverRow(state,cell){
+    if(hoveredRowState===state){ hoveredCell=cell; positionPreview(); scheduleNegative(); return; }
+    if(hoveredRowState){hoveredRowState.row.classList.remove("hovered");setRowState(hoveredRowState,false)}
+    hoveredRowState=state; hoveredCell=cell || state.items[0]?.el || null; state.row.classList.add("hovered"); showPreview(state.project); setRowState(state,true);
+  }
+
+  function clearHover(){
+    if(hoveredRowState){hoveredRowState.row.classList.remove("hovered");setRowState(hoveredRowState,false)}
+    hoveredRowState=null; hoveredCell=null; clearPreview();
+  }
+
+  function buildRowsOnly(){
+    clearHover();
+    const head=indexTable.querySelector(".idx-head") || buildHeader();
+    indexTable.replaceChildren(head);
+    const body=document.createElement("div"); body.className="idx-body";
+    const rows=sortedProjects(); body.style.setProperty("--rows",rows.length);
+    const states=[];
+    rows.forEach(project=>{
+      const row=document.createElement("a"); row.className="idx-row";
+      row.href=(project.field==="FILM"?FILM_SITE:PHOTO_SITE)+`?project=${encodeURIComponent(project.id)}&view=all`;
+      row.dataset.projectId=project.id; row.dataset.field=project.field;
+      const vals=[["title",project.title],["date",project.date||""],["field",fieldLabel(project)],["use",project.use||""]];
+      const state={row,project,items:[]};
+      vals.forEach(([key,text])=>{
+        const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
+        if(key==="use" && window.innerWidth<=900) cell.style.display="none";
+        const el=document.createElement("span"); el.className="idx-text composite-target";
+        writeMorphElement(el,text,false); cell.appendChild(el); row.appendChild(cell); state.items.push({el,text});
+      });
+      row.addEventListener("pointerenter",e=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;const c=e.target.closest(".idx-cell")?.querySelector(".idx-text")||state.items[0].el;hoverRow(state,c)});
+      row.addEventListener("pointerover",e=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;const c=e.target.closest(".idx-cell")?.querySelector(".idx-text");if(c){hoveredCell=c;positionPreview();scheduleNegative()}});
+      row.addEventListener("pointerleave",()=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;if(hoveredRowState===state)clearHover()});
+      row.addEventListener("focus",()=>hoverRow(state,state.items[0].el));
+      row.addEventListener("blur",()=>{if(hoveredRowState===state)clearHover()});
+      states.push(state); body.appendChild(row);
     });
+    indexTable.appendChild(body);
+    requestAnimationFrame(()=>scheduleNegative());
+  }
 
-    infoSwitch.addEventListener("click", () => {
-        setNavMode("info");
-    });
+  function buildIndex(){
+    indexTable.replaceChildren(buildHeader());
+    buildRowsOnly();
+  }
 
-    window.addEventListener("resize", () => {
-        positionPreview();
-        requestNegativeFrame();
-    });
+  function navElements(){return [
+    {el:indexSwitch,text:"index"},
+    {el:infoSwitch,text:"info"}
+  ]}
 
-    scroll.addEventListener("scroll", requestNegativeFrame, { passive: true });
+  function setNavInstant(){
+    navElements().forEach(item=>writeMorphElement(item.el,item.text,(mode==="index"&&item.text==="index")||(mode==="info"&&item.text==="info")));
+  }
 
-    setNavMode("index");
-    buildTable();
+  async function switchMode(next){
+    if(modeTransition || blackActive) return;
+    if(next===mode) next = mode==="index"?"info":"index";
+    modeTransition={from:mode,to:next};
+    clearHover();
+    const currentIndex=mode==="index";
+    const targetIndex=next==="index";
+    const currentItems=navElements();
+    const tasks=[];
+    for(const item of currentItems){
+      const upperTarget=(item.text==="index"?targetIndex:!targetIndex);
+      tasks.push(morphTo(item.el,item.text,upperTarget?morphPositions(item.text).length:0,MORPH_DURATION));
+    }
+    await Promise.all(tasks);
+    mode=next;
+    indexSwitch.setAttribute("aria-pressed",String(mode==="index")); infoSwitch.setAttribute("aria-pressed",String(mode==="info"));
+    indexPanel.classList.toggle("hidden",mode!=="index");
+    infoPanel.classList.toggle("hidden",mode!=="info");
+    modeTransition=null;
+  }
+
+  async function toggleFrom(which){
+    if(blackActive){closeBlack(false);return;}
+    await switchMode(which==="index"?"info":"index");
+  }
+
+  indexSwitch.addEventListener("click",e=>{e.preventDefault();toggleFrom("index")});
+  infoSwitch.addEventListener("click",e=>{e.preventDefault();toggleFrom("info")});
+
+  /* =========================
+     BLACK CARD — same gesture model as the original landing
+     ========================= */
+  function setBlackState(n){
+    blackState=Math.max(0,Math.min(5,n));
+    blackName.textContent=blackState===0?"Denizalp":"denizalp";
+    blackLetters.forEach((el,i)=>el.textContent=i<blackState?upper("aybak"[i]):lower("aybak"[i]));
+  }
+  function morphBlackTo(target){
+    if(blackTimer!==null)clearTimeout(blackTimer);
+    function step(){
+      if(blackState===target){blackTimer=null;return;}
+      blackState += blackState<target?1:-1;
+      setBlackState(blackState);
+      blackTimer=setTimeout(step,BLACK_STEP);
+    }
+    step();
+  }
+  function openBlack(){
+    if(blackActive) return;
+    blackActive=true; blackLeaving=false; document.body.classList.remove("black-leaving"); document.body.classList.add("black-mode"); blackCard.setAttribute("aria-hidden","false"); setBlackState(0);
+  }
+  function closeBlack(prepareUpper=true){
+    if(!blackActive||blackLeaving)return;
+    blackLeaving=true;
+    const finish=()=>{
+      blackActive=false; document.body.classList.remove("black-mode"); document.body.classList.add("black-leaving"); blackCard.setAttribute("aria-hidden","true");
+      setTimeout(()=>{document.body.classList.remove("black-leaving");blackLeaving=false;setBlackState(0)},420);
+    };
+    if(prepareUpper){morphBlackTo(5);setTimeout(finish,BLACK_STEP*5+120)}else finish();
+  }
+  blackLogo.addEventListener("mouseenter",()=>{if(matchMedia("(hover:hover) and (pointer:fine)").matches&&!blackLeaving)morphBlackTo(5)});
+  blackLogo.addEventListener("mouseleave",()=>{if(matchMedia("(hover:hover) and (pointer:fine)").matches&&!blackLeaving)morphBlackTo(0)});
+  blackLogo.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();closeBlack(true)});
+
+  let wheelAcc=0,wheelTimer=null;
+  window.addEventListener("wheel",e=>{
+    if(e.ctrlKey) return;
+    wheelAcc += e.deltaY;
+    if(wheelTimer)clearTimeout(wheelTimer);
+    wheelTimer=setTimeout(()=>{wheelAcc=0;wheelTimer=null},140);
+    if(!blackActive && mode==="index" && wheelAcc>48){e.preventDefault();wheelAcc=0;openBlack();}
+    else if(blackActive && wheelAcc<-48){e.preventDefault();wheelAcc=0;closeBlack(false);}
+  },{passive:false});
+
+  let touchStartY=null;
+  window.addEventListener("touchstart",e=>{const t=e.touches[0];touchStartY=t?t.clientY:null},{passive:true});
+  window.addEventListener("touchend",e=>{if(touchStartY===null)return;const t=e.changedTouches[0];if(!t)return;const dy=t.clientY-touchStartY;touchStartY=null;if(Math.abs(dy)<52)return;if(!blackActive&&mode==="index"&&dy<0)openBlack();else if(blackActive&&dy>0)closeBlack(false)},{passive:true});
+  window.addEventListener("keydown",e=>{if(e.code==="Escape"&&blackActive){e.preventDefault();closeBlack(false);return}if(e.code==="ArrowDown"&&!blackActive&&mode==="index"){e.preventDefault();openBlack()}else if(e.code==="ArrowUp"&&blackActive){e.preventDefault();closeBlack(false)}});
+
+  window.addEventListener("resize",()=>{
+    positionPreview();scheduleNegative();
+    if((window.innerWidth<=900)!==(document.body.dataset.mobile==="1")){document.body.dataset.mobile=window.innerWidth<=900?"1":"0";buildIndex();setNavInstant()}
+  });
+  window.addEventListener("scroll",scheduleNegative,{passive:true});
+
+  buildIndex();
+  setNavInstant();
+  indexSwitch.setAttribute("aria-pressed","true"); infoSwitch.setAttribute("aria-pressed","false");
 })();
 </script>
 </body>
