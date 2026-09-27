@@ -2111,8 +2111,7 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-footer a{color:#000;text-decoration:none;white-space:nowrap;}
 .clean-index-footer a:hover{text-decoration:underline;}
 
-/* The table is vertically centered. Its horizontal edges are symmetric
-   and are set from the measured longest bottom-right label. */
+/* BUG FIX 4: overscroll-behavior eklendi, Mac/iOS rubber-banding kapatıldı */
 .clean-index-table-wrap{
   position:absolute;
   left:var(--ci-edge);
@@ -2123,6 +2122,7 @@ document.documentElement.classList.add('clean-index-boot');
   overflow:auto;
   scrollbar-width:none;
   -ms-overflow-style:none;
+  overscroll-behavior:none; 
 }
 .clean-index-table-wrap::-webkit-scrollbar{display:none;}
 
@@ -2133,8 +2133,14 @@ document.documentElement.classList.add('clean-index-boot');
   align-items:baseline;
   width:100%;
 }
-.clean-index-header{margin-bottom:8px;}
-.clean-index-row{min-height:calc(var(--ci-font)*var(--ci-line));margin-bottom:var(--ci-gap);}
+/* BUG FIX 6: Başlık boşluğu 8px'den 24px'e çıkarıldı */
+.clean-index-header{margin-bottom:24px;}
+.clean-index-row{
+  min-height:calc(var(--ci-font)*var(--ci-line));
+  margin-bottom:var(--ci-gap);
+  /* BUG FIX 1: Hover edince tıklama sınırlarını kendi satırına hapseder */
+  position: relative; 
+}
 
 .clean-index-cell{min-width:0;position:relative;}
 .clean-index-cell-content{display:inline-flex;position:relative;z-index:2;pointer-events:none;}
@@ -2161,7 +2167,7 @@ document.documentElement.classList.add('clean-index-boot');
   margin:0;
 }
 
-/* 3-column responsive mode: title left / date center / field right. */
+/* 3-column responsive mode */
 @media (max-width:900px){
   :root{--ci-side:24px;--ci-top:20px;--ci-bottom:18px;--ci-font:13px;}
   .clean-index-table-wrap{left:var(--ci-side);right:var(--ci-side);max-height:calc(100vh - 125px);}
@@ -2174,7 +2180,7 @@ document.documentElement.classList.add('clean-index-boot');
   .clean-index-row .clean-index-cell:nth-child(4){display:none;}
 }
 
-/* Medium desktop/mobile landscape: keep type identical but tighten the row field. */
+/* Medium desktop/mobile landscape */
 @media (max-width:1100px) and (min-width:901px){
   :root{--ci-side:32px;}
   .clean-index-table-wrap{left:var(--ci-edge);right:var(--ci-edge);}
@@ -2206,8 +2212,7 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-info-block.right{text-align:right;}
 .clean-index-info-block .line{display:block;white-space:nowrap;}
 
-/* Fixed preview. It sits above ALL text; there is intentionally no
-   blend/difference/negative layer in this system. */
+/* BUG FIX 5: Optik yumuşatma (scale ve opacity birleşimi) eklendi */
 .clean-index-preview{
   position:fixed;
   z-index:9500;
@@ -2219,9 +2224,15 @@ document.documentElement.classList.add('clean-index-boot');
   opacity:0;
   visibility:hidden;
   pointer-events:none;
-  transition:opacity 120ms ease;
+  transform:scale(0.98);
+  transition:opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
 }
-.clean-index-preview.visible{opacity:1;visibility:visible;}
+.clean-index-preview.visible{
+  opacity:1;
+  visibility:visible;
+  transform:scale(1);
+  transition:opacity 160ms ease, transform 160ms ease, visibility 0s linear 0s;
+}
 .clean-index-preview img,.clean-index-preview video{
   display:block;
   width:auto;
@@ -2246,74 +2257,6 @@ html.landing-aybak-active #clean-index-shell{visibility:hidden !important;pointe
   .clean-index-preview{transition:none;}
 }
 </style>
-
-</head>
-<body>
-<div class="page" id="page">
-<div class="photography-field" id="photography-field">
-<div id="scattered-stage"></div>
-<img alt="" aria-hidden="true" id="fixed-photo-preview" src="./photo.jpg"/>
-</div>
-<main class="landing-grid" id="landing-grid">
-<!-- LOGO -->
-<button aria-label="Denizalp Aybak" class="logo" id="logo" type="button">
-<span class="logo-name" id="logo-name">
-                Denizalp
-            </span>
-<span class="logo-aybak">
-<span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
-</span>
-</button>
-<!-- MEDIA -->
-<div class="media-field" id="media-field">
-<div class="film-field" id="film-field">
-<a aria-label="Film" class="film-link" href="https://film.denizalpaybak.com/">
-<video id="film-video" muted="" playsinline="" preload="auto" src="./film.mp4"></video>
-</a>
-</div>
-</div>
-<!-- BIOGRAPHY -->
-<section class="biography" id="biography">
-    <div id="biography-flow" aria-live="off"></div>
-</section>
-</main>
-<!-- FIXED CORNER UI: intentionally outside the landing-grid stacking context -->
-<nav class="navigation">
-<a href="https://photography.denizalpaybak.com/" id="photography-link">
-<span id="photography-text">
-                    PHOTOGRAPHY.
-                </span>
-</a>
-<a href="https://film.denizalpaybak.com/" id="film-link">
-<span id="film-text">
-                    FILM.
-                </span>
-</a>
-</nav>
-<div class="contact">
-<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">
-                d@denizalpaybak.com
-            </a>
-<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">
-                instagram @denizalpaybak
-            </a>
-<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">
-                models.com
-            </a>
-</div>
-<p class="portfolio-download">
-<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">
-                    portfolio.pdf
-                </a>
-</p>
-<section aria-hidden="true" id="landing-aybak-end-card">
-<button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
-<span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
-<span aria-hidden="true" id="landing-aybak-aybak"><span class="landing-aybak-letter" id="landing-aybak-letter-a">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-y">y</span><span class="landing-aybak-letter" id="landing-aybak-letter-b">b</span><span class="landing-aybak-letter" id="landing-aybak-letter-a2">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-k">k</span></span>
-</button>
-</section>
-</div>
-<script>
 /* =====================================================
    AYBAK END-CARD FALLBACK INTERACTION
 
@@ -9432,7 +9375,6 @@ window.addEventListener("resize", () => {
   "use strict";
 
   const DATA = [{"id":"vogue-260213","type":"photo","title":"Vogue Türkiye","date":"March 2026","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-03","media":["vogue_260213_01.jpg","vogue_260213_02.jpg","vogue_260213_0926_alt.jpg","vogue_260213_1327.jpg","vogue_260213_0197.jpg","vogue_260213_0235_alt.jpg","vogue_260213_0419_alt.jpg","vogue_260213_1101.jpg","vogue_260213_0881.jpg","vogue_260213_1922.jpg","vogue_260213_05312.jpg"],"cover":"vogue_260213_01.jpg","_order":0},{"id":"harpersbazaar-260625","type":"photo","title":"Harper's Bazaar Türkiye","date":"July 2026","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-07","media":["harpersbazaar_260625_0554.jpg","harpersbazaar_260625_0578_alt.jpg","harpersbazaar_260625_0733.jpg","harpersbazaar_260625_0775.jpg","harpersbazaar_260625_0818.jpg","harpersbazaar_260625_0856_alt.jpg","harpersbazaar_260625_0970.jpg","harpersbazaar_260625_1037.jpg","harpersbazaar_260625_1040.jpg","harpersbazaar_260625_1454_alt.jpg","harpersbazaar_260625_0357.jpg","harpersbazaar_260625_0506.jpg"],"cover":"harpersbazaar_260625_0554.jpg","_order":1},{"id":"lofficiel-250130-cover","type":"photo","title":"L'Officiel Türkiye","date":"February 2025 Digital Cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","media":["lofficiel_250130_cover.jpg"],"cover":"lofficiel_250130_cover.jpg","_order":2},{"id":"lofficiel-250130","type":"photo","title":"L'Officiel Türkiye","date":"February 2025","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-02","media":["lofficiel_250130_1246.jpg","lofficiel_250130_layout_1.jpg","lofficiel_250130_layout_4.jpg","lofficiel_250130_layout_5.jpg"],"cover":"lofficiel_250130_1246.jpg","_order":3},{"id":"lofficiel-241106-cover","type":"photo","title":"L'Officiel Türkiye","date":"November 2024 Digital Cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","media":["lofficiel_241106_cover.jpg"],"cover":"lofficiel_241106_cover.jpg","_order":4},{"id":"lofficiel-241106","type":"photo","title":"L'Officiel Türkiye","date":"November 2024","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2024-11","media":["lofficiel_241106_0131_retouched.jpg","lofficiel_241106_0376.jpg","lofficiel_241106_0928.jpg"],"cover":"lofficiel_241106_0131_retouched.jpg","_order":5},{"id":"beegoddess-fw24","type":"photo","title":"Bee Goddess","date":"F/W 2024","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","media":["beegoddess_full_1.jpg","beegoddess_full_2.jpg"],"cover":"beegoddess_full_1.jpg","_order":6},{"id":"lofficiel-260116","type":"photo","title":"L'Officiel Türkiye","date":"February 2026","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-02","media":["lofficiel_260116_0984.jpg","lofficiel_260116_1608.jpg"],"cover":"lofficiel_260116_0984.jpg","_order":7},{"id":"manc-231124","type":"photo","title":"MANC","date":"Resort 2024","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-05","media":["manc_231124_01.jpg"],"cover":"manc_231124_01.jpg","_order":8},{"id":"mudo-home-fw24","type":"photo","title":"Mudo Home","date":"F/W 2024","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","media":["mudo_home_1.jpg","mudo_home_5.jpg"],"cover":"mudo_home_1.jpg","_order":9},{"id":"lofficiel-251213-cover","type":"photo","title":"L'Officiel Türkiye","date":"January 2026 Digital Cover","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2026-01","media":["lofficiel_251213_1647_retouched_3.jpg","lofficiel_251213_1900_ig.jpg"],"cover":"lofficiel_251213_1647_retouched_3.jpg","_order":10},{"id":"vakko-fw24","type":"photo","title":"Vakko","date":"F/W 2024","field":"PHOTOGRAPHY","use":"CAMPAIGN","sortDate":"2024-09","media":["vakko_2.jpg","vakko_3.jpg","vakko_5.jpg"],"cover":"vakko_2.jpg","_order":11},{"id":"qp-250421","type":"photo","title":"Q-P Magazine","date":"June 2025","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-06","media":["qp_250421_01.jpg"],"cover":"qp_250421_01.jpg","_order":12},{"id":"elle-250919","type":"photo","title":"ELLE Türkiye","date":"October 2025","field":"PHOTOGRAPHY","use":"EDITORIAL","sortDate":"2025-10","media":["elle_250919_01.jpg","elle_250919_02.jpg","elle_250919_03.jpg","elle_250919_04.jpg","elle_250919_05.jpg"],"cover":"elle_250919_01.jpg","_order":13},{"id":"work-in-progress","type":"photo","title":"Work-in-Progress","date":"Personal","field":"PHOTOGRAPHY","use":"PERSONAL","sortDate":"","media":["denizalp_aybak_01.jpg","denizalp_aybak_02.jpg","denizalp_aybak_03.jpg","denizalp_aybak_04.jpg","denizalp_aybak_05.jpg","denizalp_aybak_06.jpg","denizalp_aybak_07.jpg","denizalp_aybak_08.jpg","denizalp_aybak_09.jpg"],"cover":"denizalp_aybak_01.jpg","_order":14},{"id":"vogue-260113","type":"film","title":"vogue türkiye x peugeot","date":"february 2026","field":"FILM","use":"CAMPAIGN","sortDate":"2026-02","media":["vogue_260113_film.mp4","vogue_260113_teaser_1.mp4","vogue_260113_teaser_3.mp4"],"cover":"vogue_260113_film.mp4","_order":15},{"id":"zeyneparcay-251217","type":"film","title":"zeynep arcay","date":"fall 2026","field":"FILM","use":"CAMPAIGN","sortDate":"2026-09","media":["zeyneparcay_251217_1.mp4","zeyneparcay_251217_2.mp4","zeyneparcay_251217_3.mp4","zeyneparcay_251217_4.mp4"],"cover":"zeyneparcay_251217_1.mp4","_order":16},{"id":"nulook-251031","type":"film","title":"nu-look magazine","date":"december 2025 (issue #07)","field":"FILM","use":"EDITORIAL","sortDate":"2025-12","media":["nulook_251031_4.mp4","nulook_251031_5.mp4"],"cover":"nulook_251031_4.mp4","_order":17},{"id":"vogue-260213","type":"film","title":"vogue türkiye","date":"march 2026","field":"FILM","use":"EDITORIAL","sortDate":"2026-03","media":["vogue_260213_1.mp4","vogue_260213_2.mp4","vogue_260213_3.mp4","vogue_260213_4.mp4"],"cover":"vogue_260213_1.mp4","_order":18},{"id":"zeyneparcay-250529","type":"film","title":"zeynep arcay","date":"resort 2026","field":"FILM","use":"CAMPAIGN","sortDate":"2026-05","media":["zeyneparcay_250529_1.mp4","zeyneparcay_250529_2.mp4","zeyneparcay_250529_3.mp4"],"cover":"zeyneparcay_250529_1.mp4","_order":19},{"id":"nulook-240919","type":"film","title":"nu-look magazine","date":"december 2024 (issue #04)","field":"FILM","use":"EDITORIAL","sortDate":"2024-12","media":["nulook_240919_3.mp4","nulook_240919_4.mp4","nulook_240919_5.mp4","nulook_240919_6.mp4"],"cover":"nulook_240919_3.mp4","_order":20},{"id":"lofficiel-241106","type":"film","title":"l’officiel türkiye","date":"november 2024","field":"FILM","use":"EDITORIAL","sortDate":"2024-11","media":["lofficiel_241106.mp4"],"cover":"lofficiel_241106.mp4","_order":21},{"id":"nulook-250206","type":"film","title":"nu-look magazine","date":"april 2025 (issue #05)","field":"FILM","use":"EDITORIAL","sortDate":"2025-04","media":["nulook_250206_1.mp4","nulook_250206_2.mp4","nulook_250206_3.mp4"],"cover":"nulook_250206_1.mp4","_order":22},{"id":"sober-210323","type":"film","title":"sober magazine","date":"may 2024 (issue #02)","field":"FILM","use":"EDITORIAL","sortDate":"2024-05","media":["sober_210323_video_1.mp4","sober_210323_video_2.mp4","sober_210323_video_3.mp4"],"cover":"sober_210323_video_1.mp4","_order":23}];
-  const INITIAL_IDS = ["zeyneparcay-251217", "harpersbazaar-260625", "zeyneparcay-250529", "vogue-260213", "vogue-260213", "vogue-260113", "lofficiel-260116", "lofficiel-251213-cover", "nulook-251031", "elle-250919", "qp-250421", "nulook-250206", "lofficiel-250130", "lofficiel-250130-cover", "nulook-240919", "lofficiel-241106", "lofficiel-241106", "lofficiel-241106-cover", "vakko-fw24", "mudo-home-fw24", "beegoddess-fw24", "sober-210323", "manc-231124", "work-in-progress"];
 
   const PHOTO_BASE = "https://library.denizalpaybak.com/photo-thumbnails/";
   const FILM_BASE = "https://library.denizalpaybak.com/film-previews/";
@@ -9460,7 +9402,6 @@ window.addEventListener("resize", () => {
   let sortKey = "sortDate";
   let sortDirection = -1;
   let currentRows = [];
-  let rowSlots = new Map();
   let previewRow = null;
   let previewRequest = 0;
   let infoBuilt = false;
@@ -9600,7 +9541,6 @@ window.addEventListener("resize", () => {
       temp.className="clean-index-morph-host";
       temp.style.display="contents";
       temp.__rawText=String(texts[i]).toLowerCase();
-      // Replace the contents of the real cell with a controllable element.
       host.replaceChildren();
       host.appendChild(temp);
       initCharSpans(temp,texts[i]);
@@ -9640,7 +9580,6 @@ window.addEventListener("resize", () => {
     const staticRows=Array.from(table.querySelectorAll(".clean-index-row"));
     staticRows.forEach(r=>r.remove());
 
-    // Reuse static DOM generation for the current sort order.
     const frag=document.createDocumentFragment();
     currentRows=[];
     sortedProjects().forEach((p,index)=>{
@@ -9693,7 +9632,6 @@ window.addEventListener("resize", () => {
     hidePreview();
     renderHeaders();
     renderTableData();
-    assignPreviewSlots();
     syncEdgeAndPosition();
   }
 
@@ -9716,9 +9654,17 @@ window.addEventListener("resize", () => {
     currentRows.forEach((r,i)=>attachRow(r.el,r.p,i));
   }
 
-  /* Deterministic preview placement. No Math.random. A stable hash of the
-     project id picks the preferred slot; nearby fallback slots are tested
-     against the hovered row and its two neighbours. */
+  // BUG FIX 2: Dinamik Simetrik Margin
+  function syncEdgeAndPosition() {
+    requestAnimationFrame(()=>{
+      const bottomRight=Array.from(document.querySelectorAll('.clean-index-footer-right a')).find(a=>a.textContent.toLowerCase().startsWith('instagram @'));
+      const measured=bottomRight ? Math.ceil(bottomRight.getBoundingClientRect().width) : 48;
+      const minSide=window.innerWidth<=900 ? 24 : 48;
+      const edge = window.innerWidth<=900 ? minSide : Math.max(minSide, measured); // Mobilde tam genişlik kalır
+      document.documentElement.style.setProperty('--ci-edge',edge+'px');
+    });
+  }
+
   const ANCHORS=[
     [0.17,0.22],[0.34,0.22],[0.51,0.22],[0.69,0.22],[0.84,0.22],
     [0.22,0.50],[0.40,0.50],[0.58,0.50],[0.76,0.50],
@@ -9731,16 +9677,6 @@ window.addEventListener("resize", () => {
     let h=2166136261;
     for(let i=0;i<str.length;i++) { h^=str.charCodeAt(i); h=Math.imul(h,16777619); }
     return (h>>>0);
-  }
-
-  function syncEdgeAndPosition() {
-    requestAnimationFrame(()=>{
-      const bottomRight=Array.from(document.querySelectorAll('.clean-index-footer-right a')).find(a=>a.textContent.toLowerCase().startsWith('instagram @'));
-      const measured=bottomRight ? Math.ceil(bottomRight.getBoundingClientRect().width) : 48;
-      const minSide=window.innerWidth<=900 ? 24 : 48;
-      const edge=Math.max(minSide,measured);
-      document.documentElement.style.setProperty('--ci-edge',edge+'px');
-    });
   }
 
   function candidateOrder(project) {
@@ -9760,25 +9696,36 @@ window.addEventListener("resize", () => {
     return !(a.right+pad < b.left || a.left-pad > b.right || a.bottom+pad < b.top || a.top-pad > b.bottom);
   }
 
-  function assignPreviewSlots() {
-    rowSlots=new Map();
-    requestAnimationFrame(()=>{
-      const w=Math.min(window.innerWidth*0.28,520);
-      const h=Math.min(window.innerHeight*0.34,430);
-      currentRows.forEach((r,index)=>{
-        const blocked=[];
-        for(let j=Math.max(0,index-2);j<=Math.min(currentRows.length-1,index+2);j++) blocked.push(currentRows[j].el.getBoundingClientRect());
-        const ordered=candidateOrder(r.p);
-        let choice=ordered[0];
-        for(const c of ordered) {
-          const box=previewBoxAt(c,w,h);
-          if(box.left<8||box.top<8||box.right>window.innerWidth-8||box.bottom>window.innerHeight-8) continue;
-          if(blocked.some(b=>touches(box,b,8))) continue;
-          choice=c; break;
-        }
-        rowSlots.set(r.p.id,choice);
-      });
-    });
+  // BUG FIX 3: Dinamik Akıllı Preview Pozisyonlandırma
+  function positionPreview(r) {
+    const rect = preview.getBoundingClientRect();
+    const w = rect.width || Math.min(window.innerWidth * 0.28, 520);
+    const h = rect.height || Math.min(window.innerHeight * 0.34, 430);
+
+    // O anki güncel +2 / -2 satırların BoundingClientRect koordinatları hesaplanır.
+    const blocked = [];
+    for (let j = Math.max(0, r.index - 2); j <= Math.min(currentRows.length - 1, r.index + 2); j++) {
+      blocked.push(currentRows[j].el.getBoundingClientRect());
+    }
+
+    const ordered = candidateOrder(r.p);
+    let choice = ordered[0]; // fallback
+
+    for (const c of ordered) {
+      const box = previewBoxAt(c, w, h);
+      if (box.left < 8 || box.top < 8 || box.right > window.innerWidth - 8 || box.bottom > window.innerHeight - 8) continue;
+      // Metinlerin üstünü kapatmamak için 12px ekstra padding ile çarpışma testi
+      if (blocked.some(b => touches(box, b, 12))) continue; 
+      choice = c; 
+      break;
+    }
+
+    let finalBox = previewBoxAt(choice, w, h);
+    finalBox.left = Math.max(8, Math.min(window.innerWidth - w - 8, finalBox.left));
+    finalBox.top = Math.max(8, Math.min(window.innerHeight - h - 8, finalBox.top));
+
+    preview.style.left = finalBox.left + 'px';
+    preview.style.top = finalBox.top + 'px';
   }
 
   function mediaFor(project) {
@@ -9789,35 +9736,34 @@ window.addEventListener("resize", () => {
     return FILM_BASE+(dot>0?media.slice(0,dot):media)+'_preview.mp4';
   }
 
-  function positionPreview(r) {
-    const slot=rowSlots.get(r.p.id);
-    if(!slot) return;
-    const rect=preview.getBoundingClientRect();
-    const w=rect.width||Math.min(window.innerWidth*0.28,520);
-    const h=rect.height||Math.min(window.innerHeight*0.34,430);
-    let box=previewBoxAt(slot,w,h);
-    box.left=Math.max(8,Math.min(window.innerWidth-w-8,box.left));
-    box.top=Math.max(8,Math.min(window.innerHeight-h-8,box.top));
-    preview.style.left=box.left+'px';
-    preview.style.top=box.top+'px';
-  }
-
   function showPreview(r) {
     previewRow = r;
-    const request=++previewRequest;
-    if(!rowSlots.has(r.p.id)) assignPreviewSlots();
-    preview.innerHTML='';
-    const src=mediaFor(r.p);
+    const request = ++previewRequest;
+    preview.innerHTML = '';
+    const src = mediaFor(r.p);
     if(!src) return;
-    const el=r.p.type==='photo'?document.createElement('img'):document.createElement('video');
+
+    const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
     if(r.p.type==='photo') { el.src=src; el.alt=''; }
     else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
+    
     preview.appendChild(el);
+    // Zıplamayı önlemek için görünür olmadan hemen önce konumlandır
+    positionPreview(r);
     preview.classList.add('visible');
-    const done=()=>requestAnimationFrame(()=>{ if(request===previewRequest) positionPreview(r); });
-    if(r.p.type==='photo') { if(el.complete) done(); else el.addEventListener('load',done,{once:true}); el.addEventListener('error',done,{once:true}); }
-    else { el.addEventListener('loadedmetadata',done,{once:true}); el.addEventListener('canplay',done,{once:true}); }
-    requestAnimationFrame(()=>{ if(request===previewRequest) positionPreview(r); });
+
+    const done = () => requestAnimationFrame(() => { 
+      if(request===previewRequest) positionPreview(r); 
+    });
+
+    if(r.p.type==='photo') { 
+      if(el.complete) done(); 
+      else { el.addEventListener('load',done,{once:true}); el.addEventListener('error',done,{once:true}); } 
+    }
+    else { 
+      el.addEventListener('loadedmetadata',done,{once:true}); 
+      el.addEventListener('canplay',done,{once:true}); 
+    }
   }
 
   function hidePreview() { previewRow=null; preview.classList.remove('visible'); preview.innerHTML=''; }
@@ -9825,7 +9771,6 @@ window.addEventListener("resize", () => {
   async function switchView(target) {
     if(activeView===target) return;
     hidePreview();
-    const from=activeView;
     if(target==='info') ensureInfo();
     activeView=target;
     await morphTopState();
@@ -9842,51 +9787,91 @@ window.addEventListener("resize", () => {
   indexButton.addEventListener('click',()=>switchView('index'));
   infoButton.addEventListener('click',()=>switchView('info'));
 
-  function openEndCard() {
-    if(typeof window.setLandingAybakEndCard==='function') window.setLandingAybakEndCard(true);
+  function openEndCard(show) {
+    if(typeof window.setLandingAybakEndCard==='function') window.setLandingAybakEndCard(show);
   }
 
-  document.addEventListener('wheel',event=>{
-    if(document.body.classList.contains('landing-aybak-active')) return;
+  // BUG FIX 4: Kusursuz Çift Yönlü Scroll Dinleyicisi
+  document.addEventListener('wheel', event => {
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if(event.target.closest('.clean-index-footer')) return;
-    if(event.deltaY<=0) return;
+
+    if (!isBlackCard) {
+      if (event.deltaY <= 0) {
+          wheelAccumulator = 0; // Yukarı kaydırmada ivmeyi anında sıfırla
+          return;
+      }
+      const wrap = document.querySelector('.clean-index-table-wrap');
+      if (wrap && activeView === "index") {
+          const canScroll = wrap.scrollHeight > wrap.clientHeight;
+          const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
+          // Liste aşağı kayabiliyorsa ve en altta değilse, end card'a geçme ivmeyi sıfırla
+          if (canScroll && !atBottom) {
+              wheelAccumulator = 0;
+              return;
+          }
+      }
+    } else {
+      if (event.deltaY >= 0) {
+          wheelAccumulator = 0; // Siyah ekranda aşağı kaydırmada ivmeyi anında sıfırla
+          return;
+      }
+    }
+
     wheelAccumulator += event.deltaY;
     clearTimeout(wheelResetTimer);
-    wheelResetTimer=setTimeout(()=>wheelAccumulator=0,220);
-    if(wheelAccumulator>=48) { wheelAccumulator=0; openEndCard(); }
-  },{passive:true});
+    wheelResetTimer = setTimeout(() => wheelAccumulator = 0, 140);
+
+    if (!isBlackCard && wheelAccumulator >= 48) {
+      event.preventDefault(); // Sıçramayı kes
+      wheelAccumulator = 0;
+      openEndCard(true);
+    } else if (isBlackCard && wheelAccumulator <= -48) {
+      event.preventDefault(); // Sıçramayı kes
+      wheelAccumulator = 0;
+      openEndCard(false);
+    }
+  }, {passive: false});
 
   document.addEventListener('keydown',event=>{
-    if(document.body.classList.contains('landing-aybak-active')) return;
-    if(event.key==='ArrowDown' || event.key==='PageDown') { event.preventDefault(); openEndCard(); }
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
+    if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { event.preventDefault(); openEndCard(true); }
+    if(isBlackCard && (event.key==='ArrowUp' || event.key==='PageUp')) { event.preventDefault(); openEndCard(false); }
   });
 
   document.addEventListener('touchstart',event=>{
-    if(document.body.classList.contains('landing-aybak-active')) return;
     if(event.changedTouches && event.changedTouches[0]) lastTouchY=event.changedTouches[0].clientY;
   },{passive:true});
+
   document.addEventListener('touchend',event=>{
-    if(document.body.classList.contains('landing-aybak-active')) return;
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if(lastTouchY===null || !event.changedTouches || !event.changedTouches[0]) return;
-    const dy=event.changedTouches[0].clientY-lastTouchY;
-    lastTouchY=null;
-    if(dy < -45) openEndCard();
+    const dy = event.changedTouches[0].clientY - lastTouchY;
+    lastTouchY = null;
+
+    if (!isBlackCard && dy < -45) {
+      const wrap = document.querySelector('.clean-index-table-wrap');
+      if (wrap && activeView === "index") {
+          const canScroll = wrap.scrollHeight > wrap.clientHeight;
+          const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
+          if (canScroll && !atBottom) return;
+      }
+      openEndCard(true);
+    } else if (isBlackCard && dy > 45) {
+      openEndCard(false);
+    }
   },{passive:true});
 
-  window.addEventListener('resize',()=>{ syncEdgeAndPosition(); assignPreviewSlots(); if(previewRow) positionPreview(previewRow); });
-  document.fonts && document.fonts.ready ? document.fonts.ready.then(()=>{syncEdgeAndPosition();assignPreviewSlots();}) : syncEdgeAndPosition();
+  window.addEventListener('resize',()=>{ syncEdgeAndPosition(); if(previewRow) positionPreview(previewRow); });
+  document.fonts && document.fonts.ready ? document.fonts.ready.then(()=>{syncEdgeAndPosition();}) : syncEdgeAndPosition();
 
-  // Hook the static first-render rows. This keeps the INDEX visible even if
-  // the original landing script is still finishing its own initialization.
   renderHeaders();
   initStaticRows();
-  assignPreviewSlots();
   syncEdgeAndPosition();
   setStaticCase(indexButton,true);
   setStaticCase(infoButton,false);
   morphTopState();
 
-  // Ensure the black end-card remains above our shell.
   const watcher=new MutationObserver(()=>{
     const active=document.body.classList.contains('landing-aybak-active');
     shell.style.visibility=active?'hidden':'visible';
