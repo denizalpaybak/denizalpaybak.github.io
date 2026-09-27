@@ -2306,38 +2306,67 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     const src = mediaFor(r.p); if(!src) return;
     const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
     if(r.p.type==='photo') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
+    
+    // GÖRSELİN TAM ÜSTÜNE TIKLANINCA PROJEYE GİDER
+    el.addEventListener("click", (e) => { e.stopPropagation(); goToProject(r.p); });
     p.appendChild(el); p.classList.add('visible');
   }
 
   function hidePreview() { previewRow = null; document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML = ''; }
 
-  // MENÜ GEÇİŞLERİ VE SİYAH EKRAN KİLİDİ ÇÖZÜMÜ
+  function executeSwitch(target) {
+      hidePreview(); lastTappedId = null; 
+      if(target === 'index') {
+          indexView.classList.add('active'); infoView.classList.remove('active');
+          indexView.setAttribute('aria-hidden', 'false'); infoView.setAttribute('aria-hidden', 'true');
+      } else {
+          infoView.classList.add('active'); indexView.classList.remove('active');
+          infoView.setAttribute('aria-hidden', 'false'); indexView.setAttribute('aria-hidden', 'true');
+      }
+  }
+
+  // YENİDEN YAZILAN KUSURSUZ MENÜ GEÇİŞ (NAVİGASYON) MANTIĞI
   function switchView(target) {
-    // Siyah ekrandaysak tüm kilitleri kırıp geçiş yap
-    if (document.body.classList.contains('landing-aybak-active')) {
-        document.body.classList.remove('landing-aybak-active');
-        document.documentElement.classList.remove('landing-aybak-active');
-        ecFinishing = false;
-        animateLogo(0);
-    }
-    
-    if(activeView===target) return;
-    hidePreview(); lastTappedId = null; 
-    activeView=target; morphTopState();
-    
-    if(target === 'index') {
-        indexView.classList.add('active'); infoView.classList.remove('active');
-        indexView.setAttribute('aria-hidden', 'false'); infoView.setAttribute('aria-hidden', 'true');
-    } else {
-        infoView.classList.add('active'); indexView.classList.remove('active');
-        infoView.setAttribute('aria-hidden', 'false'); indexView.setAttribute('aria-hidden', 'true');
-    }
+      const isBlackCard = document.body.classList.contains('landing-aybak-active');
+      
+      if (isBlackCard) {
+          if (activeView === target) {
+              // 1. Zaten aktif olan menüye tıklanırsa sadece siyah ekran kapanır
+              openEndCard(false);
+              return;
+          } else {
+              // 2. Farklı bir menüye tıklanırsa
+              if (window.innerWidth <= 900) {
+                  // MOBİL: Önce morph eder, biraz duraksar (500ms), sonra geçiş yapıp kapatır
+                  activeView = target;
+                  morphTopState();
+                  setTimeout(() => {
+                      executeSwitch(target);
+                      openEndCard(false);
+                  }, 500); 
+              } else {
+                  // MASAÜSTÜ: Anında sayfa geçer, kapanırken beyaz ekranda morph görünür
+                  activeView = target;
+                  morphTopState();
+                  executeSwitch(target);
+                  openEndCard(false);
+              }
+              return;
+          }
+      }
+
+      // Normal Beyaz Ekranda Geçiş
+      if (activeView === target) return;
+      activeView = target;
+      morphTopState();
+      executeSwitch(target);
   }
 
   indexButton.addEventListener('mouseenter',()=>{ indexPointerHover=true; morphTopState(); });
   indexButton.addEventListener('mouseleave',()=>{ indexPointerHover=false; morphTopState(); });
   infoButton.addEventListener('mouseenter',()=>{ infoPointerHover=true; morphTopState(); });
   infoButton.addEventListener('mouseleave',()=>{ infoPointerHover=false; morphTopState(); });
+  
   indexButton.addEventListener('click',()=>switchView('index'));
   infoButton.addEventListener('click',()=>switchView('info'));
 
@@ -2369,7 +2398,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         lastTappedId = null;
       }
     }
-  }, true); // "true" sayesinde önce biz yakalıyoruz, diğer her şeyden üstteyiz!
+  }, true); // "true" sayesinde önce biz yakalıyoruz!
 
   // ================= 6 ADIMLI LOGO MORPH (Denizalp -> denizalp -> AYBAK) =================
   const ecBtn = document.getElementById("ci-endcard-btn"), wlBtn = document.getElementById("ci-white-logo-btn");
@@ -2431,8 +2460,9 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       });
   });
 
-  // SCROLL (TEKERLEK & DOKUNMA) İLE GEÇİŞ
+  // SCROLL VE KLAVYE İLE SİYAH EKRAN GEÇİŞİ (ESC TUŞU EKLENDİ)
   let wheelAccumulator = 0, wheelResetTimer = null, lastTouchY = null;
+  
   document.addEventListener('wheel', event => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if(event.target.closest('.clean-index-footer') || event.target.closest('.clean-index-topbar')) return;
@@ -2448,10 +2478,16 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     else if (isBlackCard && wheelAccumulator <= -48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(false); }
   }, {passive: false});
 
-  document.addEventListener('keydown',event=>{
+  document.addEventListener('keydown', event => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
-    if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { event.preventDefault(); openEndCard(true); }
-    if(isBlackCard && (event.key==='ArrowUp' || event.key==='PageUp')) { event.preventDefault(); openEndCard(false); }
+    // Aşağı Tuşlar: Siyah ekranı açar
+    if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { 
+        event.preventDefault(); openEndCard(true); 
+    }
+    // Yukarı Tuşlar veya ESC Tuşu: Siyah ekranı kapatır
+    if(isBlackCard && (event.key==='ArrowUp' || event.key==='PageUp' || event.key==='Escape')) { 
+        event.preventDefault(); openEndCard(false); 
+    }
   });
 
   document.addEventListener('touchstart',event=>{ if(event.changedTouches[0]) lastTouchY=event.changedTouches[0].clientY; },{passive:true});
