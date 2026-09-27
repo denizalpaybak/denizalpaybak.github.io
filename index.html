@@ -1888,7 +1888,7 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-index-shell { position: fixed; inset: 0; z-index: 9000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden; transition: opacity 400ms ease; }
 #clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after { box-sizing: border-box; }
 
-/* PREVIEW LAYER (Ekranın Tam Merkezi - Devasa Boyut) */
+/* PREVIEW LAYER (Ekranın Tam Merkezi) */
 #ci-preview-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none; }
 .ci-preview-item { position: absolute; max-width: 65vw; max-height: 75vh; object-fit: contain; opacity: 0; transform: scale(0.98); transition: opacity 240ms ease, transform 240ms ease; }
 .ci-preview-item.visible { opacity: 1; transform: scale(1); }
@@ -1913,9 +1913,22 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-filter-btn:hover { text-decoration: underline; }
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
-/* TABLO (Tam Genişlik) */
-.clean-index-table-wrap { position: absolute; left: var(--ci-side); right: var(--ci-side); top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow: auto; scrollbar-width: none; overscroll-behavior: none; }
-.clean-index-table-wrap::-webkit-scrollbar { display: none; }
+/* TABLE & INFO (Masaüstünde Tam Orta %50) */
+.clean-index-table-wrap, .clean-index-info-scroll { 
+    position: absolute; 
+    left: 25vw; width: 50vw; 
+    top: 50%; transform: translateY(-50%); 
+    max-height: calc(100vh - 150px); 
+    overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; 
+}
+.clean-index-table-wrap::-webkit-scrollbar, .clean-index-info-scroll::-webkit-scrollbar { display: none; }
+
+.clean-index-info-content { width: 100%; max-width: 100%; margin: 0; font: inherit; line-height: inherit; }
+.clean-index-info-block { width: 100%; margin: 0 0 24px; }
+.clean-index-info-block.left { text-align: left; }
+.clean-index-info-block.right { text-align: right; }
+.clean-index-info-block .line { display: block; white-space: nowrap; }
+
 .clean-index-table { width: 100%; }
 .clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
 .clean-index-header { margin-bottom: 24px; }
@@ -1933,41 +1946,51 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-footer a { color: inherit; text-decoration: none; white-space: nowrap; }
 .clean-index-footer a:hover { text-decoration: underline; }
 
-/* INFO SECTION (Sol %50 kaplama) */
-.clean-index-info-scroll { position: absolute; left: var(--ci-side); right: var(--ci-side); top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow: auto; scrollbar-width: none; }
-.clean-index-info-scroll::-webkit-scrollbar { display: none; }
-.clean-index-info-content { width: 100%; max-width: 50%; margin-left: 0; font: inherit; line-height: inherit; }
-.clean-index-info-block { width: 100%; margin: 0 0 24px; }
-.clean-index-info-block.left { text-align: left; }
-.clean-index-info-block.right { text-align: right; }
-.clean-index-info-block .line { display: block; white-space: nowrap; }
-
-/* MOBİL */
+/* MOBİL & TABLET EKRANLAR */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
-  .ci-preview-item { max-width: 85vw; max-height: 45vh; }
+  .ci-preview-item { max-width: 70vw; max-height: 40vh; }
   .clean-index-filters { margin-bottom: 24px; }
   .ci-filter-row { flex-wrap: wrap; }
-  .clean-index-info-content { max-width: 100%; }
+  /* Mobilde tablo ve info tam genişliğe oturur */
+  .clean-index-table-wrap, .clean-index-info-scroll { left: var(--ci-side); right: var(--ci-side); width: auto; }
 }
 
-/* Orijinal Sayfa Gizleme & End Card Geçişi */
-html.clean-index-live .page { visibility: hidden !important; }
-html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download { visibility: hidden !important; pointer-events: none !important; }
-body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-index-shell { opacity: 0 !important; pointer-events: none !important; }
-</style>
+/* =====================================================
+   END-CARD & ORIGINAL LANDING HIDING LOGIC
+   ===================================================== */
+/* Sadece landing elemanlarını siliyoruz, .page (end card taşıyıcısı) kalıyor */
+html.clean-index-live .photography-field,
+html.clean-index-live .landing-grid,
+html.clean-index-live .navigation,
+html.clean-index-live .contact,
+html.clean-index-live .portfolio-download {
+  display: none !important;
+}
 
+body.landing-aybak-active #clean-index-shell, 
+html.landing-aybak-active #clean-index-shell { 
+  opacity: 0 !important; 
+  pointer-events: none !important; 
+}
+</style>
 <div id="clean-index-shell">
-  <div id="ci-preview-layer"><div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div></div>
+  <!-- Arka Plan Görsel/Video Katmanı (Ekranın Tam Merkezi) -->
+  <div id="ci-preview-layer">
+    <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
+  </div>
+
+  <!-- Ön Plan UI Katmanı (Difference Mode ile negatif çalışan katman) -->
   <div id="ci-ui-layer">
     <div class="clean-index-topbar">
       <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
       <button id="clean-info-button" class="clean-index-topbutton" type="button" aria-label="Info"></button>
     </div>
+
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
         
-        <!-- FİLTRELER -->
+        <!-- YENİ: Filtre Menüsü (Use ve Field - Saf Siyah/Beyaz) -->
         <div class="clean-index-filters">
           <div class="ci-filter-row">
             <span class="ci-filter-label">field:</span>
@@ -1986,16 +2009,20 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 
         <div id="clean-index-table" class="clean-index-table">
           <div class="clean-index-header">
-            <div class="clean-index-cell"><button class="clean-index-headerbutton active-sort" data-key="title" type="button"></button></div>
-            <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="sortDate" type="button"></button></div>
+            <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
+            <div class="clean-index-cell"><button class="clean-index-headerbutton active-sort" data-key="sortDate" type="button"></button></div>
           </div>
           <div id="clean-index-body"></div>
         </div>
       </div>
     </section>
+
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
-      <div class="clean-index-info-scroll"><div id="clean-info-content" class="clean-index-info-content"></div></div>
+      <div class="clean-index-info-scroll">
+        <div id="clean-info-content" class="clean-index-info-content"></div>
+      </div>
     </section>
+
     <div class="clean-index-footer">
       <div class="clean-index-footer-left">
         <a href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
@@ -2013,7 +2040,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 (async () => {
   "use strict";
 
-  // CANLI FETCH URL'LERİ
+  // CANLI FETCH URL'LERİ (GitHub'dan güncel JSON'ları çeker)
   const LANDING_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/denizalpaybak.github.io/main/landing-index.json";
   const PHOTO_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
   const FILM_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-film/main/films.json";
@@ -2039,6 +2066,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   document.documentElement.classList.remove("clean-index-boot");
   document.documentElement.classList.add("clean-index-live");
 
+  // ================= CANLI JSON FETCH İŞLEMİ ================= //
   let DATA = [];
   try {
       const [landingRes, photoRes, filmRes] = await Promise.all([
@@ -2053,18 +2081,22 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
       DATA = landingData.map((item, index) => {
           let isPhoto = item.field === "PHOTOGRAPHY";
           let mediaData = isPhoto ? photoData.find(p => p.id === item.id) : filmData.find(p => p.id === item.id);
-          if (!mediaData) return null;
+          if (!mediaData) return null; // JSON eşleşmezse atla
           return {
               id: item.id, title: mediaData.title, date: mediaData.date, type: isPhoto ? "photo" : "film",
               field: item.field, use: item.use, sortDate: item.sortDate, images: mediaData.images || null,
               videos: mediaData.videos || null, coverOverride: mediaData.coverOverride || null, _order: index
           };
       }).filter(Boolean);
-      renderIndex();
-  } catch (err) { console.error("Data çekilemedi:", err); }
+      renderIndex(); // Fetch tamamlanınca tabloyu doldur
+  } catch (err) {
+      console.error("Data çekilemedi:", err);
+  }
 
   const MORPH_STATES = new WeakMap();
-  let activeView = "index", activeField = "ALL", activeUse = "ALL", sortKey = "title", sortDirection = 1;
+  
+  // İstenen başlangıç değerleri: field=ALL, use=ALL, Date (Descending)
+  let activeView = "index", activeField = "ALL", activeUse = "ALL", sortKey = "sortDate", sortDirection = -1;
   let currentRows = [], previewRow = null, previewRequest = 0, infoBuilt = false;
   let indexPointerHover = false, infoPointerHover = false, lastTappedId = null, tapTimer = null;
 
@@ -2072,6 +2104,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   const BIO_SEGMENTS = [{"align": "left", "lines": ["denizalp aybak (b. 1997) is a photographer and filmmaker,", "based in istanbul and available internationally."]}, {"align": "right", "lines": ["having graduated top of his class in management at sabanci university,", "he brings a strategic approach to image-making,", "considering both the work itself and the world it belongs to."]}, {"align": "left", "lines": ["his work creates atmosphere through contrast:", "light that feels dark,", "beauty that appears distant,", "stillness that carries tension,", "and precision that emerges from spontaneity."]}, {"align": "right", "lines": ["editorial collaborators include:", "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"]}, {"align": "left", "lines": ["brand collaborators include:", "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"]}];
 
   function letters(text) { const out=[]; for(let i=0;i<text.length;i++) { const c=text[i]; if(c.toLowerCase() !== c.toUpperCase()) out.push(i); } return out; }
+  
   function initCharSpans(el, rawText) {
     const text=String(rawText).toLowerCase(); const frag=document.createDocumentFragment();
     for(const ch of text) { const s=document.createElement("span"); s.className="clean-index-char"; s.textContent=ch; frag.appendChild(s); }
@@ -2079,12 +2112,14 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
     el.replaceChildren(wrap); el.__rawText=text; el.__charWrap=wrap;
     MORPH_STATES.set(el, {state:0,target:0,frame:null,count:letters(text).length});
   }
+  
   function renderMorph(el, state) {
     const st=MORPH_STATES.get(el); if(!st || !el.__charWrap) return;
     const text=el.__rawText, pos=letters(text), active=new Set(pos.slice(0,state));
     Array.from(el.__charWrap.children).forEach((span,i)=>{ const c=text[i]; span.textContent=active.has(i) ? c.toUpperCase() : c.toLowerCase(); });
     st.state=state;
   }
+  
   function morphElement(el, toUpper, duration=MORPH_MS) {
     const st=MORPH_STATES.get(el); if(!st) return Promise.resolve();
     if(st.frame!==null) cancelAnimationFrame(st.frame);
@@ -2100,17 +2135,19 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
       st.target=target; st.frame=requestAnimationFrame(frame);
     });
   }
+  
   function setStaticCase(el, upper) {
     const st=MORPH_STATES.get(el); if(!st) return;
     if(st.frame!==null) cancelAnimationFrame(st.frame);
     renderMorph(el, upper ? st.count : 0); st.frame=null; st.target=upper?st.count:0;
   }
+  
   function morphTopState() {
     morphElement(indexButton, activeView === "index" || indexPointerHover);
     morphElement(infoButton, activeView === "info" || infoPointerHover);
   }
-
-  initCharSpans(indexButton,"index"); initCharSpans(infoButton,"info");
+initCharSpans(indexButton,"index");
+  initCharSpans(infoButton,"info");
 
   function ensureInfo() {
     if(infoBuilt) return;
@@ -2124,7 +2161,13 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   }
 
   function filteredAndSortedProjects() {
-    let copy = DATA.filter(p => (activeField === "ALL" || p.field === activeField) && (activeUse === "ALL" || p.use === activeUse));
+    let copy = DATA.filter(p => {
+      // Data içindeki field kelimesi ile buton val değerleri eşleşir
+      const matchField = activeField === "ALL" || (p.field && p.field.toUpperCase() === activeField);
+      const matchUse = activeUse === "ALL" || (p.use && p.use.toUpperCase() === activeUse);
+      return matchField && matchUse;
+    });
+    
     copy.sort((a,b)=>{
       const av=String(a[sortKey]||"").toLowerCase(), bv=String(b[sortKey]||"").toLowerCase();
       const aa=sortKey==="sortDate" ? (av || "0000-00") : av; const bb=sortKey==="sortDate" ? (bv || "0000-00") : bv;
@@ -2138,7 +2181,10 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 
   function triggerHoverIn(index) {
     if(!currentRows[index]) return;
+    
+    // Mobil & Desktop için: Eski açık olanları temizle ki aynı anda iki satır uppercase kalmasın
     currentRows.forEach((r, i) => { if(i !== index && r.hover) triggerHoverOut(i); });
+
     const r = currentRows[index]; const cells = getRowCells(r.el);
     r.hover = true; Promise.all(cells.map(c=>morphElement(c,true))); showPreview(r);
   }
@@ -2229,7 +2275,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   function switchView(target) {
     if(activeView===target) return;
     hidePreview(); lastTappedId = null; if(target==='info') ensureInfo();
-    activeView=target; morphTopState(); // await kaldırıldı, menü anında geçiyor
+    activeView=target; morphTopState();
     indexView.classList.toggle('active',target==='index'); infoView.classList.toggle('active',target==='info');
     indexView.setAttribute('aria-hidden',target!=='index'); infoView.setAttribute('aria-hidden',target!=='info');
   }
@@ -2249,8 +2295,8 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
     if(event.target.closest('.clean-index-footer')) return;
     if (!isBlackCard) {
       if (event.deltaY <= 0) { wheelAccumulator = 0; return; }
-      const wrap = document.querySelector('.clean-index-table-wrap');
-      if (wrap && activeView === "index") {
+      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
+      if (wrap) {
           const canScroll = wrap.scrollHeight > wrap.clientHeight;
           const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
           if (canScroll && !atBottom) { wheelAccumulator = 0; return; }
@@ -2277,8 +2323,8 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
     if(lastTouchY===null || !event.changedTouches || !event.changedTouches[0]) return;
     const dy = event.changedTouches[0].clientY - lastTouchY; lastTouchY = null;
     if (!isBlackCard && dy < -45) {
-      const wrap = document.querySelector('.clean-index-table-wrap');
-      if (wrap && activeView === "index") {
+      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
+      if (wrap) {
           const canScroll = wrap.scrollHeight > wrap.clientHeight;
           const atBottom = wrap.scrollTop + wrap.clientHeight >= wrap.scrollHeight - 2;
           if (canScroll && !atBottom) return;
@@ -2297,4 +2343,4 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 })();
 </script>
 </body>
-</html>
+</html>   
