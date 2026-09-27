@@ -11,66 +11,87 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#fff;color:
 button,a{font:inherit}
 button{appearance:none;-webkit-appearance:none}
 :root{
-  --size:17px;
+  /* Match the Photography site's desktop typography. */
+  --size:15px;
   --line:1.15;
   --gutter:40px;
   --top:30px;
   --bottom:30px;
-  --header-gap:18px;
-  --row-gap:3px;
+  --nav-gap:46px;
+  --row-gap:2px;
   --morph-ms:400ms;
+  --content-side:40px;
 }
 
 #index-app{position:fixed;inset:0;background:#fff;color:#000;overflow:hidden}
 
-/* Header / footer share the exact same left + right axes as the index grid. */
-#index-nav{position:absolute;left:var(--gutter);right:var(--gutter);top:var(--top);z-index:90;display:flex;justify-content:space-between;align-items:flex-start}
-#index-nav button{margin:0;padding:0;border:0;outline:0;background:transparent;color:#000;line-height:var(--line);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-#index-nav button:focus-visible{outline:1px solid currentColor;outline-offset:4px}
+/* ---------------- NAV ---------------- */
+#index-nav{position:absolute;left:var(--gutter);right:var(--gutter);top:var(--top);z-index:100;display:flex;justify-content:space-between;align-items:flex-start}
+#index-nav button{position:relative;margin:0;padding:0;border:0;background:transparent;color:#000;line-height:var(--line);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+#index-nav button:focus{outline:0}
+.morph-text{display:inline-block;white-space:nowrap}
+.morph-char{display:inline-block;white-space:pre;color:inherit}
 
-#index-main{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(var(--top) + 58px);bottom:calc(var(--bottom) + 12px);z-index:20;min-height:0;overflow:hidden}
+/* ---------------- CENTERED INDEX FIELD ---------------- */
+#index-main{
+  position:absolute;
+  left:var(--content-side);
+  right:var(--content-side);
+  top:calc(var(--top) + 42px);
+  bottom:calc(var(--bottom) + 34px);
+  z-index:20;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+}
 
-/* Preview and text live in the SAME stacking context. This is important:
-   the actual glyphs use white+difference only while they intersect the preview,
-   so the inverse reacts to the preview's real pixels instead of being a flat white. */
-#index-preview{position:fixed;left:0;top:0;z-index:1;display:none;pointer-events:none;will-change:left,top;transform:translate(-50%,-50%)}
-#index-preview.visible{display:block}
-#index-preview img,#index-preview video{display:block;width:auto;height:auto;max-width:min(430px,38vw);max-height:52vh;object-fit:contain;pointer-events:none;user-select:none}
-#index-preview video{width:min(460px,42vw);max-width:min(460px,42vw)}
-
-#index-table{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:auto 1fr;min-height:0}
-.idx-head,.idx-row{display:grid;grid-template-columns:minmax(0,2.45fr) minmax(0,1.25fr) minmax(130px,0.95fr) minmax(135px,0.95fr);column-gap:clamp(34px,4.2vw,72px);align-items:baseline;width:100%}
-.idx-head{margin-bottom:var(--header-gap);flex:none}
-.idx-body{display:grid;grid-template-rows:repeat(var(--rows,1),auto);grid-auto-flow:row;align-content:start;row-gap:var(--row-gap);min-height:0}
-.idx-row{position:relative;margin:0;padding:0;min-height:calc(var(--size) * var(--line));color:#000;text-decoration:none;cursor:pointer;outline:none}
-.idx-cell{position:relative;min-width:0}
+#index-table{position:relative;width:100%;height:auto;min-height:0;}
+.idx-head,.idx-row{
+  display:grid;
+  grid-template-columns:minmax(0,1.85fr) minmax(0,.98fr) minmax(0,.88fr) minmax(0,.88fr);
+  column-gap:clamp(24px,2.5vw,42px);
+  align-items:baseline;
+  width:100%;
+}
+.idx-head{margin-bottom:10px}
+.idx-head,.idx-body{width:100%}
+.idx-body{display:flex;flex-direction:column;gap:var(--row-gap)}
+.idx-row{position:relative;min-height:calc(var(--size) * var(--line));padding:0;margin:0;color:#000;text-decoration:none;cursor:pointer;outline:none}
+.idx-cell{min-width:0;position:relative}
 .idx-cell.title,.idx-cell.date{text-align:left}
 .idx-cell.field,.idx-cell.use{justify-self:stretch;text-align:right}
-.idx-text,.idx-sort{display:inline-block;margin:0;padding:0;color:#000;line-height:var(--line);white-space:nowrap;overflow:visible}
-.idx-sort{width:max-content;border:0;background:transparent;cursor:pointer;outline:none;text-align:left}
+.idx-sort,.idx-text{display:inline-block;margin:0;padding:0;color:inherit;line-height:var(--line);white-space:nowrap;overflow:visible}
+.idx-sort{border:0;background:transparent;cursor:pointer;outline:0;text-align:left}
+.idx-head .date .idx-sort{width:100%;text-align:left}
 .idx-head .field .idx-sort,.idx-head .use .idx-sort{width:100%;text-align:right}
-.idx-head .date .idx-sort{width:max-content;text-align:left}
+.idx-head button:focus-visible{outline:1px solid currentColor;outline-offset:3px}
 .idx-row:focus-visible{outline:1px solid #000;outline-offset:4px}
 
-/* Every character is its own live compositor item. A character becomes white
-   + difference only if its own glyph rectangle overlaps the preview. */
-.morph-text{display:inline-block;white-space:nowrap}
-.morph-char{display:inline-block;white-space:pre;color:#000}
-.morph-char.is-negative{color:#fff;mix-blend-mode:difference}
-.morph-char[data-digit="1"]{font-variant-numeric:tabular-nums}
+/* ---------------- FIXED PREVIEWS ---------------- */
+/* Previews are always ABOVE the typography. There is deliberately no
+   no negative/difference layer at all in this version. */
+#index-preview{position:fixed;left:0;top:0;z-index:80;display:none;pointer-events:none;will-change:left,top;transform:translate(-50%,-50%)}
+#index-preview.visible{display:block}
+#index-preview img,#index-preview video{display:block;width:auto;height:auto;max-width:min(390px,34vw);max-height:44vh;object-fit:contain;pointer-events:none;user-select:none}
+#index-preview video{width:min(430px,38vw);max-width:min(430px,38vw)}
 
-#index-footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:var(--bottom);z-index:90;display:flex;justify-content:space-between;align-items:flex-end;font-size:var(--size);line-height:var(--line);pointer-events:auto}
+/* ---------------- FOOTER ---------------- */
+#index-footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:var(--bottom);z-index:100;display:flex;justify-content:space-between;align-items:flex-end;font-size:var(--size);line-height:var(--line);pointer-events:auto}
 #index-footer .footer-col{display:flex;flex-direction:column}
 #index-footer .right{align-items:flex-end;text-align:right}
 #index-footer a{color:#000;text-decoration:none;white-space:nowrap}
 #index-footer a:hover{text-decoration:underline}
 
-#info-panel{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:88px var(--gutter);background:#fff;color:#000}
+/* ---------------- INFO ---------------- */
+#info-panel{position:absolute;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:100px var(--gutter);background:#fff;color:#000}
 #info-panel.visible{display:flex}
-#info-copy{width:min(860px,74vw);max-height:calc(100vh - 176px);overflow:hidden}
+#info-copy{width:min(980px,82vw);max-height:calc(100vh - 200px);overflow:hidden}
 .info-line{font-size:var(--size);line-height:var(--line);white-space:nowrap}
-.info-line.left{text-align:left} .info-line.right{text-align:right} .info-gap{height:calc(var(--size)*1.1)}
+.info-line.left{text-align:left}.info-line.right{text-align:right}.info-gap{height:calc(var(--size)*1.1)}
 
+/* ---------------- BLACK END CARD ---------------- */
 #black-card{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;visibility:hidden;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms;touch-action:none}
 body.black-mode #black-card{visibility:visible;pointer-events:auto;opacity:1;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s}
 body.black-leaving #black-card{visibility:visible;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms}
@@ -82,23 +103,27 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
 .black-letter{display:inline-block}
 
 @media (max-width:900px){
-  :root{--size:16px;--gutter:24px;--top:22px;--bottom:22px;--header-gap:16px;--row-gap:3px}
-  .idx-head,.idx-row{grid-template-columns:minmax(0,1fr) minmax(90px,.72fr) minmax(96px,.70fr);column-gap:24px}
+  :root{--size:13px;--gutter:24px;--top:22px;--bottom:22px;--row-gap:2px}
+  #index-main{top:calc(var(--top) + 34px);bottom:calc(var(--bottom) + 28px)}
+  .idx-head,.idx-row{grid-template-columns:minmax(0,1fr) minmax(74px,.68fr) minmax(86px,.62fr);column-gap:18px}
   .idx-cell.use,.idx-head .use{display:none}
   .idx-cell.title{text-align:left}
   .idx-cell.date,.idx-head .date{text-align:center}
   .idx-cell.field,.idx-head .field{text-align:right}
   .idx-head .date .idx-sort{width:100%;text-align:center}
   .idx-head .field .idx-sort{width:100%;text-align:right}
-  #index-preview img,#index-preview video{max-width:56vw;max-height:44vh}
-  #index-footer{font-size:14px}
+  #index-preview img,#index-preview video{max-width:52vw;max-height:40vh}
+  #index-preview video{width:min(56vw,330px);max-width:min(56vw,330px)}
+  #index-footer{font-size:13px}
   #info-copy{width:88vw}
 }
 @media (max-width:520px){
-  :root{--size:15px;--gutter:18px;--top:20px;--bottom:18px;--header-gap:14px;--row-gap:3px}
-  .idx-head,.idx-row{column-gap:14px;grid-template-columns:minmax(0,1fr) minmax(74px,.68fr) minmax(86px,.62fr)}
-  #index-preview img,#index-preview video{max-width:66vw;max-height:36vh}
-  #index-footer{font-size:13px}
+  :root{--gutter:18px;--top:20px;--bottom:18px}
+  #index-main{top:calc(var(--top) + 32px);bottom:calc(var(--bottom) + 24px)}
+  .idx-head,.idx-row{column-gap:12px;grid-template-columns:minmax(0,1fr) minmax(70px,.68fr) minmax(82px,.62fr)}
+  #index-preview img,#index-preview video{max-width:62vw;max-height:34vh}
+  #index-preview video{width:min(66vw,300px);max-width:min(66vw,300px)}
+  #info-copy{width:92vw}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
@@ -106,8 +131,8 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
 <body>
 <div id="index-app">
   <nav id="index-nav" aria-label="Landing sections">
-    <button id="index-switch" type="button" aria-label="Index"></button>
-    <button id="info-switch" type="button" aria-label="Info"></button>
+    <button id="index-switch" type="button" aria-label="Index"><span class="morph-text"></span></button>
+    <button id="info-switch" type="button" aria-label="Info"><span class="morph-text"></span></button>
   </nav>
 
   <main id="index-main">
@@ -116,9 +141,7 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
   </main>
 
   <section id="info-panel" aria-label="Information">
-    <div id="info-copy">
-      
-<div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
+    <div id="info-copy"><div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
 <div class="info-line left">based in istanbul and available internationally.</div>
 <div class="info-gap"></div>
 <div class="info-line right">having graduated top of his class in management at sabanci university,</div>
@@ -135,9 +158,7 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
 <div class="info-line right">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</div>
 <div class="info-gap"></div>
 <div class="info-line left">brand collaborators include:</div>
-<div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div>
-
-    </div>
+<div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div></div>
   </section>
 
   <footer id="index-footer">
@@ -153,8 +174,8 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
 
   <section id="black-card" aria-hidden="true">
     <button id="black-logo" type="button" aria-label="Denizalp Aybak">
-      <span id="black-logo-name">Denizalp</span>
-      <span id="black-logo-aybak"><span class="black-letter">a</span><span class="black-letter">y</span><span class="black-letter">b</span><span class="black-letter">a</span><span class="black-letter">k</span></span>
+      <span id="black-logo-name">denizalp</span>
+      <span id="black-logo-aybak"><span class="black-letter">A</span><span class="black-letter">Y</span><span class="black-letter">B</span><span class="black-letter">A</span><span class="black-letter">K</span></span>
     </button>
   </section>
 </div>
@@ -180,422 +201,429 @@ body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
   const blackName = document.getElementById("black-logo-name");
   const blackLetters = [...blackLogo.querySelectorAll(".black-letter")];
 
-  /* Same order of magnitude as the Photography site: 400ms. */
   const MORPH_DURATION = 400;
   const BLACK_STEP = 80;
-
   let mode = "index";
-  let modeTransition = null;
+  let transitionId = 0;
   let activeKey = "date";
   let direction = -1;
-  let hoveredRowState = null;
+  let currentRows = [];
+  let previewState = null;
   let previewToken = 0;
-  let previewPosition = null;
-  let negativeRaf = null;
-  let blackActive = false;
-  let blackLeaving = false;
-  let blackState = 0;
   let blackTimer = null;
+  let blackState = 0;
+  let touchStartY = null;
+  let wheelAccum = 0;
+  let wheelTimer = null;
 
   const lower = value => String(value ?? "").toLocaleLowerCase();
   const upper = value => String(value ?? "").toLocaleUpperCase();
   const isLetter = ch => ch.toLocaleLowerCase() !== ch.toLocaleUpperCase();
-  const isFinePointer = () => matchMedia("(hover:hover) and (pointer:fine)").matches;
+  const clamp = (n,a,b) => Math.min(b,Math.max(a,n));
+  const navWords = { index:"index", info:"info" };
+  const navStates = { index:0, info:0 };
+  const navFrames = { index:null, info:null };
+  const navHover = { index:false, info:false };
 
-  function morphPositions(text){
-    return [...String(text)].map((ch,i)=>(isLetter(ch)||/[0-9]/.test(ch))?i:-1).filter(i=>i>=0);
-  }
-
-  function renderTypography(el,text,active=new Set()){
+  function renderMorph(el, text, upperCount){
+    const chars=[...String(text)];
     const frag=document.createDocumentFragment();
-    [...String(text)].forEach((ch,i)=>{
-      const span=document.createElement("span");
-      span.className="morph-char";
-      span.textContent=ch;
-      if(/[0-9]/.test(ch)) span.dataset.digit="1";
-      if(active.has(i)) span.dataset.active="1";
-      frag.appendChild(span);
+    let letterCount=0;
+    chars.forEach(ch=>{
+      const s=document.createElement("span");
+      s.className="morph-char";
+      if(isLetter(ch)){
+        const active=letterCount < upperCount;
+        s.textContent=active ? upper(ch) : lower(ch);
+        letterCount++;
+      }else{
+        s.textContent=ch;
+      }
+      frag.appendChild(s);
     });
     el.replaceChildren(frag);
   }
 
-  function caseText(baseText,count){
-    const base=lower(baseText);
-    const positions=morphPositions(base);
-    const active=new Set(positions.slice(0,count));
-    return {
-      text:[...base].map((ch,i)=>isLetter(ch)&&active.has(i)?upper(ch):lower(ch)).join(""),
-      active
-    };
-  }
-
-  function setCase(el,text,count,skipBlend=false){
-    const base=lower(text);
-    const result=caseText(base,count);
-    renderTypography(el,result.text,result.active);
-    el.dataset.morphBase=base;
-    el.dataset.morphCount=String(count);
-    if(!skipBlend) scheduleBlendUpdate();
-  }
-
-  function morphTo(el,text,target,duration=MORPH_DURATION){
-    const base=lower(text);
-    const positions=morphPositions(base);
-    const total=positions.length;
-    let startState=Number(el.dataset.morphCount||0);
-    if(!Number.isFinite(startState)) startState=0;
-    startState=Math.max(0,Math.min(total,startState));
-    target=Math.max(0,Math.min(total,target));
-
-    if(el._morphFrame) cancelAnimationFrame(el._morphFrame);
-    if(startState===target){
-      setCase(el,base,target,true);
-      scheduleBlendUpdate();
-      return Promise.resolve();
-    }
-
-    const start=performance.now();
+  function animateNavWord(key,target){
+    if(navFrames[key]!==null) cancelAnimationFrame(navFrames[key]);
+    const start=navStates[key];
+    if(start===target){ renderMorph(document.querySelector(`#${key}-switch .morph-text`),navWords[key],target); return Promise.resolve(); }
+    const startTime=performance.now();
     return new Promise(resolve=>{
-      const frame=now=>{
-        const p=Math.min(1,(now-start)/duration);
-        const eased=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-        const state=Math.round(startState+(target-startState)*eased);
-        setCase(el,base,state,false);
-        if(p<1){
-          el._morphFrame=requestAnimationFrame(frame);
-        }else{
-          setCase(el,base,target,true);
-          el._morphFrame=null;
-          scheduleBlendUpdate();
-          resolve();
-        }
-      };
-      el._morphFrame=requestAnimationFrame(frame);
+      function frame(now){
+        const p=clamp((now-startTime)/MORPH_DURATION,0,1);
+        const state=Math.round(start+(target-start)*p);
+        navStates[key]=state;
+        renderMorph(document.querySelector(`#${key}-switch .morph-text`),navWords[key],state);
+        if(p<1) navFrames[key]=requestAnimationFrame(frame); else {navFrames[key]=null;resolve();}
+      }
+      navFrames[key]=requestAnimationFrame(frame);
     });
   }
 
-  function fieldLabel(project){ return project.field==="PHOTOGRAPHY"?"photography":"film"; }
-  function valueFor(project,key){
-    if(key==="title") return lower(project.title);
-    if(key==="field") return lower(fieldLabel(project));
-    if(key==="use") return lower(project.use);
-    return project.sortDate||"";
+  function desiredNavState(key){
+    const active = mode===key;
+    return (active || navHover[key]) ? navWords[key].length : 0;
+  }
+
+  function refreshNavHoverState(){
+    animateNavWord("index",desiredNavState("index"));
+    animateNavWord("info",desiredNavState("info"));
+  }
+
+  function setContentSide(){
+    const footerRight=document.querySelector("#index-footer .footer-col.right");
+    const lines=[...footerRight.querySelectorAll("a")];
+    const maxW=Math.max(...lines.map(a=>a.getBoundingClientRect().width),0);
+    const minSide=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter"))||40;
+    const vw=window.innerWidth;
+    const mobile=vw<=900;
+    const desired=minSide+maxW;
+    const minTableWidth=mobile ? 250 : 720;
+    const maxSide=Math.max(minSide,(vw-minTableWidth)/2);
+    const side=clamp(desired,minSide,maxSide);
+    document.documentElement.style.setProperty("--content-side",`${side}px`);
+  }
+
+  function getSortValue(project,key){
+    if(key==="date") return project.sortDate || "";
+    return lower(project[key]);
   }
   function sortedProjects(){
-    return [...PROJECTS].sort((a,b)=>{
-      const av=valueFor(a,activeKey), bv=valueFor(b,activeKey);
-      if(av===""&&bv!=="") return 1;
-      if(av!==""&&bv==="") return -1;
+    const arr=PROJECTS.map((p,i)=>({...p,__index:i}));
+    arr.sort((a,b)=>{
+      const av=getSortValue(a,activeKey), bv=getSortValue(b,activeKey);
+      if(activeKey==="date"){
+        const ae=av==="", be=bv==="";
+        if(ae!==be) return ae ? 1 : -1;
+      }
       if(av<bv) return -1*direction;
       if(av>bv) return 1*direction;
-      const at=lower(a.title), bt=lower(b.title);
-      if(at<bt) return -1;
-      if(at>bt) return 1;
-      return a.id.localeCompare(b.id);
+      return a.__index-b.__index;
     });
+    return arr;
   }
 
-  function makePreviewAnchor(project){
-    if(project._indexPreviewAnchor) return project._indexPreviewAnchor;
-    project._indexPreviewAnchor={
-      x:0.15+Math.random()*0.70,
-      y:0.18+Math.random()*0.64
-    };
-    return project._indexPreviewAnchor;
+  function anchorForProject(project){
+    const ix=PROJECTS.findIndex(p=>p.id===project.id && p.field===project.field && p.date===project.date);
+    const anchors=[
+      [0.20,0.28],[0.42,0.23],[0.68,0.27],[0.82,0.34],
+      [0.28,0.42],[0.55,0.40],[0.76,0.46],[0.16,0.54],
+      [0.44,0.56],[0.67,0.58],[0.84,0.64],[0.24,0.67],
+      [0.52,0.70],[0.75,0.74],[0.34,0.80],[0.61,0.82],
+      [0.86,0.79],[0.14,0.36],[0.88,0.25],[0.48,0.31],[0.62,0.89]
+    ];
+    return anchors[(ix<0?0:ix)%anchors.length];
   }
 
-  function choosePreview(project){
-    if(project.field==="PHOTOGRAPHY"){
-      if(!project.images?.length) return null;
-      const name=project.images[Math.floor(Math.random()*project.images.length)];
+  function previewMedia(project){
+    if(project.field==="PHOTOGRAPHY" && project.images?.length){
+      const name=project.images[0];
       const dot=name.lastIndexOf(".");
-      const previewName=dot>0?`${name.slice(0,dot)}.webp`:`${name}.webp`;
-      return {type:"image",src:PHOTO_THUMB_BASE+encodeURIComponent(previewName)};
+      const file=(dot>0?name.slice(0,dot):name)+".webp";
+      return {type:"image",src:PHOTO_THUMB_BASE+encodeURIComponent(file)};
     }
-    if(!project.videos?.length) return null;
-    const name=project.videos[Math.floor(Math.random()*project.videos.length)];
-    const dot=name.lastIndexOf(".");
-    const previewName=dot>0?`${name.slice(0,dot)}_preview.mp4`:`${name}_preview.mp4`;
-    return {type:"video",src:FILM_PREVIEW_BASE+encodeURIComponent(previewName)};
+    if(project.field==="FILM" && project.videos?.length){
+      const name=project.videos[0];
+      const dot=name.lastIndexOf(".");
+      const file=(dot>0?name.slice(0,dot):name)+"_preview.mp4";
+      return {type:"video",src:FILM_PREVIEW_BASE+encodeURIComponent(file)};
+    }
+    return null;
   }
 
-  function setPreviewPosition(anchor){
+  function rowRect(index){
+    const el=currentRows[index];
+    return el?.getBoundingClientRect()||null;
+  }
+
+  function forbiddenRects(index){
+    const out=[];
+    for(let i=Math.max(0,index-2);i<=Math.min(currentRows.length-1,index+2);i++){
+      const r=rowRect(i); if(r) out.push(r);
+    }
+    return out;
+  }
+
+  function overlaps(a,b){
+    return !(a.right<=b.left || a.left>=b.right || a.bottom<=b.top || a.top>=b.bottom);
+  }
+
+  function positionPreview(state){
     const media=indexPreview.firstElementChild;
-    if(!media||!anchor) return;
-    const rect=media.getBoundingClientRect();
-    if(!rect.width||!rect.height) return;
-    const halfW=rect.width/2, halfH=rect.height/2;
-    const safeX=rect.width*0.10;
-    const safeTop=Math.max(72,parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--top"))||30);
-    const safeBottom=Math.max(72,parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bottom"))||30);
-    let x=innerWidth*anchor.x;
-    let y=innerHeight*anchor.y;
-    x=Math.max(halfW+safeX,Math.min(innerWidth-halfW-safeX,x));
-    y=Math.max(halfH+safeTop,Math.min(innerHeight-halfH-safeBottom,y));
-    indexPreview.style.left=`${x}px`;
-    indexPreview.style.top=`${y}px`;
+    if(!media) return;
+
+    /* Start from the site's normal preview limits. If the forbidden five-row
+       band leaves less vertical room than that, shrink the media until there
+       is a guaranteed legal slot. */
+    media.style.maxHeight="44vh";
+    media.style.maxWidth="min(390px,34vw)";
+    if(media.tagName==="VIDEO"){
+      media.style.maxWidth="min(430px,38vw)";
+    }
+
+    const getSafeGap = () => {
+      const vw=innerWidth, vh=innerHeight;
+      const topGap=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--top"))||30;
+      const bottomGap=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bottom"))||30;
+      const safeTop=topGap+10;
+      const safeBottom=vh-bottomGap-10;
+      const forbidden=forbiddenRects(state.index)
+        .map(r=>({top:r.top-8,bottom:r.bottom+8}))
+        .sort((a,b)=>a.top-b.top);
+      const gaps=[];
+      let cursor=safeTop;
+      for(const r of forbidden){
+        if(r.bottom<=safeTop || r.top>=safeBottom) continue;
+        const top=clamp(r.top,safeTop,safeBottom);
+        const bottom=clamp(r.bottom,safeTop,safeBottom);
+        if(top>cursor) gaps.push({top:cursor,bottom:top});
+        cursor=Math.max(cursor,bottom);
+      }
+      if(cursor<safeBottom) gaps.push({top:cursor,bottom:safeBottom});
+      gaps.sort((a,b)=>(b.bottom-b.top)-(a.bottom-a.top));
+      return {gaps,safeTop,safeBottom,vh,vw};
+    };
+
+    let geom=getSafeGap();
+    let mr=media.getBoundingClientRect();
+    const largestGap=geom.gaps[0] || {top:geom.safeTop,bottom:geom.safeBottom};
+    const available=Math.max(120,largestGap.bottom-largestGap.top-18);
+    const currentMax=mr.height;
+    if(currentMax>available){
+      media.style.maxHeight=`${available}px`;
+      mr=media.getBoundingClientRect();
+    }
+
+    const {vw,vh}=geom;
+    const anchor=anchorForProject(state.project);
+    const baseX=vw*anchor[0];
+    const forbidden=forbiddenRects(state.index);
+
+    /* Candidate points are fixed per project. We search only to satisfy the
+       hard five-row exclusion; we never regenerate/randomize the point. */
+    const xOffsets=[0,-0.09*vw,0.09*vw,-0.16*vw,0.16*vw];
+    const yFractions=[0.20,0.27,0.34,0.43,0.50,0.57,0.66,0.74,0.81];
+    const candidates=[];
+    for(const dx of xOffsets){
+      for(const fy of yFractions){
+        candidates.push({x:baseX+dx,y:vh*fy});
+      }
+    }
+
+    let best=null;
+    let bestScore=Infinity;
+    for(const c of candidates){
+      const x=clamp(c.x,mr.width/2+8,vw-mr.width/2-8);
+      const y=clamp(c.y,mr.height/2+geom.safeTop,geom.safeBottom-mr.height/2);
+      const rect={left:x-mr.width/2,right:x+mr.width/2,top:y-mr.height/2,bottom:y+mr.height/2};
+      if(forbidden.some(fr=>overlaps(rect,fr))) continue;
+      const score=Math.abs(x-baseX)+Math.abs(y-vh*anchor[1])*0.45;
+      if(score<bestScore){bestScore=score;best={x,y};}
+    }
+
+    /* Guaranteed fallback: choose the center of the largest legal gap. */
+    if(!best){
+      const gap=largestGap;
+      const x=clamp(baseX,mr.width/2+8,vw-mr.width/2-8);
+      const y=(gap.top+gap.bottom)/2;
+      best={x,y};
+    }
+
+    indexPreview.style.left=`${best.x}px`;
+    indexPreview.style.top=`${best.y}px`;
+    previewState.position=best;
   }
 
-  function rectsOverlap(a,b){
-    return a.right>b.left && a.left<b.right && a.bottom>b.top && a.top<b.bottom;
-  }
+  function clearPreview(){previewToken++;previewState=null;indexPreview.classList.remove("visible");indexPreview.replaceChildren();}
 
-  /* This is deliberately pixel-independent:
-     every actual glyph is composited against the live preview underneath it.
-     White + difference -> black on white imagery, white on black imagery, and
-     the real inverse tone on colors. No flat white duplicate layer exists. */
-  function updateBlend(){
-    negativeRaf=null;
-    const media=indexPreview.firstElementChild;
-    if(!indexPreview.classList.contains("visible")||!media||!hoveredRowState) return;
-    const previewRect=media.getBoundingClientRect();
-    const chars=hoveredRowState.items.flatMap(item=>[...item.el.querySelectorAll(".morph-char")]);
-    chars.forEach(ch=>{
-      const r=ch.getBoundingClientRect();
-      ch.classList.toggle("is-negative",rectsOverlap(r,previewRect));
-    });
-  }
-
-  function scheduleBlendUpdate(){
-    if(negativeRaf!==null) return;
-    negativeRaf=requestAnimationFrame(updateBlend);
-  }
-
-  function clearBlend(){
-    document.querySelectorAll(".morph-char.is-negative").forEach(el=>el.classList.remove("is-negative"));
-  }
-
-  function positionForRow(state){
-    const anchor=state.previewAnchor;
-    setPreviewPosition(anchor);
-    scheduleBlendUpdate();
-  }
-
-  function showPreview(state){
-    const source=choosePreview(state.project);
+  function showPreview(project,index,row){
+    const media=previewMedia(project); if(!media) return;
     const token=++previewToken;
+    const wrap={project,index,row,position:null};
+    previewState=wrap;
     indexPreview.replaceChildren();
-    clearBlend();
-    if(!source){indexPreview.classList.remove("visible");return;}
-    const media=document.createElement(source.type==="video"?"video":"img");
-    if(source.type==="video"){
-      media.muted=true;media.autoplay=true;media.loop=true;media.playsInline=true;media.preload="metadata";media.src=source.src;
-      media.addEventListener("loadedmetadata",()=>{if(token!==previewToken)return;media.currentTime=0;media.play().catch(()=>{});indexPreview.classList.add("visible");positionForRow(state);},{once:true});
+    let el;
+    if(media.type==="image"){
+      el=document.createElement("img");
+      el.alt="";
+      el.onload=()=>{if(token!==previewToken)return;indexPreview.classList.add("visible");requestAnimationFrame(()=>positionPreview(wrap));};
+      el.onerror=()=>{if(token===previewToken)clearPreview()};
     }else{
-      media.alt="";media.decoding="async";media.loading="eager";media.src=source.src;
-      media.addEventListener("load",()=>{if(token!==previewToken)return;indexPreview.classList.add("visible");positionForRow(state);},{once:true});
+      el=document.createElement("video");
+      el.muted=true;el.loop=true;el.autoplay=true;el.playsInline=true;el.preload="auto";
+      el.addEventListener("loadedmetadata",()=>{if(token!==previewToken)return;indexPreview.classList.add("visible");el.play().catch(()=>{});requestAnimationFrame(()=>positionPreview(wrap));},{once:true});
+      el.addEventListener("error",()=>{if(token===previewToken)clearPreview()},{once:true});
     }
-    media.addEventListener("error",()=>{if(token!==previewToken)return;clearPreview();},{once:true});
-    indexPreview.appendChild(media);
-    indexPreview.classList.add("visible");
-    positionForRow(state);
+    el.src=media.src;
+    indexPreview.appendChild(el);
   }
 
-  function clearPreview(){
-    previewToken++;
-    indexPreview.classList.remove("visible");
-    indexPreview.replaceChildren();
-    clearBlend();
+  function makeMorphElement(text){
+    const el=document.createElement("span");el.className="morph-text";el.dataset.raw=text;renderMorph(el,text,0);return el;
   }
 
-  function rowCase(state,toUpper){
-    const tasks=state.items.map(item=>morphTo(item.el,item.text,toUpper?morphPositions(item.text).length:0,MORPH_DURATION));
-    return Promise.all(tasks).then(scheduleBlendUpdate);
+  function animateText(el,toUpper){
+    const text=el.dataset.raw||el.textContent||"";
+    const letters=morphPositions(text);
+    const total=letters.length;
+    const current=[...el.querySelectorAll(".morph-char")];
+    let currentState=0;
+    letters.forEach((pos,i)=>{const ch=current[pos]?.textContent||"";if(isLetter(text[pos]) && ch===upper(text[pos])) currentState=i+1;});
+    const target=toUpper?total:0;
+    if(currentState===target){renderMorph(el,text,target);return Promise.resolve();}
+    if(el.__morphFrame) cancelAnimationFrame(el.__morphFrame);
+    const start=performance.now();
+    return new Promise(resolve=>{
+      function frame(now){
+        const p=clamp((now-start)/MORPH_DURATION,0,1);
+        const state=Math.round(currentState+(target-currentState)*p);
+        renderMorph(el,text,state);
+        if(p<1) el.__morphFrame=requestAnimationFrame(frame); else {el.__morphFrame=null;resolve();}
+      }
+      el.__morphFrame=requestAnimationFrame(frame);
+    });
   }
 
-  function hoverRow(state){
-    if(hoveredRowState===state){ positionForRow(state); return; }
-    if(hoveredRowState){ hoveredRowState.row.classList.remove("hovered"); rowCase(hoveredRowState,false); }
-    hoveredRowState=state;
-    state.row.classList.add("hovered");
-    showPreview(state);
-    rowCase(state,true);
+  function buildHeader(){
+    const h=document.createElement("div");h.className="idx-head";
+    [
+      ["title","TITLE"],["date","DATE"],["field","FIELD"],["use","USE"]
+    ].forEach(([key,label])=>{
+      const c=document.createElement("div");c.className=`idx-cell ${key}`;
+      const b=document.createElement("button");b.type="button";b.className="idx-sort";b.dataset.sort=key;
+      b.textContent=label;
+      if(key===activeKey) b.classList.add("active");
+      b.addEventListener("click",()=>{
+        if(activeKey===key) direction*=-1; else {activeKey=key;direction=1;}
+        renderIndex();
+      });
+      c.appendChild(b);h.appendChild(c);
+    });
+    return h;
   }
 
-  function clearHover(){
-    if(hoveredRowState){
-      const state=hoveredRowState;
-      hoveredRowState=null;
-      state.row.classList.remove("hovered");
-      rowCase(state,false);
-    }
+  function openProject(project){
+    const base=project.field==="FILM"?FILM_SITE:PHOTO_SITE;
+    window.location.href=base+`?project=${encodeURIComponent(project.id)}&view=all`;
+  }
+
+  function renderIndex(){
     clearPreview();
-  }
-
-  function writeText(el,text,isUpper=false){
-    const count=isUpper?morphPositions(text).length:0;
-    setCase(el,text,count,true);
-    el.dataset.morphBase=lower(text);
-  }
-
-  function makeHeader(){
-    const head=document.createElement("div");
-    head.className="idx-head";
-    [["title","title"],["date","date"],["field","field"],["use","use"]].forEach(([key,label])=>{
-      const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
-      const btn=document.createElement("button"); btn.type="button"; btn.className="idx-sort"; btn.setAttribute("aria-label",`Sort by ${label}`); btn._sortKey=key; btn._sortLabel=label;
-      cell.appendChild(btn); head.appendChild(cell);
-      writeText(btn,label,key===activeKey);
-      btn.addEventListener("click",async event=>{
-        event.preventDefault();
-        if(activeKey===key) direction*=-1; else {activeKey=key;direction=key==="date"?-1:1;}
-        const buttons=[...head.querySelectorAll(".idx-sort")];
-        await Promise.all(buttons.map(b=>morphTo(b,b._sortLabel,(b._sortKey===activeKey)?morphPositions(b._sortLabel).length:0,MORPH_DURATION)));
-        buildRowsOnly(head);
+    indexTable.replaceChildren();
+    const head=buildHeader();
+    const body=document.createElement("div");body.className="idx-body";
+    const list=sortedProjects();
+    currentRows=[];
+    list.forEach((project,i)=>{
+      const row=document.createElement("div");row.className="idx-row";row.tabIndex=0;
+      row.dataset.index=i;
+      const cells={};
+      [["title",project.title],["date",project.date],["field",lower(project.field)],["use",lower(project.use)]].forEach(([key,val])=>{
+        const c=document.createElement("div");c.className=`idx-cell ${key}`;
+        const text=makeMorphElement(val);c.appendChild(text);row.appendChild(c);cells[key]=text;
       });
+      const activate=()=>{
+        Object.values(cells).forEach(el=>animateText(el,true));
+        showPreview(project,i,row);
+      };
+      const deactivate=()=>{
+        Object.values(cells).forEach(el=>animateText(el,false));
+        if(previewState?.row===row) clearPreview();
+      };
+      row.addEventListener("mouseenter",activate);
+      row.addEventListener("mouseleave",deactivate);
+      row.addEventListener("focus",activate);
+      row.addEventListener("blur",deactivate);
+      row.addEventListener("click",()=>openProject(project));
+      row.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openProject(project)}});
+      body.appendChild(row);currentRows.push(row);
     });
-    return head;
-  }
-
-  function buildRowsOnly(head=document.querySelector(".idx-head")){
-    clearHover();
-    indexTable.replaceChildren(head||makeHeader());
-    const body=document.createElement("div"); body.className="idx-body";
-    const rows=sortedProjects(); body.style.setProperty("--rows",rows.length);
-    rows.forEach(project=>{
-      const row=document.createElement("a"); row.className="idx-row";
-      row.href=(project.field==="FILM"?FILM_SITE:PHOTO_SITE)+`?project=${encodeURIComponent(project.id)}&view=all`;
-      row.dataset.projectId=project.id;
-      row.dataset.field=project.field;
-      const state={row,project,items:[],previewAnchor:makePreviewAnchor(project)};
-      [["title",project.title],["date",project.date||""],["field",fieldLabel(project)],["use",project.use||""]].forEach(([key,text])=>{
-        const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
-        if(key==="use"&&innerWidth<=900) cell.style.display="none";
-        const el=document.createElement("span"); el.className="idx-text";
-        writeText(el,text,false);
-        cell.appendChild(el); row.appendChild(cell); state.items.push({el,text});
-      });
-      if(isFinePointer()) row.addEventListener("pointerenter",()=>hoverRow(state));
-      row.addEventListener("focus",()=>hoverRow(state));
-      row.addEventListener("blur",()=>{if(hoveredRowState===state)clearHover();});
-      row.addEventListener("pointermove",()=>{if(hoveredRowState===state)positionForRow(state)});
-      row.addEventListener("click",()=>clearPreview());
-      body.appendChild(row);
+    indexTable.appendChild(head);indexTable.appendChild(body);
+    requestAnimationFrame(()=>{
+      setContentSide();
+      if(previewState) positionPreview(previewState);
     });
-    indexTable.appendChild(body);
-  }
-
-  function buildIndex(){buildRowsOnly(makeHeader())}
-
-  function renderNav(whichUpper){
-    writeText(indexSwitch,"index",whichUpper==="index");
-    writeText(infoSwitch,"info",whichUpper==="info");
   }
 
   async function switchMode(next){
-    if(modeTransition||blackActive) return;
-    if(next===mode) next=mode==="index"?"info":"index";
-    modeTransition=true;
-    clearHover();
-    const targetUpper=next;
-    await Promise.all([
-      morphTo(indexSwitch,"index",targetUpper==="index"?5:0,MORPH_DURATION),
-      morphTo(infoSwitch,"info",targetUpper==="info"?4:0,MORPH_DURATION)
-    ]);
+    if(next===mode) return;
+    const id=++transitionId;
+    const old=mode;
+    const a1=animateNavWord(old,0);
+    const a2=animateNavWord(next,navWords[next].length);
+    await Promise.all([a1,a2]);
+    if(id!==transitionId) return;
     mode=next;
-    indexPanelState();
-    modeTransition=false;
+    indexMain.style.visibility=next==="index"?"visible":"hidden";
+    infoPanel.classList.toggle("visible",next==="info");
+    refreshNavHoverState();
   }
 
-  function indexPanelState(){
-    const indexVisible=mode==="index";
-    indexTable.style.display=indexVisible?"grid":"none";
-    infoPanel.classList.toggle("visible",!indexVisible);
-    indexSwitch.setAttribute("aria-pressed",String(indexVisible));
-    infoSwitch.setAttribute("aria-pressed",String(!indexVisible));
-  }
-
-  indexSwitch.addEventListener("click",event=>{event.preventDefault();switchMode("index")});
-  infoSwitch.addEventListener("click",event=>{event.preventDefault();switchMode("info")});
-
-  /* =========================
-     BLACK END CARD
-     ========================= */
-  function setBlackState(n){
-    blackState=Math.max(0,Math.min(5,n));
-    blackName.textContent=blackState===0?"Denizalp":"denizalp";
-    blackLetters.forEach((el,i)=>el.textContent=i<blackState?upper("aybak"[i]):lower("aybak"[i]));
-  }
-
-  function morphBlackTo(target){
-    if(blackTimer!==null) clearTimeout(blackTimer);
-    const step=()=>{
-      if(blackState===target){blackTimer=null;return;}
-      blackState += blackState<target?1:-1;
-      setBlackState(blackState);
-      blackTimer=setTimeout(step,BLACK_STEP);
-    };
-    step();
-  }
-
-  function openBlack(){
-    if(blackActive) return;
-    blackActive=true; blackLeaving=false;
+  function enterBlack(){
+    if(blackTimer) clearTimeout(blackTimer);
     document.body.classList.remove("black-leaving");
     document.body.classList.add("black-mode");
-    blackCard.setAttribute("aria-hidden","false");
-    setBlackState(0);
+    blackActive=true;
+    animateBlackTo(5);
   }
 
-  function closeBlack(prepareUpper=true){
-    if(!blackActive||blackLeaving) return;
-    blackLeaving=true;
-    const finish=()=>{
-      blackActive=false;
-      document.body.classList.remove("black-mode");
-      document.body.classList.add("black-leaving");
-      blackCard.setAttribute("aria-hidden","true");
-      setTimeout(()=>{document.body.classList.remove("black-leaving");blackLeaving=false;setBlackState(0)},420);
-    };
-    if(prepareUpper){morphBlackTo(5);setTimeout(finish,BLACK_STEP*5+120)}else finish();
+  function leaveBlack(){
+    if(!blackActive) return;
+    if(blackTimer) clearTimeout(blackTimer);
+    document.body.classList.remove("black-mode");
+    document.body.classList.add("black-leaving");
+    blackActive=false;
+    animateBlackTo(0).then(()=>document.body.classList.remove("black-leaving"));
   }
 
-  blackLogo.addEventListener("mouseenter",()=>{if(isFinePointer()&&!blackLeaving)morphBlackTo(5)});
-  blackLogo.addEventListener("mouseleave",()=>{if(isFinePointer()&&!blackLeaving)morphBlackTo(0)});
-  blackLogo.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();closeBlack(true)});
+  function animateBlackTo(target){
+    if(blackTimer) clearTimeout(blackTimer);
+    return new Promise(resolve=>{
+      function step(){
+        if(blackState===target){resolve();return}
+        blackState+=blackState<target?1:-1;
+        blackName.textContent=blackState===0?"denizalp":"denizalp";
+        blackLetters.forEach((l,i)=>l.textContent=i<blackState?"AYBAK"[i]:"aybak"[i]);
+        blackTimer=setTimeout(step,BLACK_STEP);
+      }
+      step();
+    });
+  }
 
-  let wheelAcc=0,wheelTimer=null;
-  window.addEventListener("wheel",event=>{
-    if(event.ctrlKey) return;
-    wheelAcc += event.deltaY;
-    if(wheelTimer) clearTimeout(wheelTimer);
-    wheelTimer=setTimeout(()=>{wheelAcc=0;wheelTimer=null},140);
-    if(!blackActive&&wheelAcc>48){event.preventDefault();wheelAcc=0;openBlack()}
-    else if(blackActive&&wheelAcc<-48){event.preventDefault();wheelAcc=0;closeBlack(false)}
-  },{passive:false});
+  indexSwitch.addEventListener("mouseenter",()=>{navHover.index=true;refreshNavHoverState()});
+  indexSwitch.addEventListener("mouseleave",()=>{navHover.index=false;refreshNavHoverState()});
+  infoSwitch.addEventListener("mouseenter",()=>{navHover.info=true;refreshNavHoverState()});
+  infoSwitch.addEventListener("mouseleave",()=>{navHover.info=false;refreshNavHoverState()});
+  indexSwitch.addEventListener("click",()=>switchMode("index"));
+  infoSwitch.addEventListener("click",()=>switchMode("info"));
 
-  let touchStartY=null;
-  window.addEventListener("touchstart",event=>{const t=event.touches[0];touchStartY=t?t.clientY:null},{passive:true});
-  window.addEventListener("touchend",event=>{
-    if(touchStartY===null) return;
-    const t=event.changedTouches[0];
-    if(!t) return;
-    const dy=t.clientY-touchStartY; touchStartY=null;
-    if(Math.abs(dy)<52) return;
-    if(!blackActive&&dy<0) openBlack();
-    else if(blackActive&&dy>0) closeBlack(false);
+  window.addEventListener("resize",()=>{setContentSide();if(previewState)requestAnimationFrame(()=>positionPreview(previewState));},{passive:true});
+  window.addEventListener("orientationchange",()=>{setContentSide();if(previewState)requestAnimationFrame(()=>positionPreview(previewState));},{passive:true});
+
+  window.addEventListener("wheel",e=>{
+    if(blackActive){ if(e.deltaY< -8){leaveBlack();} return; }
+    wheelAccum+=e.deltaY;
+    clearTimeout(wheelTimer);wheelTimer=setTimeout(()=>wheelAccum=0,250);
+    if(wheelAccum>52){wheelAccum=0;enterBlack();}
   },{passive:true});
 
-  window.addEventListener("keydown",event=>{
-    if(event.code==="Escape"&&blackActive){event.preventDefault();closeBlack(false);return;}
-    if(event.code==="ArrowDown"&&!blackActive){event.preventDefault();openBlack();}
-    else if(event.code==="ArrowUp"&&blackActive){event.preventDefault();closeBlack(false);}
-  });
-
-  window.addEventListener("resize",()=>{
-    if(hoveredRowState) positionForRow(hoveredRowState);
-    scheduleBlendUpdate();
-    buildIndex();
-    renderNav(mode);
-    indexPanelState();
+  window.addEventListener("touchstart",e=>{touchStartY=e.changedTouches[0]?.clientY??null},{passive:true});
+  window.addEventListener("touchend",e=>{
+    const y=e.changedTouches[0]?.clientY??null;
+    if(y===null||touchStartY===null)return;
+    const dy=y-touchStartY;touchStartY=null;
+    if(blackActive){if(dy>52)leaveBlack();else if(dy<-52){} return;}
+    if(dy<-52) enterBlack();
   },{passive:true});
+  blackLogo.addEventListener("click",leaveBlack);
 
-  window.addEventListener("load",scheduleBlendUpdate,{once:true});
-
-  buildIndex();
-  renderNav("index");
-  indexPanelState();
-  setBlackState(0);
+  // Initial state: INDEX active/uppercase, INFO lowercase.
+  renderMorph(indexSwitch.querySelector(".morph-text"),"index",5);
+  renderMorph(infoSwitch.querySelector(".morph-text"),"info",0);
+  renderIndex();
+  setContentSide();
+  infoPanel.classList.remove("visible");
 })();
 </script>
 </body>
