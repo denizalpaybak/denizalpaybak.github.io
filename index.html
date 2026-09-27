@@ -17,89 +17,72 @@ button{appearance:none;-webkit-appearance:none}
   --top:30px;
   --bottom:30px;
   --header-gap:18px;
-  --row-gap:5px;
-  --morph-ms:300ms;
+  --row-gap:3px;
+  --morph-ms:400ms;
 }
 
-/* =========================
-   APP / LAYOUT
-   ========================= */
-#index-app{position:fixed;inset:0;z-index:10;background:#fff;color:#000;overflow:hidden}
-#index-nav{position:absolute;left:var(--gutter);right:var(--gutter);top:var(--top);z-index:70;display:flex;justify-content:space-between;align-items:flex-start}
+#index-app{position:fixed;inset:0;background:#fff;color:#000;overflow:hidden}
+
+/* Header / footer share the exact same left + right axes as the index grid. */
+#index-nav{position:absolute;left:var(--gutter);right:var(--gutter);top:var(--top);z-index:90;display:flex;justify-content:space-between;align-items:flex-start}
 #index-nav button{margin:0;padding:0;border:0;outline:0;background:transparent;color:#000;line-height:var(--line);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 #index-nav button:focus-visible{outline:1px solid currentColor;outline-offset:4px}
 
-#index-main{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(var(--top) + 58px);bottom:calc(var(--bottom) + 14px);z-index:20;display:flex;flex-direction:column;min-height:0}
-#index-panel{display:flex;flex:1;min-height:0;flex-direction:column;opacity:1;visibility:visible;pointer-events:auto;transition:opacity 140ms ease}
-#index-panel.hidden{opacity:0;visibility:hidden;pointer-events:none;position:absolute;inset:0;z-index:0}
-#index-table{display:grid;grid-template-rows:auto 1fr;min-height:0;height:100%}
+#index-main{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(var(--top) + 58px);bottom:calc(var(--bottom) + 12px);z-index:20;min-height:0;overflow:hidden}
+
+/* Preview and text live in the SAME stacking context. This is important:
+   the actual glyphs use white+difference only while they intersect the preview,
+   so the inverse reacts to the preview's real pixels instead of being a flat white. */
+#index-preview{position:fixed;left:0;top:0;z-index:1;display:none;pointer-events:none;will-change:left,top;transform:translate(-50%,-50%)}
+#index-preview.visible{display:block}
+#index-preview img,#index-preview video{display:block;width:auto;height:auto;max-width:min(430px,38vw);max-height:52vh;object-fit:contain;pointer-events:none;user-select:none}
+#index-preview video{width:min(460px,42vw);max-width:min(460px,42vw)}
+
+#index-table{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:auto 1fr;min-height:0}
 .idx-head,.idx-row{display:grid;grid-template-columns:minmax(0,2.45fr) minmax(0,1.25fr) minmax(130px,0.95fr) minmax(135px,0.95fr);column-gap:clamp(34px,4.2vw,72px);align-items:baseline;width:100%}
-.idx-head{margin-bottom:var(--header-gap);position:relative;z-index:25;flex:none}
-.idx-body{display:grid;grid-template-rows:repeat(var(--rows,1),auto);grid-auto-flow:row;align-content:space-between;min-height:0}
-.idx-row{position:relative;margin:0;padding:0;min-height:calc(var(--size,17px)*var(--line) + var(--row-gap));color:#000;text-decoration:none;cursor:pointer;outline:none}
+.idx-head{margin-bottom:var(--header-gap);flex:none}
+.idx-body{display:grid;grid-template-rows:repeat(var(--rows,1),auto);grid-auto-flow:row;align-content:start;row-gap:var(--row-gap);min-height:0}
+.idx-row{position:relative;margin:0;padding:0;min-height:calc(var(--size) * var(--line));color:#000;text-decoration:none;cursor:pointer;outline:none}
 .idx-cell{position:relative;min-width:0}
 .idx-cell.title,.idx-cell.date{text-align:left}
 .idx-cell.field,.idx-cell.use{justify-self:stretch;text-align:right}
-.idx-text,.idx-sort{display:block;margin:0;padding:0;color:#000;line-height:var(--line);white-space:nowrap;overflow:visible}
+.idx-text,.idx-sort{display:inline-block;margin:0;padding:0;color:#000;line-height:var(--line);white-space:nowrap;overflow:visible}
 .idx-sort{width:max-content;border:0;background:transparent;cursor:pointer;outline:none;text-align:left}
 .idx-head .field .idx-sort,.idx-head .use .idx-sort{width:100%;text-align:right}
 .idx-head .date .idx-sort{width:max-content;text-align:left}
 .idx-row:focus-visible{outline:1px solid #000;outline-offset:4px}
 
-/* shared character renderer: the case state is changed one character at a time */
+/* Every character is its own live compositor item. A character becomes white
+   + difference only if its own glyph rectangle overlaps the preview. */
 .morph-text{display:inline-block;white-space:nowrap}
-.morph-char{display:inline-block;white-space:pre}
+.morph-char{display:inline-block;white-space:pre;color:#000}
+.morph-char.is-negative{color:#fff;mix-blend-mode:difference}
 .morph-char[data-digit="1"]{font-variant-numeric:tabular-nums}
 
-/* =========================
-   PREVIEW / COMPOSITING
-   ========================= */
-#index-preview{position:fixed;left:50%;top:50%;z-index:8;display:none;transform:translate(-50%,-50%);pointer-events:none;will-change:left,top}
-#index-preview.visible{display:block}
-#index-preview img,#index-preview video{display:block;width:auto;height:auto;max-width:min(430px,38vw);max-height:52vh;object-fit:contain;pointer-events:none;user-select:none}
-#index-preview video{width:min(460px,42vw);max-width:min(460px,42vw)}
-
-/* This layer contains only clipped duplicate glyphs. Because it lives in the
-   same stacking context as the preview, white+difference produces the real
-   pixel-wise inverse of the preview exactly where text overlaps it. */
-#index-negative-layer{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
-.idx-negative{position:fixed;margin:0;padding:0;color:#fff;background:transparent;white-space:nowrap;pointer-events:none;mix-blend-mode:difference;clip-path:inset(0);will-change:clip-path,left,top}
-
-/* =========================
-   FOOTER ALIGNMENT
-   ========================= */
-#index-footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:var(--bottom);z-index:70;display:flex;justify-content:space-between;align-items:flex-end;font-size:var(--size);line-height:var(--line);pointer-events:auto}
+#index-footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:var(--bottom);z-index:90;display:flex;justify-content:space-between;align-items:flex-end;font-size:var(--size);line-height:var(--line);pointer-events:auto}
 #index-footer .footer-col{display:flex;flex-direction:column}
 #index-footer .right{align-items:flex-end;text-align:right}
 #index-footer a{color:#000;text-decoration:none;white-space:nowrap}
 #index-footer a:hover{text-decoration:underline}
 
-/* =========================
-   INFO
-   ========================= */
-#info-panel{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:88px var(--gutter) 88px;opacity:1;visibility:visible;pointer-events:none;transition:opacity 140ms ease}
-#info-panel.hidden{opacity:0;visibility:hidden;pointer-events:none;z-index:0}
+#info-panel{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:88px var(--gutter);background:#fff;color:#000}
+#info-panel.visible{display:flex}
 #info-copy{width:min(860px,74vw);max-height:calc(100vh - 176px);overflow:hidden}
 .info-line{font-size:var(--size);line-height:var(--line);white-space:nowrap}
-.info-line.left{text-align:left}.info-line.right{text-align:right}.info-gap{height:calc(var(--size)*1.1)}
+.info-line.left{text-align:left} .info-line.right{text-align:right} .info-gap{height:calc(var(--size)*1.1)}
 
-/* =========================
-   BLACK AYBAK END CARD
-   restored from the original landing interaction
-   ========================= */
-#black-card{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;visibility:hidden;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms;touch-action:none}
+#black-card{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;visibility:hidden;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms;touch-action:none}
 body.black-mode #black-card{visibility:visible;pointer-events:auto;opacity:1;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s}
 body.black-leaving #black-card{visibility:visible;pointer-events:none;opacity:0;transition:opacity 420ms cubic-bezier(.22,.61,.36,1),visibility 0s linear 420ms}
-body.black-mode #index-nav,body.black-mode #index-footer{color:#fff;z-index:210} body.black-mode #index-nav button,body.black-mode #index-footer a{mix-blend-mode:normal}
+body.black-mode #index-main,body.black-mode #info-panel{visibility:hidden}
+body.black-mode #index-nav,body.black-mode #index-footer{z-index:210}
 body.black-mode #index-nav button,body.black-mode #index-footer a{color:#fff}
-body.black-mode #index-main{visibility:hidden} body.black-mode #index-preview,body.black-mode #index-negative-layer{visibility:hidden}
-body.black-mode #black-card{background:#000}
-#black-logo{position:relative;z-index:101;display:flex;flex-direction:column;align-items:center;justify-content:center;width:max-content;margin:0;padding:0;border:0;background:transparent;color:#fff;font-size:var(--size);line-height:var(--line);cursor:pointer}
+#black-logo{position:relative;z-index:201;display:flex;flex-direction:column;align-items:center;justify-content:center;width:max-content;margin:0;padding:0;border:0;background:transparent;color:#fff;font-size:var(--size);line-height:var(--line);cursor:pointer}
 #black-logo-name,#black-logo-aybak{display:block;height:calc(var(--size)*var(--line));white-space:nowrap}
 .black-letter{display:inline-block}
 
 @media (max-width:900px){
-  :root{--size:16px;--gutter:24px;--top:22px;--bottom:22px;--header-gap:16px;--row-gap:5px}
+  :root{--size:16px;--gutter:24px;--top:22px;--bottom:22px;--header-gap:16px;--row-gap:3px}
   .idx-head,.idx-row{grid-template-columns:minmax(0,1fr) minmax(90px,.72fr) minmax(96px,.70fr);column-gap:24px}
   .idx-cell.use,.idx-head .use{display:none}
   .idx-cell.title{text-align:left}
@@ -112,7 +95,7 @@ body.black-mode #black-card{background:#000}
   #info-copy{width:88vw}
 }
 @media (max-width:520px){
-  :root{--size:15px;--gutter:18px;--top:20px;--bottom:18px;--header-gap:14px;--row-gap:5px}
+  :root{--size:15px;--gutter:18px;--top:20px;--bottom:18px;--header-gap:14px;--row-gap:3px}
   .idx-head,.idx-row{column-gap:14px;grid-template-columns:minmax(0,1fr) minmax(74px,.68fr) minmax(86px,.62fr)}
   #index-preview img,#index-preview video{max-width:66vw;max-height:36vh}
   #index-footer{font-size:13px}
@@ -123,51 +106,51 @@ body.black-mode #black-card{background:#000}
 <body>
 <div id="index-app">
   <nav id="index-nav" aria-label="Landing sections">
-    <button id="index-switch" type="button" class="composite-target" aria-label="Index"></button>
-    <button id="info-switch" type="button" class="composite-target" aria-label="Info"></button>
+    <button id="index-switch" type="button" aria-label="Index"></button>
+    <button id="info-switch" type="button" aria-label="Info"></button>
   </nav>
 
   <main id="index-main">
-    <section id="index-panel" aria-label="Project index">
-      <div id="index-table"></div>
-    </section>
-    <section id="info-panel" class="hidden" aria-label="Information">
-      <div id="info-copy">
-        <div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
-        <div class="info-line left">based in istanbul and available internationally.</div>
-        <div class="info-gap"></div>
-        <div class="info-line right">having graduated top of his class in management at sabanci university,</div>
-        <div class="info-line right">he brings a strategic approach to image-making,</div>
-        <div class="info-line right">considering both the work itself and the world it belongs to.</div>
-        <div class="info-gap"></div>
-        <div class="info-line left">his work creates atmosphere through contrast:</div>
-        <div class="info-line left">light that feels dark,</div>
-        <div class="info-line left">beauty that appears distant,</div>
-        <div class="info-line left">stillness that carries tension,</div>
-        <div class="info-line left">and precision that emerges from spontaneity.</div>
-        <div class="info-gap"></div>
-        <div class="info-line right">editorial collaborators include:</div>
-        <div class="info-line right">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</div>
-        <div class="info-gap"></div>
-        <div class="info-line left">brand collaborators include:</div>
-        <div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div>
-      </div>
-    </section>
+    <div id="index-preview" aria-hidden="true"></div>
+    <div id="index-table"></div>
   </main>
 
-  <div id="index-preview" aria-hidden="true"></div>
-  <div id="index-negative-layer" aria-hidden="true"></div>
+  <section id="info-panel" aria-label="Information">
+    <div id="info-copy">
+      
+<div class="info-line left">denizalp aybak (b. 1997) is a photographer and filmmaker,</div>
+<div class="info-line left">based in istanbul and available internationally.</div>
+<div class="info-gap"></div>
+<div class="info-line right">having graduated top of his class in management at sabanci university,</div>
+<div class="info-line right">he brings a strategic approach to image-making,</div>
+<div class="info-line right">considering both the work itself and the world it belongs to.</div>
+<div class="info-gap"></div>
+<div class="info-line left">his work creates atmosphere through contrast:</div>
+<div class="info-line left">light that feels dark,</div>
+<div class="info-line left">beauty that appears distant,</div>
+<div class="info-line left">stillness that carries tension,</div>
+<div class="info-line left">and precision that emerges from spontaneity.</div>
+<div class="info-gap"></div>
+<div class="info-line right">editorial collaborators include:</div>
+<div class="info-line right">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</div>
+<div class="info-gap"></div>
+<div class="info-line left">brand collaborators include:</div>
+<div class="info-line left">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</div>
+
+    </div>
+  </section>
 
   <footer id="index-footer">
     <div class="footer-col left">
-      <a class="composite-target" href="https://www.models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
-      <a class="composite-target" href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+      <a href="https://www.models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
+      <a href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
     </div>
     <div class="footer-col right">
-      <a class="composite-target" href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
-      <a class="composite-target" href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
+      <a href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
+      <a href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
     </div>
   </footer>
+
   <section id="black-card" aria-hidden="true">
     <button id="black-logo" type="button" aria-label="Denizalp Aybak">
       <span id="black-logo-name">Denizalp</span>
@@ -188,17 +171,17 @@ body.black-mode #black-card{background:#000}
 
   const indexSwitch = document.getElementById("index-switch");
   const infoSwitch = document.getElementById("info-switch");
-  const indexPanel = document.getElementById("index-panel");
-  const infoPanel = document.getElementById("info-panel");
+  const indexMain = document.getElementById("index-main");
   const indexTable = document.getElementById("index-table");
-  const preview = document.getElementById("index-preview");
-  const negativeLayer = document.getElementById("index-negative-layer");
+  const indexPreview = document.getElementById("index-preview");
+  const infoPanel = document.getElementById("info-panel");
   const blackCard = document.getElementById("black-card");
   const blackLogo = document.getElementById("black-logo");
   const blackName = document.getElementById("black-logo-name");
   const blackLetters = [...blackLogo.querySelectorAll(".black-letter")];
 
-  const MORPH_DURATION = 280;
+  /* Same order of magnitude as the Photography site: 400ms. */
+  const MORPH_DURATION = 400;
   const BLACK_STEP = 80;
 
   let mode = "index";
@@ -206,95 +189,84 @@ body.black-mode #black-card{background:#000}
   let activeKey = "date";
   let direction = -1;
   let hoveredRowState = null;
-  let hoveredCell = null;
   let previewToken = 0;
-  let negativeFrame = null;
+  let previewPosition = null;
+  let negativeRaf = null;
   let blackActive = false;
   let blackLeaving = false;
   let blackState = 0;
-  let blackTarget = 0;
   let blackTimer = null;
 
   const lower = value => String(value ?? "").toLocaleLowerCase();
   const upper = value => String(value ?? "").toLocaleUpperCase();
   const isLetter = ch => ch.toLocaleLowerCase() !== ch.toLocaleUpperCase();
+  const isFinePointer = () => matchMedia("(hover:hover) and (pointer:fine)").matches;
 
   function morphPositions(text){
     return [...String(text)].map((ch,i)=>(isLetter(ch)||/[0-9]/.test(ch))?i:-1).filter(i=>i>=0);
   }
 
-  function renderTypography(el, text, activePositions = new Set()){
-    const frag = document.createDocumentFragment();
+  function renderTypography(el,text,active=new Set()){
+    const frag=document.createDocumentFragment();
     [...String(text)].forEach((ch,i)=>{
-      const span = document.createElement("span");
-      span.className = "morph-char";
-      span.textContent = ch;
-      if(/[0-9]/.test(ch) && activePositions.has(i)) span.style.letterSpacing = ".055em";
+      const span=document.createElement("span");
+      span.className="morph-char";
+      span.textContent=ch;
+      if(/[0-9]/.test(ch)) span.dataset.digit="1";
+      if(active.has(i)) span.dataset.active="1";
       frag.appendChild(span);
     });
     el.replaceChildren(frag);
   }
 
-  function caseText(baseText, count){
-    const base = lower(baseText);
-    const positions = morphPositions(base);
-    const active = new Set(positions.slice(0,count));
+  function caseText(baseText,count){
+    const base=lower(baseText);
+    const positions=morphPositions(base);
+    const active=new Set(positions.slice(0,count));
     return {
       text:[...base].map((ch,i)=>isLetter(ch)&&active.has(i)?upper(ch):lower(ch)).join(""),
       active
     };
   }
 
-  function currentCaseState(el, baseText){
-    const base = lower(baseText);
-    const pos = morphPositions(base);
-    const children = [...el.children];
-    if(children.length !== base.length) return 0;
-    let state = 0;
-    for(let i=0;i<pos.length;i++){
-      const p = pos[i], ch = base[p], child = children[p];
-      const active = /[0-9]/.test(ch) ? !!child?.style?.letterSpacing : child?.textContent === upper(ch);
-      if(active) state++; else break;
-    }
-    return state;
+  function setCase(el,text,count,skipBlend=false){
+    const base=lower(text);
+    const result=caseText(base,count);
+    renderTypography(el,result.text,result.active);
+    el.dataset.morphBase=base;
+    el.dataset.morphCount=String(count);
+    if(!skipBlend) scheduleBlendUpdate();
   }
 
-  function setCaseInstant(el, baseText, count){
-    const r = caseText(baseText,count);
-    renderTypography(el,r.text,r.active);
-    el.dataset.morphText = lower(baseText);
-    el.dataset.morphCount = String(count);
-  }
-
-  function morphTo(el, baseText, target, duration=MORPH_DURATION, onFrame=null){
-    const base = lower(baseText);
-    const positions = morphPositions(base);
-    const total = positions.length;
-    let startState = Number(el.dataset.morphCount || currentCaseState(el,base));
-    startState = Math.max(0,Math.min(total,startState));
-    target = Math.max(0,Math.min(total,target));
+  function morphTo(el,text,target,duration=MORPH_DURATION){
+    const base=lower(text);
+    const positions=morphPositions(base);
+    const total=positions.length;
+    let startState=Number(el.dataset.morphCount||0);
+    if(!Number.isFinite(startState)) startState=0;
+    startState=Math.max(0,Math.min(total,startState));
+    target=Math.max(0,Math.min(total,target));
 
     if(el._morphFrame) cancelAnimationFrame(el._morphFrame);
-    if(startState === target){
-      setCaseInstant(el,base,target);
-      if(onFrame) onFrame();
+    if(startState===target){
+      setCase(el,base,target,true);
+      scheduleBlendUpdate();
       return Promise.resolve();
     }
 
-    const start = performance.now();
+    const start=performance.now();
     return new Promise(resolve=>{
-      const frame = now=>{
-        const p = Math.min(1,(now-start)/duration);
-        const eased = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
-        const state = Math.round(startState + (target-startState)*eased);
-        setCaseInstant(el,base,state);
-        if(onFrame) onFrame();
+      const frame=now=>{
+        const p=Math.min(1,(now-start)/duration);
+        const eased=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+        const state=Math.round(startState+(target-startState)*eased);
+        setCase(el,base,state,false);
         if(p<1){
           el._morphFrame=requestAnimationFrame(frame);
         }else{
-          setCaseInstant(el,base,target);
+          setCase(el,base,target,true);
           el._morphFrame=null;
-          if(onFrame) onFrame();
+          scheduleBlendUpdate();
           resolve();
         }
       };
@@ -302,23 +274,18 @@ body.black-mode #black-card{background:#000}
     });
   }
 
-  function morphMany(items, toUpper, duration=MORPH_DURATION){
-    const tasks = items.map(item=>morphTo(item.el,item.text,toUpper?morphPositions(item.text).length:0,duration));
-    return Promise.all(tasks);
-  }
-
-  function fieldLabel(project){ return project.field === "PHOTOGRAPHY" ? "photography" : "film"; }
+  function fieldLabel(project){ return project.field==="PHOTOGRAPHY"?"photography":"film"; }
   function valueFor(project,key){
-    if(key === "title") return lower(project.title);
-    if(key === "field") return lower(fieldLabel(project));
-    if(key === "use") return lower(project.use);
-    return project.sortDate || "";
+    if(key==="title") return lower(project.title);
+    if(key==="field") return lower(fieldLabel(project));
+    if(key==="use") return lower(project.use);
+    return project.sortDate||"";
   }
   function sortedProjects(){
     return [...PROJECTS].sort((a,b)=>{
       const av=valueFor(a,activeKey), bv=valueFor(b,activeKey);
-      if(av==="" && bv!=="") return 1;
-      if(av!=="" && bv==="") return -1;
+      if(av===""&&bv!=="") return 1;
+      if(av!==""&&bv==="") return -1;
       if(av<bv) return -1*direction;
       if(av>bv) return 1*direction;
       const at=lower(a.title), bt=lower(b.title);
@@ -328,37 +295,13 @@ body.black-mode #black-card{background:#000}
     });
   }
 
-  function writeMorphElement(el,text,upperState=false){
-    el.classList.add("composite-target");
-    setCaseInstant(el,text,upperState?morphPositions(text).length:0);
-    el._morphBase=text;
-  }
-
-  function buildHeader(){
-    const head=document.createElement("div");
-    head.className="idx-head";
-    const specs=[["title","title"],["date","date"],["field","field"],["use","use"]];
-    specs.forEach(([key,label])=>{
-      const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
-      const btn=document.createElement("button"); btn.type="button"; btn.className="idx-sort composite-target"; btn.setAttribute("aria-label",`Sort by ${label}`);
-      cell.appendChild(btn); head.appendChild(cell);
-      writeMorphElement(btn,label,key===activeKey);
-      btn._sortKey=key; btn._sortLabel=label;
-      btn.addEventListener("click",async e=>{
-        e.preventDefault(); e.stopPropagation();
-        if(activeKey===key) direction*=-1;
-        else { activeKey=key; direction=key==="date"?-1:1; }
-        const buttons=[...document.querySelectorAll(".idx-sort")];
-        const activeBtn=buttons.find(x=>x._sortKey===activeKey);
-        const oldBtns=buttons.filter(x=>x!==activeBtn);
-        await Promise.all([
-          morphTo(activeBtn,activeBtn._sortLabel,morphPositions(activeBtn._sortLabel).length,MORPH_DURATION),
-          ...oldBtns.map(x=>morphTo(x,x._sortLabel,0,MORPH_DURATION))
-        ]);
-        buildRowsOnly();
-      });
-    });
-    return head;
+  function makePreviewAnchor(project){
+    if(project._indexPreviewAnchor) return project._indexPreviewAnchor;
+    project._indexPreviewAnchor={
+      x:0.15+Math.random()*0.70,
+      y:0.18+Math.random()*0.64
+    };
+    return project._indexPreviewAnchor;
   }
 
   function choosePreview(project){
@@ -376,236 +319,283 @@ body.black-mode #black-card{background:#000}
     return {type:"video",src:FILM_PREVIEW_BASE+encodeURIComponent(previewName)};
   }
 
-  function positionPreview(){
-    const media=preview.firstElementChild;
-    if(!media || !hoveredCell) return;
-    const a=hoveredCell.getBoundingClientRect(), m=media.getBoundingClientRect();
-    if(!m.width||!m.height) return;
-    let x=a.left+a.width/2, y=a.top+a.height/2;
-    const hw=m.width/2, hh=m.height/2;
-    x=Math.max(hw+10,Math.min(innerWidth-hw-10,x));
-    y=Math.max(hh+10,Math.min(innerHeight-hh-10,y));
-    preview.style.left=`${x}px`; preview.style.top=`${y}px`;
+  function setPreviewPosition(anchor){
+    const media=indexPreview.firstElementChild;
+    if(!media||!anchor) return;
+    const rect=media.getBoundingClientRect();
+    if(!rect.width||!rect.height) return;
+    const halfW=rect.width/2, halfH=rect.height/2;
+    const safeX=rect.width*0.10;
+    const safeTop=Math.max(72,parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--top"))||30);
+    const safeBottom=Math.max(72,parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--bottom"))||30);
+    let x=innerWidth*anchor.x;
+    let y=innerHeight*anchor.y;
+    x=Math.max(halfW+safeX,Math.min(innerWidth-halfW-safeX,x));
+    y=Math.max(halfH+safeTop,Math.min(innerHeight-halfH-safeBottom,y));
+    indexPreview.style.left=`${x}px`;
+    indexPreview.style.top=`${y}px`;
   }
 
-  function scheduleNegative(){
-    if(negativeFrame!==null) return;
-    negativeFrame=requestAnimationFrame(()=>{negativeFrame=null; updateNegative();});
+  function rectsOverlap(a,b){
+    return a.right>b.left && a.left<b.right && a.bottom>b.top && a.top<b.bottom;
   }
 
-  function sameTypography(source,clone){
-    const c=getComputedStyle(source);
-    clone.style.fontFamily=c.fontFamily;
-    clone.style.fontSize=c.fontSize;
-    clone.style.fontWeight=c.fontWeight;
-    clone.style.fontStyle=c.fontStyle;
-    clone.style.lineHeight=c.lineHeight;
-    clone.style.letterSpacing=c.letterSpacing;
-    clone.style.wordSpacing=c.wordSpacing;
-    clone.style.textAlign=c.textAlign;
-  }
-
-  function updateNegative(){
-    negativeLayer.replaceChildren();
-    const media=preview.firstElementChild;
-    if(!preview.classList.contains("visible")||!media) return;
-    const mr=media.getBoundingClientRect();
-    if(!mr.width||!mr.height) return;
-
-    const sources=[...document.querySelectorAll("#index-app .composite-target")].filter(el=>{
-      if(!el.textContent.trim()) return false;
-      if(el.closest("#black-card")) return false;
-      if(el.offsetParent===null) return false;
-      return true;
+  /* This is deliberately pixel-independent:
+     every actual glyph is composited against the live preview underneath it.
+     White + difference -> black on white imagery, white on black imagery, and
+     the real inverse tone on colors. No flat white duplicate layer exists. */
+  function updateBlend(){
+    negativeRaf=null;
+    const media=indexPreview.firstElementChild;
+    if(!indexPreview.classList.contains("visible")||!media||!hoveredRowState) return;
+    const previewRect=media.getBoundingClientRect();
+    const chars=hoveredRowState.items.flatMap(item=>[...item.el.querySelectorAll(".morph-char")]);
+    chars.forEach(ch=>{
+      const r=ch.getBoundingClientRect();
+      ch.classList.toggle("is-negative",rectsOverlap(r,previewRect));
     });
+  }
 
-    for(const source of sources){
-      const r=source.getBoundingClientRect();
-      const L=Math.max(r.left,mr.left), R=Math.min(r.right,mr.right), T=Math.max(r.top,mr.top), B=Math.min(r.bottom,mr.bottom);
-      if(R<=L||B<=T) continue;
-      const clone=document.createElement("span");
-      clone.className="idx-negative";
-      clone.textContent=source.textContent;
-      sameTypography(source,clone);
-      clone.style.left=`${r.left}px`; clone.style.top=`${r.top}px`; clone.style.width=`${r.width}px`; clone.style.height=`${r.height}px`;
-      clone.style.clipPath=`inset(${Math.max(0,T-r.top)}px ${Math.max(0,r.right-R)}px ${Math.max(0,r.bottom-B)}px ${Math.max(0,L-r.left)}px)`;
-      negativeLayer.appendChild(clone);
+  function scheduleBlendUpdate(){
+    if(negativeRaf!==null) return;
+    negativeRaf=requestAnimationFrame(updateBlend);
+  }
+
+  function clearBlend(){
+    document.querySelectorAll(".morph-char.is-negative").forEach(el=>el.classList.remove("is-negative"));
+  }
+
+  function positionForRow(state){
+    const anchor=state.previewAnchor;
+    setPreviewPosition(anchor);
+    scheduleBlendUpdate();
+  }
+
+  function showPreview(state){
+    const source=choosePreview(state.project);
+    const token=++previewToken;
+    indexPreview.replaceChildren();
+    clearBlend();
+    if(!source){indexPreview.classList.remove("visible");return;}
+    const media=document.createElement(source.type==="video"?"video":"img");
+    if(source.type==="video"){
+      media.muted=true;media.autoplay=true;media.loop=true;media.playsInline=true;media.preload="metadata";media.src=source.src;
+      media.addEventListener("loadedmetadata",()=>{if(token!==previewToken)return;media.currentTime=0;media.play().catch(()=>{});indexPreview.classList.add("visible");positionForRow(state);},{once:true});
+    }else{
+      media.alt="";media.decoding="async";media.loading="eager";media.src=source.src;
+      media.addEventListener("load",()=>{if(token!==previewToken)return;indexPreview.classList.add("visible");positionForRow(state);},{once:true});
     }
+    media.addEventListener("error",()=>{if(token!==previewToken)return;clearPreview();},{once:true});
+    indexPreview.appendChild(media);
+    indexPreview.classList.add("visible");
+    positionForRow(state);
   }
 
   function clearPreview(){
     previewToken++;
-    preview.classList.remove("visible");
-    preview.replaceChildren();
-    negativeLayer.replaceChildren();
+    indexPreview.classList.remove("visible");
+    indexPreview.replaceChildren();
+    clearBlend();
   }
 
-  function showPreview(project){
-    const source=choosePreview(project); const token=++previewToken;
-    preview.replaceChildren(); negativeLayer.replaceChildren();
-    if(!source){preview.classList.remove("visible");return;}
-    const media=document.createElement(source.type==="video"?"video":"img");
-    if(source.type==="video"){
-      media.muted=true;media.autoplay=true;media.loop=true;media.playsInline=true;media.preload="metadata";media.src=source.src;
-      media.addEventListener("loadedmetadata",()=>{if(token!==previewToken)return;media.currentTime=0;media.play().catch(()=>{});positionPreview();scheduleNegative();},{once:true});
-    }else{
-      media.alt="";media.decoding="async";media.loading="eager";media.src=source.src;
-      media.addEventListener("load",()=>{if(token!==previewToken)return;positionPreview();scheduleNegative();},{once:true});
-    }
-    media.addEventListener("error",()=>{if(token!==previewToken)return;clearPreview();},{once:true});
-    preview.appendChild(media); preview.classList.add("visible"); positionPreview(); scheduleNegative();
+  function rowCase(state,toUpper){
+    const tasks=state.items.map(item=>morphTo(item.el,item.text,toUpper?morphPositions(item.text).length:0,MORPH_DURATION));
+    return Promise.all(tasks).then(scheduleBlendUpdate);
   }
 
-  function setRowState(state,upperState){
-    if(!state) return;
-    state.items.forEach(item=>{
-      morphTo(item.el,item.text,upperState?morphPositions(item.text).length:0,MORPH_DURATION,scheduleNegative);
-    });
-  }
-
-  function hoverRow(state,cell){
-    if(hoveredRowState===state){ hoveredCell=cell; positionPreview(); scheduleNegative(); return; }
-    if(hoveredRowState){hoveredRowState.row.classList.remove("hovered");setRowState(hoveredRowState,false)}
-    hoveredRowState=state; hoveredCell=cell || state.items[0]?.el || null; state.row.classList.add("hovered"); showPreview(state.project); setRowState(state,true);
+  function hoverRow(state){
+    if(hoveredRowState===state){ positionForRow(state); return; }
+    if(hoveredRowState){ hoveredRowState.row.classList.remove("hovered"); rowCase(hoveredRowState,false); }
+    hoveredRowState=state;
+    state.row.classList.add("hovered");
+    showPreview(state);
+    rowCase(state,true);
   }
 
   function clearHover(){
-    if(hoveredRowState){hoveredRowState.row.classList.remove("hovered");setRowState(hoveredRowState,false)}
-    hoveredRowState=null; hoveredCell=null; clearPreview();
+    if(hoveredRowState){
+      const state=hoveredRowState;
+      hoveredRowState=null;
+      state.row.classList.remove("hovered");
+      rowCase(state,false);
+    }
+    clearPreview();
   }
 
-  function buildRowsOnly(){
+  function writeText(el,text,isUpper=false){
+    const count=isUpper?morphPositions(text).length:0;
+    setCase(el,text,count,true);
+    el.dataset.morphBase=lower(text);
+  }
+
+  function makeHeader(){
+    const head=document.createElement("div");
+    head.className="idx-head";
+    [["title","title"],["date","date"],["field","field"],["use","use"]].forEach(([key,label])=>{
+      const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
+      const btn=document.createElement("button"); btn.type="button"; btn.className="idx-sort"; btn.setAttribute("aria-label",`Sort by ${label}`); btn._sortKey=key; btn._sortLabel=label;
+      cell.appendChild(btn); head.appendChild(cell);
+      writeText(btn,label,key===activeKey);
+      btn.addEventListener("click",async event=>{
+        event.preventDefault();
+        if(activeKey===key) direction*=-1; else {activeKey=key;direction=key==="date"?-1:1;}
+        const buttons=[...head.querySelectorAll(".idx-sort")];
+        await Promise.all(buttons.map(b=>morphTo(b,b._sortLabel,(b._sortKey===activeKey)?morphPositions(b._sortLabel).length:0,MORPH_DURATION)));
+        buildRowsOnly(head);
+      });
+    });
+    return head;
+  }
+
+  function buildRowsOnly(head=document.querySelector(".idx-head")){
     clearHover();
-    const head=indexTable.querySelector(".idx-head") || buildHeader();
-    indexTable.replaceChildren(head);
+    indexTable.replaceChildren(head||makeHeader());
     const body=document.createElement("div"); body.className="idx-body";
     const rows=sortedProjects(); body.style.setProperty("--rows",rows.length);
-    const states=[];
     rows.forEach(project=>{
       const row=document.createElement("a"); row.className="idx-row";
       row.href=(project.field==="FILM"?FILM_SITE:PHOTO_SITE)+`?project=${encodeURIComponent(project.id)}&view=all`;
-      row.dataset.projectId=project.id; row.dataset.field=project.field;
-      const vals=[["title",project.title],["date",project.date||""],["field",fieldLabel(project)],["use",project.use||""]];
-      const state={row,project,items:[]};
-      vals.forEach(([key,text])=>{
+      row.dataset.projectId=project.id;
+      row.dataset.field=project.field;
+      const state={row,project,items:[],previewAnchor:makePreviewAnchor(project)};
+      [["title",project.title],["date",project.date||""],["field",fieldLabel(project)],["use",project.use||""]].forEach(([key,text])=>{
         const cell=document.createElement("div"); cell.className=`idx-cell ${key}`;
-        if(key==="use" && window.innerWidth<=900) cell.style.display="none";
-        const el=document.createElement("span"); el.className="idx-text composite-target";
-        writeMorphElement(el,text,false); cell.appendChild(el); row.appendChild(cell); state.items.push({el,text});
+        if(key==="use"&&innerWidth<=900) cell.style.display="none";
+        const el=document.createElement("span"); el.className="idx-text";
+        writeText(el,text,false);
+        cell.appendChild(el); row.appendChild(cell); state.items.push({el,text});
       });
-      row.addEventListener("pointerenter",e=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;const c=e.target.closest(".idx-cell")?.querySelector(".idx-text")||state.items[0].el;hoverRow(state,c)});
-      row.addEventListener("pointerover",e=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;const c=e.target.closest(".idx-cell")?.querySelector(".idx-text");if(c){hoveredCell=c;positionPreview();scheduleNegative()}});
-      row.addEventListener("pointerleave",()=>{if(!matchMedia("(hover:hover) and (pointer:fine)").matches)return;if(hoveredRowState===state)clearHover()});
-      row.addEventListener("focus",()=>hoverRow(state,state.items[0].el));
-      row.addEventListener("blur",()=>{if(hoveredRowState===state)clearHover()});
-      states.push(state); body.appendChild(row);
+      if(isFinePointer()) row.addEventListener("pointerenter",()=>hoverRow(state));
+      row.addEventListener("focus",()=>hoverRow(state));
+      row.addEventListener("blur",()=>{if(hoveredRowState===state)clearHover();});
+      row.addEventListener("pointermove",()=>{if(hoveredRowState===state)positionForRow(state)});
+      row.addEventListener("click",()=>clearPreview());
+      body.appendChild(row);
     });
     indexTable.appendChild(body);
-    requestAnimationFrame(()=>scheduleNegative());
   }
 
-  function buildIndex(){
-    indexTable.replaceChildren(buildHeader());
-    buildRowsOnly();
-  }
+  function buildIndex(){buildRowsOnly(makeHeader())}
 
-  function navElements(){return [
-    {el:indexSwitch,text:"index"},
-    {el:infoSwitch,text:"info"}
-  ]}
-
-  function setNavInstant(){
-    navElements().forEach(item=>writeMorphElement(item.el,item.text,(mode==="index"&&item.text==="index")||(mode==="info"&&item.text==="info")));
+  function renderNav(whichUpper){
+    writeText(indexSwitch,"index",whichUpper==="index");
+    writeText(infoSwitch,"info",whichUpper==="info");
   }
 
   async function switchMode(next){
-    if(modeTransition || blackActive) return;
-    if(next===mode) next = mode==="index"?"info":"index";
-    modeTransition={from:mode,to:next};
+    if(modeTransition||blackActive) return;
+    if(next===mode) next=mode==="index"?"info":"index";
+    modeTransition=true;
     clearHover();
-    const currentIndex=mode==="index";
-    const targetIndex=next==="index";
-    const currentItems=navElements();
-    const tasks=[];
-    for(const item of currentItems){
-      const upperTarget=(item.text==="index"?targetIndex:!targetIndex);
-      tasks.push(morphTo(item.el,item.text,upperTarget?morphPositions(item.text).length:0,MORPH_DURATION));
-    }
-    await Promise.all(tasks);
+    const targetUpper=next;
+    await Promise.all([
+      morphTo(indexSwitch,"index",targetUpper==="index"?5:0,MORPH_DURATION),
+      morphTo(infoSwitch,"info",targetUpper==="info"?4:0,MORPH_DURATION)
+    ]);
     mode=next;
-    indexSwitch.setAttribute("aria-pressed",String(mode==="index")); infoSwitch.setAttribute("aria-pressed",String(mode==="info"));
-    indexPanel.classList.toggle("hidden",mode!=="index");
-    infoPanel.classList.toggle("hidden",mode!=="info");
-    modeTransition=null;
+    indexPanelState();
+    modeTransition=false;
   }
 
-  async function toggleFrom(which){
-    if(blackActive){closeBlack(false);return;}
-    await switchMode(which==="index"?"info":"index");
+  function indexPanelState(){
+    const indexVisible=mode==="index";
+    indexTable.style.display=indexVisible?"grid":"none";
+    infoPanel.classList.toggle("visible",!indexVisible);
+    indexSwitch.setAttribute("aria-pressed",String(indexVisible));
+    infoSwitch.setAttribute("aria-pressed",String(!indexVisible));
   }
 
-  indexSwitch.addEventListener("click",e=>{e.preventDefault();toggleFrom("index")});
-  infoSwitch.addEventListener("click",e=>{e.preventDefault();toggleFrom("info")});
+  indexSwitch.addEventListener("click",event=>{event.preventDefault();switchMode("index")});
+  infoSwitch.addEventListener("click",event=>{event.preventDefault();switchMode("info")});
 
   /* =========================
-     BLACK CARD — same gesture model as the original landing
+     BLACK END CARD
      ========================= */
   function setBlackState(n){
     blackState=Math.max(0,Math.min(5,n));
     blackName.textContent=blackState===0?"Denizalp":"denizalp";
     blackLetters.forEach((el,i)=>el.textContent=i<blackState?upper("aybak"[i]):lower("aybak"[i]));
   }
+
   function morphBlackTo(target){
-    if(blackTimer!==null)clearTimeout(blackTimer);
-    function step(){
+    if(blackTimer!==null) clearTimeout(blackTimer);
+    const step=()=>{
       if(blackState===target){blackTimer=null;return;}
       blackState += blackState<target?1:-1;
       setBlackState(blackState);
       blackTimer=setTimeout(step,BLACK_STEP);
-    }
+    };
     step();
   }
+
   function openBlack(){
     if(blackActive) return;
-    blackActive=true; blackLeaving=false; document.body.classList.remove("black-leaving"); document.body.classList.add("black-mode"); blackCard.setAttribute("aria-hidden","false"); setBlackState(0);
+    blackActive=true; blackLeaving=false;
+    document.body.classList.remove("black-leaving");
+    document.body.classList.add("black-mode");
+    blackCard.setAttribute("aria-hidden","false");
+    setBlackState(0);
   }
+
   function closeBlack(prepareUpper=true){
-    if(!blackActive||blackLeaving)return;
+    if(!blackActive||blackLeaving) return;
     blackLeaving=true;
     const finish=()=>{
-      blackActive=false; document.body.classList.remove("black-mode"); document.body.classList.add("black-leaving"); blackCard.setAttribute("aria-hidden","true");
+      blackActive=false;
+      document.body.classList.remove("black-mode");
+      document.body.classList.add("black-leaving");
+      blackCard.setAttribute("aria-hidden","true");
       setTimeout(()=>{document.body.classList.remove("black-leaving");blackLeaving=false;setBlackState(0)},420);
     };
     if(prepareUpper){morphBlackTo(5);setTimeout(finish,BLACK_STEP*5+120)}else finish();
   }
-  blackLogo.addEventListener("mouseenter",()=>{if(matchMedia("(hover:hover) and (pointer:fine)").matches&&!blackLeaving)morphBlackTo(5)});
-  blackLogo.addEventListener("mouseleave",()=>{if(matchMedia("(hover:hover) and (pointer:fine)").matches&&!blackLeaving)morphBlackTo(0)});
-  blackLogo.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();closeBlack(true)});
+
+  blackLogo.addEventListener("mouseenter",()=>{if(isFinePointer()&&!blackLeaving)morphBlackTo(5)});
+  blackLogo.addEventListener("mouseleave",()=>{if(isFinePointer()&&!blackLeaving)morphBlackTo(0)});
+  blackLogo.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();closeBlack(true)});
 
   let wheelAcc=0,wheelTimer=null;
-  window.addEventListener("wheel",e=>{
-    if(e.ctrlKey) return;
-    wheelAcc += e.deltaY;
-    if(wheelTimer)clearTimeout(wheelTimer);
+  window.addEventListener("wheel",event=>{
+    if(event.ctrlKey) return;
+    wheelAcc += event.deltaY;
+    if(wheelTimer) clearTimeout(wheelTimer);
     wheelTimer=setTimeout(()=>{wheelAcc=0;wheelTimer=null},140);
-    if(!blackActive && mode==="index" && wheelAcc>48){e.preventDefault();wheelAcc=0;openBlack();}
-    else if(blackActive && wheelAcc<-48){e.preventDefault();wheelAcc=0;closeBlack(false);}
+    if(!blackActive&&wheelAcc>48){event.preventDefault();wheelAcc=0;openBlack()}
+    else if(blackActive&&wheelAcc<-48){event.preventDefault();wheelAcc=0;closeBlack(false)}
   },{passive:false});
 
   let touchStartY=null;
-  window.addEventListener("touchstart",e=>{const t=e.touches[0];touchStartY=t?t.clientY:null},{passive:true});
-  window.addEventListener("touchend",e=>{if(touchStartY===null)return;const t=e.changedTouches[0];if(!t)return;const dy=t.clientY-touchStartY;touchStartY=null;if(Math.abs(dy)<52)return;if(!blackActive&&mode==="index"&&dy<0)openBlack();else if(blackActive&&dy>0)closeBlack(false)},{passive:true});
-  window.addEventListener("keydown",e=>{if(e.code==="Escape"&&blackActive){e.preventDefault();closeBlack(false);return}if(e.code==="ArrowDown"&&!blackActive&&mode==="index"){e.preventDefault();openBlack()}else if(e.code==="ArrowUp"&&blackActive){e.preventDefault();closeBlack(false)}});
+  window.addEventListener("touchstart",event=>{const t=event.touches[0];touchStartY=t?t.clientY:null},{passive:true});
+  window.addEventListener("touchend",event=>{
+    if(touchStartY===null) return;
+    const t=event.changedTouches[0];
+    if(!t) return;
+    const dy=t.clientY-touchStartY; touchStartY=null;
+    if(Math.abs(dy)<52) return;
+    if(!blackActive&&dy<0) openBlack();
+    else if(blackActive&&dy>0) closeBlack(false);
+  },{passive:true});
+
+  window.addEventListener("keydown",event=>{
+    if(event.code==="Escape"&&blackActive){event.preventDefault();closeBlack(false);return;}
+    if(event.code==="ArrowDown"&&!blackActive){event.preventDefault();openBlack();}
+    else if(event.code==="ArrowUp"&&blackActive){event.preventDefault();closeBlack(false);}
+  });
 
   window.addEventListener("resize",()=>{
-    positionPreview();scheduleNegative();
-    if((window.innerWidth<=900)!==(document.body.dataset.mobile==="1")){document.body.dataset.mobile=window.innerWidth<=900?"1":"0";buildIndex();setNavInstant()}
-  });
-  window.addEventListener("scroll",scheduleNegative,{passive:true});
+    if(hoveredRowState) positionForRow(hoveredRowState);
+    scheduleBlendUpdate();
+    buildIndex();
+    renderNav(mode);
+    indexPanelState();
+  },{passive:true});
+
+  window.addEventListener("load",scheduleBlendUpdate,{once:true});
 
   buildIndex();
-  setNavInstant();
-  indexSwitch.setAttribute("aria-pressed","true"); infoSwitch.setAttribute("aria-pressed","false");
+  renderNav("index");
+  indexPanelState();
+  setBlackState(0);
 })();
 </script>
 </body>
