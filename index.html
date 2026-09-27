@@ -6,2062 +6,504 @@
 <title>Denizalp Aybak</title>
 <link href="https://use.typekit.net/rmn7qgm.css" rel="stylesheet"/>
 <style>
-
 /* =====================================================
    RESET
    ===================================================== */
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-
-    width: 100%;
-    height: 100%;
-
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
     overflow: hidden;
-    overscroll-behavior: none;
-
+    overscroll-behavior: none; /* Rubber-banding engellendi */
     background: #fff;
-
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
 }
-
-body {
-    color: #000;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-}
-
+body { color: #000; font-family: Arial, Helvetica, sans-serif; }
 
 /* =====================================================
    VARIABLES
    ===================================================== */
-
 :root {
-
-    --page-x: 48px;
-    --page-top: 32px;
-    --page-bottom: 48px;
-
-    --font-size: 15px;
-    --line-height: 1.15;
-
-    --major-gap: 17px;
-    --column-gap: 48px;
-
+    --page-x: 48px; --page-top: 32px; --page-bottom: 48px;
+    --font-size: 15px; --line-height: 1.15;
+    --major-gap: 17px; --column-gap: 48px;
 }
-
 
 /* =====================================================
    PAGE
    ===================================================== */
-
 .page {
-    position: relative;
-
-    width: 100%;
-
-    height: 100vh;
-    height: 100dvh;
-
-    padding:
-        var(--page-top)
-        var(--page-x)
-        var(--page-bottom)
-        var(--page-x);
-
+    position: relative; width: 100%; height: 100vh; height: 100dvh;
+    padding: var(--page-top) var(--page-x) var(--page-bottom) var(--page-x);
     overflow: hidden;
+    transition: background-color 400ms cubic-bezier(.22,.61,.36,1), color 400ms cubic-bezier(.22,.61,.36,1);
 }
-
 
 /* =====================================================
    MAIN GRID
    ===================================================== */
-
 .landing-grid {
-    position: relative;
-
-    z-index: 2;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 530px)
-        minmax(0, 1fr);
-
-    grid-template-rows:
-        auto
-        auto
-        auto
-        auto
-        minmax(0, 1fr);
-
-    column-gap:
-        var(--column-gap);
-
-    row-gap:
-        var(--major-gap);
-
-    width: 100%;
-    height: 100%;
-
-    min-width: 0;
-    min-height: 0;
-
-    pointer-events: none;
-}
-
-.logo,
-.navigation,
-.contact,
-.biography,
-.opening {
-    pointer-events: auto;
-}
-
-
-/* =====================================================
-   LOGO
-   ===================================================== */
-
-.logo {
-    position: relative;
-
-    grid-column: 1;
-    grid-row: 1;
-
-    display: block;
-
-    width: max-content;
-    height: 34px;
-
-    margin: 0;
-    padding: 0;
-
-    border: 0;
-
-    appearance: none;
-    -webkit-appearance: none;
-
-    background: transparent;
-
-    color: #000;
-
-    cursor: pointer;
-
-    font-family: inherit;
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-
-    text-align: left;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-.logo-name {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    white-space: nowrap;
-}
-
-.logo-aybak {
-    position: absolute;
-
-    top: 17px;
-    left: 0;
-
-    white-space: nowrap;
-}
-
-
-/* =====================================================
-   OPENING
-   ===================================================== */
-
-.opening {
-    grid-column: 1;
-    grid-row: 2;
-
-    margin: 0;
-    padding: 0;
-
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-
-    text-wrap: pretty;
-}
-
-
-/* =====================================================
-   NAVIGATION
-   ===================================================== */
-
-.navigation {
-    grid-column: 1;
-    grid-row: 3;
-
-    display: flex;
-    flex-direction: column;
-
-    margin: 0;
-    padding: 0;
-}
-
-.navigation a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.30em;
-
-    width: max-content;
-
-    color: #000;
-    text-decoration: none;
-
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-/* =====================================================
-   CONTACT
-   ===================================================== */
-
-.contact {
-    grid-column: 1;
-    grid-row: 4;
-
-    display: flex;
-    flex-direction: column;
-
-    margin: 0;
-    padding: 0;
-}
-
-.contact a {
-    color: #000;
-    text-decoration: none;
-
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-}
-
-.contact a:hover {
-    text-decoration: underline;
-}
-
-
-/* =====================================================
-   BIOGRAPHY
-   ===================================================== */
-
-.biography {
-    grid-column: 1;
-    grid-row: 5;
-
-    align-self: start;
-
-    width: 100%;
-    max-width: 530px;
-
-    margin: 0;
-    padding: 0;
-
-    font-size: var(--font-size);
-    font-weight: 400;
-    line-height: var(--line-height);
-}
-
-.biography p {
-    margin:
-        0
-        0
-        var(--major-gap)
-        0;
-
-    padding: 0;
-
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-
-    text-wrap: pretty;
-}
-
-.biography p:last-child {
-    margin-bottom: 0;
-}
-
-.biography span {
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-}
-
-
-.portfolio-download a {
-    color: inherit;
-    text-decoration: none;
-
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-.portfolio-download a:hover {
-    text-decoration: underline;
-}
-
-.site-arrow {
-    display: inline-block;
-    flex: 0 0 auto;
-    width: 0.66em;
-    height: 0.66em;
-    overflow: visible;
-    color: currentColor;
-    pointer-events: none;
-    vertical-align: -0.055em;
-}
-
-.site-arrow path {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.02;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-}
-
-.site-arrow--down,
-.site-arrow--external {
-    transform: none;
-}
-
-.navigation a,
-.portfolio-download a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.30em;
-}
-
-.item {
-    white-space: nowrap;
-}
-
-.bio-ending {
-    white-space: nowrap;
-}
-
-.mobile-client-break {
-    display: none;
-}
-
-
-/* =====================================================
-   MEDIA FIELD
-   ===================================================== */
-
-.media-field {
-    position: relative;
-
-    grid-column: 2;
-    grid-row: 1 / -1;
-
-    width: 100%;
-    height: 100%;
-
-    min-width: 0;
-    min-height: 0;
-
-    pointer-events: none;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY FIELD
-   ===================================================== */
-
-.photography-field {
-    position: fixed;
-
-    z-index: 1;
-
-    top: var(--page-top);
-    right: var(--page-x);
-    bottom: var(--page-bottom);
-    left: var(--page-x);
-
-    visibility: hidden;
-
-    overflow: hidden;
-
-    pointer-events: none;
-
-    contain:
-        layout
-        paint;
-}
-
-.photography-field.active {
-    visibility: visible;
-}
-
-
-/* =====================================================
-   PHOTOGRAPHY STAGE
-   ===================================================== */
-
-#scattered-stage {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    pointer-events: none;
-}
-
-
-/* =====================================================
-   PROJECT GROUP
-   ===================================================== */
-
-.photo-group {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width:
-        var(
-            --group-width,
-            100px
-        );
-
-    height:
-        var(
-            --group-height,
-            100px
-        );
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transform:
-        translate3d(
-            var(--group-x, 0px),
-            var(--group-y, 0px),
-            0
-        );
-
-    backface-visibility: hidden;
-
-    contain:
-        layout
-        paint;
-}
-
-.photo-group.visible {
-    visibility: visible;
-}
-
-
-/* =====================================================
-   INDIVIDUAL PHOTOS
-   ===================================================== */
-
-.project-photo {
-    position: absolute;
-
-    display: block;
-
-    width: auto;
-
-    height:
-        var(
-            --photo-height,
-            100px
-        );
-
-    top:
-        var(
-            --photo-y,
-            0px
-        );
-
-    left:
-        var(
-            --photo-x,
-            0px
-        );
-
-    object-fit: contain;
-
-    pointer-events: none;
-
-    backface-visibility: hidden;
-
-    transform: translateZ(0);
-}
-
-
-/* =====================================================
-   FILM FIELD
-   ===================================================== */
-
-.film-field {
-    position: absolute;
-
-    inset: 0;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    visibility: hidden;
-
-    pointer-events: none;
-}
-
-.film-field.active {
-    visibility: visible;
-
-    pointer-events: auto;
-}
-
-
-/* =====================================================
-   FILM
-   ===================================================== */
-
-.film-link {
-    display: block;
-
-    width: 100%;
-
-    max-width:
-        calc(
-            (
-                100vh -
-                var(--page-top) -
-                var(--page-bottom)
-            ) *
-            16 / 9
-        );
-
-    aspect-ratio: 16 / 9;
-
-    color: inherit;
-    text-decoration: none;
-
-    overflow: hidden;
-
-    pointer-events: auto;
-
-    -webkit-tap-highlight-color: transparent;
-}
-
-#film-video {
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-    object-position: center center;
-
-    pointer-events: none;
-
-    backface-visibility: hidden;
-
-    transform: translateZ(0);
-}
-
-
-/* =====================================================
-   MOBILE PORTRAIT
-   ===================================================== */
-
-@media
-    (max-width: 600px)
-    and (orientation: portrait) {
-
-    html,
-    body {
-        overflow: hidden;
-    }
-
-    :root {
-
-        --page-x: 24px;
-        --page-top: 20px;
-        --page-bottom: 32px;
-
-        --font-size: 13px;
-        --line-height: 1.15;
-
-        --major-gap: 15px;
-
-    }
-
-    .landing-grid {
-        grid-template-columns:
-            minmax(0, 1fr);
-
-        grid-template-rows:
-            auto
-            auto
-            auto
-            auto
-            auto
-            minmax(0, 1fr);
-
-        column-gap: 0;
-
-        row-gap:
-            var(--major-gap);
-    }
-
-    .logo {
-        grid-column: 1;
-        grid-row: 1;
-
-        height: 30px;
-    }
-
-    .logo-aybak {
-        top: 15px;
-    }
-
-    .opening {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    .navigation {
-        grid-column: 1;
-        grid-row: 3;
-    }
-
-    .contact {
-        grid-column: 1;
-        grid-row: 4;
-    }
-
-    .biography {
-        grid-column: 1;
-        grid-row: 5;
-
-        max-width: none;
-    }
-
-    .media-field {
-        grid-column: 1;
-        grid-row: 6;
-
-        min-height: 0;
-    }
-
-    .photography-field {
-        position: absolute;
-
-        inset: 0;
-
-        z-index: auto;
-
-        width: 100%;
-        height: 100%;
-    }
-
-    .bio-ending {
-        white-space: normal;
-    }
-
-    .mobile-client-break {
-        display: inline;
-    }
-
-    .film-link {
-        max-width: 100%;
-    }
-
-}
-
-
-/* =====================================================
-   MOBILE LANDSCAPE
-   ===================================================== */
-
-@media
-    (orientation: landscape)
-    and (max-height: 650px)
-    and (max-width: 1000px) {
-
-    :root {
-
-        --page-x: 24px;
-        --page-top: 14px;
-        --page-bottom: 14px;
-
-        --font-size: 13px;
-        --line-height: 1.15;
-
-        --major-gap: 8px;
-        --column-gap: 24px;
-
-    }
-
-    .landing-grid {
-        grid-template-columns:
-            minmax(0, 2fr)
-            minmax(0, 1fr);
-    }
-
-    .logo {
-        height: 30px;
-    }
-
-    .logo-aybak {
-        top: 15px;
-    }
-
-    .opening,
-    .biography {
-        max-width: none;
-    }
-
-    .opening,
-    .biography p {
-        text-wrap: pretty;
-    }
-
-    .biography p {
-        margin-bottom:
-            var(--major-gap);
-    }
-
-    .photography-field {
-        position: absolute;
-
-        inset: 0;
-
-        z-index: auto;
-
-        width: 100%;
-        height: 100%;
-    }
-
-    .bio-ending {
-        white-space: normal;
-    }
-
-    .film-link {
-        max-width: 100%;
-    }
-
-}
-
-
-/* =====================================================
-   SHORT DESKTOP
-   ===================================================== */
-
-@media
-    (orientation: landscape)
-    and (min-width: 1001px)
-    and (max-height: 700px) {
-
-    :root {
-
-        --page-x: 24px;
-        --page-top: 20px;
-        --page-bottom: 20px;
-
-        --font-size: 13px;
-        --line-height: 1.15;
-
-        --major-gap: 9px;
-        --column-gap: 32px;
-
-    }
-
-    .landing-grid {
-        grid-template-columns:
-            minmax(0, 470px)
-            minmax(0, 1fr);
-    }
-
-    .logo {
-        height: 30px;
-    }
-
-    .logo-aybak {
-        top: 15px;
-    }
-
-}
-
-/* =====================================================
-   LANDING V2 — REPOSITIONED INFORMATION
-   ===================================================== */
-
-html,
-body,
-.page {
-    transition:
-        background-color 400ms cubic-bezier(.22,.61,.36,1),
-        color 400ms cubic-bezier(.22,.61,.36,1);
-}
-
-.landing-grid {
+    position: relative; z-index: 2; display: grid;
+    grid-template-columns: minmax(0, 530px) minmax(0, 1fr);
     grid-template-rows: auto auto auto minmax(0, 1fr);
+    column-gap: var(--column-gap); row-gap: var(--major-gap);
+    width: 100%; height: 100%; min-width: 0; min-height: 0;
+    pointer-events: none;
 }
+.logo, .navigation, .contact, .biography, .opening { pointer-events: auto; }
 
-.opening {
-    grid-column: 1;
-    grid-row: 2;
-}
+/* =====================================================
+   OPENING & BIOGRAPHY
+   ===================================================== */
+.opening { grid-column: 1; grid-row: 2; margin: 0; padding: 0; font-size: var(--font-size); font-weight: 400; line-height: var(--line-height); text-wrap: pretty; transition: color 400ms cubic-bezier(.22,.61,.36,1); }
+.biography { grid-column: 1; grid-row: 3; align-self: start; transition: color 400ms cubic-bezier(.22,.61,.36,1); }
+.biography p { margin: 0 0 var(--major-gap) 0; padding: 0; font-size: inherit; font-weight: inherit; line-height: inherit; text-wrap: pretty; }
+.biography p:last-child { margin-bottom: 0; }
 
-.biography {
-    grid-column: 1;
-    grid-row: 3;
-    align-self: start;
-}
-
+/* =====================================================
+   FIXED UI ELEMENTS
+   ===================================================== */
 .navigation {
-    position: fixed;
-    z-index: 20;
-    top: var(--page-top);
-    right: var(--page-x);
-    display: flex;
-    align-items: flex-end;
-    text-align: right;
+    position: fixed; z-index: 20000; top: var(--page-top); right: var(--page-x);
+    display: flex; align-items: flex-end; text-align: right;
+    pointer-events: none;
 }
-
 .navigation a {
-    width: max-content;
-    text-align: right;
-    transition: color 400ms cubic-bezier(.22,.61,.36,1);
+    width: max-content; text-align: right; transition: color 400ms cubic-bezier(.22,.61,.36,1);
+    color: #000; text-decoration: none; font-size: var(--font-size); font-weight: 400; line-height: var(--line-height); pointer-events: auto;
 }
-
 .contact {
-    position: fixed;
-    z-index: 20;
-    left: var(--page-x);
-    bottom: var(--page-bottom);
-    text-align: left;
+    position: fixed; z-index: 20000; left: var(--page-x); bottom: var(--page-bottom); text-align: left;
+    display: flex; flex-direction: column; margin: 0; padding: 0; pointer-events: none;
 }
-
-.portfolio-download {
-    position: fixed;
-    z-index: 20;
-    right: var(--page-x);
-    bottom: var(--page-bottom);
-    margin: 0 !important;
-    text-align: right;
-}
-
-.logo,
-.opening,
-.biography,
-.contact,
-.portfolio-download,
-.navigation a {
-    transition: color 400ms cubic-bezier(.22,.61,.36,1);
-}
-
-/* =====================================================
-   BLACK PREVIEW SURFACE
-   ===================================================== */
-
-body.preview-active,
-body.preview-active .page {
-    background: #000;
-}
-
-body.preview-active .logo,
-body.preview-active .opening,
-body.preview-active .biography,
-body.preview-active .contact,
-body.preview-active .contact a,
-body.preview-active .portfolio-download,
-body.preview-active .navigation a {
-    color: transparent;
-}
-
-body.preview-photography .navigation #photography-link,
-body.preview-film .navigation #film-link {
-    color: #fff;
-}
-
-body.preview-active .logo,
-body.preview-active .opening,
-body.preview-active .biography,
-body.preview-active .contact,
-body.preview-active .portfolio-download {
-    pointer-events: none;
-}
-
-/* =====================================================
-   CENTERED FILM PREVIEW
-   ===================================================== */
-
-.film-field {
-    position: fixed;
-    z-index: 10;
-    inset: 0;
-    padding:
-        var(--page-top)
-        var(--page-x)
-        var(--page-bottom);
-    align-items: center;
-    justify-content: center;
-}
-
-.film-link {
-    width: min(
-        calc(100vw - 2 * var(--page-x)),
-        calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
-    );
-    max-width: none;
-    aspect-ratio: 16 / 9;
-}
-
-/* =====================================================
-   SINGLE RANDOM PHOTOGRAPHY PREVIEW
-   ===================================================== */
-
-.photography-field {
-    z-index: 10;
-}
-
-#scattered-stage.single-photo-mode .photo-group {
-    visibility: hidden !important;
-}
-
-#scattered-stage.single-photo-mode .photo-group.single-photo-group {
-    visibility: visible !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    transform: none !important;
-    contain: none !important;
-}
-
-#scattered-stage.single-photo-mode .project-photo {
-    display: none !important;
-}
-
-#scattered-stage.single-photo-mode .project-photo.single-photo-visible {
-    position: absolute !important;
-    display: block !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: auto !important;
-    height: auto !important;
-    max-width: min(72vw, calc(100vw - 2 * var(--page-x))) !important;
-    max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom))) !important;
-    object-fit: contain !important;
-    transform: translate(-50%, -50%) !important;
-}
-
-/* =====================================================
-   AYBAK END CARD — ONLY THE WORD
-   ===================================================== */
-
-#landing-aybak-end-card {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    overflow: hidden;
-    visibility: hidden;
-    pointer-events: none;
-    background: rgba(0,0,0,0);
-    transition:
-        background-color 460ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 460ms;
-    touch-action: none;
-}
-
-body.landing-aybak-active #landing-aybak-end-card {
-    visibility: visible;
-    pointer-events: auto;
-    transition:
-        background-color 460ms cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear 0s;
-}
-
-html.landing-aybak-active:not(.landing-aybak-light),
-body.landing-aybak-active:not(.landing-aybak-light),
-body.landing-aybak-active:not(.landing-aybak-light) #landing-aybak-end-card {
-    background: #000;
-}
-
-html.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
-    background: #fff;
-}
-
-#landing-aybak-word {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 170ms ease;
-    pointer-events: none;
-}
-
-body.landing-aybak-active #landing-aybak-word {
-    opacity: 1;
-    transition-delay: 255ms;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .landing-grid {
-        grid-template-columns: minmax(0,1fr);
-        grid-template-rows: auto auto auto minmax(0,1fr);
-    }
-
-    .biography {
-        max-width: min(100%, 530px);
-    }
-
-    .film-field {
-        padding:
-            var(--page-top)
-            var(--page-x)
-            var(--page-bottom);
-    }
-
-    .film-link {
-        width: min(
-            calc(100vw - 2 * var(--page-x)),
-            calc((100vh - var(--page-top) - var(--page-bottom)) * 16 / 9)
-        );
-    }
-
-    #scattered-stage.single-photo-mode .project-photo.single-photo-visible {
-        max-width: calc(100vw - 2 * var(--page-x)) !important;
-        max-height: 62vh !important;
-    }
-}
-
-/* =====================================================
-   FIXED PHOTOGRAPHY PREVIEW
-   ===================================================== */
-
-#fixed-photo-preview {
-    position: absolute;
-    z-index: 2;
-    top: 50%;
-    left: 50%;
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: min(72vw, calc(100vw - 2 * var(--page-x)));
-    max-height: min(76vh, calc(100vh - var(--page-top) - var(--page-bottom)));
-    object-fit: contain;
-    opacity: 0;
-    visibility: hidden;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-}
-
-#fixed-photo-preview.visible {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    cursor: pointer;
-}
-
-/* =====================================================
-   LANDING V6 — WHITE-SURFACE PREVIEW ZONES
-   ===================================================== */
-
-body.preview-active,
-body.preview-active .page,
-body.preview-photography,
-body.preview-film {
-    background: #fff !important;
-    color: #000 !important;
-}
-
-body.preview-active .logo,
-body.preview-active .opening,
-body.preview-active .biography,
-body.preview-active .contact,
-body.preview-active .contact a,
-body.preview-active .portfolio-download,
-body.preview-active .navigation a,
-body.preview-photography .navigation #photography-link,
-body.preview-film .navigation #film-link {
-    color: #000 !important;
-}
-
-body.preview-active .logo,
-body.preview-active .opening,
-body.preview-active .biography,
-body.preview-active .contact,
-body.preview-active .portfolio-download {
-    pointer-events: auto !important;
-}
-
-.photography-field,
-.film-field {
-    position: fixed !important;
-    z-index: 10 !important;
-    top: var(--preview-zone-top, 50%) !important;
-    left: var(--preview-zone-left, 50%) !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: var(--preview-zone-width, 0px) !important;
-    height: var(--preview-zone-height, 0px) !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-
-.film-field {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.film-link {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
-    aspect-ratio: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-}
-
-#film-video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    object-position: center center !important;
-}
-
-#fixed-photo-preview {
-    top: 50% !important;
-    left: 50% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    transform: translate(-50%, -50%) !important;
-}
-
-@media (max-width: 1000px) {
-    .photography-field,
-    .film-field {
-        position: fixed !important;
-    }
-}
-
-/* =====================================================
-   FINAL TYPOGRAPHIC LINK / ARROW SYSTEM
-   ===================================================== */
-
-.navigation a {
-    display: block;
-    width: max-content;
-}
-
-.native-down-arrow {
-    display: inline-block;
-    margin-left: 0.18em;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 1em;
-    font-weight: 400;
-    line-height: 1;
-    vertical-align: 0.10em;
-    transform: none;
-}
-
-.portfolio-download a {
-    display: inline-block;
-}
-
-html.landing-aybak-active,
-body.landing-aybak-active,
-body.landing-aybak-active #landing-aybak-end-card,
-html.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light,
-body.landing-aybak-active.landing-aybak-light #landing-aybak-end-card {
-    background: #000 !important;
-}
-</style>
-
-<style id="final-clean-landing-system">
-.logo {
-    display: none !important;
-}
-
-.navigation {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 20000 !important;
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    pointer-events: none !important;
-}
-
-.navigation a {
-    position: absolute !important;
-    top: var(--page-top) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    pointer-events: auto !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    text-decoration: none !important;
-    white-space: nowrap !important;
-}
-
-.navigation #photography-link {
-    left: var(--page-x) !important;
-    right: auto !important;
-    text-align: left !important;
-}
-
-.navigation #film-link {
-    right: var(--page-x) !important;
-    left: auto !important;
-    text-align: right !important;
-}
-
-.biography {
-    position: fixed !important;
-    z-index: 5 !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(600px, 70vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    text-align: center !important;
-    text-align-last: center !important;
-    text-transform: none !important;
-    white-space: normal !important;
-    text-wrap: wrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.biography .bio-line {
-    display: block !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    text-align: center !important;
-    text-align-last: center !important;
-    text-transform: none !important;
-    white-space: normal !important;
-    text-wrap: wrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.biography .bio-line + .bio-line {
-    margin-top: var(--major-gap) !important;
-}
-
-.biography br {
-    line-height: inherit !important;
-}
-
-.biography .bio-identity,
-.biography .bio-identity-name,
-.biography .bio-identity-aybak {
-    display: inline !important;
-    white-space: nowrap !important;
-    text-transform: none !important;
-    pointer-events: none !important;
-    cursor: default !important;
-}
-
-.biography .collaborator-heading {
-    display: inline-block !important;
-    white-space: nowrap !important;
-    vertical-align: baseline !important;
-}
-
-.collaborator-rows {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    column-gap: 0.55em !important;
-    row-gap: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.collaborator-row {
-    display: inline-flex !important;
-    flex: 0 0 auto !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    gap: 0.55em !important;
-    white-space: nowrap !important;
-}
-
-.client-name {
-    display: inline !important;
-    white-space: nowrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.biography .collaborator-line {
-    margin-top: var(--major-gap) !important;
-}
-
-.contact {
-    position: fixed !important;
-    z-index: 20000 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: var(--page-top) !important;
-    width: 100% !important;
-    height: calc(var(--font-size) * var(--line-height) * 2) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    pointer-events: none !important;
-}
-
 .contact a {
-    position: absolute !important;
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    white-space: nowrap !important;
-    pointer-events: auto !important;
+    color: #000; text-decoration: none; font-size: var(--font-size); font-weight: 400; line-height: var(--line-height); transition: color 400ms cubic-bezier(.22,.61,.36,1); pointer-events: auto;
 }
-
-.contact a:nth-child(1) {
-    right: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(2) {
-    right: var(--page-x) !important;
-    bottom: 0 !important;
-    text-align: right !important;
-}
-
-.contact a:nth-child(3) {
-    left: var(--page-x) !important;
-    bottom: calc(var(--font-size) * var(--line-height)) !important;
-    text-align: left !important;
-}
+.contact a:hover { text-decoration: underline; }
 
 .portfolio-download {
-    position: fixed !important;
-    z-index: 20000 !important;
-    left: var(--page-x) !important;
-    right: auto !important;
-    bottom: var(--page-top) !important;
-    width: max-content !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
+    position: fixed; z-index: 20000; right: var(--page-x); bottom: var(--page-bottom); margin: 0 !important; text-align: right; pointer-events: none;
 }
-
 .portfolio-download a {
-    display: block !important;
-    width: max-content !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-decoration: none !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
+    color: #000; text-decoration: none; font-size: var(--font-size); font-weight: 400; line-height: var(--line-height); transition: color 400ms cubic-bezier(.22,.61,.36,1); pointer-events: auto;
 }
+.portfolio-download a:hover { text-decoration: underline; }
 
-.contact a:hover,
-.portfolio-download a:hover {
-    text-decoration: underline !important;
+/* =====================================================
+   MEDIA FIELD & PREVIEW ZONES
+   ===================================================== */
+.media-field { position: relative; grid-column: 2; grid-row: 1 / -1; width: 100%; height: 100%; min-width: 0; min-height: 0; pointer-events: none; }
+.photography-field, .film-field {
+    position: fixed !important; z-index: 10 !important; top: var(--preview-zone-top, 50%) !important; left: var(--preview-zone-left, 50%) !important; right: auto !important; bottom: auto !important;
+    width: var(--preview-zone-width, 0px) !important; height: var(--preview-zone-height, 0px) !important; padding: 0 !important; overflow: hidden !important; visibility: hidden; pointer-events: none;
 }
+.photography-field.active, .film-field.active { visibility: visible; }
+.film-field { display: flex !important; align-items: center !important; justify-content: center !important; }
+.film-link {
+    width: 100% !important; height: 100% !important; max-width: none !important; aspect-ratio: auto !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; pointer-events: auto;
+}
+#film-video { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center center !important; pointer-events: none; }
 
-.native-down-arrow {
-    display: none !important;
-}
+#scattered-stage { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.photo-group { position: absolute; top: 0; left: 0; width: var(--group-width, 100px); height: var(--group-height, 100px); visibility: hidden; pointer-events: none; transform: translate3d(var(--group-x, 0px), var(--group-y, 0px), 0); backface-visibility: hidden; contain: layout paint; }
+.photo-group.visible { visibility: visible; }
+.project-photo { position: absolute; display: block; width: auto; height: var(--photo-height, 100px); top: var(--photo-y, 0px); left: var(--photo-x, 0px); object-fit: contain; pointer-events: none; backface-visibility: hidden; transform: translateZ(0); }
 
-body:not(.landing-aybak-active) .logo,
-body.landing-aybak-leaving .logo,
-html.landing-aybak-leaving .logo {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
+#fixed-photo-preview { position: absolute; z-index: 2; top: 50% !important; left: 50% !important; display: block; width: auto; height: auto; max-width: 100% !important; max-height: 100% !important; object-fit: contain; opacity: 0; visibility: hidden; transform: translate(-50%, -50%) !important; pointer-events: none; }
+#fixed-photo-preview.visible { opacity: 1; visibility: visible; pointer-events: auto; cursor: pointer; }
 
-#landing-aybak-end-card {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 10000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    background: #000 !important;
-    opacity: 0 !important;
-    transform: none !important;
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
-    touch-action: none !important;
-}
-
-body.landing-aybak-active #landing-aybak-end-card {
-    visibility: visible !important;
-    pointer-events: auto !important;
-    opacity: 1 !important;
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s !important;
-}
-
-body.landing-aybak-leaving,
-html.landing-aybak-leaving {
-    background: #fff !important;
-}
-
-body.landing-aybak-leaving #landing-aybak-end-card {
-    visibility: visible !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-    transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 20000 !important;
-    pointer-events: auto !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
-    color: #fff !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    mix-blend-mode: normal !important;
-    filter: none !important;
-    text-shadow: none !important;
-}
-
-body.landing-aybak-leaving .navigation a,
-body.landing-aybak-leaving .contact a,
-body.landing-aybak-leaving .portfolio-download a {
-    color: #000 !important;
-}
-
-#landing-aybak-logo {
-    position: relative !important;
-    z-index: 10001 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: max-content !important;
-    min-width: 0 !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    outline: 0 !important;
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    background: transparent !important;
-    color: #fff !important;
-    cursor: pointer !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    text-align: center !important;
-    -webkit-tap-highlight-color: transparent !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    pointer-events: auto !important;
-    touch-action: manipulation !important;
-}
-
-#landing-aybak-name,
-#landing-aybak-aybak {
-    display: flex !important;
-    align-items: baseline !important;
-    justify-content: center !important;
-    height: calc(var(--font-size) * var(--line-height)) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-#landing-aybak-name {
-    width: max-content !important;
-}
-
-#landing-aybak-aybak {
-    gap: 0 !important;
-    width: max-content !important;
-}
-
-.landing-aybak-letter {
-    display: inline-block !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    white-space: pre !important;
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-}
-
-body.landing-aybak-active #landing-aybak-logo,
-body.landing-aybak-active #landing-aybak-logo * {
-    pointer-events: auto !important;
-}
-
-html.landing-aybak-active,
-body.landing-aybak-active {
-    background: #000 !important;
-}
-
-body.landing-aybak-active #landing-aybak-end-card {
-    left: calc(-1 * env(safe-area-inset-left)) !important;
-    right: calc(-1 * env(safe-area-inset-right)) !important;
-    top: calc(-1 * env(safe-area-inset-top)) !important;
-    bottom: calc(-1 * env(safe-area-inset-bottom)) !important;
-    width: auto !important;
-    height: auto !important;
-    background: #000 !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography {
-        width: min(90vw, 390px) !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography {
-        width: min(82vw, 580px) !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography {
-        width: min(720px, 66vw) !important;
-    }
-}
-</style>
-
-<style id="final-central-bio-flow-fix">
-.biography#biography {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: min(560px, 70vw) !important;
-    max-width: calc(100vw - (2 * var(--page-x))) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    z-index: 5 !important;
-    display: block !important;
-    color: #000 !important;
-    font-family: inherit !important;
-    font-size: var(--font-size) !important;
-    font-weight: 400 !important;
-    line-height: var(--line-height) !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-    text-transform: none !important;
-    hyphens: none !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-}
-
-#biography-flow {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: initial !important;
-}
-
-.bio-flow-line {
-    display: flex !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: inherit !important;
-    word-spacing: inherit !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    hyphens: none !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    text-align: initial !important;
-}
-
-.bio-flow-line > .bio-flow-text {
-    display: inline-block !important;
-    width: max-content !important;
-    max-width: none !important;
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font: inherit !important;
-    line-height: inherit !important;
-    letter-spacing: inherit !important;
-    word-spacing: inherit !important;
-}
-
-.bio-flow-line.align-left {
-    justify-content: flex-start !important;
-}
-.bio-flow-line.align-right {
-    justify-content: flex-end !important;
-}
-
-.bio-flow-line {
-    text-align: initial !important;
-}
-
-.bio-collaborator-line {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-start !important;
-    align-items: baseline !important;
-    gap: 0.55em !important;
-    width: 100% !important;
-    white-space: nowrap !important;
-}
-
-.bio-collaborator-name {
-    display: inline-block !important;
-    white-space: nowrap !important;
-    overflow-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-}
-
-.bio-collaborator-heading {
-    display: block !important;
-    width: 100% !important;
-    white-space: nowrap !important;
-}
-
-.bio-paragraph-gap {
-    margin-bottom: calc(var(--font-size) * var(--line-height)) !important;
-}
-
-@media (max-width: 600px) and (orientation: portrait) {
-    .biography#biography {
-        width: 86vw !important;
-        max-width: 86vw !important;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 650px) and (max-width: 1000px) {
-    .biography#biography {
-        width: 82vw !important;
-        max-width: 82vw !important;
-    }
-}
-
-@media (orientation: landscape) and (min-width: 1001px) {
-    .biography#biography {
-        width: min(560px, 64vw) !important;
-        max-width: min(560px, 64vw) !important;
-    }
-}
-
-#landing-aybak-end-card {
-    z-index: 10000 !important;
-}
-
-#landing-aybak-logo {
-    position: relative !important;
-    z-index: 10001 !important;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-    touch-action: manipulation !important;
-}
-
-#landing-aybak-logo,
-#landing-aybak-logo * {
-    cursor: pointer !important;
-}
-
-#landing-aybak-name,
-#landing-aybak-aybak {
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-body.landing-aybak-active #landing-aybak-logo,
-body.landing-aybak-active #landing-aybak-logo * {
-    pointer-events: auto !important;
-}
-</style>
-
-<style id="aybak-final-hit-target">
-#landing-aybak-end-card {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 2147483640 !important;
-    isolation: isolate !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    pointer-events: none !important;
-}
-
-body.landing-aybak-active #landing-aybak-end-card {
-    pointer-events: auto !important;
-}
-
-#landing-aybak-logo {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 2147483647 !important;
-    display: flex !important;
-    width: auto !important;
-    min-width: 120px !important;
-    min-height: 56px !important;
-    margin: 0 !important;
-    padding: 12px 20px !important;
-    cursor: pointer !important;
-    pointer-events: auto !important;
-    touch-action: manipulation !important;
-}
-
-#landing-aybak-name,
-#landing-aybak-aybak {
-    pointer-events: none !important;
-}
-
-#landing-aybak-logo,
-#landing-aybak-logo * {
-    cursor: pointer !important;
-}
-
-.landing-aybak-letter {
-    display: inline-block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    width: auto !important;
-    min-width: 0 !important;
-    letter-spacing: 0 !important;
-    word-spacing: 0 !important;
-}
-
-@media (max-width: 600px) {
-    #landing-aybak-logo {
-        min-width: 140px !important;
-        min-height: 64px !important;
-    }
-}
-</style>
-
-<style id="aybak-corner-text-top-layer">
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download {
-    position: fixed !important;
-    z-index: 2147483646 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .contact a,
-body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a {
-    color: #fff !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    mix-blend-mode: normal !important;
-    filter: none !important;
-    text-shadow: none !important;
-}
-</style>
-
-<style id="clean-index-boot">
-html.clean-index-boot .page { visibility:hidden !important; }
-html.clean-index-boot .navigation,
-html.clean-index-boot .contact,
-html.clean-index-boot .portfolio-download { visibility:hidden !important; }
-</style>
-<script>
-document.documentElement.classList.add('clean-index-boot');
-</script>
-<style id="clean-index-system">
-/* =========================================================
-   CLEAN INDEX SYSTEM
-   ========================================================= */
+/* =====================================================
+   CLEAN INDEX SYSTEM (DIFFERENCE BLEND & FULL WIDTH)
+   ===================================================== */
 :root {
-  --ci-font: 15px;
-  --ci-line: 1.15;
-  --ci-top: 32px;
-  --ci-side: 48px;
-  --ci-bottom: 24px;
-  --ci-gap: 4px;
+  --ci-font: 15px; --ci-line: 1.15; --ci-top: 32px; --ci-side: 48px; --ci-bottom: 24px; --ci-gap: 4px;
 }
-
 #clean-index-shell {
-  position: fixed; inset: 0; z-index: 9000;
-  background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: var(--ci-font); line-height: var(--ci-line);
-  overflow: hidden;
-  transition: opacity 400ms ease; /* End-card geçişi için eklendi */
+  position: fixed; inset: 0; z-index: 9000; background: #fff;
+  font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden;
+  transition: opacity 400ms ease;
 }
+#clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after { box-sizing: border-box; }
 
-#clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after {
-  box-sizing: border-box;
-}
-
-/* PREVIEW LAYER (Ekranın Tam Merkezi) */
+/* PREVIEW LAYER (Ekranın Tam Merkezi - Çok Büyük Boyut) */
 #ci-preview-layer {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1; pointer-events: none;
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none;
 }
-
-/* Difference etkisini patlatmak için devasa preview */
 .ci-preview-item {
-  position: absolute;
-  max-width: 75vw; max-height: 85vh; 
-  object-fit: contain;
-  opacity: 0; transform: scale(0.98);
-  transition: opacity 240ms ease, transform 240ms ease;
+  position: absolute; max-width: 65vw; max-height: 75vh; object-fit: contain; opacity: 0; transform: scale(0.98); transition: opacity 240ms ease, transform 240ms ease;
 }
-.ci-preview-item.visible {
-  opacity: 1; transform: scale(1);
-}
+.ci-preview-item.visible { opacity: 1; transform: scale(1); }
 
-/* UI LAYER (Z-INDEX 2, DIFFERENCE BLEND) */
+/* UI LAYER (Difference Blend Mode - Negatif Yazı Efekti) */
 #ci-ui-layer {
-  position: absolute; inset: 0; z-index: 2;
-  mix-blend-mode: difference; color: #fff;
-  pointer-events: none; 
+  position: absolute; inset: 0; z-index: 2; mix-blend-mode: difference; color: #fff; pointer-events: none;
 }
+.clean-index-topbar, .clean-index-footer, .clean-index-table-wrap, .clean-index-filters, .clean-index-info-scroll { pointer-events: auto; }
 
-/* Etkileşimli alanlar */
-.clean-index-topbar,
-.clean-index-footer,
-.clean-index-table-wrap,
-.clean-index-filters,
-.clean-index-info-scroll {
-  pointer-events: auto;
-}
-
-.clean-index-topbar {
-  position: absolute;
-  top: var(--ci-top); left: var(--ci-side); right: var(--ci-side);
-  display: flex; justify-content: space-between; align-items: flex-start;
-}
-
+.clean-index-topbar { position: absolute; top: var(--ci-top); left: var(--ci-side); right: var(--ci-side); display: flex; justify-content: space-between; align-items: flex-start; }
 .clean-index-topbutton, .clean-index-headerbutton {
-  appearance: none; border: 0; outline: 0; padding: 0; margin: 0;
-  background: transparent; color: inherit; font: inherit; line-height: inherit;
-  cursor: pointer; user-select: none; white-space: nowrap;
+  appearance: none; border: 0; outline: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; line-height: inherit; cursor: pointer; user-select: none; white-space: nowrap;
 }
+.clean-index-headerbutton { transition: text-decoration 200ms ease; }
+.clean-index-headerbutton.active-sort { text-decoration: underline; }
 
-.clean-index-headerbutton {
-  transition: text-decoration 200ms ease;
-}
-.clean-index-headerbutton.active-sort {
-  text-decoration: underline; /* Seçili sıralama sadece altı çizili olacak */
-}
+.clean-index-view { position: absolute; inset: 0; visibility: hidden; opacity: 0; pointer-events: none; }
+.clean-index-view.active { visibility: visible; opacity: 1; pointer-events: none; }
 
-.clean-index-view {
-  position: absolute; inset: 0;
-  visibility: hidden; opacity: 0; pointer-events: none;
-}
-.clean-index-view.active {
-  visibility: visible; opacity: 1; pointer-events: none; 
-}
-
-/* FILTERS (Field ve Use) */
-.clean-index-filters {
-  margin-bottom: 32px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.ci-filter-row {
-  display: flex; align-items: baseline; gap: 0.4em;
-}
+/* YENİ FİLTRE MENÜSÜ */
+.clean-index-filters { margin-bottom: 32px; display: flex; flex-direction: column; gap: 8px; }
+.ci-filter-row { display: flex; align-items: baseline; gap: 0.4em; }
 .ci-filter-label { margin-right: 0.5em; opacity: 1; }
-.ci-filter-btn {
-  appearance: none; border: 0; background: transparent; color: inherit;
-  padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1;
-}
+.ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; }
 .ci-filter-btn:hover { text-decoration: underline; }
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
-/* TABLE (Tam Genişlik) */
+/* TABLO (Tam Genişlik, Sola ve Sağa Dayalı) */
 .clean-index-table-wrap {
-  position: absolute;
-  left: var(--ci-side); right: var(--ci-side);
-  top: 50%; transform: translateY(-50%);
-  max-height: calc(100vh - 150px);
-  overflow: auto; scrollbar-width: none; overscroll-behavior: none;
+  position: absolute; left: var(--ci-side); right: var(--ci-side); top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow: auto; scrollbar-width: none; overscroll-behavior: none;
 }
 .clean-index-table-wrap::-webkit-scrollbar { display: none; }
-
 .clean-index-table { width: 100%; }
-.clean-index-header, .clean-index-row {
-  display: flex; justify-content: space-between; align-items: baseline; width: 100%;
-}
+.clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
 .clean-index-header { margin-bottom: 24px; }
 .clean-index-row { min-height: calc(var(--ci-font)*var(--ci-line)); margin-bottom: var(--ci-gap); position: relative; }
-
 .clean-index-cell { min-width: 0; position: relative; }
 .clean-index-cell:nth-child(2) { text-align: right; }
-
 .clean-index-cell-content { display: inline-flex; position: relative; z-index: 2; pointer-events: none; }
 .clean-index-char { display: inline-block; white-space: pre; }
+.clean-index-row-hit { position: absolute; inset: 0; z-index: 3; appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0; }
 
-.clean-index-row-hit {
-  position: absolute; inset: 0; z-index: 3;
-  appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0;
-}
-
-/* FOOTER */
-.clean-index-footer {
-  position: absolute; left: var(--ci-side); right: var(--ci-side); bottom: var(--ci-bottom);
-  display: flex; justify-content: space-between; align-items: flex-end;
-}
+.clean-index-footer { position: absolute; left: var(--ci-side); right: var(--ci-side); bottom: var(--ci-bottom); display: flex; justify-content: space-between; align-items: flex-end; }
 .clean-index-footer-left { display: flex; flex-direction: column; align-items: flex-start; }
 .clean-index-footer-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 .clean-index-footer a { color: inherit; text-decoration: none; white-space: nowrap; }
 .clean-index-footer a:hover { text-decoration: underline; }
 
 /* INFO SECTION (Sol %50 Sınırı) */
-.clean-index-info-scroll {
-  position: absolute; left: var(--ci-side); right: var(--ci-side); top: 50%; transform: translateY(-50%);
-  max-height: calc(100vh - 150px); overflow: auto; scrollbar-width: none;
-}
+.clean-index-info-scroll { position: absolute; left: var(--ci-side); right: var(--ci-side); top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow: auto; scrollbar-width: none; }
 .clean-index-info-scroll::-webkit-scrollbar { display: none; }
-.clean-index-info-content {
-  width: 100%;
-  max-width: 50%; /* Desktop'ta metni solda tutar */
-  margin-left: 0;
-  font: inherit; line-height: inherit;
-}
+.clean-index-info-content { width: 100%; max-width: 50%; margin-left: 0; font: inherit; line-height: inherit; }
 .clean-index-info-block { width: 100%; margin: 0 0 24px; }
 .clean-index-info-block.left { text-align: left; }
 .clean-index-info-block.right { text-align: right; }
 .clean-index-info-block .line { display: block; white-space: nowrap; }
 
-/* MOBILE */
+/* RESPONSIVE & MOBILE */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
-  .ci-preview-item { max-width: 85vw; max-height: 45vh; } /* Mobilde çok büyümemesi için sınır */
+  .ci-preview-item { max-width: 85vw; max-height: 45vh; }
   .clean-index-filters { margin-bottom: 24px; }
   .ci-filter-row { flex-wrap: wrap; }
-  .clean-index-info-content { max-width: 100%; } /* Mobilde info tam genişlikte */
+  .clean-index-info-content { max-width: 100%; }
 }
 
-/* Orijinal sayfa gizleme kuralları */
 html.clean-index-live .page { visibility: hidden !important; }
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download { visibility: hidden !important; pointer-events: none !important; }
+body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-index-shell { opacity: 0 !important; pointer-events: none !important; }
 
-/* End-card tetiklendiğinde beyaz arka planı yavaşça siler */
-body.landing-aybak-active #clean-index-shell, 
-html.landing-aybak-active #clean-index-shell { 
-  opacity: 0 !important; 
-  pointer-events: none !important; 
+/* =====================================================
+   AYBAK END CARD
+   ===================================================== */
+#landing-aybak-end-card {
+    position: fixed !important; inset: 0 !important; z-index: 2147483640 !important; isolation: isolate !important;
+    display: flex !important; align-items: center !important; justify-content: center !important; pointer-events: none !important;
+    background: #000 !important; opacity: 0 !important; transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 420ms !important;
 }
-</style>
+body.landing-aybak-active #landing-aybak-end-card { pointer-events: auto !important; opacity: 1 !important; transition: opacity 420ms cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s !important; }
+#landing-aybak-logo {
+    position: fixed !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important;
+    z-index: 2147483647 !important; display: flex !important; width: auto !important; min-width: 120px !important; min-height: 56px !important;
+    margin: 0 !important; padding: 12px 20px !important; cursor: pointer !important; pointer-events: auto !important; touch-action: manipulation !important; color: #fff !important; appearance: none !important; -webkit-appearance: none !important; background: transparent !important; border: 0 !important; outline: 0 !important; font-family: inherit !important; font-size: var(--font-size) !important; font-weight: 400 !important; line-height: var(--line-height) !important;
+}
+#landing-aybak-name, #landing-aybak-aybak { pointer-events: none !important; display: flex !important; align-items: baseline !important; justify-content: center !important; margin: 0 !important; padding: 0 !important; white-space: nowrap !important; letter-spacing: 0 !important; word-spacing: 0 !important; }
+.landing-aybak-letter { display: inline-block !important; margin: 0 !important; padding: 0 !important; border: 0 !important; width: auto !important; min-width: 0 !important; letter-spacing: 0 !important; word-spacing: 0 !important; transition: none !important; }
+body.landing-aybak-active #landing-aybak-logo, body.landing-aybak-active #landing-aybak-logo * { pointer-events: auto !important; cursor: pointer !important; }
+html.landing-aybak-active, body.landing-aybak-active { background: #000 !important; }
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation, body.landing-aybak-active:not(.landing-aybak-leaving) .contact, body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download { position: fixed !important; z-index: 2147483646 !important; visibility: visible !important; opacity: 1 !important; }
+body.landing-aybak-active:not(.landing-aybak-leaving) .navigation a, body.landing-aybak-active:not(.landing-aybak-leaving) .contact a, body.landing-aybak-active:not(.landing-aybak-leaving) .portfolio-download a { color: #fff !important; opacity: 1 !important; visibility: visible !important; }
 
+/* CENTRAL BIO */
+.biography#biography {
+    position: fixed !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important;
+    width: min(560px, 70vw) !important; max-width: calc(100vw - (2 * var(--page-x))) !important; margin: 0 !important; padding: 0 !important;
+    z-index: 5 !important; display: block !important; color: #000 !important; font-family: inherit !important; font-size: var(--font-size) !important; font-weight: 400 !important; line-height: var(--line-height) !important;
+}
+#biography-flow { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; text-align: initial !important; }
+.bio-flow-line { display: flex !important; width: 100% !important; min-width: 100% !important; margin: 0 !important; padding: 0 !important; white-space: nowrap !important; text-align: initial !important; }
+.bio-flow-line > .bio-flow-text { display: inline-block !important; width: max-content !important; flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important; }
+.bio-flow-line.align-left { justify-content: flex-start !important; }
+.bio-flow-line.align-right { justify-content: flex-end !important; }
+.bio-paragraph-gap { margin-bottom: calc(var(--font-size) * var(--line-height)) !important; }
+html.clean-index-boot .page, html.clean-index-boot .navigation, html.clean-index-boot .contact, html.clean-index-boot .portfolio-download { visibility: hidden !important; }
+
+/* =====================================================
+   CLEAN INDEX BOOT
+   ===================================================== */
+</style>
+<script>document.documentElement.classList.add('clean-index-boot');</script>
+</head>
+<body>
+<div class="page" id="page">
+<div class="photography-field" id="photography-field">
+<div id="scattered-stage"></div>
+<img alt="" aria-hidden="true" id="fixed-photo-preview" src="./photo.jpg"/>
+</div>
+<main class="landing-grid" id="landing-grid">
+<!-- LOGO -->
+<button aria-label="Denizalp Aybak" class="logo" id="logo" type="button">
+<span class="logo-name" id="logo-name">Denizalp</span>
+<span class="logo-aybak">
+<span id="letter-a">a</span><span id="letter-y">y</span><span id="letter-b">b</span><span id="letter-a2">a</span><span id="letter-k">k</span>
+</span>
+</button>
+<!-- MEDIA -->
+<div class="media-field" id="media-field">
+<div class="film-field" id="film-field">
+<a aria-label="Film" class="film-link" href="https://film.denizalpaybak.com/">
+<video id="film-video" muted="" playsinline="" preload="auto" src="./film.mp4"></video>
+</a>
+</div>
+</div>
+<!-- BIOGRAPHY -->
+<section class="biography" id="biography">
+    <div id="biography-flow" aria-live="off"></div>
+</section>
+</main>
+<!-- FIXED CORNER UI -->
+<nav class="navigation">
+<a href="https://photography.denizalpaybak.com/" id="photography-link">
+<span id="photography-text">PHOTOGRAPHY.</span>
+</a>
+<a href="https://film.denizalpaybak.com/" id="film-link">
+<span id="film-text">FILM.</span>
+</a>
+</nav>
+<div class="contact">
+<a href="mailto:d@denizalpaybak.com" rel="noopener" target="_blank">d@denizalpaybak.com</a>
+<a href="https://www.instagram.com/denizalpaybak/" rel="noopener" target="_blank">instagram @denizalpaybak</a>
+<a href="https://models.com/people/denizalp-aybak" rel="noopener" target="_blank">models.com</a>
+</div>
+<p class="portfolio-download">
+<a download="denizalp-aybak-portfolio.pdf" href="./denizalp-aybak-portfolio.pdf" id="portfolio-download">portfolio.pdf</a>
+</p>
+<section aria-hidden="true" id="landing-aybak-end-card">
+<button aria-label="Denizalp Aybak" id="landing-aybak-logo" type="button">
+<span aria-hidden="true" id="landing-aybak-name">Denizalp</span>
+<span aria-hidden="true" id="landing-aybak-aybak"><span class="landing-aybak-letter" id="landing-aybak-letter-a">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-y">y</span><span class="landing-aybak-letter" id="landing-aybak-letter-b">b</span><span class="landing-aybak-letter" id="landing-aybak-letter-a2">a</span><span class="landing-aybak-letter" id="landing-aybak-letter-k">k</span></span>
+</button>
+</section>
+</div>
+
+<script>
+/* =====================================================
+   ORİJİNAL İŞLEVLER (BİYO VE END-CARD YEDEĞİ)
+   ===================================================== */
+(() => {
+    const card = document.getElementById("landing-aybak-end-card");
+    const logo = document.getElementById("landing-aybak-logo");
+    const name = document.getElementById("landing-aybak-name");
+    const word = document.getElementById("landing-aybak-aybak");
+
+    if (!card || !logo || !name || !word) return;
+
+    const letters = Array.from(word.querySelectorAll(".landing-aybak-letter"));
+    const lower = ["a", "y", "b", "a", "k"];
+    const upper = ["A", "Y", "B", "A", "K"];
+
+    let state = 0, target = 0, timer = null, finishTimer = null, pointerInside = false, finishing = false;
+
+    function isDesktopPointer() { return window.matchMedia("(hover: hover) and (pointer: fine)").matches; }
+    function active() { return document.body.classList.contains("landing-aybak-active"); }
+
+    function render(next) {
+        state = Math.max(0, Math.min(5, next));
+        name.textContent = state === 0 ? "Denizalp" : "denizalp";
+        letters.forEach((letter, index) => { letter.textContent = index < state ? upper[index] : lower[index]; });
+    }
+
+    function animate(next) {
+        target = Math.max(0, Math.min(5, next));
+        if (timer !== null) { clearTimeout(timer); timer = null; }
+        const step = () => {
+            if (state === target) { timer = null; return; }
+            render(state < target ? state + 1 : state - 1);
+            timer = setTimeout(step, 80);
+        };
+        step();
+    }
+
+    function rectContains(x, y) {
+        const rect = logo.getBoundingClientRect();
+        return (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom);
+    }
+
+    function finish() {
+        if (finishing) return;
+        finishing = true;
+        if (timer !== null) { clearTimeout(timer); timer = null; }
+        if (finishTimer !== null) { clearTimeout(finishTimer); finishTimer = null; }
+
+        document.body.classList.remove("landing-aybak-active");
+        document.documentElement.classList.remove("landing-aybak-active");
+        document.body.classList.add("landing-aybak-leaving");
+        document.documentElement.classList.add("landing-aybak-leaving");
+        card.setAttribute("aria-hidden", "true");
+
+        finishTimer = setTimeout(() => {
+            document.body.classList.remove("landing-aybak-leaving");
+            document.documentElement.classList.remove("landing-aybak-leaving");
+            render(0);
+            finishing = false;
+            finishTimer = null;
+        }, 620);
+    }
+
+    logo.addEventListener("pointerenter", () => { pointerInside = true; if (active() && !finishing && isDesktopPointer()) animate(5); });
+    logo.addEventListener("pointerleave", () => { pointerInside = false; if (active() && !finishing && isDesktopPointer()) animate(0); });
+    logo.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); if (!active() || finishing) return; animate(5); if (finishTimer !== null) clearTimeout(finishTimer); finishTimer = setTimeout(finish, 520); });
+    document.addEventListener("pointermove", event => { if (!active() || finishing || !isDesktopPointer()) return; const inside = rectContains(event.clientX, event.clientY); if (inside === pointerInside) return; pointerInside = inside; animate(inside ? 5 : 0); }, true);
+    document.addEventListener("click", event => { if (!active() || finishing || event.target === logo) return; if (!rectContains(event.clientX, event.clientY)) return; event.preventDefault(); event.stopPropagation(); animate(5); if (finishTimer !== null) clearTimeout(finishTimer); finishTimer = setTimeout(finish, 520); }, true);
+    document.addEventListener("landing-aybak-force-enter", () => { if (finishTimer !== null) { clearTimeout(finishTimer); finishTimer = null; } if (timer !== null) { clearTimeout(timer); timer = null; } finishing = false; document.body.classList.remove("landing-aybak-leaving"); document.documentElement.classList.remove("landing-aybak-leaving"); });
+
+    render(0);
+})();
+
+const biography = document.getElementById("biography");
+const BIO_FLOW_SEGMENTS = [
+    { type: "paragraph", align: "left", lines: ["denizalp aybak (b. 1997) is a photographer and filmmaker,", "based in istanbul and available internationally."] },
+    { type: "paragraph", align: "right", lines: ["having graduated top of his class in management at sabanci university,", "he brings a strategic approach to image-making,", "considering both the work itself and the world it belongs to."] },
+    { type: "paragraph", align: "left", lines: ["his work creates atmosphere through contrast:", "light that feels dark,", "beauty that appears distant,", "stillness that carries tension,", "and precision that emerges from spontaneity."] },
+    { type: "paragraph", align: "right", lines: ["editorial collaborators include:", "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"] },
+    { type: "paragraph", align: "left", lines: ["brand collaborators include:", "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"] }
+];
+
+let biographyFlowMeasure = null;
+
+function getBiographyMeasureElement() {
+    if (biographyFlowMeasure) return biographyFlowMeasure;
+    const probe = document.createElement("span");
+    probe.style.position = "fixed"; probe.style.left = "-100000px"; probe.style.top = "-100000px"; probe.style.visibility = "hidden"; probe.style.pointerEvents = "none"; probe.style.whiteSpace = "nowrap"; probe.style.fontFamily = "inherit"; probe.style.fontSize = getComputedStyle(biography).fontSize; probe.style.fontWeight = getComputedStyle(biography).fontWeight; probe.style.lineHeight = getComputedStyle(biography).lineHeight; probe.style.letterSpacing = getComputedStyle(biography).letterSpacing; probe.style.wordSpacing = getComputedStyle(biography).wordSpacing;
+    document.body.appendChild(probe);
+    biographyFlowMeasure = probe;
+    return probe;
+}
+
+function measureBioText(text) {
+    const probe = getBiographyMeasureElement();
+    probe.textContent = text;
+    return probe.getBoundingClientRect().width;
+}
+
+function splitWordsToBalancedLines(text, maxWidth) {
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    if (measureBioText(text) <= maxWidth) return [text.trim()];
+
+    const n = words.length;
+    const rangeWidth = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let i = 0; i < n; i += 1) {
+        let value = "";
+        for (let j = i; j < n; j += 1) {
+            value = value ? `${value} ${words[j]}` : words[j];
+            rangeWidth[i][j] = measureBioText(value);
+        }
+    }
+
+    const memo = new Map();
+    function bestFrom(start, linesLeft) {
+        const key = `${start}|${linesLeft}`;
+        if (memo.has(key)) return memo.get(key);
+        if (start === n) {
+            const empty = linesLeft === 0 ? { score: 0, lines: [] } : null;
+            memo.set(key, empty);
+            return empty;
+        }
+        if (linesLeft <= 0 || n - start < linesLeft) { memo.set(key, null); return null; }
+        let best = null;
+        for (let end = start; end < n; end += 1) {
+            const width = rangeWidth[start][end];
+            if (width > maxWidth) break;
+            const tail = bestFrom(end + 1, linesLeft - 1);
+            if (!tail) continue;
+            const lineText = words.slice(start, end + 1).join(" ");
+            const wordCount = end - start + 1;
+            if (end === n - 1 && wordCount <= 2 && start > 0) continue;
+            const shortLinePenalty = wordCount === 1 ? 2500 : 0;
+            const shortTailPenalty = (end === n - 1 && wordCount <= 2) ? 4500 : 0;
+            const score = (maxWidth - width) * (maxWidth - width) * 0.015 + shortLinePenalty + shortTailPenalty + tail.score;
+            const candidate = { score, lines: [lineText, ...tail.lines], widths: [width, ...(tail.widths || [])] };
+            if (!best || candidate.score < best.score) best = candidate;
+        }
+        memo.set(key, best);
+        return best;
+    }
+
+    for (let lineCount = 2; lineCount <= n; lineCount += 1) {
+        memo.clear();
+        const result = bestFrom(0, lineCount);
+        if (result) return result.lines;
+    }
+    return [text.trim()];
+}
+
+function applyBioLineAlignment(line, alignment) {
+    line.classList.remove("align-left", "align-right", "align-center");
+    line.classList.add(alignment === "right" ? "align-right" : "align-left");
+    line.style.setProperty("justify-content", alignment === "right" ? "flex-end" : "flex-start", "important");
+}
+
+function appendMeasuredLine(container, lineText, alignment) {
+    const line = document.createElement("div");
+    line.className = `bio-flow-line ${alignment === "right" ? "align-right" : "align-left"}`;
+    applyBioLineAlignment(line, alignment);
+    const textNode = document.createElement("span");
+    textNode.className = "bio-flow-text";
+    textNode.textContent = lineText;
+    line.appendChild(textNode);
+    container.appendChild(line);
+    return line;
+}
+
+function appendBioParagraph(container, lines, alignment) {
+    let lastLine = null;
+    for (const requestedLine of lines) {
+        const width = Math.max(1, biography.clientWidth);
+        const measuredLines = splitWordsToBalancedLines(requestedLine, width);
+        for (const lineText of measuredLines) { lastLine = appendMeasuredLine(container, lineText, alignment); }
+    }
+    if (lastLine) lastLine.classList.add("bio-paragraph-gap");
+}
+
+function appendClientLines(container, names, groupSize, alignment) {
+    const width = Math.max(1, biography.clientWidth);
+    const full = names.join(", ");
+    if (measureBioText(full) <= width) { appendMeasuredLine(container, full, alignment); return; }
+    const groups = [];
+    for (let i = 0; i < names.length; i += groupSize) { groups.push(names.slice(i, i + groupSize).join(", ")); }
+    for (const group of groups) { appendMeasuredLine(container, group, alignment); }
+}
+
+function buildBiographyFlow() {
+    if (!biography) return;
+    const flow = document.getElementById("biography-flow");
+    if (!flow) return;
+    const measure = getBiographyMeasureElement();
+    measure.style.fontSize = getComputedStyle(biography).fontSize; measure.style.fontWeight = getComputedStyle(biography).fontWeight; measure.style.lineHeight = getComputedStyle(biography).lineHeight; measure.style.letterSpacing = getComputedStyle(biography).letterSpacing; measure.style.wordSpacing = getComputedStyle(biography).wordSpacing;
+    flow.innerHTML = "";
+    for (const segment of BIO_FLOW_SEGMENTS) {
+        if (segment.type === "paragraph") { appendBioParagraph(flow, segment.lines, segment.align); } 
+        else { appendClientLines(flow, segment.names, segment.groupSize, segment.align); }
+    }
+}
+buildBiographyFlow();
+window.addEventListener("resize", () => { clearTimeout(window.__bioFlowResizeTimer); window.__bioFlowResizeTimer = setTimeout(() => { buildBiographyFlow(); }, 80); });
+</script>
+
+<!-- =========================================================
+     CLEAN INDEX SYSTEM HTML
+     ========================================================= -->
 <div id="clean-index-shell">
-  <!-- Arka Plan Görsel/Video Katmanı -->
+  <!-- Arka Plan Görsel/Video Katmanı (Ekranın Tam Merkezi) -->
   <div id="ci-preview-layer">
     <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
   </div>
@@ -2076,7 +518,7 @@ html.landing-aybak-active #clean-index-shell {
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
         
-        <!-- YENİ FİLTRELER: Field ve Use -->
+        <!-- YENİ: Filtre Menüsü (Use ve Field) -->
         <div class="clean-index-filters">
           <div class="ci-filter-row">
             <span class="ci-filter-label">field:</span>
@@ -2121,12 +563,11 @@ html.landing-aybak-active #clean-index-shell {
     </div>
   </div>
 </div>
-
 <script id="clean-index-script">
 (async () => {
   "use strict";
 
-  // URL'ler
+  // Canlı GitHub RAW URL'leri (Veriler her zaman güncel kalacak)
   const LANDING_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/denizalpaybak.github.io/main/landing-index.json";
   const PHOTO_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-photography/main/projects.json";
   const FILM_JSON_URL = "https://raw.githubusercontent.com/denizalpaybak/aybak-film/main/films.json";
@@ -2152,23 +593,6 @@ html.landing-aybak-active #clean-index-shell {
   document.documentElement.classList.remove("clean-index-boot");
   document.documentElement.classList.add("clean-index-live");
 
-  const MORPH_STATES = new WeakMap();
-  let activeView = "index";
-  let activeField = "ALL";
-  let activeUse = "ALL";
-  let sortKey = "title"; // Varsayılan sıralama başlığı
-  let sortDirection = 1;
-  let currentRows = [];
-  let previewRequest = 0;
-  let infoBuilt = false;
-  let indexPointerHover = false;
-  let infoPointerHover = false;
-  let lastTappedId = null;
-  let tapTimer = null;
-
-  const HEADER_LABELS = {title:"title", sortDate:"date"};
-  const BIO_SEGMENTS = [{"align": "left", "lines": ["denizalp aybak (b. 1997) is a photographer and filmmaker,", "based in istanbul and available internationally."]}, {"align": "right", "lines": ["having graduated top of his class in management at sabanci university,", "he brings a strategic approach to image-making,", "considering both the work itself and the world it belongs to."]}, {"align": "left", "lines": ["his work creates atmosphere through contrast:", "light that feels dark,", "beauty that appears distant,", "stillness that carries tension,", "and precision that emerges from spontaneity."]}, {"align": "right", "lines": ["editorial collaborators include:", "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"]}, {"align": "left", "lines": ["brand collaborators include:", "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"]}];
-
   // ================= CANLI JSON FETCH İŞLEMİ ================= //
   let DATA = [];
   try {
@@ -2190,7 +614,7 @@ html.landing-aybak-active #clean-index-shell {
           return {
               id: item.id,
               title: mediaData.title, // Canlı başlık
-              date: mediaData.date,   // Canlı tarih (örn. digital cover sildiysen temiz hali)
+              date: mediaData.date,   // Canlı tarih (örn. digital cover sildiysen temiz hali gelir)
               type: isPhoto ? "photo" : "film",
               field: item.field,
               use: item.use,
@@ -2206,6 +630,23 @@ html.landing-aybak-active #clean-index-shell {
   } catch (err) {
       console.error("Data çekilemedi:", err);
   }
+
+  const MORPH_STATES = new WeakMap();
+  let activeView = "index";
+  let activeField = "ALL";
+  let activeUse = "ALL";
+  let sortKey = "title"; // Varsayılan sıralama başlığı
+  let sortDirection = 1;
+  let currentRows = [];
+  let previewRequest = 0;
+  let infoBuilt = false;
+  let indexPointerHover = false;
+  let infoPointerHover = false;
+  let lastTappedId = null;
+  let tapTimer = null;
+
+  const HEADER_LABELS = {title:"title", sortDate:"date"};
+  const BIO_SEGMENTS = [{"align": "left", "lines": ["denizalp aybak (b. 1997) is a photographer and filmmaker,", "based in istanbul and available internationally."]}, {"align": "right", "lines": ["having graduated top of his class in management at sabanci university,", "he brings a strategic approach to image-making,", "considering both the work itself and the world it belongs to."]}, {"align": "left", "lines": ["his work creates atmosphere through contrast:", "light that feels dark,", "beauty that appears distant,", "stillness that carries tension,", "and precision that emerges from spontaneity."]}, {"align": "right", "lines": ["editorial collaborators include:", "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"]}, {"align": "left", "lines": ["brand collaborators include:", "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"]}];
 
   function letters(text) {
     const out=[];
@@ -2423,6 +864,7 @@ html.landing-aybak-active #clean-index-shell {
       const key=btn.dataset.key;
       if(!btn.__ready) { initCharSpans(btn,HEADER_LABELS[key]); btn.__ready=true; }
       
+      // Sıralama durumu "underline" (altı çizili) sınıfı ile kontrol edilir
       if(key === sortKey) {
          btn.classList.add("active-sort");
       } else {
@@ -2509,7 +951,7 @@ html.landing-aybak-active #clean-index-shell {
     if(target==='info') ensureInfo();
     activeView=target;
     
-    morphTopState(); // Await kaldırıldı, takılma önlendi
+    morphTopState(); 
     
     indexView.classList.toggle('active',target==='index');
     infoView.classList.toggle('active',target==='info');
