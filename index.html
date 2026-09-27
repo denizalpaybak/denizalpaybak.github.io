@@ -1888,15 +1888,12 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-index-shell { position: fixed; inset: 0; z-index: 9000; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: var(--ci-font); line-height: var(--ci-line); overflow: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; }
 #clean-index-shell *, #clean-index-shell *::before, #clean-index-shell *::after { box-sizing: border-box; }
 
-/* PREVIEW LAYER (Tamamen Fixlendi - Asla Kaymaz) */
-#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: block; }
-.ci-preview-item { 
-    position: absolute !important; left: 50% !important; top: 50% !important; 
-    transform: translate(-50%, -50%) scale(0.98) !important;
-    margin: 0 !important;
-    max-width: 65vw; max-height: 55vh; object-fit: contain; opacity: 0; transition: opacity 240ms ease, transform 240ms ease; 
-}
-.ci-preview-item.visible { opacity: 1; transform: translate(-50%, -50%) scale(1) !important; }
+/* KESİN ÇÖZÜM: PREVIEW LAYER */
+#ci-preview-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.ci-preview-item { width: 65vw; height: 55vh; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 240ms ease; }
+.ci-preview-item.visible { opacity: 1; }
+/* Görsel veya video KESİNLİKLE bu kutunun dışına çıkamaz */
+.ci-preview-item img, .ci-preview-item video { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* UI LAYER */
 #ci-ui-layer { position: absolute; inset: 0; z-index: 2; mix-blend-mode: difference; color: #fff; pointer-events: none; }
@@ -1910,27 +1907,20 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-view { position: absolute; inset: 0; visibility: hidden; opacity: 0; pointer-events: none; }
 .clean-index-view.active { visibility: visible; opacity: 1; pointer-events: none; }
 
-/* FİLTRELER (Sıfır Boşluk) */
-.clean-index-filters { margin-bottom: 0; display: flex; flex-direction: column; gap: 0; }
+/* FİLTRELER */
+.clean-index-filters { display: flex; flex-direction: column; gap: 0; margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
 .ci-filter-row { display: flex; align-items: baseline; gap: 0.4em; }
 .ci-filter-label { margin-right: 0.5em; opacity: 1; }
 .ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; text-decoration: none; }
 .ci-filter-btn:hover { text-decoration: underline; }
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
-/* TABLE (Orta %33, 1 Satır Boşluklar Ayarlandı) */
-.clean-index-table-wrap { 
-    position: absolute; left: 33vw; width: 34vw; 
-    top: 50%; transform: translateY(-50%); 
-    max-height: calc(100vh - 150px); 
-    overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; 
-}
+/* TABLE (Orta %33 Masaüstü) */
+.clean-index-table-wrap { position: absolute; left: 33vw; width: 34vw; top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; display: flex; flex-direction: column; justify-content: center; }
 .clean-index-table-wrap::-webkit-scrollbar { display: none; }
 .clean-index-table { width: 100%; }
 .clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
-/* Use ile Title arası 1 satır, Title ile Liste arası 1 satır boşluk */
-.clean-index-header { margin-top: calc(var(--ci-font) * var(--ci-line)); margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
-/* Liste içi sıfır boşluk */
+.clean-index-header { margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
 .clean-index-row { margin-bottom: 0; min-height: auto; position: relative; }
 .clean-index-cell { min-width: 0; position: relative; }
 .clean-index-cell:nth-child(2) { text-align: right; }
@@ -1938,20 +1928,15 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-char { display: inline-block; white-space: pre; }
 .clean-index-row-hit { position: absolute; inset: 0; z-index: 3; appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0; }
 
-/* INFO SECTION (Akıllı Satır Atlama) */
-.clean-index-info-scroll { 
-    position: absolute; left: 25vw; width: 50vw; 
-    top: 50%; transform: translateY(-50%); 
-    max-height: calc(100vh - 150px); 
-    overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; 
-}
+/* INFO SECTION */
+.clean-index-info-scroll { position: absolute; left: 25vw; width: 50vw; top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; }
 .clean-index-info-scroll::-webkit-scrollbar { display: none; }
 .clean-index-info-content { width: 100%; max-width: 100%; margin: 0; font: inherit; line-height: inherit; }
 .clean-index-info-block { width: 100%; margin: 0 0 24px; }
 .clean-index-info-block.left { text-align: left; }
 .clean-index-info-block.right { text-align: right; }
-/* Senin noktalama kuralın (block) ve sığmazsa akıllı bölme (pretty) birleştirildi */
-.clean-index-info-block .line { display: block; white-space: normal; text-wrap: pretty; margin: 0; padding: 0; }
+.clean-index-info-block .line { display: block; white-space: normal; margin: 0; padding: 0; }
+.m-br { display: none; }
 
 /* FOOTER */
 .clean-index-footer { position: absolute; left: var(--ci-side); right: var(--ci-side); bottom: var(--ci-bottom); display: flex; justify-content: space-between; align-items: flex-end; }
@@ -1963,22 +1948,22 @@ document.documentElement.classList.add('clean-index-boot');
 /* MOBİL & TABLET */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
-  .ci-preview-item { max-width: 85vw; max-height: 45vh; }
+  .ci-preview-item { width: 85vw; height: 45vh; }
   .ci-filter-row { flex-wrap: wrap; }
   .clean-index-table-wrap, .clean-index-info-scroll { left: var(--ci-side); width: calc(100vw - (var(--ci-side) * 2)); }
+  .m-br { display: block; content: ""; margin-top: 2px; } /* Sadece mobilde satır atlatır */
 }
 
 html.clean-index-live .page { visibility: hidden !important; }
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download { visibility: hidden !important; pointer-events: none !important; }
 body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-index-shell { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: opacity 400ms ease, visibility 0s linear 400ms !important; }
 </style>
+
 <div id="clean-index-shell">
-  <!-- Arka Plan Görsel/Video Katmanı (Ekranın Tam Merkezi) -->
   <div id="ci-preview-layer">
     <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
   </div>
 
-  <!-- Ön Plan UI Katmanı (Difference Mode ile negatif çalışan katman) -->
   <div id="ci-ui-layer">
     <div class="clean-index-topbar">
       <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
@@ -1988,7 +1973,6 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
       <div class="clean-index-table-wrap">
         
-        <!-- YENİ: Filtre Menüsü (Use ve Field - Saf Siyah/Beyaz) -->
         <div class="clean-index-filters">
           <div class="ci-filter-row">
             <span class="ci-filter-label">field:</span>
@@ -2017,7 +2001,115 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
       <div class="clean-index-info-scroll">
-        <div id="clean-info-content" class="clean-index-info-content"></div>
+        <div id="clean-info-content" class="clean-index-info-content">
+          <div class="clean-index-info-block left">
+            <span class="line">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
+            <span class="line">based in istanbul and available internationally.</span>
+          </div>
+          <div class="clean-index-info-block right">
+            <span class="line">having graduated top of his class <br class="m-br">in management at sabanci university,</span>
+            <span class="line">he brings a strategic approach to image-making,</span>
+            <span class="line">considering both the work itself and the world it belongs to.</span>
+          </div>
+          <div class="clean-index-info-block left">
+            <span class="line">his work creates atmosphere through contrast:</span>
+            <span class="line">light that feels dark,</span>
+            <span class="line">beauty that appears distant,</span>
+            <span class="line">stillness that carries tension,</span>
+            <span class="line">and precision that emerges from spontaneity.</span>
+          </div>
+          <div class="clean-index-info-block right">
+            <span class="line">editorial collaborators include:</span>
+            <span class="line">vogue türkiye, harper’s bazaar türkiye, <br class="m-br">elle türkiye, l’officiel türkiye</span>
+          </div>
+          <div class="clean-index-info-block left">
+            <span class="line">brand collaborators include:</span>
+            <span class="line">vakko, bee goddess, zeynep arcay, <br class="m-br">peugeot, skechers, lc waikiki</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="clean-index-footer">
+      <div class="clean-index-footer-left">
+        <a href="https://models.com/people/denizalp-aybak" target="_blank" rel="noopener">models.com</a>
+        <a href="./denizalp-aybak-portfolio.pdf" download="denizalp-aybak-portfolio.pdf">portfolio.pdf</a>
+      </div>
+      <div class="clean-index-footer-right">
+        <a href="mailto:d@denizalpaybak.com">d@denizalpaybak.com</a>
+        <a href="https://www.instagram.com/denizalpaybak/" target="_blank" rel="noopener">instagram @denizalpaybak</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="clean-index-shell">
+  <div id="ci-preview-layer">
+    <div id="clean-index-preview" class="ci-preview-item" aria-hidden="true"></div>
+  </div>
+
+  <div id="ci-ui-layer">
+    <div class="clean-index-topbar">
+      <button id="clean-index-button" class="clean-index-topbutton" type="button" aria-label="Index"></button>
+      <button id="clean-info-button" class="clean-index-topbutton" type="button" aria-label="Info"></button>
+    </div>
+
+    <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
+      <div class="clean-index-table-wrap">
+        
+        <div class="clean-index-filters">
+          <div class="ci-filter-row">
+            <span class="ci-filter-label">field:</span>
+            <button class="ci-filter-btn active" data-type="field" data-val="ALL">all</button> /
+            <button class="ci-filter-btn" data-type="field" data-val="PHOTOGRAPHY">photography</button> /
+            <button class="ci-filter-btn" data-type="field" data-val="FILM">film</button>
+          </div>
+          <div class="ci-filter-row">
+            <span class="ci-filter-label">use:</span>
+            <button class="ci-filter-btn active" data-type="use" data-val="ALL">all</button> /
+            <button class="ci-filter-btn" data-type="use" data-val="CAMPAIGN">campaign</button> /
+            <button class="ci-filter-btn" data-type="use" data-val="EDITORIAL">editorial</button> /
+            <button class="ci-filter-btn" data-type="use" data-val="PERSONAL">personal</button>
+          </div>
+        </div>
+
+        <div id="clean-index-table" class="clean-index-table">
+          <div class="clean-index-header">
+            <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
+            <div class="clean-index-cell"><button class="clean-index-headerbutton active-sort" data-key="sortDate" type="button"></button></div>
+          </div>
+          <div id="clean-index-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
+      <div class="clean-index-info-scroll">
+        <div id="clean-info-content" class="clean-index-info-content">
+          <div class="clean-index-info-block left">
+            <span class="line">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
+            <span class="line">based in istanbul and available internationally.</span>
+          </div>
+          <div class="clean-index-info-block right">
+            <span class="line">having graduated top of his class <br class="m-br">in management at sabanci university,</span>
+            <span class="line">he brings a strategic approach to image-making,</span>
+            <span class="line">considering both the work itself and the world it belongs to.</span>
+          </div>
+          <div class="clean-index-info-block left">
+            <span class="line">his work creates atmosphere through contrast:</span>
+            <span class="line">light that feels dark,</span>
+            <span class="line">beauty that appears distant,</span>
+            <span class="line">stillness that carries tension,</span>
+            <span class="line">and precision that emerges from spontaneity.</span>
+          </div>
+          <div class="clean-index-info-block right">
+            <span class="line">editorial collaborators include:</span>
+            <span class="line">vogue türkiye, harper’s bazaar türkiye, <br class="m-br">elle türkiye, l’officiel türkiye</span>
+          </div>
+          <div class="clean-index-info-block left">
+            <span class="line">brand collaborators include:</span>
+            <span class="line">vakko, bee goddess, zeynep arcay, <br class="m-br">peugeot, skechers, lc waikiki</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2055,7 +2147,6 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   const indexButton = document.getElementById("clean-index-button");
   const infoButton = document.getElementById("clean-info-button");
   const preview = document.getElementById("clean-index-preview");
-  const infoContent = document.getElementById("clean-info-content");
   const filterBtns = document.querySelectorAll(".ci-filter-btn");
 
   if (!shell) return;
@@ -2063,13 +2154,34 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   document.documentElement.classList.add("clean-index-live");
 
   let activeView = "index", activeField = "ALL", activeUse = "ALL", sortKey = "sortDate", sortDirection = -1;
-  let currentRows = [], previewRow = null, previewRequest = 0, infoBuilt = false;
+  let currentRows = [], previewRow = null, previewRequest = 0;
   let indexPointerHover = false, infoPointerHover = false, lastTappedId = null, tapTimer = null;
   const MORPH_STATES = new WeakMap();
 
+  // İlk açılışta listenin boş görünmemesi için güncel geçici veri
   let DATA = [
-    {id:"vogue-260213", type:"photo", title:"Vogue Türkiye", date:"March 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
-    {id:"harpersbazaar-260625", type:"photo", title:"Harper's Bazaar Türkiye", date:"July 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1}
+    {id:"vogue-260213", type:"photo", title:"vogue türkiye", date:"march 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
+    {id:"harpersbazaar-260625", type:"photo", title:"harper's bazaar türkiye", date:"july 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1},
+    {id:"lofficiel-250130-cover", type:"photo", title:"l'officiel türkiye", date:"february 2025", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2025-02", media:["lofficiel_250130_cover.jpg"], _order:2},
+    {id:"lofficiel-250130", type:"photo", title:"l'officiel türkiye", date:"february 2025", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2025-02", media:["lofficiel_250130_1246.jpg"], _order:3},
+    {id:"elle-250919", type:"photo", title:"elle türkiye", date:"october 2025", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2025-10", media:["elle_250919_01.jpg"], _order:4},
+    {id:"qp-250421", type:"photo", title:"q-p magazine", date:"june 2025", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2025-06", media:["qp_250421_01.jpg"], _order:5},
+    {id:"lofficiel-241106-cover", type:"photo", title:"l'officiel türkiye", date:"november 2024", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2024-11", media:["lofficiel_241106_cover.jpg"], _order:6},
+    {id:"lofficiel-241106", type:"photo", title:"l'officiel türkiye", date:"november 2024", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2024-11", media:["lofficiel_241106_0131_retouched.jpg"], _order:7},
+    {id:"beegoddess-fw24", type:"photo", title:"bee goddess", date:"f/w 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-09", media:["beegoddess_full_1.jpg"], _order:8},
+    {id:"mudo-home-fw24", type:"photo", title:"mudo home", date:"f/w 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-09", media:["mudo_home_1.jpg"], _order:9},
+    {id:"vakko-fw24", type:"photo", title:"vakko", date:"f/w 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-09", media:["vakko_2.jpg"], _order:10},
+    {id:"manc-231124", type:"photo", title:"manc", date:"resort 2024", field:"PHOTOGRAPHY", use:"CAMPAIGN", sortDate:"2024-05", media:["manc_231124_01.jpg"], _order:11},
+    {id:"work-in-progress", type:"photo", title:"work-in-progress", date:"personal", field:"PHOTOGRAPHY", use:"PERSONAL", sortDate:"0000-00", media:["denizalp_aybak_01.jpg"], _order:12},
+    {id:"vogue-260113", type:"film", title:"vogue türkiye x peugeot", date:"february 2026", field:"FILM", use:"CAMPAIGN", sortDate:"2026-02", media:["vogue_260113_film.mp4"], _order:13},
+    {id:"zeyneparcay-251217", type:"film", title:"zeynep arcay", date:"fall 2026", field:"FILM", use:"CAMPAIGN", sortDate:"2026-09", media:["zeyneparcay_251217_1.mp4"], _order:14},
+    {id:"nulook-251031", type:"film", title:"nu-look magazine", date:"(#07) december 2025", field:"FILM", use:"EDITORIAL", sortDate:"2025-12", media:["nulook_251031_4.mp4"], _order:15},
+    {id:"vogue-260213", type:"film", title:"vogue türkiye", date:"march 2026", field:"FILM", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_1.mp4"], _order:16},
+    {id:"zeyneparcay-250529", type:"film", title:"zeynep arcay", date:"resort 2026", field:"FILM", use:"CAMPAIGN", sortDate:"2026-05", media:["zeyneparcay_250529_1.mp4"], _order:17},
+    {id:"nulook-240919", type:"film", title:"nu-look magazine", date:"(#04) december 2024", field:"FILM", use:"EDITORIAL", sortDate:"2024-12", media:["nulook_240919_3.mp4"], _order:18},
+    {id:"lofficiel-241106", type:"film", title:"l'officiel türkiye", date:"november 2024", field:"FILM", use:"EDITORIAL", sortDate:"2024-11", media:["lofficiel_241106.mp4"], _order:19},
+    {id:"nulook-250206", type:"film", title:"nu-look magazine", date:"(#05) april 2025", field:"FILM", use:"EDITORIAL", sortDate:"2025-04", media:["nulook_250206_1.mp4"], _order:20},
+    {id:"sober-210323", type:"film", title:"sober magazine", date:"(#02) may 2024", field:"FILM", use:"EDITORIAL", sortDate:"2024-05", media:["sober_210323_video_1.mp4"], _order:21}
   ];
 
   async function fetchLiveProjects() {
@@ -2089,11 +2201,10 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
             };
         }).filter(Boolean);
         if(freshData.length > 0) { DATA = freshData; renderIndex(); }
-    } catch (err) {}
+    } catch (err) { console.log("Canlı JSON çekilemedi, Fallback devrede.", err); }
   }
 
   const HEADER_LABELS = {title:"title", sortDate:"date"};
-  const BIO_SEGMENTS = [{"align": "left", "lines": ["denizalp aybak (b. 1997) is a photographer and filmmaker,", "based in istanbul and available internationally."]}, {"align": "right", "lines": ["having graduated top of his class in management at sabanci university,", "he brings a strategic approach to image-making,", "considering both the work itself and the world it belongs to."]}, {"align": "left", "lines": ["his work creates atmosphere through contrast:", "light that feels dark,", "beauty that appears distant,", "stillness that carries tension,", "and precision that emerges from spontaneity."]}, {"align": "right", "lines": ["editorial collaborators include:", "vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye"]}, {"align": "left", "lines": ["brand collaborators include:", "vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki"]}];
 
   function letters(text) { const out=[]; for(let i=0;i<text.length;i++) { const c=text[i]; if(c.toLowerCase() !== c.toUpperCase()) out.push(i); } return out; }
   function initCharSpans(el, rawText) {
@@ -2130,15 +2241,6 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   function morphTopState() { morphElement(indexButton, activeView === "index" || indexPointerHover); morphElement(infoButton, activeView === "info" || infoPointerHover); }
 
   initCharSpans(indexButton,"index"); initCharSpans(infoButton,"info");
-
-  function ensureInfo() {
-    if(infoBuilt) return; infoContent.innerHTML="";
-    BIO_SEGMENTS.forEach(seg=>{
-      const block=document.createElement("div"); block.className="clean-index-info-block " + seg.align;
-      seg.lines.forEach(line=>{ const span=document.createElement("span"); span.className="line"; span.textContent=line; block.appendChild(span); });
-      infoContent.appendChild(block);
-    }); infoBuilt=true;
-  }
 
   function filteredAndSortedProjects() {
     let copy = DATA.filter(p => (activeField === "ALL" || (p.field && p.field.toUpperCase() === activeField)) && (activeUse === "ALL" || (p.use && p.use.toUpperCase() === activeUse)));
@@ -2235,7 +2337,7 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
 
   function switchView(target) {
     if(activeView===target) return;
-    hidePreview(); lastTappedId = null; if(target==='info') ensureInfo();
+    hidePreview(); lastTappedId = null; 
     activeView=target; morphTopState();
     indexView.classList.toggle('active',target==='index'); infoView.classList.toggle('active',target==='info');
     indexView.setAttribute('aria-hidden',target!=='index'); infoView.setAttribute('aria-hidden',target!=='info');
@@ -2248,14 +2350,19 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
   indexButton.addEventListener('click',()=>switchView('index'));
   infoButton.addEventListener('click',()=>switchView('info'));
 
-  // END CARD TETİKLEYİCİSİ DÜZELTİLDİ
+  // END CARD ÇIKIŞ BUG'I DÜZELTİLDİ
   function openEndCard(show) { 
     if(show) {
         document.body.classList.add('landing-aybak-active');
         document.documentElement.classList.add('landing-aybak-active');
     } else {
         const logo = document.getElementById("landing-aybak-logo");
-        if(logo) logo.click(); // Siyah ekranı kendi animasyonuyla kapatır
+        if(logo) {
+            logo.click(); // İçerideki orijinal sistemi kapatır
+        } else {
+            document.body.classList.remove('landing-aybak-active');
+            document.documentElement.classList.remove('landing-aybak-active');
+        }
     }
   }
 
@@ -2303,8 +2410,10 @@ body.landing-aybak-active #clean-index-shell, html.landing-aybak-active #clean-i
     } else if (isBlackCard && dy > 45) { openEndCard(false); }
   },{passive:true});
 
-  renderIndex(); setStaticCase(indexButton,true); setStaticCase(infoButton,false); morphTopState();
-  fetchLiveProjects(); // Arkada güncel veriyi indirir
+  // İLK YÜKLEMEDE TETİKLENECEKLER
+  renderIndex(); // Anında fallback datayla renderla (boş kalmasın)
+  setStaticCase(indexButton,true); setStaticCase(infoButton,false); morphTopState();
+  fetchLiveProjects(); // Arkada asenkron olarak gerçek datayı çek ve sessizce değiştir
 
   const watcher=new MutationObserver(()=>{
     const active=document.body.classList.contains('landing-aybak-active');
