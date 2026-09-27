@@ -1898,13 +1898,13 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-preview-item img, .ci-preview-item video { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.98); transition: transform 240ms ease; display: block; margin: 0 auto; pointer-events: auto; cursor: pointer; }
 .ci-preview-item.visible img, .ci-preview-item.visible video { transform: scale(1); }
 
-/* UI LAYER (Z-INDEX 200 YAPILDI - ENDCARD BUTONLARI ARTIK ÇALIŞIR) */
+/* UI LAYER */
 #ci-ui-layer { position: absolute; inset: 0; z-index: 200; mix-blend-mode: difference; color: #fff; pointer-events: none; }
 .clean-index-footer, .clean-index-table-wrap, .clean-index-filters, .clean-index-info-scroll { pointer-events: auto; }
 
 /* ÜST BAR KUSURSUZ MERKEZ HİZALAMA */
 .clean-index-topbar { position: absolute; top: var(--ci-top); left: var(--ci-side); right: var(--ci-side); height: 30px; pointer-events: none; z-index: 9999; }
-.clean-index-topbutton, .clean-index-headerbutton { appearance: none; border: 0; outline: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; line-height: inherit; cursor: pointer; user-select: none; white-space: nowrap; text-decoration: none; }
+.clean-index-topbutton, .clean-index-headerbutton { appearance: none; border: 0; outline: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; line-height: inherit; cursor: pointer; user-select: none; white-space: nowrap; text-decoration: none; pointer-events: auto; }
 .clean-index-headerbutton:hover { text-decoration: underline; }
 .clean-index-headerbutton.active-sort .clean-index-char { text-decoration: underline !important; }
 
@@ -1924,25 +1924,26 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-filter-btn:hover { text-decoration: underline; }
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
-/* TABLE (Flex-Squish Önleyici) */
+/* TABLE */
 .clean-index-table-wrap { position: absolute; left: 33vw; width: 34vw; top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; display: flex; flex-direction: column; justify-content: center; }
 .clean-index-table-wrap::-webkit-scrollbar { display: none; }
 .clean-index-table { width: 100%; }
-.clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
+.clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; flex-wrap: nowrap; }
 .clean-index-header { margin-top: calc(var(--ci-font) * var(--ci-line)); margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
 .clean-index-row { margin-bottom: 0; min-height: auto; position: relative; }
-.clean-index-cell { min-width: 0; position: relative; }
-.clean-index-cell:nth-child(2) { text-align: right; }
-.clean-index-cell-content { display: inline-flex; position: relative; z-index: 2; pointer-events: auto; cursor: pointer; }
+.clean-index-cell:first-child { flex: 1 1 auto; text-align: left; overflow: hidden; white-space: nowrap; }
+.clean-index-cell:nth-child(2) { flex: 0 0 auto; text-align: right; padding-left: 20px; white-space: nowrap; }
+.clean-index-cell-content { display: inline-block; position: relative; z-index: 2; pointer-events: auto; cursor: pointer; }
 .clean-index-char { display: inline-block; white-space: pre; }
 .clean-index-row-hit { position: absolute; inset: 0; z-index: 3; appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0; }
 
-/* INFO SECTION (Mutlak Merkez) */
+/* INFO SECTION (Mutlak Merkez ve Akıllı Dengeleme) */
 .clean-index-info-scroll { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; }
 .clean-index-info-scroll::-webkit-scrollbar { display: none; }
 .clean-index-info-content { width: 100%; max-width: 800px; padding: 0 24px; margin: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .clean-index-info-block { width: 100%; margin: 0 0 24px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-.clean-index-info-block .line { display: block; white-space: normal; margin: 0; padding: 0; text-align: center; }
+/* text-wrap: balance ile tarayıcı kelimeleri eşitleyerek iki satırı aynı uzunluğa getirir */
+.clean-index-info-block .line { display: block; white-space: normal; text-wrap: balance; margin: 0; padding: 0; text-align: center; }
 
 /* FOOTER */
 .clean-index-footer { position: absolute; left: var(--ci-side); right: var(--ci-side); bottom: var(--ci-bottom); display: flex; justify-content: space-between; align-items: flex-end; }
@@ -1952,12 +1953,12 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-footer a:hover { text-decoration: underline; }
 
 /* LOGO MİMARİSİ */
-.ci-logo-btn { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: center; outline: none; padding: 0; margin: 0; }
+.ci-logo-btn { appearance: none; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: center; outline: none; padding: 0; margin: 0; pointer-events: auto; }
 .ci-logo-denizalp { display: block; }
 .ci-logo-aybak { display: flex; gap: 0; justify-content: center; }
 .ci-logo-aybak span { display: inline-block; white-space: pre; }
 
-/* SİYAH EKRAN (END-CARD Z-Index 100) */
+/* SİYAH EKRAN (END-CARD) */
 #ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; color: #fff; }
 #ci-endcard-btn { pointer-events: auto; }
 
@@ -1965,7 +1966,6 @@ document.documentElement.classList.add('clean-index-boot');
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
   
-  /* Field ve Tablo 1 satır aşağı kaydırıldı */
   .clean-index-table-wrap { 
       top: calc(var(--ci-top) + (var(--ci-font) * var(--ci-line)) * 4) !important; 
       transform: none !important; justify-content: flex-start; 
@@ -1976,11 +1976,10 @@ document.documentElement.classList.add('clean-index-boot');
   .ci-filter-row:last-child { margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
   .clean-index-header { margin-top: 0; margin-bottom: calc(var(--ci-font) * var(--ci-line)); }
   
-  /* Mobil Preview Yüksekliği Dengelendi (48vh) */
   .ci-preview-item {
       position: fixed !important; left: 50% !important; top: auto !important; 
       bottom: calc(var(--ci-bottom) + (var(--ci-font) * var(--ci-line)) * 3.5) !important; 
-      transform: translateX(-50%) !important; width: 90vw; height: 48vh; 
+      transform: translateX(-50%) !important; width: 90vw; height: 42vh; 
       align-items: flex-end; 
   }
   .ci-preview-item.visible { transform: translateX(-50%) !important; }
@@ -2071,13 +2070,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     <section id="clean-info-view" class="clean-index-view" aria-hidden="true">
       <div class="clean-index-info-scroll">
         <div id="clean-info-content" class="clean-index-info-content">
-          <!-- Biyografi: Özel Kelimeler Bölünmesin Diye &nbsp; İle Birleştirildi -->
+          <!-- Biyografi (text-wrap: balance ile matematiksel hizalanacak olan tamamen temizlenmiş metinler) -->
           <div class="clean-index-info-block">
             <span class="line">denizalp aybak (b. 1997) is a photographer and filmmaker,</span>
             <span class="line">based in istanbul and available internationally.</span>
           </div>
           <div class="clean-index-info-block">
-            <span class="line">having graduated top of his class in management at sabanci&nbsp;university,</span>
+            <span class="line">having graduated top of his class in management at sabanci university,</span>
             <span class="line">he brings a strategic approach to image-making,</span>
             <span class="line">considering both the work itself and the world it belongs to.</span>
           </div>
@@ -2090,11 +2089,11 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
           </div>
           <div class="clean-index-info-block">
             <span class="line">editorial collaborators include:</span>
-            <span class="line">vogue&nbsp;türkiye, harper’s&nbsp;bazaar&nbsp;türkiye, elle&nbsp;türkiye, l’officiel&nbsp;türkiye</span>
+            <span class="line">vogue türkiye, harper’s bazaar türkiye, elle türkiye, l’officiel türkiye</span>
           </div>
           <div class="clean-index-info-block">
             <span class="line">brand collaborators include:</span>
-            <span class="line">vakko, bee&nbsp;goddess, zeynep&nbsp;arcay, peugeot, skechers, lc&nbsp;waikiki</span>
+            <span class="line">vakko, bee goddess, zeynep arcay, peugeot, skechers, lc waikiki</span>
           </div>
         </div>
       </div>
@@ -2243,7 +2242,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     hit.addEventListener("click", () => {
       if (window.innerWidth <= 900) {
         if (lastTappedId === p.id) {
-          goToProject(p); // 2. KEZ TIKLANINCA GİDER
+          goToProject(p);
         } else {
           const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
           if(oldIdx !== -1) triggerHoverOut(oldIdx);
@@ -2309,6 +2308,9 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     const src = mediaFor(r.p); if(!src) return;
     const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
     if(r.p.type==='photo') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
+    
+    // GÖRSELİN TAM ÜSTÜNE TIKLANINCA PROJEYE GİDER
+    el.addEventListener("click", (e) => { e.stopPropagation(); goToProject(r.p); });
     p.appendChild(el); p.classList.add('visible');
   }
 
@@ -2325,10 +2327,8 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       }
   }
 
-  // MENÜ GEÇİŞLERİ VE MORPH ZAMANLAMALARI (Mükemmelleştirildi)
   function switchView(target) {
       const isBlackCard = document.body.classList.contains('landing-aybak-active');
-      
       if (isBlackCard) {
           if (activeView === target) {
               openEndCard(false);
@@ -2343,7 +2343,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
           }
           return;
       }
-
       if (activeView === target) return;
       activeView = target;
       morphTopState();
@@ -2367,7 +2366,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       const els = document.elementsFromPoint(e.clientX, e.clientY);
       const clickedMedia = els.find(el => el.tagName === 'IMG' || el.tagName === 'VIDEO');
       
-      // 1. Resmin piksellerine tıklandıysa sayfaya git
       if (clickedMedia && clickedMedia.closest('.ci-preview-item')) {
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -2375,7 +2373,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         return;
       }
 
-      // 2. Resim, Buton veya Logoya tıklanmadıysa (yani boşluğa tıklandıysa) kapat
       const clickedButton = els.find(el => el.closest('.clean-index-row-hit') || el.closest('.clean-index-headerbutton') || el.closest('.ci-filter-btn') || el.closest('.ci-logo-btn') || el.closest('.clean-index-topbutton'));
       if (!clickedButton) {
         const oldIdx = currentRows.findIndex(cr => cr.p.id === lastTappedId);
@@ -2385,7 +2382,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     }
   }, true); 
 
-  // ================= 6 ADIMLI LOGO MORPH =================
+  // ================= 6 ADIMLI LOGO MORPH KUSURSUZ MİMARİ =================
   const ecBtn = document.getElementById("ci-endcard-btn"), wlBtn = document.getElementById("ci-white-logo-btn");
   let logoState = 0, logoTarget = 0, logoTimer = null, ecFinishing = false;
   const upperA = ["A", "Y", "B", "A", "K"], lowerA = ["a", "y", "b", "a", "k"];
@@ -2424,14 +2421,18 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         ecFinishing = true;
         document.body.classList.remove('landing-aybak-active');
         document.documentElement.classList.remove('landing-aybak-active');
-        animateLogo(0);
+        // Kapanma süresi (400ms) bittikten sonra kilidi açar ve logo state'ini sıfırlar
+        animateLogo(0, () => { setTimeout(() => { ecFinishing = false; }, 400); });
     }
   }
 
   [ecBtn, wlBtn].forEach(btn => {
       if(!btn) return;
-      btn.addEventListener("pointerenter", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(6); });
-      btn.addEventListener("pointerleave", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(0); });
+      // Mouseenter (Hover animasyonları - Kilit kapalıyken çalışır)
+      btn.addEventListener("mouseenter", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(6); });
+      btn.addEventListener("mouseleave", () => { if(window.innerWidth > 900 && !ecFinishing) animateLogo(0); });
+      
+      // Click ile geçiş
       btn.addEventListener("click", () => {
           if(ecFinishing) return;
           if (window.innerWidth <= 900) {
@@ -2445,7 +2446,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       });
   });
 
-  // ESC TUŞU VE SCROLL KONTROLLERİ
+  // ESC VE SCROLL İLE ÇIKIŞ
   let wheelAccumulator = 0, wheelResetTimer = null, lastTouchY = null;
   document.addEventListener('wheel', event => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
@@ -2467,7 +2468,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { 
         event.preventDefault(); openEndCard(true); 
     }
-    // ESC ve Yukarı tuşu siyah ekranı kapatır
     if(isBlackCard && (event.key==='ArrowUp' || event.key==='PageUp' || event.key==='Escape')) { 
         event.preventDefault(); openEndCard(false); 
     }
