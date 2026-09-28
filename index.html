@@ -1905,19 +1905,19 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-image-view { position: fixed; inset: 0; z-index: 5; visibility: hidden; opacity: 0; transition: opacity 400ms ease; background: transparent; }
 #clean-image-view.active { visibility: visible; opacity: 1; pointer-events: auto; }
 
-/* NATIVE YATAY SCROLL (Başlangıç padding'i kısılarak sola çekildi) */
-.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 20vw 0 4vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
+/* NATIVE YATAY SCROLL ŞERİDİ */
+.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 40vw 0 10vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
 .ci-gallery-track::-webkit-scrollbar { display: none; }
 
-/* DAĞINIK (SCATTERED) DÜZEN */
-.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 1.5vw; max-width: 45vw; max-height: 55vh; }
-.ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 15vh; }
-.ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 20vh; max-width: 40vw; }
-.ci-gallery-item:nth-child(7n+3) { align-self: center; transform: translateY(-8vh); }
-.ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 25vh; max-height: 40vh; }
-.ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 5vh; max-width: 55vw; }
-.ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(12vh); }
-.ci-gallery-item:nth-child(7n+7) { align-self: flex-end; margin-bottom: 25vh; max-height: 35vh; }
+/* MASAÜSTÜ DAĞINIK (SCATTERED) DÜZEN - Dengeli Boyutlar */
+.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 1.5vw; max-width: 55vw; max-height: 60vh; }
+.ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 12vh; max-height: 60vh; max-width: 50vw; }
+.ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 15vh; max-height: 55vh; max-width: 48vw; }
+.ci-gallery-item:nth-child(7n+3) { align-self: center; transform: translateY(-6vh); max-height: 58vh; max-width: 55vw; }
+.ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 20vh; max-height: 50vh; max-width: 45vw; }
+.ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 8vh; max-height: 62vh; max-width: 60vw; }
+.ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(8vh); max-height: 55vh; max-width: 50vw; }
+.ci-gallery-item:nth-child(7n+7) { align-self: flex-end; margin-bottom: 22vh; max-height: 50vh; max-width: 52vw; }
 
 .ci-gallery-media { height: auto; width: auto; max-height: 100%; max-width: 100%; object-fit: contain; pointer-events: none; user-select: none; display: block; }
 
@@ -1956,14 +1956,13 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-table-wrap { width: 100%; max-height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
 .clean-index-table-wrap::-webkit-scrollbar { display: none; }
 
-/* Image Modunda Tablo Gizlenir (Hover Bug'ı Çözümü) */
 html.image-mode-active #ci-list-middle,
 html.image-mode-active .clean-index-table-wrap,
 html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; pointer-events: none !important; }
 
-/* FİLTRELER ("all" hizalaması için ci-filter-label genişliği 40px kilitlendi) */
+/* FİLTRELER (Daraltılmış 36px Genişlik: Tam 1 Boşluk Hissi) */
 .ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; margin: 0; }
-.ci-filter-label { display: inline-block; width: 40px; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; }
+.ci-filter-label { display: inline-block; width: 36px; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; }
 .ci-filter-options { display: flex; align-items: baseline; flex-wrap: wrap; }
 .ci-slash { white-space: pre; }
 .ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; text-decoration: none; }
@@ -2009,24 +2008,33 @@ html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; poin
 #ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; color: #fff; }
 #ci-endcard-btn { pointer-events: auto; }
 
-/* ================= MOBİL (Desktop İle Birebir Aynı Kilit Mantığı) ================= */
+/* ================= MOBİL (Kesintisiz Üst Bar Kesişimi) ================= */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
   
   .ci-master-block { width: 85vw !important; max-height: calc(100vh - 80px) !important; }
 
-  /* Text Preview Küçültüldü ve Tam Ortalandı (38vh) */
+  /* Text Preview Küçültüldü ve Tam Ortalandı */
   .ci-preview-item { position: fixed !important; left: 50% !important; top: 50% !important; bottom: auto !important; transform: translate(-50%, -50%) !important; width: 80vw; height: 38vh; align-items: center; justify-content: center; }
   .ci-preview-item.visible { transform: translate(-50%, -50%) !important; }
 
-  /* Mobil Dağınık Galeri Şablonu */
+  /* MOBİL İÇİN ÖZEL DAĞINIK DÜZEN (Üst bar ile kesişebilmesi için) */
   .ci-gallery-track { padding: 0 10vw 0 4vw; }
-  .ci-gallery-item { margin: 0 4vw; max-height: 45vh; max-width: 80vw; }
+  .ci-gallery-item { margin: 0 3vw; max-height: 65vh; max-width: 85vw; }
+  
+  .ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 2vh; max-height: 70vh; max-width: 80vw; }
+  .ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 8vh; max-height: 60vh; max-width: 85vw; }
+  .ci-gallery-item:nth-child(7n+3) { align-self: center; transform: translateY(-8vh); max-height: 65vh; max-width: 75vw; }
+  .ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 10vh; max-height: 55vh; max-width: 85vw; }
+  .ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 2vh; max-height: 70vh; max-width: 80vw; }
+  .ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(5vh); max-height: 60vh; max-width: 85vw; }
+  .ci-gallery-item:nth-child(7n+7) { align-self: flex-end; margin-bottom: 12vh; max-height: 65vh; max-width: 75vw; }
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
   .ci-preview-item { width: 50vw; height: 65vh; }
   .ci-gallery-item { max-width: 50vw; }
+  .ci-gallery-item:nth-child(7n+1) { margin-top: 5vh; max-height: 70vh; max-width: 55vw; }
 }
 
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download, html.clean-index-live .page { display: none !important; }
@@ -2211,7 +2219,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
             return {
                 id: item.id, title: mediaData.title || "untitled", date: mediaData.date || "", type: isPhoto ? "photo" : "film",
                 field: item.field, use: item.use, sortDate: item.sortDate, images: mediaData.images || null,
-                videos: mediaData.videos || null, media: mediaData.media || null, coverOverride: mediaData.coverOverride || null, _order: index
+                videos: mediaData.videos || null, coverOverride: mediaData.coverOverride || null, _order: index
             };
         }).filter(Boolean);
         
@@ -2269,7 +2277,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
   function goToProject(p) { window.location.href = (p.type === "photo" ? PHOTO_SITE : FILM_SITE) + "?project=" + encodeURIComponent(p.id) + "&view=all"; }
 
-  // LAZER TARAMALI HOVER (Titreme ve Kilitlenme Tamamen Engellendi)
+  // LAZER TARAMALI HOVER
   document.addEventListener('pointermove', e => {
       if(window.innerWidth <= 900 || displayMode === 'image') return;
       const els = document.elementsFromPoint(e.clientX, e.clientY);
@@ -2402,7 +2410,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       }
   }
 
-  // ================= ORİJİNAL ÇALIŞAN MEDYA ÇAĞIRMA SİSTEMİ ================= 
+  // ORİJİNAL ÇALIŞAN MEDYA ÇAĞIRMA SİSTEMİ
   function mediaFor(project) {
     let media = project.coverOverride || (project.images && project.images[0]) || (project.videos && project.videos[0]) || null;
     if(!media) return null;
@@ -2417,7 +2425,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     const src = mediaFor(r.p); if(!src) return;
     const el = document.createElement(r.p.type === 'photo' ? 'img' : 'video');
     
-    // Mobil Video Oynatma Etiketleri
     if(r.p.type === 'photo') { el.src=src; el.alt=''; } 
     else { 
         el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto';
@@ -2430,7 +2437,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
   function hidePreview() { previewRow = null; document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML = ''; }
 
-  // ================= SCATTERED (DAĞINIK) GALERİ SİSTEMİ (KLONLAMA YOK) =================
+  // ================= SCATTERED (DAĞINIK) GALERİ SİSTEMİ (SIFIR KLON) =================
   const gTrack = document.getElementById('ci-gallery-track');
   const galleryView = document.getElementById('clean-image-view');
   let activeGalleryId = null;
@@ -2440,36 +2447,65 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       let items = filteredAndSortedProjects();
       if(items.length === 0) return;
 
-      items.forEach(p => {
-          let src = mediaFor(p);
-          if(!src) return;
+      // Döngü Mantığı: Her projeden sadece 1 kare görünür, tur atar. 
+      // Çoklu filtrelerde de aynısı geçerlidir. Eğer filtre 1 iş çıkartırsa o tek işin kareleri tur tur listelenir.
+      let maxMedia = Math.max(...items.map(p => {
+          let c = 0;
+          if(p.coverOverride) c++;
+          if(p.images) c += p.images.length;
+          if(p.videos) c += p.videos.length;
+          return c || 1;
+      }));
+      
+      let megaSeq = [];
+      for (let cycle = 0; cycle < maxMedia; cycle++) {
+          items.forEach(p => {
+              let medias = [];
+              if(p.coverOverride) medias.push(p.coverOverride);
+              if(p.images) p.images.forEach(m => medias.push(m));
+              if(p.videos) p.videos.forEach(m => medias.push(m));
+              let unique = [...new Set(medias)];
+              
+              let arr = unique.map(m => {
+                  if(p.type === 'photo') return PHOTO_BASE + m.replace(/\.[^.]+$/i,'.webp');
+                  const dot = m.lastIndexOf('.'); return FILM_BASE + (dot > 0 ? m.slice(0,dot) : m) + '_preview.mp4';
+              }).filter(Boolean);
+              
+              if(arr.length === 0) { let fb = mediaFor(p); if(fb) arr.push(fb); }
+              
+              if(arr.length > 0) {
+                  let url = arr[cycle % arr.length];
+                  megaSeq.push({ p, url, isVideo: url.endsWith('.mp4') });
+              }
+          });
+      }
 
+      megaSeq.forEach(item => {
           let div = document.createElement('div');
           div.className = 'ci-gallery-item';
-          div.dataset.id = p.id;
+          div.dataset.id = item.p.id;
 
-          let el = document.createElement(p.type === 'photo' ? 'img' : 'video');
+          let el = document.createElement(item.isVideo ? 'video' : 'img');
           el.className = 'ci-gallery-media';
-          if(p.type === 'photo') { el.src = src; } 
+          if(!item.isVideo) { el.src = item.url; } 
           else { 
-              el.src = src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; 
+              el.src = item.url; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; 
               el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
           }
           div.appendChild(el);
 
           let info = document.createElement('div');
           info.className = 'ci-gallery-info';
-          info.innerHTML = `<span>${p.title.toLowerCase()}</span><span>${p.date.toLowerCase()}</span>`;
+          info.innerHTML = `<span>${item.p.title.toLowerCase()}</span><span>${item.p.date.toLowerCase()}</span>`;
           div.appendChild(info);
 
           gTrack.appendChild(div);
       });
 
-      // Başa sarar
       requestAnimationFrame(() => { gTrack.scrollLeft = 0; });
   }
 
-  // MASAÜSTÜ WHEEL İLE YATAY SCROLL & KLAVYE KONTROLLERİ
+  // MASAÜSTÜ WHEEL İLE YATAY SCROLL & ENDCARD
   let wheelAccumulator = 0, wheelResetTimer = null;
   
   gTrack.addEventListener('wheel', e => {
@@ -2481,7 +2517,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
               
               if (e.deltaY > 0) { // Aşağı Kaydırma -> Sağa
                   if (gTrack.scrollLeft >= maxScroll - 2) {
-                      // Sona ulaşıldı, ana document algılasın diye event'i engellemiyoruz
+                      // Son, hiçbir şey engelleme (Endcard yakalayacak)
                   } else {
                       e.preventDefault();
                       gTrack.scrollLeft += e.deltaY;
