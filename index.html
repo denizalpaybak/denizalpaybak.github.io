@@ -1905,23 +1905,25 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-image-view { position: fixed; inset: 0; z-index: 5; visibility: hidden; opacity: 0; transition: opacity 400ms ease; background: transparent; }
 #clean-image-view.active { visibility: visible; opacity: 1; pointer-events: auto; }
 
-/* NATIVE YATAY SCROLL (Pürüzsüz & Başlangıç hizası sola çekildi) */
-.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 20vw 0 4vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
+/* NATIVE YATAY SCROLL (Pürüzsüz & Başlangıç hizası) */
+.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 15vw 0 5vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
 .ci-gallery-track::-webkit-scrollbar { display: none; }
 
-/* DAĞINIK (SCATTERED) DÜZEN - Dengeli Boyutlar */
-.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 1.5vw; max-width: 45vw; max-height: 55vh; }
-.ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 12vh; max-height: 60vh; max-width: 50vw; }
-.ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 15vh; max-height: 55vh; max-width: 48vw; }
-.ci-gallery-item:nth-child(7n+3) { align-self: center; transform: translateY(-6vh); max-height: 58vh; max-width: 55vw; }
-.ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 20vh; max-height: 50vh; max-width: 45vw; }
-.ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 8vh; max-height: 62vh; max-width: 60vw; }
-.ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(8vh); max-height: 55vh; max-width: 50vw; }
-.ci-gallery-item:nth-child(7n+7) { align-self: flex-end; margin-bottom: 22vh; max-height: 50vh; max-width: 52vw; }
+/* ================= GERÇEK COLLAGE (KESİŞEN) DÜZEN ================= */
+.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 2vw; }
+
+/* İçe geçmeli (overlapping) x ekseni negatif marginleri */
+.ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 10vh; max-width: 40vw; max-height: 60vh; z-index: 1; }
+.ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 12vh; margin-left: -8vw; max-width: 50vw; max-height: 50vh; z-index: 2; }
+.ci-gallery-item:nth-child(7n+3) { align-self: center; margin-top: -15vh; margin-left: 2vw; max-width: 35vw; max-height: 55vh; z-index: 3; }
+.ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 25vh; margin-left: -5vw; max-width: 55vw; max-height: 45vh; z-index: 1; }
+.ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 5vh; margin-left: 4vw; max-width: 45vw; max-height: 60vh; z-index: 2; }
+.ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(15vh); margin-left: -6vw; max-width: 40vw; max-height: 50vh; z-index: 3; }
+.ci-gallery-item:nth-child(7n+7) { align-self: flex-start; margin-top: 8vh; margin-left: 3vw; max-width: 48vw; max-height: 55vh; z-index: 1; }
 
 .ci-gallery-media { height: auto; width: auto; max-height: 100%; max-width: 100%; object-fit: contain; pointer-events: none; user-select: none; display: block; }
 
-/* Gallery Hover Text (Titreme Kalkanı) */
+/* Gallery Hover Text */
 .ci-gallery-info, .ci-gallery-info span { pointer-events: none !important; }
 .ci-gallery-info { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 300ms ease; color: #fff; mix-blend-mode: difference; font-family: inherit; font-size: var(--ci-font); line-height: var(--ci-line); text-align: center; }
 .ci-gallery-info span { display: block; white-space: nowrap; }
@@ -1961,9 +1963,9 @@ html.image-mode-active #ci-list-middle,
 html.image-mode-active .clean-index-table-wrap,
 html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; pointer-events: none !important; }
 
-/* FİLTRELER ("em" ile esnek 2.8em daraltılmış genişlik kilitlendi) */
+/* FİLTRELER (all hizalaması için ci-filter-label genişliği 38px kilitlendi) */
 .ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; margin: 0; }
-.ci-filter-label { display: inline-block; width: 2.8em; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
+.ci-filter-label { display: inline-block; width: 38px; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
 .ci-filter-options { display: flex; align-items: baseline; flex-wrap: wrap; }
 .ci-slash { white-space: pre; }
 .ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; text-decoration: none; }
@@ -2009,24 +2011,31 @@ html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; poin
 #ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; color: #fff; }
 #ci-endcard-btn { pointer-events: auto; }
 
-/* ================= MOBİL (Desktop İle Birebir Aynı Kilit Mantığı) ================= */
+/* ================= MOBİL MİMARİSİ ================= */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
   
   .ci-master-block { width: 85vw !important; max-height: calc(100vh - 80px) !important; }
 
-  /* Text Preview Küçültüldü ve Tam Ortalandı (38vh) */
+  /* Text Preview Küçültüldü ve Tam Ortalandı */
   .ci-preview-item { position: fixed !important; left: 50% !important; top: 50% !important; bottom: auto !important; transform: translate(-50%, -50%) !important; width: 80vw; height: 38vh; align-items: center; justify-content: center; }
   .ci-preview-item.visible { transform: translate(-50%, -50%) !important; }
 
-  /* Mobil Dağınık Galeri Boyutları - YATAY GÖRSELLERE ÖZGÜRLÜK VERİLDİ */
-  .ci-gallery-track { padding: 0 8vw 0 4vw; }
-  .ci-gallery-item { margin: 0 3vw; max-height: 52vh; max-width: 92vw; }
+  /* MOBİL İÇİN KESİŞEN VE GENİŞ YATAY COLLAGE DÜZENİ */
+  .ci-gallery-track { padding: 0 10vw 0 4vw; gap: 0; }
+  .ci-gallery-item { margin: 0; max-height: 45vh; max-width: 90vw; }
+  
+  .ci-gallery-item:nth-child(5n+1) { align-self: flex-start; margin-top: 5vh; max-width: 80vw; max-height: 50vh; z-index: 1; }
+  .ci-gallery-item:nth-child(5n+2) { align-self: flex-end; margin-bottom: 8vh; margin-left: -12vw; max-width: 85vw; max-height: 40vh; z-index: 2; }
+  .ci-gallery-item:nth-child(5n+3) { align-self: center; margin-top: -10vh; margin-left: 4vw; max-width: 75vw; max-height: 55vh; z-index: 3; }
+  .ci-gallery-item:nth-child(5n+4) { align-self: flex-start; margin-top: 22vh; margin-left: -8vw; max-width: 92vw; max-height: 35vh; z-index: 1; }
+  .ci-gallery-item:nth-child(5n+5) { align-self: flex-end; margin-bottom: 5vh; margin-left: 6vw; max-width: 80vw; max-height: 48vh; z-index: 2; }
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
   .ci-preview-item { width: 50vw; height: 65vh; }
-  .ci-gallery-item { max-width: 60vw; max-height: 70vh; }
+  .ci-gallery-item { max-width: 60vw; }
+  .ci-gallery-item:nth-child(5n+1) { margin-top: 5vh; max-height: 70vh; max-width: 55vw; }
 }
 
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download, html.clean-index-live .page { display: none !important; }
@@ -2389,7 +2398,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       renderHeaders(); renderTableData(); 
       renderGallery(); 
       
-      // EDİTORYAL KİLİT MİMARİSİ: Site açıldığında ölçüp yüksekliği dondurur. (Sonsuza kadar aynı kalır)
+      // EDİTORYAL KİLİT MİMARİSİ: Site açıldığında ölçüp yüksekliği dondurur.
       if (!isMasterHeightLocked && activeField === 'ALL' && activeUse === 'ALL' && DATA.length > 0) {
           setTimeout(() => {
               const block = document.getElementById('ci-master-block');
@@ -2403,7 +2412,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   }
 
   // ================= ORGANİK (RANDOM) MEDYA ÇAĞIRMA SİSTEMİ ================= 
-  // Projenin içindeki tüm foto/video havuzundan rastgele birini seçerek anında ekrana basar.
+  // Her hoverda ve her görüntülemede projenin içinden rastgele 1 kare çeker.
   function randomMediaFor(project) {
       let medias = [];
       if(project.coverOverride) medias.push(project.coverOverride);
@@ -2412,10 +2421,17 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       if(project.media) project.media.forEach(m => medias.push(m));
       
       let unique = [...new Set(medias)];
-      if(unique.length === 0) return null;
-
-      let m = unique[Math.floor(Math.random() * unique.length)];
       
+      let m = null;
+      if(unique.length > 0) {
+          m = unique[Math.floor(Math.random() * unique.length)];
+      } else {
+          if(project.type === 'photo') m = (project.images && project.images[0]) || null;
+          else m = (project.videos && project.videos[0]) || null;
+      }
+      
+      if(!m) return null;
+
       if(m.endsWith('.mp4')) {
           const dot = m.lastIndexOf('.'); 
           return FILM_BASE + (dot > 0 ? m.slice(0,dot) : m) + '_preview.mp4';
@@ -2428,7 +2444,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     previewRow = r; 
     const p = document.getElementById("clean-index-preview"); p.innerHTML = ''; 
     
-    // Her hover'da rastgele, taptaze bir görsel çeker
     const src = randomMediaFor(r.p); 
     if(!src) return;
 
@@ -2456,7 +2471,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       let items = filteredAndSortedProjects();
       if(items.length === 0) return;
 
-      // Döngü veya klonlama YOO. Sadece her projeden rastgele seçilmiş 1 tane görüntü koyar.
+      // Döngü veya klonlama YOO. Her projeden 1 tane rastgele görüntü basar.
       items.forEach(p => {
           let src = randomMediaFor(p);
           if(!src) return;
@@ -2486,7 +2501,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       requestAnimationFrame(() => { gTrack.scrollLeft = 0; });
   }
 
-  // MASAÜSTÜ WHEEL İLE YATAY SCROLL & ENDCARD (Çökme yok)
+  // MASAÜSTÜ WHEEL İLE YATAY SCROLL & ENDCARD
   let wheelAccumulator = 0, wheelResetTimer = null;
   
   gTrack.addEventListener('wheel', e => {
@@ -2498,7 +2513,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
               
               if (e.deltaY > 0) { // Aşağı Kaydırma -> Sağa
                   if (gTrack.scrollLeft >= maxScroll - 2) {
-                      // Son, hiçbir şey engelleme (Endcard yakalayacak)
+                      // Son (Endcard Yakalayacak)
                   } else {
                       e.preventDefault();
                       gTrack.scrollLeft += e.deltaY;
@@ -2676,13 +2691,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       });
   });
 
-  // KLAVYE KONTROLLERİ: SAĞ/SOL OK = KAYDIR, AŞAĞI OK = ENDCARD
+  // KLAVYE KONTROLLERİ: SAĞ/SOL OK = YATAY KAYDIRMA, AŞAĞI/YUKARI = ENDCARD
   document.addEventListener('keydown', event => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     
     if (activeView === 'index' && displayMode === 'image' && !isBlackCard) {
-        if(event.key === 'ArrowRight') { gTrack.scrollLeft += 60; event.preventDefault(); return; }
-        if(event.key === 'ArrowLeft') { gTrack.scrollLeft -= 60; event.preventDefault(); return; }
+        if(event.key === 'ArrowRight') { gTrack.scrollLeft += 80; event.preventDefault(); return; }
+        if(event.key === 'ArrowLeft') { gTrack.scrollLeft -= 80; event.preventDefault(); return; }
     }
 
     if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { 
