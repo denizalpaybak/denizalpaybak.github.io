@@ -1894,26 +1894,33 @@ document.documentElement.classList.add('clean-index-boot');
 
 #ci-black-bg { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity 400ms ease; pointer-events: none; z-index: 0; }
 
-/* HOVER PREVIEW LAYER (Text Modu İçin) */
+/* HOVER PREVIEW LAYER (Text Modu İçin - Tam Merkezli) */
 #ci-preview-layer { position: fixed; inset: 0; z-index: 10; pointer-events: none; display: flex; align-items: center; justify-content: center; }
 .ci-preview-item { display: flex; align-items: center; justify-content: center; width: 50vw; height: 65vh; opacity: 0; transition: opacity 240ms ease; pointer-events: none; }
 .ci-preview-item.visible { opacity: 1; }
 .ci-preview-item img, .ci-preview-item video { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.98); transition: transform 240ms ease; display: block; margin: 0 auto; pointer-events: auto; cursor: pointer; }
 .ci-preview-item.visible img, .ci-preview-item.visible video { transform: scale(1); }
 
-/* IMAGE GALLERY LAYER (Moodboard) */
-#clean-image-view { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center; visibility: hidden; opacity: 0; transition: opacity 400ms ease; touch-action: none; cursor: grab; overflow: hidden; pointer-events: none; }
+/* YENİ NATIVE IMAGE GALLERY LAYER (Moodboard) */
+#clean-image-view { position: fixed; inset: 0; z-index: 5; visibility: hidden; opacity: 0; transition: opacity 400ms ease; background: transparent; }
 #clean-image-view.active { visibility: visible; opacity: 1; pointer-events: auto; }
-#clean-image-view:active { cursor: grabbing; }
 
-.ci-gallery-track { display: flex; align-items: center; gap: 80px; height: 50vh; will-change: transform; pointer-events: none; }
-.ci-gallery-item { position: relative; flex: 0 0 auto; height: 100%; max-width: 70vw; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
-.ci-gallery-item:nth-child(4n+1) { transform: translateY(-10%); }
-.ci-gallery-item:nth-child(4n+2) { transform: translateY(12%); }
-.ci-gallery-item:nth-child(4n+3) { transform: translateY(-5%); }
-.ci-gallery-item:nth-child(4n+4) { transform: translateY(8%); }
+/* Native Horizontal Scroll Track */
+.ci-gallery-track { display: flex; align-items: center; gap: 6vw; width: 100vw; height: 100vh; padding: 0 50vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; cursor: grab; }
+.ci-gallery-track::-webkit-scrollbar { display: none; }
+.ci-gallery-track.is-dragging { cursor: grabbing; scroll-behavior: auto !important; }
 
-.ci-gallery-media { height: 100%; width: auto; max-width: 100%; object-fit: contain; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+/* Scatter (Dağınık) Layout */
+.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; max-height: 50vh; max-width: 65vw; pointer-events: auto; }
+.ci-gallery-item:nth-child(5n+1) { align-self: flex-start; margin-top: 20vh; }
+.ci-gallery-item:nth-child(5n+2) { align-self: flex-end; margin-bottom: 25vh; }
+.ci-gallery-item:nth-child(5n+3) { align-self: center; transform: translateY(-5vh); }
+.ci-gallery-item:nth-child(5n+4) { align-self: flex-end; margin-bottom: 12vh; }
+.ci-gallery-item:nth-child(5n+5) { align-self: flex-start; margin-top: 10vh; }
+
+.ci-gallery-media { height: auto; width: auto; max-height: 50vh; max-width: 100%; object-fit: contain; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+
+/* Gallery Hover Text (Difference & No-Flicker Kalkanı) */
 .ci-gallery-info, .ci-gallery-info span { pointer-events: none !important; }
 .ci-gallery-info { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 300ms ease; color: #fff; mix-blend-mode: difference; font-family: inherit; font-size: var(--ci-font); line-height: var(--ci-line); text-align: center; }
 .ci-gallery-info span { display: block; white-space: nowrap; }
@@ -1922,7 +1929,7 @@ document.documentElement.classList.add('clean-index-boot');
 
 /* UI LAYER */
 #ci-ui-layer { position: absolute; inset: 0; z-index: 200; mix-blend-mode: difference; color: #fff; pointer-events: none; }
-.clean-index-footer, .clean-index-table-wrap, .clean-index-info-scroll { pointer-events: auto; }
+.clean-index-footer, .clean-index-info-scroll { pointer-events: auto; }
 
 /* ÜST BAR */
 .clean-index-topbar { position: absolute; top: var(--ci-top); left: var(--ci-side); right: var(--ci-side); height: 30px; pointer-events: none; z-index: 9999; }
@@ -1937,14 +1944,16 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-view { position: absolute; inset: 0; visibility: hidden; opacity: 0; transition: opacity 300ms ease, visibility 0s linear 300ms; pointer-events: none; }
 .clean-index-view.active { visibility: visible; opacity: 1; transition: opacity 300ms ease; pointer-events: none; }
 
-/* TABLE KAPSAYICISI (Gap kuralı ile tam 1 satır boşluk) */
-.clean-index-table-wrap { position: absolute; left: 33vw; width: 34vw; top: 50%; transform: translateY(-50%); max-height: calc(100vh - 150px); overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; display: flex; flex-direction: column; justify-content: center; gap: calc(var(--ci-font) * var(--ci-line)); pointer-events: none; z-index: 20; }
-.clean-index-table-wrap::-webkit-scrollbar { display: none; }
+/* KİLİTLİ MERKEZ BLOK MİMARİSİ (Master Block) */
+.ci-master-block { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 34vw; display: flex; flex-direction: column; pointer-events: none; z-index: 20; }
+#ci-filters-top { flex: 0 0 auto; margin-bottom: calc(var(--ci-font) * var(--ci-line)); pointer-events: auto; }
+#ci-list-middle { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; pointer-events: auto; }
+#ci-list-middle::-webkit-scrollbar { display: none; }
+#ci-filters-bottom { flex: 0 0 auto; margin-top: calc(var(--ci-font) * var(--ci-line)); display: flex; justify-content: flex-end; pointer-events: auto; }
 
 /* FİLTRELER VE HİZALAMALAR (Tipografi Kusursuzlaştırıldı) */
-.clean-index-filters { display: flex; flex-direction: column; gap: calc(var(--ci-font) * var(--ci-line) * 0.2); margin: 0; pointer-events: auto; }
-.ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; }
-.ci-filter-label { width: 3.5em; flex: 0 0 auto; text-align: left; }
+.ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; margin: 0; }
+.ci-filter-label { display: inline-block; width: 3em; flex: 0 0 auto; text-align: left; margin-right: 0.5em; opacity: 1; }
 .ci-filter-options { display: flex; align-items: baseline; flex-wrap: wrap; }
 .ci-slash { white-space: pre; }
 
@@ -1953,10 +1962,10 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-filter-btn.active { text-decoration: underline; pointer-events: none; }
 
 /* TABLE */
-.clean-index-table { width: 100%; pointer-events: auto; }
-.clean-index-table.hidden { display: none; }
+.clean-index-table { width: 100%; pointer-events: auto; transition: opacity 300ms ease; }
+.clean-index-table.hidden { opacity: 0; pointer-events: none !important; }
 .clean-index-header, .clean-index-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; flex-wrap: nowrap; }
-.clean-index-header { margin: 0; }
+.clean-index-header { margin: 0 0 calc(var(--ci-font) * var(--ci-line)) 0; }
 .clean-index-row { margin-bottom: 0; min-height: auto; position: relative; }
 .clean-index-cell:first-child { flex: 1 1 auto; text-align: left; overflow: hidden; white-space: nowrap; }
 .clean-index-cell:nth-child(2) { flex: 0 0 auto; text-align: right; padding-left: 20px; white-space: nowrap; }
@@ -1964,8 +1973,8 @@ document.documentElement.classList.add('clean-index-boot');
 .clean-index-char { display: inline-block; white-space: pre; }
 .clean-index-row-hit { position: absolute; inset: 0; z-index: 3; appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0; margin: 0; }
 
-/* VIEW (ESKİ DISPLAY) FİLTRESİ (Sağ Alt) */
-.ci-display-row { width: 100%; text-align: right; margin: 0; display: flex; justify-content: flex-end; align-items: baseline; pointer-events: auto; }
+/* VIEW (ESKİ DISPLAY) FİLTRESİ */
+.ci-display-row { width: max-content; display: flex; align-items: baseline; }
 
 /* INFO SECTION */
 .clean-index-info-scroll { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: none; }
@@ -1992,54 +2001,28 @@ document.documentElement.classList.add('clean-index-boot');
 #ci-endcard-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 400ms ease, visibility 0s linear 400ms; pointer-events: none; z-index: 100; color: #fff; }
 #ci-endcard-btn { pointer-events: auto; }
 
-/* MOBİL (Dikey Mod) - TAM MERKEZ VE BÖLÜNMÜŞ KATMANLAR */
+/* MOBİL KUSURSUZ MERKEZLEME VE ORANLAMA */
 @media (max-width: 900px) {
   :root { --ci-side: 24px; --ci-top: 20px; --ci-bottom: 18px; --ci-font: 13px; }
   
-  .clean-index-table-wrap { 
-      position: fixed !important; inset: 0 !important; transform: none !important;
-      width: 100vw !important; height: 100vh !important; max-height: none !important;
-      left: 0 !important; top: 0 !important; display: block !important;
-  }
-  
-  .clean-index-filters {
-      position: absolute;
-      top: calc(var(--ci-top) + (var(--ci-font) * var(--ci-line)) * 3);
-      left: var(--ci-side); right: var(--ci-side);
-  }
-  
-  .clean-index-table {
-      position: absolute; top: 50%; left: var(--ci-side); right: var(--ci-side);
-      transform: translateY(-50%); width: auto;
-  }
-  
-  .ci-display-row {
-      position: absolute;
-      bottom: calc(var(--ci-bottom) + (var(--ci-font) * var(--ci-line)) * 1.5);
-      right: var(--ci-side); width: auto;
-  }
+  .ci-master-block { width: 85vw !important; }
 
-  /* MOBİL TEXT PREVIEW TAM MERKEZ VE DAHA KÜÇÜK */
+  /* Mobilde Text Preview Küçültüldü ve Tam Ortalandı */
   .ci-preview-item {
       position: fixed !important; left: 50% !important; top: 50% !important; bottom: auto !important; 
-      transform: translate(-50%, -50%) !important; width: 80vw; height: 38vh; 
-      align-items: center; justify-content: center; 
+      transform: translate(-50%, -50%) !important; width: 75vw; height: 38vh; 
+      align-items: center; justify-content: center;
   }
   .ci-preview-item.visible { transform: translate(-50%, -50%) !important; }
   .ci-preview-item img, .ci-preview-item video { object-position: center center; }
 
-  .ci-gallery-track { height: 40vh; gap: 40px; }
-  .ci-gallery-item { max-width: 85vw; }
+  .ci-gallery-item { max-width: 80vw; }
 }
 
-/* MOBİL (Yatay Mod) */
 @media (max-width: 900px) and (orientation: landscape) {
-  .ci-preview-item {
-      position: fixed !important; left: 50% !important; top: 50% !important; bottom: auto !important;
-      transform: translate(-50%, -50%) !important; width: 50vw; height: 60vh;
-  }
-  .ci-preview-item.visible { transform: translate(-50%, -50%) !important; }
-  .ci-gallery-track { height: 60vh; }
+  .ci-master-block { width: 75vw !important; }
+  .ci-preview-item { width: 50vw; height: 65vh; }
+  .ci-gallery-item { max-width: 50vw; }
 }
 
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download, html.clean-index-live .page { display: none !important; }
@@ -2088,34 +2071,41 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     </div>
 
     <section id="clean-index-view" class="clean-index-view active" aria-hidden="false">
-      <div class="clean-index-table-wrap">
+      <!-- MÜKEMMEL ORTALANAN MASTER BLOCK -->
+      <div id="ci-master-block" class="ci-master-block">
         
-        <div class="clean-index-filters">
+        <div id="ci-filters-top">
           <div class="ci-filter-row">
-            <span class="ci-filter-label">field:</span>
+            <div class="ci-filter-label">field:</div>
             <div class="ci-filter-options">
                 <button class="ci-filter-btn active" data-type="field" data-val="ALL">all</button><span class="ci-slash">&nbsp;/&nbsp;</span><button class="ci-filter-btn" data-type="field" data-val="PHOTOGRAPHY">photography</button><span class="ci-slash">&nbsp;/&nbsp;</span><button class="ci-filter-btn" data-type="field" data-val="FILM">film</button>
             </div>
           </div>
           <div class="ci-filter-row">
-            <span class="ci-filter-label">use:</span>
+            <div class="ci-filter-label">use:</div>
             <div class="ci-filter-options">
                 <button class="ci-filter-btn active" data-type="use" data-val="ALL">all</button><span class="ci-slash">&nbsp;/&nbsp;</span><button class="ci-filter-btn" data-type="use" data-val="CAMPAIGN">campaign</button><span class="ci-slash">&nbsp;/&nbsp;</span><button class="ci-filter-btn" data-type="use" data-val="EDITORIAL">editorial</button><span class="ci-slash">&nbsp;/&nbsp;</span><button class="ci-filter-btn" data-type="use" data-val="PERSONAL">personal</button>
             </div>
           </div>
         </div>
 
-        <div id="clean-index-table" class="clean-index-table">
-          <div class="clean-index-header">
-            <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
-            <div class="clean-index-cell"><button class="clean-index-headerbutton active-sort" data-key="sortDate" type="button"></button></div>
-          </div>
-          <div id="clean-index-body"></div>
+        <div id="ci-list-middle">
+            <div id="clean-index-table" class="clean-index-table">
+            <div class="clean-index-header">
+                <div class="clean-index-cell"><button class="clean-index-headerbutton" data-key="title" type="button"></button></div>
+                <div class="clean-index-cell"><button class="clean-index-headerbutton active-sort" data-key="sortDate" type="button"></button></div>
+            </div>
+            <div id="clean-index-body"></div>
+            </div>
         </div>
 
-        <div class="ci-display-row">
-            <span class="ci-filter-label" style="width: auto; margin-right: 0.5em;">view:</span>
-            <button class="ci-filter-btn active ci-display-btn" data-val="text">text</button><span class="ci-slash">&nbsp;\&nbsp;</span><button class="ci-filter-btn ci-display-btn" data-val="image">image</button>
+        <div id="ci-filters-bottom">
+            <div class="ci-display-row">
+                <div class="ci-filter-label" style="width: auto; margin-right: 0.5em;">view:</div>
+                <div class="ci-filter-options">
+                    <button class="ci-filter-btn active ci-display-btn" data-val="text">text</button><span class="ci-slash">&nbsp;\&nbsp;</span><button class="ci-filter-btn ci-display-btn" data-val="image">image</button>
+                </div>
+            </div>
         </div>
 
       </div>
@@ -2194,12 +2184,10 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   let activeView = "index", activeField = "ALL", activeUse = "ALL", displayMode = "text", sortKey = "sortDate", sortDirection = -1;
   let currentRows = [], previewRow = null;
   let indexPointerHover = false, infoPointerHover = false, lastTappedId = null;
+  let isMasterHeightLocked = false; // Kilit sistemi
   const MORPH_STATES = new WeakMap();
 
-  let DATA = [
-    {id:"vogue-260213", type:"photo", title:"vogue türkiye", date:"march 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-03", media:["vogue_260213_01.jpg"], _order:0},
-    {id:"harpersbazaar-260625", type:"photo", title:"harper's bazaar türkiye", date:"july 2026", field:"PHOTOGRAPHY", use:"EDITORIAL", sortDate:"2026-07", media:["harpersbazaar_260625_0554.jpg"], _order:1}
-  ];
+  let DATA = [];
 
   async function fetchLiveProjects() {
     try {
@@ -2326,10 +2314,8 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     tableHeader.querySelectorAll(".clean-index-headerbutton").forEach(btn=>{
       const key=btn.dataset.key;
       if(!btn.__ready) { initCharSpans(btn,HEADER_LABELS[key]); btn.__ready=true; }
-      
       if(key === sortKey) btn.classList.add("active-sort"); else btn.classList.remove("active-sort");
       setStaticCase(btn, false);
-      
       if(!btn.__bound) {
         btn.__bound=true;
         btn.addEventListener("click",()=>{ 
@@ -2360,10 +2346,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
         if (displayMode === "image") {
             hidePreview();
             table.classList.add("hidden");
-            if(activeView === 'index') {
-                galleryView.classList.add("active");
-                if (!gRAF) animateGallery();
-            }
+            if(activeView === 'index') galleryView.classList.add("active");
         } else {
             table.classList.remove("hidden");
             galleryView.classList.remove("active");
@@ -2377,13 +2360,25 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       hidePreview(); lastTappedId = null; 
       renderHeaders(); renderTableData(); 
       renderGallery(); 
+      
+      // EDİTORYAL KİLİT MİMARİSİ: Site açıldığında boyutunu ölçer ve kendini dondurur.
+      if (!isMasterHeightLocked && activeField === 'ALL' && activeUse === 'ALL' && DATA.length > 0) {
+          requestAnimationFrame(() => {
+              const block = document.getElementById('ci-master-block');
+              const naturalHeight = block.getBoundingClientRect().height;
+              block.style.height = naturalHeight + 'px';
+              isMasterHeightLocked = true;
+          });
+      }
   }
 
-  function mediaFor(project) {
-    let media = project.coverOverride || (project.images && project.images[0]) || (project.videos && project.videos[0]) || null;
+  function mediaFor(project, specificMedia = null) {
+    let media = specificMedia || project.coverOverride || (project.images && project.images[0]) || (project.videos && project.videos[0]) || null;
     if(!media) return null;
-    if(project.type === 'photo') return PHOTO_BASE + media.replace(/\.[^.]+$/i,'.webp');
-    const dot = media.lastIndexOf('.'); return FILM_BASE + (dot > 0 ? media.slice(0,dot) : media) + '_preview.mp4';
+    if(media.endsWith('.mp4')) {
+        const dot = media.lastIndexOf('.'); return FILM_BASE + (dot > 0 ? media.slice(0,dot) : media) + '_preview.mp4';
+    }
+    return PHOTO_BASE + media.replace(/\.[^.]+$/i,'.webp');
   }
 
   function showPreview(r) {
@@ -2391,8 +2386,8 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     previewRow = r; 
     const p = document.getElementById("clean-index-preview"); p.innerHTML = ''; 
     const src = mediaFor(r.p); if(!src) return;
-    const el = r.p.type==='photo' ? document.createElement('img') : document.createElement('video');
-    if(r.p.type==='photo') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
+    const el = document.createElement(src.endsWith('.mp4') ? 'video' : 'img');
+    if(el.tagName==='IMG') { el.src=src; el.alt=''; } else { el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
     
     el.addEventListener("click", (e) => { e.stopPropagation(); goToProject(r.p); });
     p.appendChild(el); p.classList.add('visible');
@@ -2400,111 +2395,82 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
   function hidePreview() { previewRow = null; document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML = ''; }
 
-  // ================= IMAGE GALLERY: KUSURSUZ MOMENTUM MOTORU =================
+  // ================= NATIVE IMAGE GALLERY: KUSURSUZ FİZİK & DAĞINIK DİZGİ =================
   const gTrack = document.getElementById('ci-gallery-track');
   const galleryView = document.getElementById('clean-image-view');
-  let gOffset = 0, gVelocity = 0, gDrag = false, gStartX = 0, gStartOffset = 0, isClick = true, gRAF = null;
-  let activeGalleryId = null, lastDragX = 0, lastDragTime = 0;
+  let gDrag = false, gStartX = 0, gScrollLeft = 0, isClick = true;
+  let activeGalleryId = null;
 
   function renderGallery() {
       gTrack.innerHTML = '';
       let items = filteredAndSortedProjects();
       if(items.length === 0) return;
 
-      let renderItems = [...items];
-      while (renderItems.length < 12) { renderItems = renderItems.concat(items); }
+      // Projelerdeki TÜM görsel/videoları çıkar
+      let allMediaItems = [];
+      items.forEach(p => {
+          let medias = new Set();
+          if(p.coverOverride) medias.add(p.coverOverride);
+          if(p.images) p.images.forEach(m => medias.add(m));
+          if(p.videos) p.videos.forEach(m => medias.add(m));
 
-      renderItems.forEach(p => {
+          medias.forEach(m => {
+              let url = mediaFor(p, m);
+              if(url) allMediaItems.push({ p, url, isVideo: url.endsWith('.mp4') });
+          });
+      });
+
+      // Eğer çok az fotoğraf varsa (örn 3-4 tane) boş görünmesin diye 1 kere daha kopyala.
+      let renderItems = [...allMediaItems];
+      if (renderItems.length > 0 && renderItems.length < 8) { renderItems = renderItems.concat(allMediaItems); }
+
+      // Listenin en sonundaki 2 işi başa kopyalıyoruz (Açılışta sol tarafta görünmesi için)
+      let clones = renderItems.slice(-2);
+      let finalSequence = [...clones, ...renderItems];
+
+      finalSequence.forEach(item => {
           let div = document.createElement('div');
           div.className = 'ci-gallery-item';
-          div.dataset.id = p.id;
+          div.dataset.id = item.p.id;
 
-          let media = mediaFor(p);
-          if(media) {
-              let el = p.type==='photo' ? document.createElement('img') : document.createElement('video');
-              el.className = 'ci-gallery-media';
-              if(p.type==='photo') { el.src=media; } else { el.src=media; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
-              div.appendChild(el);
-          }
+          let el = document.createElement(item.isVideo ? 'video' : 'img');
+          el.className = 'ci-gallery-media';
+          if(!item.isVideo) { el.src = item.url; } else { el.src = item.url; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; }
+          div.appendChild(el);
 
           let info = document.createElement('div');
           info.className = 'ci-gallery-info';
-          info.innerHTML = `<span>${p.title.toLowerCase()}</span><span>${p.date.toLowerCase()}</span>`;
+          info.innerHTML = `<span>${item.p.title.toLowerCase()}</span><span>${item.p.date.toLowerCase()}</span>`;
           div.appendChild(info);
+          
           gTrack.appendChild(div);
       });
 
-      gTrack.prepend(gTrack.lastElementChild);
-      gOffset = window.innerWidth <= 900 ? -(window.innerWidth * 0.8) : -(window.innerWidth * 0.45); 
-      gVelocity = 0;
-      
-      if(displayMode === 'image' && activeView === 'index' && !gRAF) animateGallery();
-  }
-
-  function updateGalleryPos() {
-      if(!gTrack.children.length) return;
-      let gap = window.innerWidth <= 900 ? 40 : 80;
-      let first = gTrack.firstElementChild;
-      let last = gTrack.lastElementChild;
-
-      if (first && first.offsetWidth > 0) {
-          let w = first.offsetWidth + gap;
-          if (gOffset <= -w) { gOffset += w; gTrack.appendChild(first); }
-      }
-      if (last && last.offsetWidth > 0) {
-          let w = last.offsetWidth + gap;
-          if (gOffset > 0) { gOffset -= w; gTrack.prepend(last); }
-      }
-      gTrack.style.transform = `translate3d(${gOffset}px, 0, 0)`;
-  }
-
-  function animateGallery() {
-      if (activeView === 'index' && displayMode === 'image' && !document.body.classList.contains('landing-aybak-active')) {
-          if (!gDrag) {
-              gOffset += gVelocity;
-              gVelocity *= 0.94; // Sürtünme
-              if (Math.abs(gVelocity) < 0.1) gVelocity = 0;
+      // DOM'a yüklendikten hemen sonra Scroll pozisyonunu GERÇEK İLK İŞ'e ayarlar
+      requestAnimationFrame(() => {
+          const firstRealItem = gTrack.children[2]; // Başa 2 klon eklemiştik
+          if (firstRealItem) {
+              const centerOffset = firstRealItem.offsetLeft - (window.innerWidth / 2) + (firstRealItem.offsetWidth / 2);
+              gTrack.scrollLeft = centerOffset;
           }
-          updateGalleryPos();
-      }
-      gRAF = requestAnimationFrame(animateGallery);
+      });
   }
 
-  // Akıllı İvme (Momentum) Hesaplayıcısı
-  galleryView.addEventListener('pointerdown', e => {
-      if(e.button !== 0 && e.pointerType === 'mouse') return; 
-      if(e.target.closest('.ci-filter-btn') || e.target.closest('.clean-index-topbutton') || e.target.closest('.ci-logo-btn')) return;
+  // Native Scroll üzerine Kusursuz Mouse-Sürükleme Eklentisi
+  gTrack.addEventListener('pointerdown', (e) => {
+      if(e.button !== 0 && e.pointerType === 'mouse') return;
+      if(e.target.closest('.ci-logo-btn') || e.target.closest('.clean-index-topbutton')) return;
       
-      gDrag = true; isClick = true;
-      gStartX = e.clientX; gStartOffset = gOffset; gVelocity = 0;
-      lastDragX = e.clientX; lastDragTime = performance.now();
-      galleryView.setPointerCapture(e.pointerId);
+      gDrag = true;
+      isClick = true;
+      gTrack.classList.add('is-dragging');
+      gStartX = e.pageX - gTrack.offsetLeft;
+      gScrollLeft = gTrack.scrollLeft;
   });
 
-  window.addEventListener('pointermove', e => {
-      if(!gDrag) return;
-      let dx = e.clientX - gStartX;
-      if(Math.abs(dx) > 10) isClick = false; 
-      gOffset = gStartOffset + dx;
-      
-      let now = performance.now();
-      let dt = now - lastDragTime;
-      if (dt > 8) {
-          let rawV = (e.clientX - lastDragX) / dt * 16;
-          gVelocity = gVelocity * 0.5 + rawV * 0.5; // Yumuşatılmış Hız
-          lastDragX = e.clientX; lastDragTime = now;
-      }
-      updateGalleryPos();
-  });
-
-  window.addEventListener('pointerup', e => {
-      if(!gDrag) return;
+  window.addEventListener('pointerup', (e) => {
       gDrag = false;
-      galleryView.releasePointerCapture(e.pointerId);
-      
-      // Parmağı bekletip çekerse hızı sıfırla, aksi halde limiti uygula
-      if (performance.now() - lastDragTime > 50) gVelocity = 0;
-      else gVelocity = Math.max(-50, Math.min(50, gVelocity));
+      gTrack.classList.remove('is-dragging');
       
       if(isClick) {
           let item = e.target.closest('.ci-gallery-item');
@@ -2528,6 +2494,15 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
               activeGalleryId = null;
           }
       }
+  });
+
+  window.addEventListener('pointermove', (e) => {
+      if (!gDrag) return;
+      e.preventDefault();
+      const x = e.pageX - gTrack.offsetLeft;
+      const walk = (x - gStartX); 
+      if (Math.abs(walk) > 5) isClick = false; // 5 piksellik hassasiyet
+      gTrack.scrollLeft = gScrollLeft - walk;
   });
 
   // ================= INFO / INDEX GEÇİŞLERİ =================
@@ -2574,7 +2549,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
   indexButton.addEventListener('click',()=>switchView('index'));
   infoButton.addEventListener('click',()=>switchView('info'));
 
-  // LAZER TARAMA (Tablo İçin)
+  // ================= DEEPLINK ENTEGRASYONU =================
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('view') === 'info') {
+      setTimeout(() => switchView('info'), 50); // İlk açılış morphlarının çakışmaması için mini rötar
+  }
+
+  // LAZER TARAMA (Tablo Text Modu İçin)
   document.addEventListener("click", (e) => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if (isBlackCard || displayMode === 'image') return; 
@@ -2660,38 +2641,13 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       });
   });
 
-  let wheelAccumulator = 0, wheelResetTimer = null, lastTouchY = null;
-  document.addEventListener('wheel', event => {
-    const isBlackCard = document.body.classList.contains('landing-aybak-active');
-    if(event.target.closest('.clean-index-footer') || event.target.closest('.clean-index-topbar') || event.target.closest('.clean-index-filters') || event.target.closest('.ci-display-row')) return;
-    
-    if (activeView === 'index' && displayMode === 'image' && !isBlackCard) {
-        event.preventDefault(); 
-        let delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-        gVelocity -= delta * 0.15; 
-        if (gVelocity > 40) gVelocity = 40;
-        if (gVelocity < -40) gVelocity = -40;
-        return;
-    }
-
-    if (!isBlackCard) {
-      if (event.deltaY <= 0) { wheelAccumulator = 0; return; }
-      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
-      if (wrap && wrap.scrollHeight > wrap.clientHeight && wrap.scrollTop + wrap.clientHeight < wrap.scrollHeight - 2) { wheelAccumulator = 0; return; }
-    } else { if (event.deltaY >= 0) { wheelAccumulator = 0; return; } }
-    
-    wheelAccumulator += event.deltaY;
-    clearTimeout(wheelResetTimer); wheelResetTimer = setTimeout(() => wheelAccumulator = 0, 140);
-    if (!isBlackCard && wheelAccumulator >= 48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(true); }
-    else if (isBlackCard && wheelAccumulator <= -48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(false); }
-  }, {passive: false});
-
   document.addEventListener('keydown', event => {
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     
+    // Klavyeyle Yatay Kaydırma Desteği
     if (activeView === 'index' && displayMode === 'image' && !isBlackCard) {
-        if(event.key === 'ArrowRight') gVelocity = -15;
-        if(event.key === 'ArrowLeft') gVelocity = 15;
+        if(event.key === 'ArrowRight') gTrack.scrollLeft += 40;
+        if(event.key === 'ArrowLeft') gTrack.scrollLeft -= 40;
     }
 
     if(!isBlackCard && (event.key==='ArrowDown' || event.key==='PageDown')) { 
@@ -2702,13 +2658,39 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
     }
   });
 
+  // TEKERLEK (SCROLL) SİYAH EKRAN KONTROLLERİ
+  let wheelAccumulator = 0, wheelResetTimer = null, lastTouchY = null;
+  document.addEventListener('wheel', event => {
+    const isBlackCard = document.body.classList.contains('landing-aybak-active');
+    if(event.target.closest('.clean-index-footer') || event.target.closest('.clean-index-topbar') || event.target.closest('.clean-index-filters-container') || event.target.closest('.ci-display-row')) return;
+    
+    // Galeri açıkken fare tekerleğiyle aşağı/yukarı yapıldığında sağa/sola kaysın
+    if (activeView === 'index' && displayMode === 'image' && !isBlackCard) {
+        event.preventDefault();
+        let delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        gTrack.scrollLeft += delta; 
+        return;
+    }
+
+    if (!isBlackCard) {
+      if (event.deltaY <= 0) { wheelAccumulator = 0; return; }
+      const wrap = document.querySelector(activeView === "index" ? '#ci-list-middle' : '.clean-index-info-scroll');
+      if (wrap && wrap.scrollHeight > wrap.clientHeight && wrap.scrollTop + wrap.clientHeight < wrap.scrollHeight - 2) { wheelAccumulator = 0; return; }
+    } else { if (event.deltaY >= 0) { wheelAccumulator = 0; return; } }
+    
+    wheelAccumulator += event.deltaY;
+    clearTimeout(wheelResetTimer); wheelResetTimer = setTimeout(() => wheelAccumulator = 0, 140);
+    if (!isBlackCard && wheelAccumulator >= 48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(true); }
+    else if (isBlackCard && wheelAccumulator <= -48) { event.preventDefault(); wheelAccumulator = 0; openEndCard(false); }
+  }, {passive: false});
+
   document.addEventListener('touchstart',event=>{ if(event.changedTouches[0]) lastTouchY=event.changedTouches[0].clientY; },{passive:true});
   document.addEventListener('touchend',event=>{
     const isBlackCard = document.body.classList.contains('landing-aybak-active');
     if(lastTouchY===null || !event.changedTouches[0] || displayMode === 'image') return; 
     const dy = event.changedTouches[0].clientY - lastTouchY; lastTouchY = null;
     if (!isBlackCard && dy < -45) {
-      const wrap = document.querySelector(activeView === "index" ? '.clean-index-table-wrap' : '.clean-index-info-scroll');
+      const wrap = document.querySelector(activeView === "index" ? '#ci-list-middle' : '.clean-index-info-scroll');
       if (wrap && wrap.scrollHeight > wrap.clientHeight && wrap.scrollTop + wrap.clientHeight < wrap.scrollHeight - 2) return;
       openEndCard(true);
     } else if (isBlackCard && dy > 45) { openEndCard(false); }
