@@ -1909,7 +1909,7 @@ document.documentElement.classList.add('clean-index-boot');
 .ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 20vw 0 4vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
 .ci-gallery-track::-webkit-scrollbar { display: none; }
 
-/* DAĞINIK (SCATTERED) DÜZEN - Rastgele Asimetrik Yapı */
+/* DAĞINIK (SCATTERED) DÜZEN - Dengeli Boyutlar */
 .ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 1.5vw; max-width: 45vw; max-height: 55vh; }
 .ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 12vh; max-height: 60vh; max-width: 50vw; }
 .ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 15vh; max-height: 55vh; max-width: 48vw; }
@@ -1961,9 +1961,9 @@ html.image-mode-active #ci-list-middle,
 html.image-mode-active .clean-index-table-wrap,
 html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; pointer-events: none !important; }
 
-/* FİLTRELER ("em" ile esnek 3.8em genişlik kilitlendi) */
+/* FİLTRELER ("em" ile esnek 2.8em daraltılmış genişlik kilitlendi) */
 .ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; margin: 0; }
-.ci-filter-label { display: inline-block; width: 3.8em; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
+.ci-filter-label { display: inline-block; width: 2.8em; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
 .ci-filter-options { display: flex; align-items: baseline; flex-wrap: wrap; }
 .ci-slash { white-space: pre; }
 .ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; text-decoration: none; }
@@ -2019,14 +2019,14 @@ html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; poin
   .ci-preview-item { position: fixed !important; left: 50% !important; top: 50% !important; bottom: auto !important; transform: translate(-50%, -50%) !important; width: 80vw; height: 38vh; align-items: center; justify-content: center; }
   .ci-preview-item.visible { transform: translate(-50%, -50%) !important; }
 
-  /* Mobil Dağınık Galeri Boyutları */
-  .ci-gallery-track { padding: 0 10vw 0 4vw; }
-  .ci-gallery-item { margin: 0 4vw; max-height: 45vh; max-width: 80vw; }
+  /* Mobil Dağınık Galeri Boyutları - YATAY GÖRSELLERE ÖZGÜRLÜK VERİLDİ */
+  .ci-gallery-track { padding: 0 8vw 0 4vw; }
+  .ci-gallery-item { margin: 0 3vw; max-height: 52vh; max-width: 92vw; }
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
   .ci-preview-item { width: 50vw; height: 65vh; }
-  .ci-gallery-item { max-width: 50vw; }
+  .ci-gallery-item { max-width: 60vw; max-height: 70vh; }
 }
 
 html.clean-index-live .navigation, html.clean-index-live .contact, html.clean-index-live .portfolio-download, html.clean-index-live .page { display: none !important; }
@@ -2107,7 +2107,6 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
         <div id="ci-filters-bottom">
             <div class="ci-display-row">
-                <!-- view kelimesi de aynı esnek genişliği miras alıyor -->
                 <div class="ci-filter-label">view:</div>
                 <div class="ci-filter-options">
                     <button class="ci-filter-btn active ci-display-btn" data-val="text">text</button><span class="ci-slash">&nbsp;\&nbsp;</span><button class="ci-filter-btn ci-display-btn" data-val="image">image</button>
