@@ -1906,16 +1906,18 @@ document.documentElement.classList.add('clean-index-boot');
 #clean-image-view.active { visibility: visible; opacity: 1; pointer-events: auto; }
 
 /* NATIVE YATAY SCROLL (Pürüzsüz & Başlangıç hizası sola çekildi) */
-.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 20vw 0 5vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
+.ci-gallery-track { display: flex; align-items: center; width: 100vw; height: 100vh; padding: 0 20vw 0 4vw; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-behavior: auto; touch-action: pan-x pan-y; }
 .ci-gallery-track::-webkit-scrollbar { display: none; }
 
-/* DAĞINIK (SCATTERED) DÜZEN - Dengeli Boyutlar */
-.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 2vw; max-width: 45vw; max-height: 55vh; }
-.ci-gallery-item:nth-child(5n+1) { align-self: flex-start; margin-top: 15vh; }
-.ci-gallery-item:nth-child(5n+2) { align-self: flex-end; margin-bottom: 20vh; max-width: 35vw; }
-.ci-gallery-item:nth-child(5n+3) { align-self: center; transform: translateY(-8vh); }
-.ci-gallery-item:nth-child(5n+4) { align-self: flex-start; margin-top: 25vh; max-height: 40vh; }
-.ci-gallery-item:nth-child(5n+5) { align-self: flex-end; margin-bottom: 5vh; max-width: 50vw; }
+/* DAĞINIK (SCATTERED) DÜZEN - Rastgele Asimetrik Yapı */
+.ci-gallery-item { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; pointer-events: auto; margin: 0 1.5vw; max-width: 45vw; max-height: 55vh; }
+.ci-gallery-item:nth-child(7n+1) { align-self: flex-start; margin-top: 12vh; max-height: 60vh; max-width: 50vw; }
+.ci-gallery-item:nth-child(7n+2) { align-self: flex-end; margin-bottom: 15vh; max-height: 55vh; max-width: 48vw; }
+.ci-gallery-item:nth-child(7n+3) { align-self: center; transform: translateY(-6vh); max-height: 58vh; max-width: 55vw; }
+.ci-gallery-item:nth-child(7n+4) { align-self: flex-start; margin-top: 20vh; max-height: 50vh; max-width: 45vw; }
+.ci-gallery-item:nth-child(7n+5) { align-self: flex-end; margin-bottom: 8vh; max-height: 62vh; max-width: 60vw; }
+.ci-gallery-item:nth-child(7n+6) { align-self: center; transform: translateY(8vh); max-height: 55vh; max-width: 50vw; }
+.ci-gallery-item:nth-child(7n+7) { align-self: flex-end; margin-bottom: 22vh; max-height: 50vh; max-width: 52vw; }
 
 .ci-gallery-media { height: auto; width: auto; max-height: 100%; max-width: 100%; object-fit: contain; pointer-events: none; user-select: none; display: block; }
 
@@ -1959,9 +1961,9 @@ html.image-mode-active #ci-list-middle,
 html.image-mode-active .clean-index-table-wrap,
 html.image-mode-active .clean-index-table { opacity: 0; visibility: hidden; pointer-events: none !important; }
 
-/* FİLTRELER ("all" hizalaması için 32px milimetrik kilit) */
+/* FİLTRELER ("em" ile esnek 3.8em genişlik kilitlendi) */
 .ci-filter-row { display: flex; align-items: baseline; justify-content: flex-start; width: 100%; margin: 0; }
-.ci-filter-label { display: inline-block; width: 32px; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
+.ci-filter-label { display: inline-block; width: 3.8em; flex: 0 0 auto; text-align: left; opacity: 1; margin: 0; white-space: nowrap; }
 .ci-filter-options { display: flex; align-items: baseline; flex-wrap: wrap; }
 .ci-slash { white-space: pre; }
 .ci-filter-btn { appearance: none; border: 0; background: transparent; color: inherit; padding: 0; margin: 0; cursor: pointer; font: inherit; opacity: 1; text-decoration: none; }
@@ -2105,6 +2107,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
         <div id="ci-filters-bottom">
             <div class="ci-display-row">
+                <!-- view kelimesi de aynı esnek genişliği miras alıyor -->
                 <div class="ci-filter-label">view:</div>
                 <div class="ci-filter-options">
                     <button class="ci-filter-btn active ci-display-btn" data-val="text">text</button><span class="ci-slash">&nbsp;\&nbsp;</span><button class="ci-filter-btn ci-display-btn" data-val="image">image</button>
@@ -2209,7 +2212,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
             return {
                 id: item.id, title: mediaData.title || "untitled", date: mediaData.date || "", type: isPhoto ? "photo" : "film",
                 field: item.field, use: item.use, sortDate: item.sortDate, images: mediaData.images || null,
-                videos: mediaData.videos || null, coverOverride: mediaData.coverOverride || null, _order: index
+                videos: mediaData.videos || null, media: mediaData.media || null, coverOverride: mediaData.coverOverride || null, _order: index
             };
         }).filter(Boolean);
         
@@ -2400,23 +2403,39 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       }
   }
 
-  // ================= ORİJİNAL ÇALIŞAN MEDYA ÇAĞIRMA SİSTEMİ ================= 
-  function mediaFor(project) {
-    let media = project.coverOverride || (project.images && project.images[0]) || (project.videos && project.videos[0]) || null;
-    if(!media) return null;
-    if(project.type === 'photo') return PHOTO_BASE + media.replace(/\.[^.]+$/i,'.webp');
-    const dot = media.lastIndexOf('.'); return FILM_BASE + (dot > 0 ? media.slice(0,dot) : media) + '_preview.mp4';
+  // ================= ORGANİK (RANDOM) MEDYA ÇAĞIRMA SİSTEMİ ================= 
+  // Projenin içindeki tüm foto/video havuzundan rastgele birini seçerek anında ekrana basar.
+  function randomMediaFor(project) {
+      let medias = [];
+      if(project.coverOverride) medias.push(project.coverOverride);
+      if(project.images) project.images.forEach(m => medias.push(m));
+      if(project.videos) project.videos.forEach(m => medias.push(m));
+      if(project.media) project.media.forEach(m => medias.push(m));
+      
+      let unique = [...new Set(medias)];
+      if(unique.length === 0) return null;
+
+      let m = unique[Math.floor(Math.random() * unique.length)];
+      
+      if(m.endsWith('.mp4')) {
+          const dot = m.lastIndexOf('.'); 
+          return FILM_BASE + (dot > 0 ? m.slice(0,dot) : m) + '_preview.mp4';
+      }
+      return PHOTO_BASE + m.replace(/\.[^.]+$/i,'.webp');
   }
 
   function showPreview(r) {
     if(displayMode === "image") return;
     previewRow = r; 
     const p = document.getElementById("clean-index-preview"); p.innerHTML = ''; 
-    const src = mediaFor(r.p); if(!src) return;
-    const el = document.createElement(r.p.type === 'photo' ? 'img' : 'video');
     
-    // Mobil Video Oynatma Etiketleri
-    if(r.p.type === 'photo') { el.src=src; el.alt=''; } 
+    // Her hover'da rastgele, taptaze bir görsel çeker
+    const src = randomMediaFor(r.p); 
+    if(!src) return;
+
+    const el = document.createElement(src.endsWith('.mp4') ? 'video' : 'img');
+    
+    if(el.tagName === 'IMG') { el.src=src; el.alt=''; } 
     else { 
         el.src=src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto';
         el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
@@ -2428,7 +2447,7 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
 
   function hidePreview() { previewRow = null; document.getElementById("clean-index-preview").classList.remove('visible'); document.getElementById("clean-index-preview").innerHTML = ''; }
 
-  // ================= SIFIR KLON, GERÇEK DAĞINIK (SCATTERED) GALERİ =================
+  // ================= SCATTERED (DAĞINIK) GALERİ SİSTEMİ (KLONLAMA YOK) =================
   const gTrack = document.getElementById('ci-gallery-track');
   const galleryView = document.getElementById('clean-image-view');
   let activeGalleryId = null;
@@ -2438,18 +2457,18 @@ body.landing-aybak-active #ci-endcard-container { opacity: 1; visibility: visibl
       let items = filteredAndSortedProjects();
       if(items.length === 0) return;
 
-      // Döngü veya klonlama YOO. Sadece her projeden 1 tane görüntü koyar.
+      // Döngü veya klonlama YOO. Sadece her projeden rastgele seçilmiş 1 tane görüntü koyar.
       items.forEach(p => {
-          let src = mediaFor(p);
+          let src = randomMediaFor(p);
           if(!src) return;
 
           let div = document.createElement('div');
           div.className = 'ci-gallery-item';
           div.dataset.id = p.id;
 
-          let el = document.createElement(p.type === 'photo' ? 'img' : 'video');
+          let el = document.createElement(src.endsWith('.mp4') ? 'video' : 'img');
           el.className = 'ci-gallery-media';
-          if(p.type === 'photo') { el.src = src; } 
+          if(el.tagName === 'IMG') { el.src = src; } 
           else { 
               el.src = src; el.muted=true; el.autoplay=true; el.loop=true; el.playsInline=true; el.preload='auto'; 
               el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
