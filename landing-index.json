@@ -38,25 +38,25 @@
   {
     "id": "beegoddess-fw24",
     "field": "PHOTOGRAPHY",
-    "use": "CAMPAIGN",
+    "use": "still life",
     "sortDate": "2024-09"
   },
   {
     "id": "lofficiel-260116",
     "field": "PHOTOGRAPHY",
-    "use": "EDITORIAL",
+    "use": "advertorial",
     "sortDate": "2026-02"
   },
   {
     "id": "manc-231124",
     "field": "PHOTOGRAPHY",
-    "use": "CAMPAIGN",
+    "use": "advertising",
     "sortDate": "2024-05"
   },
   {
     "id": "mudo-home-fw24",
     "field": "PHOTOGRAPHY",
-    "use": "CAMPAIGN",
+    "use": "still life",
     "sortDate": "2024-09"
   },
   {
@@ -68,19 +68,19 @@
   {
     "id": "vakko-fw24",
     "field": "PHOTOGRAPHY",
-    "use": "CAMPAIGN",
+    "use": "still life",
     "sortDate": "2024-09"
   },
   {
     "id": "qp-250421",
     "field": "PHOTOGRAPHY",
-    "use": "EDITORIAL",
+    "use": "still life",
     "sortDate": "2025-06"
   },
   {
     "id": "elle-250919",
     "field": "PHOTOGRAPHY",
-    "use": "EDITORIAL",
+    "use": "still life",
     "sortDate": "2025-10"
   },
   {
@@ -92,13 +92,13 @@
   {
     "id": "vogue-260113",
     "field": "FILM",
-    "use": "CAMPAIGN",
+    "use": "editorial",
     "sortDate": "2026-02"
   },
   {
     "id": "zeyneparcay-251217",
     "field": "FILM",
-    "use": "CAMPAIGN",
+    "use": "advertising",
     "sortDate": "2026-09"
   },
   {
@@ -116,7 +116,7 @@
   {
     "id": "zeyneparcay-250529",
     "field": "FILM",
-    "use": "CAMPAIGN",
+    "use": "advertising",
     "sortDate": "2026-05"
   },
   {
