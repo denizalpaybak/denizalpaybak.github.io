@@ -44,7 +44,7 @@
   {
     "id": "lofficiel-260116",
     "field": "PHOTOGRAPHY",
-    "use": "ADVERTISING",
+    "use": "EDITORIAL",
     "sortDate": "2026-02"
   },
   {
@@ -62,7 +62,7 @@
   {
     "id": "lofficiel-251213-cover",
     "field": "PHOTOGRAPHY",
-    "use": "EDITORIAL",
+    "use": "ADVERTISING",
     "sortDate": "2026-01"
   },
   {
